@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+*.tmp
+*.staging
+*.rollback
+.venv/
+# Never commit local secrets or lab private keys.
+*.key
+*.pem
+.env
+.env.*

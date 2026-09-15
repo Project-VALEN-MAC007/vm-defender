@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VM-Defender Dashboard - Adaptive Honeypot System</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            color: white;
+            padding: 28px 48px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-bottom: 3px solid #1e3a8a;
+        }
+
+        .header-content {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo {
+            font-size: 42px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+
+        .header-title h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            font-size: 15px;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .header-right {
+            text-align: right;
+        }
+
+        .status-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .last-update {
+            font-size: 13px;
+            opacity: 0.8;
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 32px 48px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+            transform: translateY(-2px);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .stat-icon {
+            font-size: 32px;
+            opacity: 0.8;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: #0f172a;
+            line-height: 1;
+        }
+
+        .stat-change {
+            font-size: 13px;
+            color: #64748b;
+            margin-top: 8px;
+        }
+
+        /* Services Status */
+        .services-section {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 28px;
+            margin-bottom: 32px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .service-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 18px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .service-item:hover {
+            background: #f1f5f9;
+        }
+
+        .service-name {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .status-active {
+            background: #22c55e;
+            box-shadow: 0 0 8px rgba(34, 197, 94, 0.4);
+        }
+
+        .status-inactive {
+            background: #ef4444;
+            box-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
+        }
+
+        .status-unknown {
+            background: #94a3b8;
+        }
+
+        .service-status-text {
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .status-text-active {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-text-inactive {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-text-unknown {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        /* Controls */
+        .controls {
+            background: white;
+            border: 1px solid #e2e8f0;
+            padding: 20px 24px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        input[type="text"], select {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            color: #1e293b;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        input[type="text"]:focus, select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        input[type="text"] {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        select {
+            min-width: 160px;
+        }
+
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        button:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: #64748b;
+        }
+
+        .btn-secondary:hover {
+            background: #475569;
+        }
+
+        .auto-refresh {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #475569;
+        }
+
+        input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .tab {
+            background: transparent;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 0;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            color: #64748b;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .tab:hover {
+            background: #f8fafc;
+            color: #1e293b;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .tab.active {
+            background: transparent;
+            color: #3b82f6;
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #3b82f6;
+            border-radius: 3px 3px 0 0;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Table */
+        .table-container {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .table-header {
+            background: #f8fafc;
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .table-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .badge {
+            background: #3b82f6;
+            color: white;
+            padding: 6px 14px;
+            border-radius: 16px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f8fafc;
+            padding: 14px 16px;
+            text-align: left;
+            font-size: 12px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background: #fafbfc;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .severity-1 {
+            color: #dc2626;
+            font-weight: 600;
+        }
+
+        .severity-2 {
+            color: #ea580c;
+            font-weight: 500;
+        }
+
+        .severity-3 {
+            color: #ca8a04;
+        }
+
+        .action-redirect {
+            color: #7c3aed;
+            font-weight: 500;
+        }
+
+        .action-block {
+            color: #dc2626;
+            font-weight: 500;
+        }
+
+        .action-allow {
+            color: #16a34a;
+            font-weight: 500;
+        }
+
+        .timestamp {
+            color: #64748b;
+            font-size: 13px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .ip-address {
+            font-family: 'Courier New', monospace;
+            color: #0f172a;
+            font-weight: 500;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 60px 20px;
+            color: #94a3b8;
+            font-size: 15px;
+        }
+
+        .no-data-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #e2e8f0;
+            border-top-color: #3b82f6;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 20px;
+            }
+            header {
+                padding: 20px;
+            }
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="header-left">
+                <div class="logo">🛡️</div>
+                <div class="header-title">
+                    <h1>VM-Defender Dashboard</h1>
+                    <p class="subtitle">Adaptive Honeypot Monitoring System</p>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="status-badge">
+                    <span class="status-dot"></span>
+                    <span>System Active</span>
+                </div>
+                <div class="last-update" id="last-update">Last updated: --</div>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-content">
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">🔔</div>
+                <div class="stat-label">Total Alerts</div>
+                <div class="stat-value" id="total-alerts">0</div>
+                <div class="stat-change">Suricata detections</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⚙️</div>
+                <div class="stat-label">Total Decisions</div>
+                <div class="stat-value" id="total-decisions">0</div>
+                <div class="stat-change">Engine responses</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🔀</div>
+                <div class="stat-label">Active Redirects</div>
+                <div class="stat-value" id="active-redirects">0</div>
+                <div class="stat-change">Honeypot redirections</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-label">Detection Rate</div>
+                <div class="stat-value" id="detection-rate">0%</div>
+                <div class="stat-change">Success percentage</div>
+            </div>
+        </div>
+
+        <!-- Services Status -->
+        <div class="services-section">
+            <div class="section-title">
+                <span>🔧</span> System Services Status
+            </div>
+            <div class="services-grid" id="services-status">
+                <div class="service-item">
+                    <div class="service-name">
+                        <span class="status-indicator status-unknown"></span>
+                        <span>Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <input type="text" id="search" placeholder="🔍 ค้นหา IP address, signature, profile...">
+            <select id="filter-severity">
+                <option value="">All Severity Levels</option>
+                <option value="1">Critical (Level 1)</option>
+                <option value="2">High (Level 2)</option>
+                <option value="3">Medium (Level 3)</option>
+            </select>
+            <select id="filter-action">
+                <option value="">All Actions</option>
+                <option value="redirect_http">Redirect HTTP</option>
+                <option value="redirect_ssh">Redirect SSH</option>
+                <option value="block">Block</option>
+                <option value="allow">Allow</option>
+            </select>
+            <button onclick="refreshData()">🔄 Refresh</button>
+            <button onclick="exportCSV()" class="btn-secondary">📥 Export CSV</button>
+            <div class="auto-refresh">
+                <input type="checkbox" id="auto-refresh" checked>
+                <label for="auto-refresh">Auto-refresh (5s)</label>
+                <span class="loading-spinner" id="loading-indicator" style="display:none;"></span>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('alerts', event)">
+                🔔 Suricata Alerts
+            </button>
+            <button class="tab" onclick="switchTab('decisions', event)">
+                ⚙️ Decision Engine Logs
+            </button>
+        </div>
+
+        <!-- Alerts Tab -->
+        <div id="alerts-tab" class="tab-content active">
+            <div class="table-container">
+                <div class="table-header">
+                    <div class="table-title">Suricata Security Alerts</div>
+                    <span class="badge" id="alerts-count">0 alerts</span>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Source IP</th>
+                                <th>Protocol</th>
+                                <th>Signature ID</th>
+                                <th>Severity</th>
+                                <th>Category</th>
+                            </tr>
+                        </thead>
+                        <tbody id="alerts-tbody">
+                            <tr>
+                                <td colspan="6" class="no-data">
+                                    <div class="no-data-icon">📭</div>
+                                    <div>No alerts data available</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Decisions Tab -->
+        <div id="decisions-tab" class="tab-content">
+            <div class="table-container">
+                <div class="table-header">
+                    <div class="table-title">Decision Engine Activity Logs</div>
+                    <span class="badge" id="decisions-count">0 decisions</span>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Start Time</th>
+                                <th>Source IP</th>
+                                <th>Protocol</th>
+                                <th>Risk Score</th>
+                                <th>Action Taken</th>
+                                <th>Profile</th>
+                                <th>Reason</th>
+                                <th>Expiry</th>
+                            </tr>
+                        </thead>
+                        <tbody id="decisions-tbody">
+                            <tr>
+                                <td colspan="8" class="no-data">
+                                    <div class="no-data-icon">📭</div>
+                                    <div>No decision logs available</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let alertsData = [];
+        let decisionsData = [];
+        let autoRefreshInterval;
+
+        function switchTab(tab, event) {
+            if (event) {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                event.target.classList.add('active');
+            }
+
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.getElementById(tab + '-tab').classList.add('active');
+        }
+
+        async function fetchData() {
+            const loading = document.getElementById('loading-indicator');
+            loading.style.display = 'inline-block';
+
+            try {
+                const [decisionsRes, alertsRes, statusRes] = await Promise.all([
+                    fetch('/api/decisions.json'),
+                    fetch('/api/alerts.json'),
+                    fetch('/api/status.json').catch(() => ({ json: () => ({}) }))
+                ]);
+
+                decisionsData = await decisionsRes.json();
+                alertsData = await alertsRes.json();
+                const status = await statusRes.json();
+
+                updateStats();
+                updateServicesStatus(status);
+                renderDecisions();
+                renderAlerts();
+
+                document.getElementById('last-update').textContent =
+                    `Last updated: ${new Date().toLocaleTimeString('th-TH')}`;
+
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('total-alerts').textContent = alertsData.length;
+            document.getElementById('total-decisions').textContent = decisionsData.length;
+
+            const activeRedirects = decisionsData.filter(d =>
+                d.action && d.action.includes('redirect')
+            ).length;
+            document.getElementById('active-redirects').textContent = activeRedirects;
+
+            const detectionRate = decisionsData.length > 0 ?
+                Math.round((activeRedirects / decisionsData.length) * 100) : 0;
+            document.getElementById('detection-rate').textContent = detectionRate + '%';
+        }
+
+        function updateServicesStatus(status) {
+            const services = status.services || status;
+            const container = document.getElementById('services-status');
+
+            const servicesList = [
+                { name: 'Suricata IDS', key: 'suricata', icon: '🔍' },
+                { name: 'Nginx Reverse Proxy', key: 'nginx', icon: '🌐' },
+                { name: 'Decision Engine', key: 'decision_engine', icon: '⚙️' }
+            ];
+
+            container.innerHTML = servicesList.map(svc => {
+                const state = services[svc.key] || 'unknown';
+                const statusClass = state === 'active' ? 'status-active' :
+                                  state === 'inactive' ? 'status-inactive' : 'status-unknown';
+                const textClass = state === 'active' ? 'status-text-active' :
+                                state === 'inactive' ? 'status-text-inactive' : 'status-text-unknown';
+                return `
+                    <div class="service-item">
+                        <div class="service-name">
+                            <span class="status-indicator ${statusClass}"></span>
+                            <span>${svc.icon} ${svc.name}</span>
+                        </div>
+                        <span class="service-status-text ${textClass}">${state}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderAlerts() {
+            const tbody = document.getElementById('alerts-tbody');
+            const searchTerm = document.getElementById('search').value.toLowerCase();
+            const filterSeverity = document.getElementById('filter-severity').value;
+
+            const filtered = alertsData.filter(alert => {
+                const matchSearch = !searchTerm ||
+                    (alert.src_ip && alert.src_ip.toLowerCase().includes(searchTerm)) ||
+                    (alert.signature && alert.signature.toLowerCase().includes(searchTerm)) ||
+                    (alert.category && alert.category.toLowerCase().includes(searchTerm));
+
+                const matchSeverity = !filterSeverity ||
+                    (alert.severity && alert.severity.toString() === filterSeverity);
+
+                return matchSearch && matchSeverity;
+            });
+
+            document.getElementById('alerts-count').textContent = `${filtered.length} alerts`;
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="no-data">
+                            <div class="no-data-icon">📭</div>
+                            <div>No alerts match your filters</div>
+                        </td>
+                    </tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtered.slice(0, 100).map(alert => `
+                <tr>
+                    <td class="timestamp">${formatTimestamp(alert.timestamp)}</td>
+                    <td class="ip-address">${alert.src_ip || 'N/A'}</td>
+                    <td>${alert.proto || 'N/A'}</td>
+                    <td>SID:${alert.signature_id || 'N/A'}</td>
+                    <td class="severity-${alert.severity || 3}">Level ${alert.severity || 'N/A'}</td>
+                    <td>${alert.category || alert.signature || 'N/A'}</td>
+                </tr>
+            `).join('');
+        }
+
+        function renderDecisions() {
+            const tbody = document.getElementById('decisions-tbody');
+            const searchTerm = document.getElementById('search').value.toLowerCase();
+            const filterAction = document.getElementById('filter-action').value;
+
+            const filtered = decisionsData.filter(dec => {
+                const matchSearch = !searchTerm ||
+                    (dec.source_ip && dec.source_ip.toLowerCase().includes(searchTerm)) ||
+                    (dec.profile && dec.profile.toLowerCase().includes(searchTerm)) ||
+                    (dec.reason && dec.reason.toLowerCase().includes(searchTerm));
+
+                const matchAction = !filterAction || dec.action === filterAction;
+
+                return matchSearch && matchAction;
+            });
+
+            document.getElementById('decisions-count').textContent = `${filtered.length} decisions`;
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="no-data">
+                            <div class="no-data-icon">📭</div>
+                            <div>No decisions match your filters</div>
+                        </td>
+                    </tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtered.slice(0, 100).map(dec => {
+                const actionClass = dec.action && dec.action.includes('redirect') ? 'action-redirect' :
+                                  dec.action === 'block' ? 'action-block' : 'action-allow';
+                return `
+                    <tr>
+                        <td class="timestamp">${formatTimestamp(dec.start_time)}</td>
+                        <td class="ip-address">${dec.source_ip || 'N/A'}</td>
+                        <td>${dec.protocol || 'N/A'}</td>
+                        <td><strong>${dec.risk_score || 0}</strong></td>
+                        <td class="${actionClass}">${dec.action || 'N/A'}</td>
+                        <td>${dec.profile || 'N/A'}</td>
+                        <td>${dec.reason || 'N/A'}</td>
+                        <td class="timestamp">${dec.expiry ? formatTimestamp(dec.expiry) : '—'}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function formatTimestamp(ts) {
+            if (!ts) return 'N/A';
+            const date = new Date(ts);
+            return date.toLocaleString('th-TH', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+        }
+
+        function refreshData() {
+            fetchData();
+        }
+
+        function exportCSV() {
+            // Check which tab is active
+            const alertsTabActive = document.getElementById('alerts-tab').classList.contains('active');
+            if (alertsTabActive) {
+                window.open('/api/alerts.csv', '_blank');
+            } else {
+                window.open('/api/decisions.csv', '_blank');
+            }
+        }
+
+        document.getElementById('search').addEventListener('input', () => {
+            renderAlerts();
+            renderDecisions();
+        });
+
+        document.getElementById('filter-severity').addEventListener('change', renderAlerts);
+        document.getElementById('filter-action').addEventListener('change', renderDecisions);
+
+        document.getElementById('auto-refresh').addEventListener('change', (e) => {
+            if (e.target.checked) {
+                autoRefreshInterval = setInterval(fetchData, 5000);
+            } else {
+                clearInterval(autoRefreshInterval);
+            }
+        });
+
+        // Initial load
+        fetchData();
+        autoRefreshInterval = setInterval(fetchData, 5000);
+    </script>
+</body>
+</html>

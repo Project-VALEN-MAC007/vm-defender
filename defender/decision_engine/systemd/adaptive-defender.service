@@ -1,0 +1,18 @@
+[Unit]
+Description=Adaptive Honeypot Decision Engine
+After=suricata.service
+Requires=suricata.service
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/adaptive-honeypot
+ExecStart=/usr/bin/python3 -m defender.decision_engine.adaptive_defender.cli --config /etc/adaptive-defender/live.json
+Restart=on-failure
+RestartSec=2s
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/adaptive-defender /var/log/adaptive-defender /etc/nginx/maps
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,46 @@
+services:
+  wordpress:
+    image: wordpress:php8.3-apache
+    restart: unless-stopped
+    ports:
+      - "${WORDPRESS_BIND_IP:-127.0.0.1}:${WORDPRESS_PORT:-8081}:80"
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_NAME: "${WORDPRESS_DB_NAME:-wordpress_honeypot}"
+      WORDPRESS_DB_USER: "${WORDPRESS_DB_USER:-wordpress}"
+      WORDPRESS_DB_PASSWORD: "${WORDPRESS_DB_PASSWORD:-change-me-wordpress}"
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_DEBUG', false);
+        define('DISALLOW_FILE_EDIT', true);
+    volumes:
+      - wordpress_data:/var/www/html
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1/wp-login.php >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+
+  db:
+    image: mariadb:11.4
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: "${WORDPRESS_DB_NAME:-wordpress_honeypot}"
+      MARIADB_USER: "${WORDPRESS_DB_USER:-wordpress}"
+      MARIADB_PASSWORD: "${WORDPRESS_DB_PASSWORD:-change-me-wordpress}"
+      MARIADB_ROOT_PASSWORD: "${WORDPRESS_DB_ROOT_PASSWORD:-change-me-root}"
+    volumes:
+      - wordpress_db:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mariadb-admin ping -h 127.0.0.1 -uroot -p$${MARIADB_ROOT_PASSWORD} --silent"]
+      interval: 20s
+      timeout: 5s
+      retries: 10
+      start_period: 40s
+
+volumes:
+  wordpress_data:
+  wordpress_db:
