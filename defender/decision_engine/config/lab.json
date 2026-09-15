@@ -1,0 +1,18 @@
+{
+  "eve_path": "../../../tests/fixtures/eve.json",
+  "checkpoint_path": "../../../evidence/test-results/eve.checkpoint.json",
+  "audit_path": "../../../evidence/test-results/decisions.jsonl",
+  "nginx_map_path": "../../../defender/nginx/generated/redirect_map.conf",
+  "dry_run": false,
+  "decay_per_minute": 1.0,
+  "expiry_seconds": 1800,
+  "thresholds": {
+    "monitor": 15,
+    "redirect": 40,
+    "temporary_block": 80
+  },
+  "nft_family": "inet",
+  "nft_table": "adaptive_defender",
+  "bind_host": "127.0.0.1",
+  "bind_port": 9090
+}

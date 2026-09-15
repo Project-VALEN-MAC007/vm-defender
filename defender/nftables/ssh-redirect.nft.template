@@ -1,0 +1,49 @@
+#!/usr/sbin/nft -f
+
+# Do not render/apply until the marked values are observed on the lab.
+table inet adaptive_defender {
+    set ssh_redirect {
+        type ipv4_addr
+        flags timeout
+        timeout 30m
+    }
+
+    set telnet_redirect {
+        type ipv4_addr
+        flags timeout
+        timeout 30m
+    }
+
+    set temporary_block {
+        type ipv4_addr
+        flags timeout
+        timeout 30m
+    }
+
+    chain prerouting {
+        type nat hook prerouting priority dstnat; policy accept;
+        iifname "__OUTER_INTERFACE__" ip saddr @temporary_block drop
+        iifname "__OUTER_INTERFACE__" ip saddr @ssh_redirect tcp dport 22 \
+            dnat ip to __COWRIE_IP__:__COWRIE_PORT__
+        iifname "__OUTER_INTERFACE__" ip saddr @telnet_redirect tcp dport 23 \
+            dnat ip to __TELNET_IP__:__TELNET_PORT__
+    }
+
+    chain forward {
+        type filter hook forward priority filter; policy drop;
+        ct state invalid drop
+        ct state established,related accept
+        iifname "__OUTER_INTERFACE__" oifname "__INNER_INTERFACE__" \
+            ip daddr __COWRIE_IP__ tcp dport __COWRIE_PORT__ ct status dnat accept
+        iifname "__OUTER_INTERFACE__" oifname "__INNER_INTERFACE__" \
+            ip daddr __TELNET_IP__ tcp dport __TELNET_PORT__ ct status dnat accept
+    }
+
+    chain postrouting {
+        type nat hook postrouting priority srcnat; policy accept;
+        oifname "__INNER_INTERFACE__" ip daddr __COWRIE_IP__ \
+            tcp dport __COWRIE_PORT__ masquerade
+        oifname "__INNER_INTERFACE__" ip daddr __TELNET_IP__ \
+            tcp dport __TELNET_PORT__ masquerade
+    }
+}

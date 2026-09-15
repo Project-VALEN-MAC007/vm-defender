@@ -1,0 +1,57 @@
+{
+  "bridgeVersion": "3.6",
+  "kind": "google-docs-trusted-read",
+  "status": "complete",
+  "outputDir": "/home/yakult/Documents/Default Project/evidence/google-docs/trusted-read-20260805-02",
+  "target": {
+    "documentId": "1bSS_tgDU6w4BLzImWZq7kXSF8veEGTAAS4tIqiojRfY",
+    "title": "Untitled document",
+    "revisionId": "AIroW34tNZPA0oPi_A1buOffBU2Z-aGnlQp_cykx4FfHYhuJIUzFKWvqq4YbBOjdmIH8lIQ3lcvl_E-VGdpzL1mlfGUxms71bu0XO0ZOHJY",
+    "documentUrl": "https://docs.google.com/document/d/1bSS_tgDU6w4BLzImWZq7kXSF8veEGTAAS4tIqiojRfY",
+    "selectedTabId": null
+  },
+  "dropdownMetadata": {
+    "status": "unavailable",
+    "resolvedTool": null,
+    "authoritative": false,
+    "count": 0
+  },
+  "controlAwareness": {
+    "hasProtectedControls": false,
+    "authoritativeDropdownCount": 0,
+    "opaqueControlCount": 0,
+    "affectedParagraphCount": 0,
+    "nativeElementCounts": {},
+    "preservationRequired": false,
+    "recommendedBehavior": "No protected controls were detected in the scanned scope."
+  },
+  "warnings": [],
+  "files": {
+    "document_result": {
+      "path": "/home/yakult/Documents/Default Project/evidence/google-docs/trusted-read-20260805-02/document-result.json",
+      "bytes": 294831,
+      "sha256": "1680494282a81ea0534605a2fc4c89b784673e8e3eee9756805f875086ef342e"
+    },
+    "control_inventory": {
+      "path": "/home/yakult/Documents/Default Project/evidence/google-docs/trusted-read-20260805-02/control-inventory.json",
+      "bytes": 1022,
+      "sha256": "a8d0a003adbce681bee4b3100ce533938597bc2d20d3dc61bd025c97080d42e3"
+    },
+    "document_outline": {
+      "path": "/home/yakult/Documents/Default Project/evidence/google-docs/trusted-read-20260805-02/document-outline.json",
+      "bytes": 194504,
+      "sha256": "4f4f04ecf0b35af4efcb2d0287087aaed6550c59cf504bb005fd2ed6c938b79f"
+    },
+    "document_text": {
+      "path": "/home/yakult/Documents/Default Project/evidence/google-docs/trusted-read-20260805-02/document-text.md",
+      "bytes": 39357,
+      "sha256": "eb8e0ac1f07f4c0cc30996106d093cc0cd0c7ffd6cacaa94cac83ee776c1453e"
+    },
+    "receipt": {
+      "path": "/home/yakult/Documents/Default Project/evidence/google-docs/trusted-read-20260805-02/receipt.json",
+      "bytes": 953,
+      "sha256": "02dc464f7b29f68a7c0b395d9691601e29f83b2d6901491a3886d01ba0b2ac16"
+    }
+  },
+  "error": null
+}

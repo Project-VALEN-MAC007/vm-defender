@@ -1,0 +1,4 @@
+# Atomic map body consumed by Nginx map context.
+default real;
+# 192.0.2.20 wordpress;  # documentation-only TEST-NET address
+# 192.0.2.30 phpmyadmin; # documentation-only TEST-NET address

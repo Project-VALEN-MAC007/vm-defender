@@ -1,0 +1,6 @@
+[
+  {"name":"benign-health","expected_malicious":false,"candidate_alert":false,"detected":false,"decision_latency_ms":2.0,"redirect_latency_ms":0.0},
+  {"name":"known-http-repeat","expected_malicious":true,"candidate_alert":true,"detected":true,"decision_latency_ms":3.0,"redirect_latency_ms":4.0},
+  {"name":"known-ssh-scan","expected_malicious":true,"candidate_alert":true,"detected":true,"decision_latency_ms":3.5,"redirect_latency_ms":5.0},
+  {"name":"negative-similar-path","expected_malicious":false,"candidate_alert":false,"detected":false,"decision_latency_ms":2.5,"redirect_latency_ms":0.0}
+]

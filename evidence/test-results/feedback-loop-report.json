@@ -1,0 +1,55 @@
+{
+  "alert_count": 1,
+  "deploy": {
+    "backup": "/tmp/tmparu1eim8/backups/local.rules.20260804T195029Z.bak",
+    "deploy_performed": true,
+    "evidence": "honeypot-sample-redacted-001",
+    "reviewer": "lab-reviewer",
+    "rule_id": "http-feedback-001",
+    "status": "deployed",
+    "timestamp": "20260804T195029Z",
+    "version": "1.0.0"
+  },
+  "detected_next_attack": true,
+  "evidence": "honeypot-sample-redacted-001",
+  "expected_sid": 2200401,
+  "host_service_reloaded": false,
+  "replay_exit_code": 0,
+  "validation": {
+    "deploy_performed": false,
+    "gates": [
+      {
+        "gate": 1,
+        "name": "syntax",
+        "sid": 2200401,
+        "status": "passed"
+      },
+      {
+        "gate": 2,
+        "name": "duplicate_overlap",
+        "status": "passed"
+      },
+      {
+        "false_positive_rate": 0.0,
+        "gate": 3,
+        "name": "baseline_regression",
+        "status": "passed"
+      },
+      {
+        "detected": 2,
+        "gate": 4,
+        "name": "malicious_replay",
+        "status": "passed"
+      },
+      {
+        "gate": 5,
+        "ms_per_event": 0.22606225002164138,
+        "name": "performance_false_positive",
+        "status": "passed"
+      }
+    ],
+    "rule_id": "http-feedback-001",
+    "status": "approved",
+    "version": "1.0.0"
+  }
+}

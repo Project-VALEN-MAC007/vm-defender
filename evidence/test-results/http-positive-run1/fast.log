@@ -1,0 +1,2 @@
+08/04/2026-19:46:23.000000  [**] [1:2200001:1] AH HTTP sensitive WordPress path [**] [Classification: Web Application Attack] [Priority: 1] {TCP} 198.51.100.20:50000 -> 192.168.1.10:80
+08/04/2026-19:46:23.000000  [**] [1:2200003:1] AH HTTP scanner user agent [**] [Classification: Web Application Attack] [Priority: 1] {TCP} 198.51.100.20:50000 -> 192.168.1.10:80

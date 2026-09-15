@@ -1,0 +1,21 @@
+[11238 - Suricata-Main] 2026-08-04 19:46:23 Notice: suricata: This is Suricata version 7.0.3 RELEASE running in USER mode
+[11238 - Suricata-Main] 2026-08-04 19:46:23 Info: cpu: CPUs/cores online: 4
+[11238 - Suricata-Main] 2026-08-04 19:46:23 Info: suricata: Setting engine mode to IDS mode by default
+[11238 - Suricata-Main] 2026-08-04 19:46:23 Info: exception-policy: master exception-policy set to: auto
+[11238 - Suricata-Main] 2026-08-04 19:46:23 Info: logopenfile: fast output device (regular) initialized: fast.log
+[11238 - Suricata-Main] 2026-08-04 19:46:23 Info: logopenfile: eve-log output device (regular) initialized: eve.json
+[11238 - Suricata-Main] 2026-08-04 19:46:23 Info: logopenfile: stats output device (regular) initialized: stats.log
+[11238 - Suricata-Main] 2026-08-04 19:46:23 Info: detect: 1 rule files processed. 7 rules successfully loaded, 0 rules failed, 0
+[11238 - Suricata-Main] 2026-08-04 19:46:23 Info: threshold-config: Threshold config parsed: 0 rule(s) found
+[11238 - Suricata-Main] 2026-08-04 19:46:23 Info: detect: 7 signatures processed. 0 are IP-only rules, 0 are inspecting packet payload, 5 inspect application layer, 0 are decoder event only
+[11238 - Suricata-Main] 2026-08-04 19:46:23 Warning: detect: rule 2200202: SYN-only to port(s) 22:22 w/o direction specified, disabling for toclient direction
+[11238 - Suricata-Main] 2026-08-04 19:46:23 Info: unix-manager: unix socket '/var/run/suricata-command.socket'
+[11238 - Suricata-Main] 2026-08-04 19:46:23 Warning: unix-manager: Unix socket: UNIX socket bind(/var/run/suricata-command.socket) error: Address already in use
+[11238 - Suricata-Main] 2026-08-04 19:46:23 Warning: unix-manager: Unable to create unix command socket
+[11240 - W#01] 2026-08-04 19:46:23 Info: pcap: Starting file run for evidence/baseline/http-benign.pcap
+[11240 - W#01] 2026-08-04 19:46:23 Info: pcap: pcap file evidence/baseline/http-benign.pcap end of file reached (pcap err code 0)
+[11238 - Suricata-Main] 2026-08-04 19:46:23 Notice: threads: Threads created -> W: 1 FM: 1 FR: 1   Engine started.
+[11238 - Suricata-Main] 2026-08-04 19:46:23 Notice: suricata: Signal Received.  Stopping engine.
+[11238 - Suricata-Main] 2026-08-04 19:46:23 Info: suricata: time elapsed 0.024s
+[11240 - W#01] 2026-08-04 19:46:23 Notice: pcap: read 1 file, 4 packets, 282 bytes
+[11238 - Suricata-Main] 2026-08-04 19:46:23 Info: counters: Alerts: 0

@@ -1,0 +1,38 @@
+#!/usr/sbin/nft -f
+
+# SSH-ONLY RENDER. Replace interface tokens with observed lab NIC names before
+# syntax-checking or applying. Cowrie endpoint is 10.10.10.2:2222.
+table inet adaptive_defender {
+    set ssh_redirect {
+        type ipv4_addr
+        flags timeout
+        timeout 30m
+    }
+
+    set temporary_block {
+        type ipv4_addr
+        flags timeout
+        timeout 30m
+    }
+
+    chain prerouting {
+        type nat hook prerouting priority dstnat; policy accept;
+        iifname "__OUTER_INTERFACE__" ip saddr @temporary_block drop
+        iifname "__OUTER_INTERFACE__" ip saddr @ssh_redirect tcp dport 22 \
+            dnat ip to 10.10.10.2:2222
+    }
+
+    chain forward {
+        type filter hook forward priority filter; policy drop;
+        ct state invalid drop
+        ct state established,related accept
+        iifname "__OUTER_INTERFACE__" oifname "__INNER_INTERFACE__" \
+            ip daddr 10.10.10.2 tcp dport 2222 ct status dnat accept
+    }
+
+    chain postrouting {
+        type nat hook postrouting priority srcnat; policy accept;
+        oifname "__INNER_INTERFACE__" ip daddr 10.10.10.2 \
+            tcp dport 2222 masquerade
+    }
+}
