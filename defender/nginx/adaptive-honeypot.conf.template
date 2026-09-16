@@ -4,8 +4,8 @@ map $remote_addr $adaptive_profile {
 }
 
 map $adaptive_profile $adaptive_backend {
-    default     http://127.0.0.1:8080;
-    real        http://127.0.0.1:8080;
+    default     http://__REAL_WEB_IP__:__REAL_WEB_PORT__;
+    real        http://__REAL_WEB_IP__:__REAL_WEB_PORT__;
     wordpress   http://__WORDPRESS_IP__:__WORDPRESS_PORT__;
     phpmyadmin  http://__PHPMYADMIN_IP__:__PHPMYADMIN_PORT__;
 }
