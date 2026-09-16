@@ -54,6 +54,9 @@ sudo systemctl --no-pager --full status nginx
 | backend ใช้งานไม่ได้ | ตอบ managed `503` |
 | config ผิด | `nginx -t` ไม่ผ่านและห้าม reload |
 
+กำหนดเวลารอเชื่อมต่อ `5s` และเวลารอการตอบกลับ `30s` เพื่อรองรับ backend
+ที่อยู่หลัง overlay network โดยไม่ปล่อยให้การเชื่อมต่อค้างนานเกินไป
+
 ## ตารางเปลี่ยนเส้นทาง
 
 Decision Engine เขียน map แบบ atomic และเก็บ expiry ใน state file คู่กัน
