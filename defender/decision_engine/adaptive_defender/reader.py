@@ -3,7 +3,15 @@ from __future__ import annotations
 import json
 import os
 from pathlib import Path
+from dataclasses import dataclass
 from typing import Iterator
+
+
+@dataclass(frozen=True)
+class PendingRecord:
+    record: dict
+    inode: int
+    offset: int
 
 
 class EveReader:
@@ -26,7 +34,7 @@ class EveReader:
         temporary.write_text(json.dumps({"inode": inode, "offset": offset}) + "\n", encoding="utf-8")
         os.replace(temporary, self.checkpoint_path)
 
-    def records(self) -> Iterator[dict]:
+    def pending_records(self) -> Iterator[PendingRecord]:
         stat = self.eve_path.stat()
         checkpoint = self._checkpoint()
         offset = checkpoint["offset"]
@@ -47,5 +55,13 @@ class EveReader:
                 except json.JSONDecodeError:
                     self._save(stat.st_ino, stream.tell())
                     continue
-                self._save(stat.st_ino, stream.tell())
-                yield record
+                yield PendingRecord(record, stat.st_ino, stream.tell())
+
+    def commit(self, pending: PendingRecord) -> None:
+        self._save(pending.inode, pending.offset)
+
+    def records(self) -> Iterator[dict]:
+        """Compatibility iterator that acknowledges records after consumption."""
+        for pending in self.pending_records():
+            yield pending.record
+            self.commit(pending)

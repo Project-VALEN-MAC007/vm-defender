@@ -9,3 +9,7 @@ __pycache__/
 *.pem
 .env
 .env.*
+config/mimic.json
+config/users.json
+evidence/audit/
+evidence/rules/

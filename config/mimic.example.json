@@ -1,0 +1,38 @@
+{
+  "project_root": "..",
+  "dashboard": {
+    "host": "127.0.0.1",
+    "port": 9090,
+    "maximum_rows": 5000
+  },
+  "security": {
+    "users_file": "/etc/mimic/users.json",
+    "audit_log": "/var/log/mimic/dashboard-security.jsonl",
+    "session_ttl_seconds": 3600,
+    "secure_cookie": false,
+    "login_max_attempts": 5,
+    "login_window_seconds": 300
+  },
+  "paths": {
+    "decisions": "/var/log/adaptive-defender/decisions.jsonl",
+    "status": "/var/lib/mimic/status.json",
+    "eve_paths": [
+      "/var/log/suricata/eve.json"
+    ]
+  },
+  "network": {
+    "management_interface": "CHANGE_ME",
+    "outer_interface": "CHANGE_ME",
+    "outer_ip": "192.168.56.10",
+    "inner_interface": "CHANGE_ME",
+    "inner_ip": "10.10.10.1"
+  },
+  "rules": {
+    "active_rules": "/etc/suricata/rules/mimic.rules",
+    "baseline": "tests/fixtures/baseline.json",
+    "registry": "/var/lib/mimic/rules/registry.jsonl",
+    "backup_dir": "/var/lib/mimic/backups/rules",
+    "suricata_config": "/etc/suricata/suricata.yaml",
+    "allow_deploy": false
+  }
+}

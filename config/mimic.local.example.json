@@ -1,0 +1,40 @@
+{
+  "project_root": "..",
+  "dashboard": {
+    "host": "127.0.0.1",
+    "port": 9090,
+    "maximum_rows": 5000
+  },
+  "security": {
+    "users_file": "config/users.json",
+    "audit_log": "evidence/audit/dashboard-security.jsonl",
+    "session_ttl_seconds": 3600,
+    "secure_cookie": false,
+    "login_max_attempts": 5,
+    "login_window_seconds": 300
+  },
+  "paths": {
+    "decisions": "evidence/test-results/decisions.jsonl",
+    "status": "evidence/test-results/status.json",
+    "eve_paths": [
+      "evidence/test-results/eve.json",
+      "evidence/test-results/http-positive-run1/eve.json",
+      "evidence/test-results/http-benign-run1/eve.json"
+    ]
+  },
+  "network": {
+    "management_interface": "CHANGE_ME",
+    "outer_interface": "CHANGE_ME",
+    "outer_ip": "192.168.56.10",
+    "inner_interface": "CHANGE_ME",
+    "inner_ip": "10.10.10.1"
+  },
+  "rules": {
+    "active_rules": "defender/suricata/rules/local.rules",
+    "baseline": "tests/fixtures/baseline.json",
+    "registry": "evidence/rules/registry.jsonl",
+    "backup_dir": "backups/rules",
+    "suricata_config": "/etc/suricata/suricata.yaml",
+    "allow_deploy": false
+  }
+}

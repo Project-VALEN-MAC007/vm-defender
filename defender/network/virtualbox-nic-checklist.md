@@ -1,36 +1,67 @@
-# VM-Defender VirtualBox NIC checklist
+# รายการตรวจส่วนเชื่อมต่อเครือข่ายสำหรับ VirtualBox
 
-Observed 2026-08-05 06:44 UTC: the guest has one Ethernet controller only,
-`enp0s3` / MAC `08:00:27:97:ed:10`, attached to NAT with address
-`10.0.2.15/24` and default gateway `10.0.2.2`. Keep this adapter unchanged as
-the management/install path.
+เอกสารนี้ใช้เมื่อเครื่อง Defender ทำงานบน VirtualBox หากใช้ hypervisor อื่นให้
+รักษาหลักการเดียวกันคือ management, outer และ inner ต้องแยก network กัน
 
-The following hardware change must be made in VirtualBox Manager while this VM
-is powered off. It cannot be performed safely from inside the guest.
+## ก่อนปิดเครื่อง
 
-1. Keep Adapter 1 as NAT with cable connected.
-2. Add Adapter 2 as **Internal Network**, cable connected. Use the same network
-   name as VM-Attacker's lab adapter; proposed coordinated name:
-   `adaptive-outer`. Do not use Bridged Adapter.
-3. Add Adapter 3 as **Internal Network**, cable connected. Use the same network
-   name as VM-Honeypot's lab adapter; proposed coordinated name:
-   `adaptive-inner`. Do not use Bridged Adapter.
-4. Start Defender and run `ip -details -brief link`. Do not assume the new
-   interfaces will be named `enp0s8`/`enp0s9`.
-5. Record both new names and MAC addresses. Confirm neither owns the default
-   route.
-6. Only then assign `192.168.56.10/24` to the observed outer interface and
-   `10.10.10.1/24` to the observed inner interface. Neither lab connection gets
-   a gateway or DNS server.
-7. Confirm Adapter 1 still owns the sole default route before and after apply.
+- บันทึกผล `ip -br link`, `ip -br addr` และ `ip route`
+- ระบุ interface ที่มี default route เป็น management interface
+- ตรวจว่ามีช่องทาง local console สำหรับกู้คืน
 
-Peer requirements:
+## เพิ่มอะแดปเตอร์
 
-- VM-Attacker: `192.168.56.20/24` on `adaptive-outer` only.
-- VM-Honeypot: `10.10.10.2/24` on `adaptive-inner` only.
-- Both peers must have no Bridged connection during the experiment.
+ปิด VM ก่อนแก้ virtual hardware
 
-After the adapters exist, back up NetworkManager/Netplan, arm the timed
-rollback from `docs/root-operations.md`, create separate NetworkManager
-profiles for the two observed interface names, and run positive/negative
-isolation tests before enabling IP forwarding.
+1. คง Adapter 1 เป็น network สำหรับบริหาร เช่น NAT
+2. เพิ่ม Adapter 2 เป็น Internal Network สำหรับ outer traffic
+3. เพิ่ม Adapter 3 เป็น Internal Network สำหรับ inner traffic
+4. ห้ามเลือก Bridged Adapter สำหรับ outer/inner โดยไม่ผ่านการอนุมัติด้านความปลอดภัย
+5. เปิด cable connected ให้ adapter ที่ต้องใช้งาน
+
+ชื่อ network ตัวอย่าง:
+
+```text
+outer: mimic-outer
+inner: mimic-inner
+```
+
+## หลังเปิดเครื่อง
+
+```bash
+ip -details -brief link
+ip -brief address
+ip route show table all
+```
+
+บันทึกชื่อและ MAC address ของ interface ใหม่ ตรวจว่าไม่มี default route แล้วจึง
+กำหนด IP:
+
+```text
+outer = 192.168.56.10/24
+inner = 10.10.10.1/24
+```
+
+ห้ามกำหนด gateway หรือ DNS ให้ outer/inner
+
+## ก่อนนำโปรไฟล์เครือข่ายไปใช้
+
+1. สำรอง Netplan/NetworkManager ตาม `docs/root-operations.md`
+2. ตั้ง timed rollback
+3. เปิด local console ค้างไว้
+4. ตรวจ production config ว่าชื่อ interface ตรงกับค่าที่สังเกตจริง
+5. apply ทีละ profile
+
+## ผลที่ต้องตรวจ
+
+```bash
+ip -br addr
+ip route
+ping -c 2 192.168.56.10
+ping -c 2 10.10.10.1
+```
+
+- management connectivity ต้องยังอยู่
+- default route ต้องอยู่ที่ management interface เท่านั้น
+- outer และ inner ต้องไม่เข้าถึงกันโดยตรงหากไม่มี policy ที่อนุญาต
+- หากผลไม่ตรง ให้ปล่อย timed rollback ทำงานหรือกู้คืนผ่าน console

@@ -140,5 +140,38 @@ class EngineIntegrationTests(unittest.TestCase):
             self.assertEqual(decisions[0]["action"], "redirect_telnet")
             self.assertIn("telnet_redirect", decisions[0]["adapter_command"])
 
+    def test_failed_adapter_does_not_checkpoint_event(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory); eve = root/"eve.json"; checkpoint = root/"checkpoint"
+            eve.write_text(json.dumps(raw_event(protocol="http", severity=1)) + "\n")
+            settings = Settings(eve, checkpoint, root/"audit", root/"map", True, 1, 1800,
+                                {"monitor":15,"redirect":40,"temporary_block":80})
+            engine = DecisionEngine(settings)
+            engine.reconcile_web_redirects()
+            engine.nginx.update = lambda entries: (_ for _ in ()).throw(RuntimeError("reload failed"))
+            self.assertEqual(engine.run_once(), [])
+            self.assertFalse(checkpoint.exists())
+            engine.nginx.update = lambda entries: "ok"
+            self.assertEqual(len(engine.run_once()), 1)
+            self.assertTrue(checkpoint.exists())
+
+    def test_web_redirect_state_expires_and_survives_restart(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory); eve = root/"eve.json"; map_path = root/"redirect.map"
+            eve.write_text(json.dumps(raw_event(protocol="http", severity=1)) + "\n")
+            settings = Settings(eve, root/"checkpoint", root/"audit", map_path, False, 1, 1800,
+                                {"monitor":15,"redirect":40,"temporary_block":80})
+            engine = DecisionEngine(settings)
+            rendered = []
+            engine.nginx.update = lambda entries: rendered.append(dict(entries)) or "ok"
+            self.assertEqual(len(engine.run_once()), 1)
+            self.assertTrue(engine.web_state_path.exists())
+            restarted = DecisionEngine(settings)
+            restarted.nginx.update = lambda entries: rendered.append(dict(entries)) or "ok"
+            self.assertIn("192.0.2.20", restarted._active_web_profiles())
+            restarted.web_entries["192.0.2.20"]["expiry"] = "2000-01-01T00:00:00+00:00"
+            restarted.reconcile_web_redirects()
+            self.assertEqual(rendered[-1], {})
+
 
 if __name__ == "__main__": unittest.main()

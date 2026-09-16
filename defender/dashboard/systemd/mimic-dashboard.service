@@ -1,0 +1,30 @@
+[Unit]
+Description=MIMIC Defender Dashboard
+After=network-online.target suricata.service adaptive-defender.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=mimic-dashboard
+Group=mimic-dashboard
+SupplementaryGroups=suricata
+WorkingDirectory=/opt/mimic
+ExecStart=/usr/bin/python3 /opt/mimic/run_dashboard.py --config /etc/mimic/mimic.json
+Restart=on-failure
+RestartSec=3s
+UMask=0027
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+ReadOnlyPaths=/opt/mimic /etc/mimic /var/log/suricata /var/log/adaptive-defender
+ReadWritePaths=/var/log/mimic /var/lib/mimic
+
+[Install]
+WantedBy=multi-user.target

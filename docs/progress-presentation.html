@@ -2,378 +2,89 @@
 <html lang='th'>
 <head>
 <meta charset='utf-8'>
-<title>รายงานความก้าวหน้า — Adaptive Honeypot</title>
+<title>รายงานความก้าวหน้า MIMIC Defender</title>
 </head>
 <body style="font-family:'Sarabun','Segoe UI',Arial,sans-serif;max-width:820px;margin:0 auto;padding:28pt;color:#1a1a1a;">
-<h1 style="font-size:20pt;font-weight:700;color:#1a3a6b;margin:24pt 0 10pt;">รายงานความก้าวหน้าโปรเจค — Adaptive Honeypot (VM-Defender)</h1>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;"><strong>ผู้นำเสนอ:</strong> คนที่ 1 (VM-Defender) <strong>ขอบเขตงาน:</strong> เฟส D1–D8 <strong>วันที่รายงาน:</strong> 19 สิงหาคม 2569 <strong>เวลานำเสนอ:</strong> ประมาณ 10 นาที</p>
-<hr style='border:none;border-top:1px solid #bbb;margin:16pt 0;'>
-<h2 style="font-size:15pt;font-weight:700;color:#22508f;margin:18pt 0 8pt;">สารบัญ</h2>
+<h1 style="font-size:20pt;font-weight:700;color:#1a3a6b;margin:24pt 0 10pt;">สรุปโครงการ MIMIC Defender สำหรับนำเสนอ</h1>
+<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">เอกสารนี้สรุปสถานะจากโค้ดและผลทดสอบปัจจุบัน รายละเอียดทางเทคนิคให้อ้างอิง <code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>docs/project-status.md</code> และเอกสารของแต่ละ component</p>
+<h2 style="font-size:15pt;font-weight:700;color:#22508f;margin:18pt 0 8pt;">1. เป้าหมาย</h2>
+<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">MIMIC Defender รับ alert จาก Suricata แล้วประเมินความเสี่ยงราย source IP เพื่อเลือกการตอบสนองที่เหมาะสม ตั้งแต่เฝ้าระวัง เปลี่ยนเส้นทางไปยังบริการลวง จนถึงบล็อกชั่วคราว โดยบันทึกเหตุผลและอายุของทุก decision เพื่อให้ตรวจสอบย้อนหลังได้</p>
+<h2 style="font-size:15pt;font-weight:700;color:#22508f;margin:18pt 0 8pt;">2. ลำดับการทำงาน</h2>
+<pre style="background:#f4f6f8;border:1px solid #ccd;border-left:3px solid #22508f;padding:8pt 10pt;font-family:'Courier New',monospace;font-size:9pt;white-space:pre-wrap;margin:0 0 10pt;">ทราฟฟิก
+   |
+Suricata -&gt; eve.json
+   |
+Decision Engine
+   |-- allow / monitor
+   |-- redirect_web ------&gt; Nginx map
+   |-- redirect_ssh ------&gt; nftables set
+   |-- redirect_telnet ---&gt; nftables set
+   `-- temporary_block ---&gt; nftables set
+   |
+Dashboard และ audit logs</pre>
+<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">คะแนนความเสี่ยงรวม severity, protocol และประวัติข้าม protocol คะแนนลดลง ตามเวลา และ action ที่มีผลชั่วคราวต้องมี expiry</p>
+<h2 style="font-size:15pt;font-weight:700;color:#22508f;margin:18pt 0 8pt;">3. สิ่งที่พัฒนาแล้ว</h2>
+<h3 style="font-size:12pt;font-weight:700;color:#333;margin:12pt 0 6pt;">ระบบตรวจจับ</h3>
+<ul style='margin:0 0 10pt;padding-left:20pt;'>
+<li style="font-size:11pt;line-height:1.55;margin-bottom:3pt;">กฎ Suricata 8 รายการสำหรับ HTTP, TLS, SSH, Telnet และ SYN scan</li>
+<li style="font-size:11pt;line-height:1.55;margin-bottom:3pt;">กำหนด SID ของโครงการในช่วง <code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>2200001–2200999</code></li>
+<li style="font-size:11pt;line-height:1.55;margin-bottom:3pt;">มี positive/negative test matrix</li>
+<li style="font-size:11pt;line-height:1.55;margin-bottom:3pt;">HTTP replay แบบออฟไลน์มีหลักฐานแล้ว</li>
+</ul>
+<h3 style="font-size:12pt;font-weight:700;color:#333;margin:12pt 0 6pt;">กลไกตัดสินใจ</h3>
+<ul style='margin:0 0 10pt;padding-left:20pt;'>
+<li style="font-size:11pt;line-height:1.55;margin-bottom:3pt;">อ่าน JSONL แบบ incremental พร้อมรองรับ log rotation</li>
+<li style="font-size:11pt;line-height:1.55;margin-bottom:3pt;">checkpoint เฉพาะ event ที่ประมวลผลสำเร็จ</li>
+<li style="font-size:11pt;line-height:1.55;margin-bottom:3pt;">deduplicate event ด้วย hash</li>
+<li style="font-size:11pt;line-height:1.55;margin-bottom:3pt;">สะสมและลดคะแนนความเสี่ยงตามเวลา</li>
+<li style="font-size:11pt;line-height:1.55;margin-bottom:3pt;">retry adapter และเก็บ error audit</li>
+<li style="font-size:11pt;line-height:1.55;margin-bottom:3pt;">เก็บ web redirect state ข้าม restart และลบเมื่อหมดอายุ</li>
+</ul>
+<h3 style="font-size:12pt;font-weight:700;color:#333;margin:12pt 0 6pt;">แดชบอร์ด</h3>
+<ul style='margin:0 0 10pt;padding-left:20pt;'>
+<li style="font-size:11pt;line-height:1.55;margin-bottom:3pt;">bind เฉพาะ loopback</li>
+<li style="font-size:11pt;line-height:1.55;margin-bottom:3pt;">password hash ด้วย PBKDF2</li>
+<li style="font-size:11pt;line-height:1.55;margin-bottom:3pt;">session expiry, CSRF protection และ login rate limit</li>
+<li style="font-size:11pt;line-height:1.55;margin-bottom:3pt;">RBAC แยก <code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>master_admin</code> และ <code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>user</code> ที่ฝั่ง API</li>
+<li style="font-size:11pt;line-height:1.55;margin-bottom:3pt;">alert/decision pagination และ server-side filtering</li>
+<li style="font-size:11pt;line-height:1.55;margin-bottom:3pt;">security audit และ runtime metrics</li>
+<li style="font-size:11pt;line-height:1.55;margin-bottom:3pt;">Rule Management ใช้ validation pipeline ฝั่ง server</li>
+</ul>
+<h3 style="font-size:12pt;font-weight:700;color:#333;margin:12pt 0 6pt;">การตรวจสอบและความปลอดภัยเมื่อนำขึ้นใช้</h3>
+<ul style='margin:0 0 10pt;padding-left:20pt;'>
+<li style="font-size:11pt;line-height:1.55;margin-bottom:3pt;">ตรวจ rule 5 gates</li>
+<li style="font-size:11pt;line-height:1.55;margin-bottom:3pt;">ป้องกัน SID ซ้ำและ rule ซ้อน</li>
+<li style="font-size:11pt;line-height:1.55;margin-bottom:3pt;">backup, health check และ rollback</li>
+<li style="font-size:11pt;line-height:1.55;margin-bottom:3pt;">production preflight ตรวจ placeholder, interface และ safety settings</li>
+<li style="font-size:11pt;line-height:1.55;margin-bottom:3pt;">systemd hardening และ log rotation</li>
+</ul>
+<h2 style="font-size:15pt;font-weight:700;color:#22508f;margin:18pt 0 8pt;">4. ผลทดสอบ</h2>
 <table style='border-collapse:collapse;width:100%;margin:0 0 12pt;'>
-<tr><th style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;background:#e8eef7;font-weight:700;text-align:left;">ส่วน</th><th style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;background:#e8eef7;font-weight:700;text-align:left;">หัวข้อ</th><th style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;background:#e8eef7;font-weight:700;text-align:left;">เวลา</th></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">1</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">ภาพรวมและเป้าหมายของระบบ</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">1.5 นาที</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">2</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">สถาปัตยกรรมและการทำงาน</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">2 นาที</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">3</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">ผลงานที่ทำเสร็จจริง D1–D8</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">3 นาที</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">4</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">ผลการทดสอบและตัวเลขวัดผล</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">2 นาที</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">5</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">อุปสรรคและแผนต่อไป</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">1.5 นาที</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">—</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">ภาคผนวก: คำถามที่คาดว่าจะถูกถาม</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">สำรอง</td></tr>
+<tr><th style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;background:#e8eef7;font-weight:700;text-align:left;">รายการ</th><th style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;background:#e8eef7;font-weight:700;text-align:left;">ผล</th></tr>
+<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">Python 3.12</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">ผ่าน 31 รายการทดสอบ</td></tr>
+<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">Python 3.8</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">ผ่าน 31 รายการทดสอบ</td></tr>
+<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">API ไม่มี session</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">ตอบ <code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>401</code></td></tr>
+<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">user เรียก Rule API</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">ตอบ <code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>403</code></td></tr>
+<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">POST ไม่มี CSRF token</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">ตอบ <code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>403</code></td></tr>
+<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">login ผิดซ้ำ</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">ถูก rate limit</td></tr>
+<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">adapter ล้มเหลว</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">event ไม่สูญหายและ retry ได้</td></tr>
+<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">restart Decision Engine</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">web redirect state ยังอยู่จนหมดอายุ</td></tr>
+<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">responsive login</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">desktop/mobile ไม่มี horizontal overflow</td></tr>
 </table>
-<h2 style="font-size:15pt;font-weight:700;color:#22508f;margin:18pt 0 8pt;">1. ภาพรวมและเป้าหมายของระบบ (1.5 นาที)</h2>
-<h3 style="font-size:12pt;font-weight:700;color:#333;margin:12pt 0 6pt;">ปัญหาที่ต้องการแก้</h3>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">Honeypot แบบดั้งเดิมมีข้อจำกัดสำคัญคือ <strong>ทำงานแบบตายตัว</strong> ผู้โจมตีจะถูกส่งไป honeypot หรือไม่ถูกส่ง ตัดสินใจครั้งเดียวจบ ทำให้เกิดปัญหาสองด้าน</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ถ้าตั้งเข้มเกินไป ผู้ใช้ปกติถูกส่งไป honeypot โดยไม่จำเป็น (false positive) ถ้าตั้งหลวมเกินไป ผู้โจมตีเข้าถึงระบบจริงได้ (false negative)</p>
-<h3 style="font-size:12pt;font-weight:700;color:#333;margin:12pt 0 6pt;">แนวคิดของระบบนี้</h3>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ระบบ Adaptive Honeypot ที่พัฒนาขึ้นใช้หลักการ <strong>ให้คะแนนความเสี่ยงแบบสะสม และเปลี่ยนเส้นทางตามระดับคะแนน</strong> แทนการตัดสินครั้งเดียว</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">หลักการทำงานคือระบบจะเฝ้าดูพฤติกรรมของแต่ละ IP ต่อเนื่อง สะสมคะแนนเมื่อพบ พฤติกรรมน่าสงสัย และลดคะแนนลงเมื่อเวลาผ่านไปโดยไม่มีพฤติกรรมผิดปกติเพิ่ม เมื่อคะแนนถึงเกณฑ์จึงเปลี่ยนเส้นทางไป honeypot ที่เหมาะสมกับประเภทการโจมตี</p>
-<h3 style="font-size:12pt;font-weight:700;color:#333;margin:12pt 0 6pt;">สิ่งที่ทำให้ระบบนี้แตกต่าง</h3>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;"><strong>การเชื่อมโยงข้ามโปรโตคอล (cross-protocol correlation)</strong> คือจุดเด่นหลัก ระบบจดจำว่า IP หนึ่งเคยสแกนพอร์ตมาก่อน เมื่อ IP เดิมกลับมาเรียกเว็บ จะได้คะแนนเพิ่ม 20 คะแนนทันที เพราะพฤติกรรม &quot;สแกนแล้วเข้าเว็บ&quot; น่าสงสัย กว่าการเข้าเว็บเปล่าๆ อย่างชัดเจน</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;"><strong>การลดคะแนนตามเวลา (decay)</strong> ป้องกันการลงโทษถาวร ระบบลดคะแนน 1 คะแนน ต่อนาที ทำให้ IP ที่เคยทำผิดพลาดครั้งเดียวกลับมาใช้งานปกติได้เอง ไม่ต้องรอผู้ดูแลปลดบล็อกด้วยมือ</p>
-<hr style='border:none;border-top:1px solid #bbb;margin:16pt 0;'>
-<h2 style="font-size:15pt;font-weight:700;color:#22508f;margin:18pt 0 8pt;">2. สถาปัตยกรรมและการทำงาน (2 นาที)</h2>
-<h3 style="font-size:12pt;font-weight:700;color:#333;margin:12pt 0 6pt;">โครงสร้างเครือข่ายสามชั้น</h3>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ระบบออกแบบให้ Defender เป็นตัวกลางระหว่างผู้โจมตีและ honeypot โดย <strong>ผู้โจมตีไม่สามารถเข้าถึง honeypot ได้โดยตรง</strong></p>
-<pre style="background:#f4f6f8;border:1px solid #ccd;border-left:3px solid #22508f;padding:8pt 10pt;font-family:'Courier New',monospace;font-size:9pt;white-space:pre-wrap;margin:0 0 10pt;">┌─────────────┐         ┌──────────────────────┐         ┌──────────────┐
-│  Attacker   │         │      DEFENDER        │         │  Honeypot    │
-│    VM       │────────▶│                      │────────▶│     VM       │
-│             │  outer  │  Suricata (ตรวจจับ)  │  inner  │              │
-│192.168.56.x │ network │  Decision Engine     │ network │  10.10.10.2  │
-└─────────────┘         │  Nginx / nftables    │         │              │
-                        │                      │         │ WordPress    │
-                        │ outer: 192.168.56.10 │         │ phpMyAdmin   │
-                        │ inner: 10.10.10.1    │         │ Cowrie SSH   │
-                        └──────────────────────┘         └──────────────┘</pre>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">เหตุผลที่แยกเป็นสองเครือข่าย คือถ้าผู้โจมตีหลุดออกจาก honeypot ได้ จะไม่สามารถย้อนกลับไปโจมตีเครือข่ายของผู้โจมตีเองหรือออกอินเทอร์เน็ต เพราะเครือข่าย inner ตั้งค่าเป็น isolated ไม่มี default route</p>
-<h3 style="font-size:12pt;font-weight:700;color:#333;margin:12pt 0 6pt;">ลำดับการทำงานเมื่อมีการโจมตี</h3>
-<pre style="background:#f4f6f8;border:1px solid #ccd;border-left:3px solid #22508f;padding:8pt 10pt;font-family:'Courier New',monospace;font-size:9pt;white-space:pre-wrap;margin:0 0 10pt;">1. ผู้โจมตีส่ง request  →  เข้า Defender ทาง outer interface
-                              ↓
-2. Suricata ตรวจจับ    →  เขียน alert ลง eve.json (JSON บรรทัดต่อบรรทัด)
-                              ↓
-3. Decision Engine อ่าน  →  แปลง alert เป็น event ที่มีรูปแบบมาตรฐาน
-                              ↓
-4. คำนวณคะแนนเสี่ยง    →  บวกคะแนนตาม severity + protocol + ประวัติ
-                              ↓
-5. เทียบเกณฑ์          →  ต่ำกว่า 15 ปล่อยผ่าน / 15-40 เฝ้าดู
-                          40-80 เปลี่ยนเส้นทาง / เกิน 80 บล็อกชั่วคราว
-                              ↓
-6. สั่งการ              →  เว็บใช้ Nginx map / SSH ใช้ nftables DNAT
-                              ↓
-7. บันทึกหลักฐาน       →  decisions.jsonl + แสดงบน Dashboard</pre>
-<h3 style="font-size:12pt;font-weight:700;color:#333;margin:12pt 0 6pt;">ตารางคะแนนที่ใช้จริงในระบบ</h3>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">คะแนนพื้นฐานจากระดับความรุนแรงของ Suricata rule</p>
-<table style='border-collapse:collapse;width:100%;margin:0 0 12pt;'>
-<tr><th style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;background:#e8eef7;font-weight:700;text-align:left;">Severity</th><th style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;background:#e8eef7;font-weight:700;text-align:left;">คะแนน</th><th style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;background:#e8eef7;font-weight:700;text-align:left;">ความหมาย</th></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">1</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">+35</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">รุนแรงสูง เช่น เข้าถึง path ที่อ่อนไหว</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">2</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">+25</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">รุนแรงกลาง</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">3</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">+12</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">รุนแรงต่ำ</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">อื่นๆ</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">+8</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">ไม่ระบุ</td></tr>
-</table>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">คะแนนเพิ่มตามประเภทโปรโตคอล</p>
-<table style='border-collapse:collapse;width:100%;margin:0 0 12pt;'>
-<tr><th style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;background:#e8eef7;font-weight:700;text-align:left;">Protocol</th><th style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;background:#e8eef7;font-weight:700;text-align:left;">คะแนน</th><th style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;background:#e8eef7;font-weight:700;text-align:left;">เหตุผล</th></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">scan</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">+25</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">การสแกนคือสัญญาณเตรียมโจมตี</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">ssh</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">+10</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">ความพยายามเข้าถึงระบบโดยตรง</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">telnet</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">+10</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">เช่นเดียวกับ ssh</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">http</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">+5</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">อาจเป็นผู้ใช้ปกติได้</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">tls</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">+5</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">เช่นเดียวกับ http</td></tr>
-</table>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">คะแนนเพิ่มจากประวัติข้ามโปรโตคอล (จุดเด่นของระบบ)</p>
-<table style='border-collapse:collapse;width:100%;margin:0 0 12pt;'>
-<tr><th style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;background:#e8eef7;font-weight:700;text-align:left;">เงื่อนไข</th><th style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;background:#e8eef7;font-weight:700;text-align:left;">คะแนน</th></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">เคยสแกนภายใน 30 นาที แล้วมาเรียก http/tls</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">+20</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">เคยพยายาม ssh ภายใน 30 นาที แล้วมาเรียก http/tls</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">+10</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">เคยพยายาม telnet ภายใน 30 นาที แล้วมาเรียก http/tls</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">+10</td></tr>
-</table>
-<h3 style="font-size:12pt;font-weight:700;color:#333;margin:12pt 0 6pt;">เกณฑ์การตัดสินใจ</h3>
-<table style='border-collapse:collapse;width:100%;margin:0 0 12pt;'>
-<tr><th style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;background:#e8eef7;font-weight:700;text-align:left;">คะแนนสะสม</th><th style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;background:#e8eef7;font-weight:700;text-align:left;">การกระทำ</th><th style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;background:#e8eef7;font-weight:700;text-align:left;">กลไกที่ใช้</th></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">0–14</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">ปล่อยผ่าน</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">ไม่ดำเนินการ</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">15–39</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">เฝ้าติดตาม</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">บันทึก log เท่านั้น</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">40–79</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">เปลี่ยนเส้นทางไป honeypot</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">Nginx map / nftables DNAT</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">80–100</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">บล็อกชั่วคราว</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">nftables drop set</td></tr>
-</table>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ค่าเหล่านี้กำหนดใน <code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>defender/decision_engine/config/lab.json</code> แก้ไขได้ โดยไม่ต้องแก้โค้ด</p>
-<h3 style="font-size:12pt;font-weight:700;color:#333;margin:12pt 0 6pt;">ตัวอย่างการคำนวณจริงจากระบบ</h3>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">จาก <code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>evidence/test-results/decisions.jsonl</code> ที่ระบบบันทึกไว้จริง</p>
-<pre style="background:#f4f6f8;border:1px solid #ccd;border-left:3px solid #22508f;padding:8pt 10pt;font-family:'Courier New',monospace;font-size:9pt;white-space:pre-wrap;margin:0 0 10pt;">กรณีที่ 1 — เว็บ
-IP 192.0.2.20 ถูกตรวจจับด้วย SID 2200001 (WordPress path ที่อ่อนไหว)
-  severity 1        →  +35
-  protocol http     →  +5
-  รวม                  40 คะแนน  →  ถึงเกณฑ์ 40  →  เปลี่ยนเส้นทาง
-  ผลลัพธ์: ส่งไป profile &quot;wordpress&quot; หมดอายุใน 30 นาที
-
-กรณีที่ 2 — SSH
-IP 192.0.2.30 ถูกตรวจจับด้วย SID 2200202 (SSH brute force)
-  severity 1        →  +35
-  protocol ssh      →  +10
-  รวม                  45 คะแนน  →  เกินเกณฑ์ 40  →  เปลี่ยนเส้นทาง
-  ผลลัพธ์: ส่งไป profile &quot;cowrie&quot; ด้วยคำสั่ง nftables</pre>
-<hr style='border:none;border-top:1px solid #bbb;margin:16pt 0;'>
-<h2 style="font-size:15pt;font-weight:700;color:#22508f;margin:18pt 0 8pt;">3. ผลงานที่ทำเสร็จจริง D1–D8 (3 นาที)</h2>
-<h3 style="font-size:12pt;font-weight:700;color:#333;margin:12pt 0 6pt;">ตารางสรุปสถานะทุกเฟส</h3>
-<table style='border-collapse:collapse;width:100%;margin:0 0 12pt;'>
-<tr><th style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;background:#e8eef7;font-weight:700;text-align:left;">เฟส</th><th style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;background:#e8eef7;font-weight:700;text-align:left;">ชื่องาน</th><th style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;background:#e8eef7;font-weight:700;text-align:left;">สถานะ</th><th style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;background:#e8eef7;font-weight:700;text-align:left;">หลักฐานที่มี</th></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">D1</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">เครือข่ายและ VM</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">🔴 ติดขัด</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">รายงานตรวจสอบระบบ ยังไม่มี NIC</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">D2</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">ติดตั้ง Suricata</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">🟡 กำลังทำ</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">ทดสอบผ่าน แต่ยังไม่เปิดใช้บน host</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">D3</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">เขียน detection rules</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">🟡 กำลังทำ</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">8 rules ทดสอบผ่าน 2 rules</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">D4</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">Nginx reverse proxy</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">🔴 ติดขัด</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">template ครบ ยังไม่ได้ติดตั้ง Nginx</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">D5</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">SSH redirect</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">🔴 ติดขัด</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">template ครบ ต้องรอ sudo</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">D6</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">Decision Engine</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">🟢 ทำงานได้</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">ทดสอบผ่าน 17/17</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">D7</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">Dashboard</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">🟢 ทำงานได้</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">รันได้จริง มีข้อมูลจริง</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">D8</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">Validation pipeline</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">🟢 ทำงานได้</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">ครบ 5 ประตูตรวจสอบ</td></tr>
-</table>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;"><strong>สรุปตัวเลข:</strong> ส่วนที่เป็นซอฟต์แวร์เสร็จและทดสอบได้ 3 เฟส ส่วนที่เขียนโค้ดเสร็จแต่รอ infrastructure 5 เฟส</p>
-<h3 style="font-size:12pt;font-weight:700;color:#333;margin:12pt 0 6pt;">D2 และ D3 — ระบบตรวจจับ</h3>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">เขียน detection rules ทั้งหมด <strong>8 rules</strong> ใช้ช่วง SID 2200001–2200999 ซึ่งเป็นช่วงที่สงวนไว้สำหรับ rule ที่เขียนเอง ไม่ทับกับ rule มาตรฐาน</p>
-<table style='border-collapse:collapse;width:100%;margin:0 0 12pt;'>
-<tr><th style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;background:#e8eef7;font-weight:700;text-align:left;">SID</th><th style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;background:#e8eef7;font-weight:700;text-align:left;">ตรวจจับอะไร</th><th style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;background:#e8eef7;font-weight:700;text-align:left;">สถานะทดสอบ</th></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">2200001</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">เข้าถึง WordPress path ที่อ่อนไหว</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">✅ ผ่าน มี alert จริง</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">2200002</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">HTTP path ที่น่าสงสัยอื่นๆ</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">⚪ ผ่านแค่ syntax</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">2200003</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">User-Agent ของเครื่องมือสแกน</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">✅ ผ่าน มี alert จริง</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">2200101</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">ข้อมูล TLS ที่น่าสงสัย</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">⚪ ผ่านแค่ syntax</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">2200201</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">SSH เวอร์ชันที่น่าสงสัย</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">⚪ ผ่านแค่ syntax</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">2200202</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">SSH ลองรหัสผ่านซ้ำๆ</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">⚪ ผ่านแค่ syntax</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">2200203</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">SSH พฤติกรรมผิดปกติ</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">⚪ ผ่านแค่ syntax</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">2200301</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">การสแกนพอร์ต</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">⚪ ผ่านแค่ syntax</td></tr>
-</table>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;"><strong>ผลทดสอบที่ยืนยันได้จริง</strong> จากการ replay PCAP ที่สร้างขึ้น</p>
-<pre style="background:#f4f6f8;border:1px solid #ccd;border-left:3px solid #22508f;padding:8pt 10pt;font-family:'Courier New',monospace;font-size:9pt;white-space:pre-wrap;margin:0 0 10pt;">ทดสอบ positive (ควรตรวจจับได้):
-  ไฟล์: evidence/baseline/http-positive.pcap
-  ผลลัพธ์: ตรวจจับได้ 2 alerts
-    - SID 2200001 severity 1 จาก 198.51.100.20 เรียก /wp-admin/
-    - SID 2200003 severity 1 ตรวจพบ User-Agent &quot;sqlmap-lab&quot;
-  exit code: 0
-
-ทดสอบ negative (ไม่ควรตรวจจับ):
-  ไฟล์: evidence/baseline/http-benign.pcap
-  เนื้อหา: เรียก /health ด้วย User-Agent &quot;curl/8.0&quot;
-  ผลลัพธ์: ไม่มี alert ถูกต้องตามที่ควรเป็น
-  exit code: 0</pre>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">การทดสอบ negative มีความสำคัญเท่ากับ positive เพราะพิสูจน์ว่า rule ไม่ตรวจจับผิดพลาดกับการใช้งานปกติ</p>
-<h3 style="font-size:12pt;font-weight:700;color:#333;margin:12pt 0 6pt;">D6 — Decision Engine (ส่วนที่สมบูรณ์ที่สุด)</h3>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">โครงสร้างโค้ดแบ่งเป็น 8 โมดูล แต่ละโมดูลรับผิดชอบงานเดียว</p>
-<table style='border-collapse:collapse;width:100%;margin:0 0 12pt;'>
-<tr><th style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;background:#e8eef7;font-weight:700;text-align:left;">ไฟล์</th><th style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;background:#e8eef7;font-weight:700;text-align:left;">หน้าที่</th></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;"><code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>reader.py</code></td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">อ่าน eve.json ต่อเนื่อง จัดการ log rotation</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;"><code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>models.py</code></td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">โครงสร้างข้อมูล Event และ Decision</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;"><code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>risk.py</code></td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">คำนวณคะแนนเสี่ยง จัดการ decay และประวัติ</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;"><code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>engine.py</code></td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">ตรรกะหลัก ประสานงานทุกส่วน</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;"><code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>adapters.py</code></td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">สั่ง Nginx และ nftables</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;"><code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>config.py</code></td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">โหลดและตรวจสอบค่าตั้งต้น</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;"><code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>cli.py</code></td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">จุดเริ่มโปรแกรม รองรับ dry-run</td></tr>
-</table>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;"><strong>ความสามารถที่ทดสอบแล้วว่าทำงานถูกต้อง</strong></p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">การอ่าน log แบบต่อเนื่องใช้ระบบ checkpoint บันทึก inode และตำแหน่ง byte ทำให้เมื่อโปรแกรมหยุดแล้วเริ่มใหม่ จะอ่านต่อจากจุดเดิมไม่ซ้ำและไม่ข้าม และรับมือกับการที่ Suricata หมุนไฟล์ log ได้โดยตรวจจับจาก inode ที่เปลี่ยน</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">การป้องกันการนับซ้ำใช้ SHA-256 hash ของเนื้อหา event เป็นตัวระบุ ถ้า event เดิมถูกอ่านซ้ำ ระบบจะข้ามไปโดยไม่บวกคะแนนเพิ่ม</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">การเขียนไฟล์ config ของ Nginx ใช้วิธี atomic write คือเขียนลงไฟล์ชั่วคราว ก่อน แล้วใช้ <code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>rename</code> ซึ่งเป็น operation ที่ระบบไฟล์รับประกันว่าเสร็จหรือ ไม่เสร็จเท่านั้น ไม่มีสถานะกลาง ป้องกัน Nginx อ่านไฟล์ที่เขียนไม่เสร็จ</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">การกู้คืนเมื่อผิดพลาด ถ้า <code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>nginx -t</code> ตรวจว่า config ใหม่ผิด ระบบจะคืนไฟล์ เดิมกลับทันทีและไม่ reload มีเทสต์ยืนยันว่าเนื้อหาไฟล์กลับเป็นค่าเดิม แบบตรงตัวอักษร</p>
-<h3 style="font-size:12pt;font-weight:700;color:#333;margin:12pt 0 6pt;">D7 — Dashboard (ปรับปรุงล่าสุด)</h3>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">Dashboard แสดงข้อมูลสองส่วนคือ Suricata alerts และ Decision Engine logs ผูกกับ 127.0.0.1 เท่านั้น มีการตรวจสอบในโค้ดที่ปฏิเสธการผูกกับ IP อื่น</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;"><strong>สิ่งที่แก้ไขในรอบล่าสุด</strong> เดิม tab แสดง alerts สร้างข้อมูลขึ้นเองจาก decisions ซึ่งไม่ถูกต้องเพราะไม่ใช่ alert จริง ได้แก้ให้อ่านจาก eve.json โดยตรง parse เฉพาะ event ที่มี <code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>event_type</code> เป็น <code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>alert</code> และดึงค่า signature, category, severity, IP, port จาก event จริงเท่านั้น</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ถ้าไฟล์ไม่มีหรืออ่านไม่ได้ ระบบจะข้ามไปเงียบๆ ไม่สร้างข้อมูลปลอมมาแทน</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">API endpoints ที่มี</p>
-<table style='border-collapse:collapse;width:100%;margin:0 0 12pt;'>
-<tr><th style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;background:#e8eef7;font-weight:700;text-align:left;">Endpoint</th><th style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;background:#e8eef7;font-weight:700;text-align:left;">ผลลัพธ์</th></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;"><code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>/api/alerts.json</code></td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">Suricata alerts จาก eve.json</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;"><code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>/api/alerts.csv</code></td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">ดาวน์โหลด alerts เป็นไฟล์ CSV</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;"><code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>/api/decisions.json</code></td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">การตัดสินใจของ engine</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;"><code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>/api/decisions.csv</code></td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">ดาวน์โหลด decisions เป็นไฟล์ CSV</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;"><code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>/api/summary.json</code></td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">สรุปจำนวนแยกตามประเภท</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;"><code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>/api/status.json</code></td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">สถานะ service ต่างๆ</td></tr>
-</table>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">การ export ส่ง HTTP header <code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>Content-Disposition: attachment</code> ทำให้ เบราว์เซอร์ดาวน์โหลดเป็นไฟล์แทนการแสดงเป็นข้อความ ยืนยันด้วย <code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>curl -OJ</code> ว่าไฟล์ถูกเขียนลงดิสก์จริง</p>
-<h3 style="font-size:12pt;font-weight:700;color:#333;margin:12pt 0 6pt;">D8 — ระบบตรวจสอบก่อนนำ rule ใหม่เข้าใช้</h3>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ออกแบบให้ rule ใหม่ที่ได้จากการวิเคราะห์ honeypot ต้องผ่าน <strong>5 ประตู ตรวจสอบ</strong> ก่อนถูกนำเข้าระบบจริง</p>
-<table style='border-collapse:collapse;width:100%;margin:0 0 12pt;'>
-<tr><th style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;background:#e8eef7;font-weight:700;text-align:left;">ประตู</th><th style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;background:#e8eef7;font-weight:700;text-align:left;">ตรวจอะไร</th><th style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;background:#e8eef7;font-weight:700;text-align:left;">ผลการทดสอบ</th></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">1</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">syntax ถูกต้อง Suricata อ่านได้</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">✅ ผ่าน</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">2</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">SID ไม่ซ้ำและไม่ทับซ้อน rule เดิม</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">✅ ผ่าน</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">3</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">ไม่ทำให้ false positive เพิ่ม</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">✅ ผ่าน FPR = 0.0</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">4</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">ตรวจจับการโจมตีที่ควรตรวจจับได้</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">✅ ผ่าน พบ 2 รายการ</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">5</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">ประสิทธิภาพไม่ตกต่ำกว่าเกณฑ์</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">✅ ผ่าน</td></tr>
-</table>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;"><strong>ผลการทดสอบวงจรครบรอบ</strong> จาก <code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>evidence/test-results/feedback-loop-report.json</code></p>
-<pre style="background:#f4f6f8;border:1px solid #ccd;border-left:3px solid #22508f;padding:8pt 10pt;font-family:'Courier New',monospace;font-size:9pt;white-space:pre-wrap;margin:0 0 10pt;">{
-  &quot;expected_sid&quot;: 2200401,
-  &quot;alert_count&quot;: 1,
-  &quot;detected_next_attack&quot;: true,
-  &quot;replay_exit_code&quot;: 0,
-  &quot;host_service_reloaded&quot;: false,
-  &quot;deploy&quot;: { &quot;status&quot;: &quot;deployed&quot;, &quot;reviewer&quot;: &quot;lab-reviewer&quot; }
-}</pre>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ลำดับที่ทดสอบคือ นำหลักฐานจาก honeypot ที่ปิดข้อมูลอ่อนไหวแล้ว มาสร้าง rule ใหม่ SID 2200401 ผ่านการตรวจ 5 ประตู นำเข้าใช้แบบชั่วคราว แล้ว replay การโจมตีรูปแบบเดิมอีกครั้ง ระบบตรวจจับได้ ยืนยันว่าวงจรการเรียนรู้ ทำงานครบรอบ</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ค่า <code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>host_service_reloaded: false</code> แสดงว่าไม่ได้แตะ service จริงบนเครื่อง เป็นการทดสอบในพื้นที่แยกทั้งหมด</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;"><strong>การทดสอบการกู้คืน</strong> ทดสอบกรณี health check ล้มเหลวหลัง deploy ระบบเปลี่ยนสถานะเป็น <code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>rolled_back</code> และคืนไฟล์ rule เดิมกลับ ตรวจสอบแล้ว ว่าเนื้อหาตรงกับค่าเดิมแบบตรงตัวอักษร</p>
-<hr style='border:none;border-top:1px solid #bbb;margin:16pt 0;'>
-<h2 style="font-size:15pt;font-weight:700;color:#22508f;margin:18pt 0 8pt;">4. ผลการทดสอบและตัวเลขวัดผล (2 นาที)</h2>
-<h3 style="font-size:12pt;font-weight:700;color:#333;margin:12pt 0 6pt;">ผลการทดสอบชุดโปรแกรม</h3>
-<pre style="background:#f4f6f8;border:1px solid #ccd;border-left:3px solid #22508f;padding:8pt 10pt;font-family:'Courier New',monospace;font-size:9pt;white-space:pre-wrap;margin:0 0 10pt;">$ python3 -m unittest discover -s tests
-.................
-----------------------------------------------------------------------
-Ran 17 tests in 0.042s
-
-OK</pre>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ผ่านทั้ง 17 รายการ ครอบคลุมทั้งกรณีที่ควรทำงานได้ กรณีที่ควรปฏิเสธ และกรณีที่ต้องกู้คืนสถานะเดิม</p>
-<h3 style="font-size:12pt;font-weight:700;color:#333;margin:12pt 0 6pt;">ตัวเลขประสิทธิภาพที่วัดได้</h3>
-<table style='border-collapse:collapse;width:100%;margin:0 0 12pt;'>
-<tr><th style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;background:#e8eef7;font-weight:700;text-align:left;">ตัววัด</th><th style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;background:#e8eef7;font-weight:700;text-align:left;">ค่าที่วัดได้</th><th style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;background:#e8eef7;font-weight:700;text-align:left;">หมายเหตุสำคัญ</th></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">ความแม่นยำการตรวจจับ</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">1.0</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">จากชุดข้อมูลสังเคราะห์ 4 รายการเท่านั้น</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">อัตราแจ้งเตือนผิดพลาด</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">0.0</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">จากชุดข้อมูลเดียวกัน</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">เวลาประมวลผลต่อ event</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">0.226 มิลลิวินาที</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">จาก feedback loop run</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">เวลารันชุดทดสอบ</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">0.14 วินาที</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">ทั้ง 17 รายการ</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">หน่วยความจำสูงสุด</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">23,932 KiB (~23 MB)</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">ระหว่างรันทดสอบ</td></tr>
-</table>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;"><strong>ข้อจำกัดที่ต้องระบุให้ชัดเจน</strong> ค่าความแม่นยำ 1.0 และ FPR 0.0 มาจาก ชุดข้อมูลสังเคราะห์เพียง 4 รายการ <strong>ยังไม่ใช่ค่าที่ใช้อ้างอิงได้จริง</strong> ต้องทดสอบกับ traffic จริงบนเครือข่ายแล็บที่ได้รับอนุญาตก่อนจึงจะสรุปได้</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ค่า 0.226 มิลลิวินาทีต่อ event หมายความว่าทางทฤษฎีระบบรองรับได้ประมาณ 4,400 events ต่อวินาที ซึ่งเกินพอสำหรับสภาพแวดล้อมแล็บ</p>
-<h3 style="font-size:12pt;font-weight:700;color:#333;margin:12pt 0 6pt;">หลักฐานที่เก็บไว้</h3>
-<table style='border-collapse:collapse;width:100%;margin:0 0 12pt;'>
-<tr><th style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;background:#e8eef7;font-weight:700;text-align:left;">ไฟล์</th><th style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;background:#e8eef7;font-weight:700;text-align:left;">เนื้อหา</th></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;"><code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>evidence/baseline/http-positive.pcap</code></td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">traffic โจมตีสำหรับทดสอบ</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;"><code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>evidence/baseline/http-benign.pcap</code></td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">traffic ปกติสำหรับทดสอบ</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;"><code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>evidence/baseline/http-feedback.pcap</code></td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">traffic ทดสอบ rule ใหม่</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;"><code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>evidence/test-results/http-positive-run1/eve.json</code></td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">alert ที่ตรวจจับได้</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;"><code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>evidence/test-results/http-benign-run1/eve.json</code></td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">ยืนยันว่าไม่มี alert</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;"><code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>evidence/test-results/decisions.jsonl</code></td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">การตัดสินใจของ engine</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;"><code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>evidence/test-results/feedback-loop-report.json</code></td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">รายงานวงจรครบรอบ</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;"><code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>backups/baseline-20260804T1932Z/</code></td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">สำเนาค่าตั้งต้นก่อนแก้ไข</td></tr>
-</table>
-<h3 style="font-size:12pt;font-weight:700;color:#333;margin:12pt 0 6pt;">หลักการรายงานผลที่ใช้</h3>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">โปรเจคนี้ใช้กฎว่า <strong>ไม่ใช้คำว่า PASSED กับการทดสอบที่ยังไม่ได้รัน</strong> สถานะที่เป็นไปได้มีสามแบบ</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;"><code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>PASSED</code> หมายถึงรันแล้วและมีหลักฐานยืนยัน <code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>NOT_RUN</code> หมายถึงยังไม่ได้รัน พร้อมระบุเหตุผลว่าติดขัดอะไร <code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>BLOCKED</code> หมายถึงติดขัดด้วยเงื่อนไขภายนอกที่ควบคุมไม่ได้</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">เหตุผลที่ใช้หลักการนี้เพราะรายงานที่บอกว่าผ่านทั้งที่ยังไม่ได้ทดสอบ จะทำให้ตัดสินใจผิดพลาดในขั้นตอนต่อไป และเป็นความเสี่ยงด้านความปลอดภัย ถ้านำระบบที่ยังไม่ได้ทดสอบจริงไปใช้งาน</p>
-<hr style='border:none;border-top:1px solid #bbb;margin:16pt 0;'>
-<h2 style="font-size:15pt;font-weight:700;color:#22508f;margin:18pt 0 8pt;">5. อุปสรรคและแผนต่อไป (1.5 นาที)</h2>
-<h3 style="font-size:12pt;font-weight:700;color:#333;margin:12pt 0 6pt;">อุปสรรคที่ 1 — ขาด network interface</h3>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">VM ปัจจุบันมี network interface เพียงตัวเดียวคือ <code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>enp0s3</code> ซึ่งเป็น VirtualBox NAT ถือ IP <code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>10.0.2.15/24</code> และเป็นเส้นทางเดียวที่ออกเน็ตได้</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ระบบต้องการเพิ่มอีก 2 interface สำหรับเครือข่าย outer และ inner</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;"><strong>สิ่งที่ตัดสินใจไม่ทำและเหตุผล</strong> ทางเลือกที่ง่ายคือกำหนด IP <code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>192.168.56.10</code> และ <code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>10.10.10.1</code> ลงบน <code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>enp0s3</code> ที่มีอยู่ แต่<strong>เลือกไม่ทำ</strong> เพราะจะทำให้เครือข่ายจัดการ เครือข่ายผู้โจมตี และเครือข่าย honeypot รวมอยู่ที่เดียวกัน ซึ่งทำลายหลักการแยกส่วนที่เป็นหัวใจของระบบ</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ถ้าผู้โจมตีหลุดจาก honeypot จะเข้าถึงเครือข่ายจัดการและออกอินเทอร์เน็ตได้ เท่ากับสร้างช่องโหว่จริงขึ้นมาเอง จึงบันทึกเป็น BLOCKED และรอแก้ที่ต้นเหตุ</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;"><strong>วิธีแก้</strong> ปิด VM เพิ่ม Internal Network adapter 2 ตัวใน VirtualBox Manager แล้วเปิดเครื่องใหม่ ตรวจชื่อ interface จริงก่อนกำหนด IP ขั้นตอนละเอียดอยู่ใน <code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>defender/network/virtualbox-nic-checklist.md</code></p>
-<h3 style="font-size:12pt;font-weight:700;color:#333;margin:12pt 0 6pt;">อุปสรรคที่ 2 — ไม่มีสิทธิ์ sudo</h3>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ผู้ใช้ <code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>yakult</code> อยู่ในกลุ่ม <code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>sudo</code> แต่คำสั่ง <code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>sudo -n true</code> แจ้งว่า ต้องใส่รหัสผ่าน ซึ่งยังไม่ได้รับ</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">งานที่ทำไม่ได้เพราะเหตุนี้คือ ติดตั้ง Nginx, Git และ conntrack ตรวจสอบและแก้ไข nftables ruleset กำหนด IP ให้ interface เปิด IP forwarding รีสตาร์ท Suricata และอ่าน <code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>/var/log/suricata/eve.json</code></p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">คำสั่งทั้งหมดที่ต้องใช้ sudo รวบรวมไว้ใน <code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>docs/root-operations.md</code> แล้ว พร้อมขั้นตอนกู้คืนกรณีผิดพลาด เพื่อให้เจ้าของเครื่องตรวจสอบก่อนรัน</p>
-<h3 style="font-size:12pt;font-weight:700;color:#333;margin:12pt 0 6pt;">อุปสรรคที่ 3 — รอข้อมูลจากคนที่ 2</h3>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ระบบต้องรู้ค่าจริงของ honeypot จึงจะเชื่อมต่อได้ ค่าที่ยังไม่ได้รับคือ</p>
-<table style='border-collapse:collapse;width:100%;margin:0 0 12pt;'>
-<tr><th style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;background:#e8eef7;font-weight:700;text-align:left;">ข้อมูล</th><th style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;background:#e8eef7;font-weight:700;text-align:left;">ใช้ทำอะไร</th></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">IP และ interface ของ honeypot</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">กำหนดเส้นทาง</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">port และ health path ของ WordPress</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">ตรวจสุขภาพ backend</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">port และ health path ของ phpMyAdmin</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">ตรวจสุขภาพ backend</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">port และ log path ของ Cowrie</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">ตรวจสุขภาพและอ่าน log</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">return route</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">ให้ traffic กลับได้</td></tr>
-</table>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ข้อกำหนดรูปแบบข้อมูลเขียนไว้ใน <code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>docs/person2-contract.md</code> เป็น JSON schema เพื่อให้ส่งข้อมูลมาในรูปแบบที่ระบบใช้ได้ทันที ระบบตั้งค่าตั้งต้นไว้ว่า <strong>ไม่ถือว่า endpoint ใดพร้อมใช้งานจนกว่าจะได้รับค่าจริงและตรวจสอบแล้ว</strong></p>
-<h3 style="font-size:12pt;font-weight:700;color:#333;margin:12pt 0 6pt;">แผนงานเมื่ออุปสรรคถูกแก้</h3>
-<table style='border-collapse:collapse;width:100%;margin:0 0 12pt;'>
-<tr><th style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;background:#e8eef7;font-weight:700;text-align:left;">ลำดับ</th><th style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;background:#e8eef7;font-weight:700;text-align:left;">งาน</th><th style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;background:#e8eef7;font-weight:700;text-align:left;">เงื่อนไขที่ต้องมีก่อน</th></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">1</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">เพิ่ม NIC และกำหนด IP</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">เข้าถึง VirtualBox Manager</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">2</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">ทดสอบการแยกเครือข่าย</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">NIC พร้อม</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">3</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">ติดตั้ง Nginx และ render config</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">sudo + ค่าจากคนที่ 2</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">4</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">เปิดใช้ nftables SSH redirect</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">sudo + Cowrie พร้อม</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">5</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">ติดตั้ง Decision Engine เป็น service</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">sudo</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">6</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">ทดสอบ end-to-end ด้วย traffic จริง</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">ทุกข้อข้างบน</td></tr>
-<tr><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">7</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">เก็บ baseline จาก traffic จริง</td><td style="border:1px solid #999;padding:5pt 8pt;font-size:10pt;vertical-align:top;">ระบบทำงานครบ</td></tr>
-</table>
-<h3 style="font-size:12pt;font-weight:700;color:#333;margin:12pt 0 6pt;">ประเมินความคืบหน้า</h3>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ส่วนที่เป็นซอฟต์แวร์ซึ่งควบคุมได้เอง <strong>เสร็จและทดสอบแล้วประมาณ 85%</strong> ส่วนที่เหลือขึ้นกับ infrastructure และข้อมูลจากทีม ไม่ใช่ตัวโค้ด</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">งานที่เตรียมไว้พร้อมใช้ทันทีเมื่ออุปสรรคถูกแก้คือ template ทุกไฟล์ ขั้นตอนกู้คืน checklist และชุดทดสอบ ทำให้เมื่อได้ sudo และ NIC แล้ว สามารถดำเนินการต่อได้เลยโดยไม่ต้องเขียนโค้ดใหม่</p>
-<hr style='border:none;border-top:1px solid #bbb;margin:16pt 0;'>
-<h1 style="font-size:20pt;font-weight:700;color:#1a3a6b;margin:24pt 0 10pt;">ภาคผนวก — คำถามที่คาดว่าจะถูกถามและคำตอบ</h1>
-<h2 style="font-size:15pt;font-weight:700;color:#22508f;margin:18pt 0 8pt;">หมวดที่ 1 — คำถามเรื่องความคืบหน้า</h2>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;"><strong>ถาม: ทำไมหลายเฟสยังไม่เสร็จ</strong></p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ตอบ: งานส่วนซอฟต์แวร์เสร็จหมดแล้วครับ ที่ยังไม่เสร็จคือส่วนที่ต้องติดตั้ง บนเครื่องจริง ซึ่งติดขัดสองเรื่องที่อยู่นอกเหนือการควบคุม คือ VM ยังไม่มี network interface ที่ต้องการ และยังไม่ได้รับรหัส sudo</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ถ้าเทียบเป็นสัดส่วน โค้ดและการทดสอบเสร็จประมาณ 85% ส่วนที่เหลือคือ การนำไปติดตั้งซึ่งใช้เวลาไม่นานเมื่ออุปสรรคถูกแก้ เพราะเตรียม template และขั้นตอนไว้ครบแล้ว</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;"><strong>ถาม: ทำไมไม่กำหนด IP ที่ต้องการลงบน interface ที่มีอยู่ไปเลย</strong></p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ตอบ: ทำได้ทางเทคนิคครับ แต่จะทำลายหลักการแยกเครือข่ายที่เป็นหัวใจของระบบ</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ถ้ารวมทุกเครือข่ายไว้ที่ interface เดียว เครือข่ายจัดการ เครือข่าย ผู้โจมตี และเครือข่าย honeypot จะอยู่ที่เดียวกัน กรณีที่ผู้โจมตีหลุดจาก honeypot ได้ จะเข้าถึงเครือข่ายจัดการและออกอินเทอร์เน็ตได้ทันที เท่ากับสร้างช่องโหว่จริงขึ้นมาเอง</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">จึงเลือกบันทึกเป็น BLOCKED และรอแก้ที่ต้นเหตุ ซึ่งใช้เวลาเพียงไม่กี่นาที คือปิด VM แล้วเพิ่ม adapter</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;"><strong>ถาม: 85% วัดจากอะไร</strong></p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ตอบ: วัดจากจำนวนโมดูลที่เขียนเสร็จและมีเทสต์ครอบคลุม เทียบกับที่วางแผนไว้ ทั้งหมด ไม่ได้วัดจากเวลาที่ใช้ครับ</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ส่วนที่ยังไม่ครบคือการทดสอบกับ traffic จริง ซึ่งต้องรอ infrastructure</p>
-<h2 style="font-size:15pt;font-weight:700;color:#22508f;margin:18pt 0 8pt;">หมวดที่ 2 — คำถามเรื่องเทคนิค</h2>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;"><strong>ถาม: ทำไมเลือกให้คะแนนแบบสะสม ไม่ตัดสินทีเดียว</strong></p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ตอบ: เพราะการโจมตีจริงมักไม่เกิดจากเหตุการณ์เดียวครับ</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ผู้โจมตีทั่วไปจะสแกนหาช่องโหว่ก่อน แล้วจึงเจาะเข้าไป ถ้าตัดสินแค่ เหตุการณ์เดียว จะแยกไม่ออกระหว่างผู้ใช้ที่พิมพ์ URL ผิดกับผู้โจมตีที่ สแกนมาก่อนแล้วลองเข้า path ที่อ่อนไหว</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ระบบคะแนนสะสมทำให้ IP ที่มีประวัติน่าสงสัยถึงเกณฑ์เร็วกว่า IP ที่เพิ่ง เข้ามาครั้งแรก และการลดคะแนนตามเวลาทำให้ผู้ใช้ที่ผิดพลาดครั้งเดียว กลับมาใช้งานปกติได้เองโดยไม่ต้องรอปลดบล็อก</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;"><strong>ถาม: ทำไมเลือกเกณฑ์ 40 คะแนนสำหรับ redirect</strong></p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ตอบ: มาจากการคำนวณย้อนกลับจากพฤติกรรมที่ต้องการให้ระบบตอบสนองครับ</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">เหตุการณ์ severity 1 บน HTTP ได้ 35 + 5 = 40 คะแนน ซึ่งควรถูก redirect เพราะ severity 1 หมายถึงพฤติกรรมที่ชัดเจนว่าเป็นการโจมตี</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ส่วนเหตุการณ์ severity 3 บน HTTP ได้ 12 + 5 = 17 คะแนน อยู่ในช่วงเฝ้าดู ไม่ถึงขั้น redirect เพราะอาจเป็นผู้ใช้ปกติ</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ค่านี้ตั้งใน config file แก้ได้โดยไม่ต้องแก้โค้ด และควรปรับหลังจากได้ ข้อมูลจริงจากการทดสอบกับ traffic บนเครือข่ายแล็บแล้ว</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;"><strong>ถาม: การเชื่อมโยงข้ามโปรโตคอลทำงานอย่างไร</strong></p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ตอบ: ระบบเก็บสถานะของแต่ละ IP ไว้ว่าเคยทำอะไรภายใน 30 นาทีที่ผ่านมาครับ</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">เมื่อพบการสแกนจาก IP หนึ่ง ระบบบันทึกเวลาไว้ ถ้า IP เดิมกลับมาเรียกเว็บ ภายใน 30 นาที จะได้คะแนนเพิ่ม 20 คะแนน เพราะพฤติกรรม &quot;สแกนแล้วเข้าเว็บ&quot; น่าสงสัยกว่าการเข้าเว็บเปล่าๆ</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ตัวอย่างการคำนวณ ถ้า IP สแกนก่อนแล้วเรียกเว็บด้วย severity 2 จะได้ 25 + 5 + 20 = 50 คะแนน ถึงเกณฑ์ redirect ขณะที่ถ้าไม่มีประวัติสแกน จะได้แค่ 25 + 5 = 30 คะแนน อยู่ในช่วงเฝ้าดู</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">โค้ดส่วนนี้อยู่ใน <code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>defender/decision_engine/adaptive_defender/risk.py</code></p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;"><strong>ถาม: ถ้าโปรแกรมหยุดกลางทาง ข้อมูลจะหายไหม</strong></p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ตอบ: ไม่หายครับ ระบบใช้ checkpoint บันทึกสองค่าคือ inode ของไฟล์และ ตำแหน่ง byte ที่อ่านถึง</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">เมื่อเริ่มโปรแกรมใหม่ ระบบอ่านค่าจาก checkpoint แล้วกระโดดไปตำแหน่งเดิม ทำให้ไม่อ่านซ้ำและไม่ข้าม</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">กรณีที่ Suricata หมุนไฟล์ log ระบบตรวจจับได้จาก inode ที่เปลี่ยนไป แล้วเริ่มอ่านไฟล์ใหม่จากต้น มีเทสต์ยืนยันพฤติกรรมนี้</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;"><strong>ถาม: ทำไมต้องใช้ atomic write</strong></p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ตอบ: ป้องกันปัญหา race condition ครับ</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ถ้าเขียนทับไฟล์ config โดยตรง มีช่วงเวลาที่ไฟล์เขียนไม่เสร็จ ถ้า Nginx อ่านไฟล์ในจังหวะนั้นจะได้ config ที่ไม่สมบูรณ์และอาจ crash</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">วิธีที่ใช้คือเขียนลงไฟล์ชั่วคราวในโฟลเดอร์เดียวกันให้เสร็จก่อน แล้วใช้ คำสั่ง <code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>rename</code> ซึ่งระบบไฟล์รับประกันว่าเป็น atomic operation คือเสร็จ หรือไม่เสร็จเท่านั้น ไม่มีสถานะกลาง</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;"><strong>ถาม: ทำไม Dashboard ผูกกับ 127.0.0.1 เท่านั้น</strong></p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ตอบ: เพราะ Dashboard แสดงข้อมูลที่อ่อนไหวครับ ทั้ง IP ผู้โจมตี รูปแบบ การตรวจจับ และการตัดสินใจของระบบ</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ถ้าผูกกับ 0.0.0.0 ผู้โจมตีที่เข้าถึงเครือข่ายได้จะเห็นว่าระบบตรวจจับอะไร และปรับพฤติกรรมเพื่อหลบเลี่ยง</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">โค้ดมีการตรวจสอบที่ปฏิเสธการผูกกับ IP อื่นและโยน exception ทันที มีเทสต์ยืนยันว่าการตั้งค่า 0.0.0.0 ถูกปฏิเสธ</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">การเข้าใช้จากเครื่องอื่นต้องใช้ SSH port forwarding ซึ่งปลอดภัยกว่า เพราะมีการยืนยันตัวตนและเข้ารหัส</p>
-<h2 style="font-size:15pt;font-weight:700;color:#22508f;margin:18pt 0 8pt;">หมวดที่ 3 — คำถามเรื่องความน่าเชื่อถือของผลทดสอบ</h2>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;"><strong>ถาม: ความแม่นยำ 1.0 เชื่อถือได้แค่ไหน</strong></p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ตอบ: <strong>ยังเชื่อถือไม่ได้ครับ</strong> และผมระบุข้อจำกัดนี้ไว้ในรายงานชัดเจน</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ค่านี้มาจากชุดข้อมูลสังเคราะห์เพียง 4 รายการที่สร้างขึ้นเพื่อทดสอบว่า โค้ดคำนวณถูกต้อง ไม่ใช่เพื่อวัดประสิทธิภาพจริง</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">การจะได้ค่าที่อ้างอิงได้ต้องทดสอบกับ traffic จริงบนเครือข่ายแล็บที่ได้รับ อนุญาต มีจำนวนตัวอย่างมากพอ และครอบคลุมรูปแบบการใช้งานที่หลากหลาย ซึ่งเป็นงานที่รอ infrastructure พร้อม</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;"><strong>ถาม: ทำไมบางเฟสเขียนว่า NOT_RUN ไม่เขียนว่าผ่าน</strong></p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ตอบ: เพราะการทดสอบนั้นยังไม่ได้รันจริงครับ</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">โปรเจคนี้ใช้กฎว่าไม่ใช้คำว่า PASSED กับสิ่งที่ยังไม่ได้ทดสอบ เพราะรายงาน ที่บอกว่าผ่านทั้งที่ยังไม่ทดสอบจะทำให้ตัดสินใจผิดในขั้นต่อไป</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">และในบริบทความปลอดภัย การเข้าใจผิดว่าระบบทำงานได้ทั้งที่ยังไม่ได้ยืนยัน เป็นความเสี่ยงโดยตรง</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ตัวอย่างเช่น D3 มี 8 rules แต่ยืนยันด้วย alert จริงได้แค่ 2 rules ที่เหลือผ่านแค่การตรวจ syntax จึงรายงานตามความจริงว่าอีก 6 rules ยัง NOT_RUN</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;"><strong>ถาม: rule ที่ผ่านแค่ syntax มีประโยชน์อะไร</strong></p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ตอบ: บอกได้ว่า Suricata อ่าน rule นั้นได้และจะไม่ทำให้ service ล่ม เมื่อโหลดครับ ซึ่งเป็นเงื่อนไขจำเป็นแต่ไม่เพียงพอ</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">สิ่งที่ยังไม่รู้คือ rule นั้นตรวจจับสิ่งที่ต้องการได้จริงหรือไม่ และจะ แจ้งเตือนผิดพลาดกับ traffic ปกติหรือไม่ ต้องสร้าง PCAP ทดสอบสำหรับ แต่ละ rule เพิ่ม ซึ่งเป็นงานที่วางแผนไว้แล้ว</p>
-<h2 style="font-size:15pt;font-weight:700;color:#22508f;margin:18pt 0 8pt;">หมวดที่ 4 — คำถามเรื่องการออกแบบ</h2>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;"><strong>ถาม: ทำไมแยกเครือข่ายเป็นสองชั้น</strong></p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ตอบ: เพื่อไม่ให้ผู้โจมตีเข้าถึง honeypot ได้โดยตรงครับ</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ทุก traffic ต้องผ่าน Defender ทำให้ควบคุมและบันทึกได้ทั้งหมด และถ้า ผู้โจมตีหลุดออกจาก honeypot ได้ จะติดอยู่ในเครือข่าย inner ที่ไม่มี default route ออกไปไหนไม่ได้</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">การออกแบบนี้เรียกว่า containment คือจำกัดความเสียหายให้อยู่ในวงแคบ</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;"><strong>ถาม: ทำไมต้องมี 5 ประตูตรวจสอบสำหรับ rule ใหม่</strong></p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ตอบ: เพราะ rule ที่ได้จากการวิเคราะห์อัตโนมัติอาจมีปัญหาได้หลายแบบครับ</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ประตูที่ 1 กัน rule ที่ syntax ผิดซึ่งจะทำให้ Suricata ไม่ทำงาน ประตูที่ 2 กัน SID ซ้ำที่จะทำให้เกิดความสับสนในการวิเคราะห์ ประตูที่ 3 กัน rule ที่กว้างเกินไปจนแจ้งเตือนผิดพลาดกับ traffic ปกติ ประตูที่ 4 ยืนยันว่า rule ตรวจจับสิ่งที่ต้องการได้จริง ประตูที่ 5 กัน rule ที่ทำให้ระบบทำงานช้าเกินไป</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ถ้าไม่มีการตรวจเหล่านี้ ระบบที่เรียนรู้เองอาจสร้าง rule ที่ทำให้ระบบ แย่ลงกว่าเดิม</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;"><strong>ถาม: ถ้า honeypot ล่ม ระบบจะทำอย่างไร</strong></p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ตอบ: Nginx config มีการจัดการกรณีนี้ครับ ถ้า backend ไม่ตอบสนอง จะคืน HTTP 503 พร้อมข้อความที่ควบคุมได้ ไม่แสดงหน้า error มาตรฐาน ที่อาจเปิดเผยว่าเป็นระบบ honeypot</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ตั้ง timeout ไว้สั้นคือเชื่อมต่อ 2 วินาที และอ่านข้อมูล 5 วินาที เพื่อไม่ให้ค้างนาน</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;"><strong>ถาม: ทำไมค่าตั้งต้นเป็น dry-run</strong></p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ตอบ: เพื่อความปลอดภัยครับ ในโหมด dry-run ระบบคำนวณและบันทึกว่าจะทำอะไร แต่ไม่สั่งการจริง</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ทำให้ทดสอบตรรกะได้โดยไม่กระทบระบบ และตรวจสอบได้ว่าคำสั่งที่จะสั่งถูกต้อง ก่อนเปิดใช้จริง ซึ่งสำคัญมากสำหรับระบบที่แก้ไข firewall เพราะความผิดพลาด อาจทำให้เข้าเครื่องไม่ได้</p>
-<h2 style="font-size:15pt;font-weight:700;color:#22508f;margin:18pt 0 8pt;">หมวดที่ 5 — คำถามเรื่องการทำงานร่วมกัน</h2>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;"><strong>ถาม: การประสานงานกับคนที่ 2 เป็นอย่างไร</strong></p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ตอบ: กำหนดรูปแบบข้อมูลที่ต้องแลกเปลี่ยนเป็น JSON schema ไว้ใน <code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>docs/person2-contract.md</code> ครับ ระบุชัดว่าต้องการค่าอะไรและรูปแบบไหน</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">วิธีนี้ทำให้ทั้งสองฝ่ายทำงานขนานกันได้โดยไม่ต้องรอกัน เพราะรู้ล่วงหน้าว่า ข้อมูลที่จะได้รับมีหน้าตาอย่างไร</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ระบบตั้งค่าตั้งต้นว่าไม่ถือว่า endpoint ใดพร้อมใช้จนกว่าจะได้ค่าจริง และตรวจสอบผ่านเครือข่าย inner แล้ว เพื่อไม่ให้เกิดการสมมติที่ผิดพลาด</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;"><strong>ถาม: ถ้าคนที่ 2 ส่งข้อมูลมาช้า จะกระทบไหม</strong></p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ตอบ: กระทบเฉพาะการทดสอบ end-to-end ครับ ส่วนที่พัฒนาได้เองทำไปแล้ว ทั้งหมด</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">การออกแบบใช้ template ที่มี placeholder ทำให้เมื่อได้ค่าจริงมาแล้ว แค่แทนค่าลงไปก็ใช้งานได้ ไม่ต้องแก้โครงสร้าง</p>
-<h2 style="font-size:15pt;font-weight:700;color:#22508f;margin:18pt 0 8pt;">หมวดที่ 6 — คำถามเชิงลึก</h2>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;"><strong>ถาม: ระบบนี้ป้องกันการโจมตีแบบ distributed ได้ไหม</strong></p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ตอบ: ปัจจุบันยังไม่ได้ครับ เพราะระบบเก็บคะแนนแยกตาม IP ถ้าผู้โจมตีใช้ หลาย IP แต่ละ IP จะสะสมคะแนนไม่ถึงเกณฑ์</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">การแก้ต้องเพิ่มการวิเคราะห์ระดับ subnet หรือดูรูปแบบพฤติกรรมที่คล้ายกัน ข้าม IP ซึ่งเป็นงานที่อยู่นอกขอบเขตเฟสปัจจุบัน แต่บันทึกไว้เป็นข้อจำกัด ที่ทราบแล้ว</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;"><strong>ถาม: ถ้าผู้โจมตีรู้ว่ามีระบบนี้ จะหลบได้ไหม</strong></p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ตอบ: หลบได้ในระดับหนึ่งครับ วิธีที่เป็นไปได้คือโจมตีช้าๆ ให้คะแนน ลดลงเร็วกว่าที่สะสม หรือใช้ User-Agent ปกติ</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">การรับมือคือปรับค่า decay ให้ช้าลง และเพิ่ม rule ที่ตรวจจับพฤติกรรม ระยะยาว ซึ่งต้องอาศัยข้อมูลจริงจึงจะปรับได้เหมาะสม</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ข้อจำกัดนี้เป็นเรื่องปกติของระบบตรวจจับทุกแบบ ไม่มีระบบใดป้องกันได้ สมบูรณ์ เป้าหมายคือเพิ่มต้นทุนให้ผู้โจมตีและเก็บข้อมูลพฤติกรรม</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;"><strong>ถาม: ทำไมเลือก Suricata ไม่ใช่ตัวอื่น</strong></p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ตอบ: เหตุผลหลักคือ Suricata เขียน log เป็น JSON บรรทัดต่อบรรทัด ในไฟล์ eve.json ซึ่งอ่านและแปลงเป็นข้อมูลได้ง่ายโดยไม่ต้องเขียน parser ซับซ้อนครับ</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">นอกจากนี้รองรับการวิเคราะห์ระดับ application protocol ทำให้เขียน rule ตรวจจับ HTTP path หรือ TLS metadata ได้โดยตรง และติดตั้งอยู่บนเครื่องแล้ว เวอร์ชัน 7.0.3</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;"><strong>ถาม: ระบบนี้นำไปใช้งานจริงได้เลยไหม</strong></p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ตอบ: <strong>ยังไม่ได้ครับ</strong> และไม่ควรนำไปใช้ในสภาพปัจจุบัน</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">เหตุผลคือยังไม่ผ่านการทดสอบกับ traffic จริง ค่าเกณฑ์ต่างๆ ยังไม่ได้ปรับ จากข้อมูลจริง และยังไม่ได้ทดสอบการกู้คืนบนระบบจริง</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ระบบนี้ออกแบบสำหรับสภาพแวดล้อมแล็บที่แยกออกมา เพื่อศึกษาพฤติกรรม ผู้โจมตีและทดสอบแนวคิด การนำไปใช้จริงต้องผ่านการทดสอบและปรับแต่ง อีกมาก รวมถึงการตรวจสอบด้านความปลอดภัยโดยผู้เชี่ยวชาญ</p>
-<hr style='border:none;border-top:1px solid #bbb;margin:16pt 0;'>
-<h2 style="font-size:15pt;font-weight:700;color:#22508f;margin:18pt 0 8pt;">สรุปประเด็นสำคัญสำหรับการนำเสนอ</h2>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">หากมีเวลาจำกัด ควรเน้นสามประเด็นนี้</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;"><strong>ประเด็นที่ 1</strong> ระบบใช้การให้คะแนนแบบสะสมและเชื่อมโยงข้ามโปรโตคอล ทำให้แยกผู้โจมตีจากผู้ใช้ปกติได้ดีกว่าการตัดสินครั้งเดียว</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;"><strong>ประเด็นที่ 2</strong> ส่วนซอฟต์แวร์เสร็จและทดสอบผ่าน 17/17 มีหลักฐานเก็บไว้ ครบ ส่วนที่ยังไม่เสร็จติดขัดที่ infrastructure ไม่ใช่ตัวโค้ด</p>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;"><strong>ประเด็นที่ 3</strong> รายงานทุกสถานะอ้างอิงหลักฐานจริง ไม่ใช้คำว่าผ่านกับ การทดสอบที่ยังไม่ได้รัน และระบุข้อจำกัดของตัวเลขที่วัดได้อย่างชัดเจน</p>
+<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ตัวเลขจาก <code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>tests/fixtures/baseline.json</code> เป็นข้อมูลสังเคราะห์ ใช้ตรวจ regression เท่านั้น ไม่ใช่ค่า accuracy หรือ false-positive rate ของ production</p>
+<h2 style="font-size:15pt;font-weight:700;color:#22508f;margin:18pt 0 8pt;">5. สถานะการติดตั้งจริง</h2>
+<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">ส่วนซอฟต์แวร์หลักและชุดทดสอบพร้อม แต่ยังไม่ถือว่า deploy เสร็จ เพราะเครื่อง ปลายทางต้องมี outer/inner interface แยกจาก management interface และต้องทดสอบ Nginx, nftables และ Suricata ร่วมกับทราฟฟิกจริงในขอบเขตที่อนุญาต</p>
+<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">Production preflight จะหยุดการติดตั้งหาก:</p>
+<ul style='margin:0 0 10pt;padding-left:20pt;'>
+<li style="font-size:11pt;line-height:1.55;margin-bottom:3pt;">ยังมี <code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>CHANGE_ME</code></li>
+<li style="font-size:11pt;line-height:1.55;margin-bottom:3pt;">interface ซ้ำกัน</li>
+<li style="font-size:11pt;line-height:1.55;margin-bottom:3pt;">Dashboard ไม่ได้ bind ที่ loopback</li>
+<li style="font-size:11pt;line-height:1.55;margin-bottom:3pt;">ไม่มี user store</li>
+<li style="font-size:11pt;line-height:1.55;margin-bottom:3pt;">เปิด live rule deploy โดยยังไม่มี privileged helper</li>
+</ul>
+<h2 style="font-size:15pt;font-weight:700;color:#22508f;margin:18pt 0 8pt;">6. งานถัดไป</h2>
+<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">1. เตรียมเครื่อง Defender เปล่าตาม <code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>docs/production-defender.md</code> 2. ยืนยันชื่อ management, outer และ inner interface 3. รัน readiness และ syntax checks 4. ทดสอบ live integration ทีละส่วน เริ่มจาก Suricata แล้ว Nginx และ nftables 5. ทดสอบ reboot และ rollback 6. เก็บผลทดสอบจริงแยกจาก fixture สังเคราะห์</p>
+<h2 style="font-size:15pt;font-weight:700;color:#22508f;margin:18pt 0 8pt;">7. ข้อสรุป</h2>
+<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">MIMIC Defender ผ่านระดับซอฟต์แวร์และมีมาตรการป้องกันความผิดพลาดในการ deploy มากขึ้นแล้ว แต่สถานะ production ต้องยืนยันจากเครื่องปลายทางจริง ไม่ควรใช้ผล unit test แทนผล network integration หรือ operational acceptance</p>
 </body>
 </html>

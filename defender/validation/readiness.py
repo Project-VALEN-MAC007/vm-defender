@@ -5,10 +5,10 @@ import json
 import shutil
 import subprocess
 from dataclasses import asdict, dataclass
-from typing import Callable
+from typing import Callable, List
 
 
-Runner = Callable[[list[str]], subprocess.CompletedProcess[str]]
+Runner = Callable[[List[str]], subprocess.CompletedProcess]
 
 
 @dataclass(frozen=True)

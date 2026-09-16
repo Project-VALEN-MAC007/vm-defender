@@ -141,7 +141,7 @@ def convert(md: str) -> str:
     body = "\n".join(html)
     return (
         "<!DOCTYPE html>\n<html lang='th'>\n<head>\n<meta charset='utf-8'>\n"
-        "<title>รายงานความก้าวหน้า — Adaptive Honeypot</title>\n</head>\n"
+        "<title>รายงานความก้าวหน้า MIMIC Defender</title>\n</head>\n"
         "<body style=\"font-family:'Sarabun','Segoe UI',Arial,sans-serif;"
         "max-width:820px;margin:0 auto;padding:28pt;color:#1a1a1a;\">\n"
         f"{body}\n</body>\n</html>\n"
@@ -152,5 +152,5 @@ if __name__ == "__main__":
     if not SRC.exists():
         raise SystemExit(f"ไม่พบไฟล์ {SRC}")
     OUT.write_text(convert(SRC.read_text(encoding="utf-8")), encoding="utf-8")
-    print(f"สร้างไฟล์แล้ว: {OUT}")
-    print(f"ขนาด: {OUT.stat().st_size:,} bytes")
+    print(f"Created: {OUT}")
+    print(f"Size: {OUT.stat().st_size:,} bytes")

@@ -1,35 +1,38 @@
-# การตั้งค่า Telnet Honeypot
+# บริการ Telnet จำลอง
 
-## ภาพรวม
+โมดูลนี้เป็นบริการจำลองขนาดเล็กสำหรับทดสอบการเชื่อมต่อและการบันทึก login
+attempt ในเครื่อง ไม่ใช่ Telnet server เต็มรูปแบบและไม่มี shell จำลอง
 
-Telnet honeypot จำลองบริการ telnet ที่มีช่องโหว่เพื่อดึงดูดและบันทึกพฤติกรรมของผู้โจมตี 
-การเชื่อมต่อและความพยายามในการยืนยันตัวตนทั้งหมดจะถูกบันทึกเพื่อการวิเคราะห์
+## ความสามารถปัจจุบัน
 
-## เริ่มต้นใช้งาน
+- bind ที่ `127.0.0.1:2323` เป็นค่าเริ่มต้น
+- แสดง banner และรับ username/password
+- รองรับความพยายามเข้าสู่ระบบสองรอบต่อ connection
+- บันทึกเหตุการณ์เป็น JSONL
+- ปิด connection หลังตอบ `Login incorrect`
 
-### ทดสอบในเครื่องอย่างปลอดภัย (localhost เท่านั้น):
+ตัวแปร `commands` ในโค้ดยังไม่ได้ใช้เก็บคำสั่ง เพราะระบบปัจจุบันไม่มี shell
+จึงห้ามอธิบายโมดูลนี้ว่าเก็บ command history
+
+## เริ่มใช้งานในเครื่อง
 
 ```bash
-cd "/home/yakult/Desktop/Default Project"
 python3 run_telnet.py
 ```
 
 เชื่อมต่อจาก terminal อื่น:
+
 ```bash
 telnet 127.0.0.1 2323
 ```
 
-### ตัวเลือกการตั้งค่า
+Log เริ่มต้นอยู่ที่:
 
-คลาส `TelnetHoneypot` รับพารามิเตอร์:
+```text
+evidence/telnet-logs/telnet.jsonl
+```
 
-- `host`: IP address ที่จะ bind (ค่าเริ่มต้น: "127.0.0.1" เพื่อความปลอดภัย)
-- `port`: พอร์ตที่จะ listen (ค่าเริ่มต้น: 2323, ไม่ต้องใช้สิทธิ์พิเศษ)
-- `log_path`: เส้นทางไฟล์ log ในรูปแบบ JSONL
-
-## รูปแบบ Log
-
-Session ของ Telnet จะถูกบันทึกไปยัง `evidence/telnet-logs/telnet.jsonl` ในรูปแบบ JSONL:
+## รูปแบบเหตุการณ์
 
 ```json
 {
@@ -37,65 +40,45 @@ Session ของ Telnet จะถูกบันทึกไปยัง `evide
   "session_id": "192.168.1.100:54321_1726395045.123",
   "remote_addr": "192.168.1.100:54321",
   "event_type": "connection",
-  "data": {"status": "established"}
+  "data": {
+    "status": "established"
+  }
 }
 ```
 
-ประเภทของ Event:
-- `connection`: เริ่มต้น/สิ้นสุด Session
-- `login_attempt`: มีการส่ง Username
-- `auth_attempt`: มีการส่ง Password (บันทึกเพื่อวิเคราะห์ภัยคุกคาม)
-- `login_retry`: มีการพยายาม login หลายครั้ง
+| `event_type` | ความหมาย |
+|---|---|
+| `connection` | เปิดหรือปิด session |
+| `login_attempt` | รับ username รอบแรก |
+| `auth_attempt` | รับ username/password และผล authentication |
+| `login_retry` | รับ username รอบที่สอง |
 
-## ข้อควรระวังด้านความปลอดภัย
+## การคุ้มครองข้อมูล
 
-⚠️ **การตั้งค่าเริ่มต้น bind ที่ localhost เท่านั้น** เพื่อป้องกันการเปิดเผยโดยไม่ตั้งใจ
+โค้ดปัจจุบันบันทึกรหัสผ่านที่ส่งเข้ามาใน log เพื่อใช้ทดสอบพฤติกรรม ดังนั้น:
 
-หากต้องการเปิดให้เข้าถึงผ่านเครือข่าย (ในสภาพแวดล้อม lab เท่านั้น):
-
-```python
-honeypot = TelnetHoneypot(host="10.10.10.1", port=23, log_path=log_path)
-```
-
-**พอร์ต 23 ต้องใช้สิทธิ์ root:**
-```bash
-sudo python3 run_telnet.py  # ถ้า bind ที่พอร์ต 23
-```
-
-## การผสานรวมกับ VM-Defender
-
-Log ของ telnet honeypot สามารถถูกวิเคราะห์โดย decision engine เพื่อการตอบสนองแบบปรับตัว:
-
-1. แยกวิเคราะห์ `evidence/telnet-logs/telnet.jsonl` เพื่อหาความพยายามในการยืนยันตัวตน
-2. ดึง IP ต้นทางและรูปแบบการโจมตี
-3. ป้อนเข้าสู่ระบบให้คะแนนความเสี่ยง
-4. เรียกใช้การบลอกหรือเปลี่ยนเส้นทางด้วย nftables ตามระดับภัยคุกคาม
+- ใช้เฉพาะข้อมูลทดสอบ ห้ามส่ง credential จริง
+- จำกัด permission ของ log ให้เฉพาะผู้ดูแล
+- ห้าม commit log เข้า repository
+- กำหนด retention และลบ log เมื่อหมดวัตถุประสงค์
+- ก่อนใช้จริงควรเปลี่ยนเป็นค่า hash หรือ redacted value ตามนโยบายข้อมูล
 
 ## การทดสอบ
 
-ทดสอบ honeypot ด้วย:
+```bash
+python3 -m unittest tests.test_telnet -v
+```
+
+ตรวจ log ด้วย:
 
 ```bash
-# Terminal 1: เริ่ม honeypot
-python3 run_telnet.py
-
-# Terminal 2: เชื่อมต่อในฐานะผู้โจมตี
-telnet 127.0.0.1 2323
-# ลอง username: admin
-# ลอง password: password123
-
-# Terminal 3: ดู logs
 tail -f evidence/telnet-logs/telnet.jsonl
 ```
 
-## การติดตั้งในโหมดจริง
+## ข้อจำกัดด้านเครือข่าย
 
-สำหรับการติดตั้ง honeypot ในโหมดจริง:
+ค่าเริ่มต้น bind เฉพาะ loopback ห้ามเปลี่ยนเป็น `0.0.0.0` หรือ port 23 บน
+เครื่องจริงจนกว่าจะมี network isolation, firewall policy, log protection และ
+การอนุมัติขอบเขตการทดสอบ
 
-1. ตั้งค่า network interface ที่เหมาะสม (เช่น `10.10.10.1`)
-2. ใช้พอร์ต telnet มาตรฐาน 23 (ต้องใช้สิทธิ์ root)
-3. ตรวจสอบให้แน่ใจว่ากฎ firewall อนุญาตการเข้าถึงจากภายนอก
-4. ติดตาม logs เพื่อหากิจกรรมที่น่าสงสัย
-5. ผสานรวมกับ decision engine เพื่อการตอบสนองอัตโนมัติ
-
-ดู `docs/root-operations.md` สำหรับการใช้งานที่ต้องการสิทธิ์สูง
+การนำ Telnet ไปเป็น endpoint ภายในจริงยังอยู่นอกขอบเขตของรอบพัฒนาปัจจุบัน
