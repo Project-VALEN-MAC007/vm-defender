@@ -1,37 +1,59 @@
-# D1 topology and isolation gate
+# แบบเครือข่ายของ MIMIC Defender
 
-## Observed (2026-08-04 UTC)
+## หลักการ
 
-```text
-VirtualBox NAT 10.0.2.0/24
-        |
- enp0s3 10.0.2.15/24  (management/NAT; must remain unchanged)
-        |
-   VM-Defender
-
-outer lab NIC: MISSING
-inner lab NIC: MISSING
-```
-
-## Target after the VM owner adds isolated adapters
+เครื่อง Defender ต้องมี interface สามบทบาทแยกจากกัน เพื่อไม่ให้ทราฟฟิกทดสอบ
+กระทบช่องทางบริหาร และเพื่อป้องกันการเข้าถึงเครือข่ายภายในโดยตรง
 
 ```text
-VM-Attacker 192.168.56.20/24
+เครือข่ายบริหาร/ติดตั้ง
         |
- isolated outer network (no Internet bridge)
+management interface (มี default route)
         |
-Defender outer 192.168.56.10/24
-Defender inner 10.10.10.1/24
+   MIMIC Defender
+        | outer: 192.168.56.10/24
+เครือข่ายรับทราฟฟิก
         |
- isolated inner network (no Internet bridge)
+แหล่งทราฟฟิกที่ได้รับอนุญาต
+
+   MIMIC Defender
+        | inner: 10.10.10.1/24
+เครือข่ายบริการภายใน
         |
-VM-Honeypot 10.10.10.2/24
+endpoint ที่ยืนยันแล้ว
 ```
 
-Interface names remain unset until `ip -br link` shows the newly attached
-adapters.  The D1 apply gate must reject `enp0s3`, a default-route interface,
-or any interface whose network is not explicitly identified as lab-only.
+## ค่าตัวอย่าง
 
-Forwarding remains disabled until D5.  When enabled, the forward policy is
-drop and only established replies plus explicit Defender-to-Honeypot DNAT
-flows are accepted.  No general outer-to-inner routing is allowed.
+| บทบาท | IP ตัวอย่าง | Default route | DNS |
+|---|---|---|---|
+| management | ได้จากระบบบริหาร เช่น NAT/DHCP | มี | มีได้ |
+| outer | `192.168.56.10/24` | ไม่มี | ไม่มี |
+| inner | `10.10.10.1/24` | ไม่มี | ไม่มี |
+
+ค่า IP เป็นค่าเริ่มต้นของแบบระบบ ส่วนชื่อ interface ต้องอ่านจากเครื่องจริงด้วย
+`ip -br link` และใส่ใน production config ห้ามสมมติว่าเป็น `enp0s8` หรือ
+`enp0s9`
+
+## นโยบายการส่งต่อ
+
+- ก่อนเปิด redirect ให้คง `net.ipv4.ip_forward=0`
+- เมื่อเปิดใช้งาน ให้ forward policy เป็น `drop`
+- อนุญาตเฉพาะ established/related traffic และ DNAT flow ที่ระบุไว้
+- ห้ามเปิดการ route ทั่วไประหว่าง outer กับ inner
+- temporary block และ redirect set ต้องมี timeout
+
+## ด่านตรวจก่อนนำไปใช้
+
+ต้องผ่านทุกข้อ:
+
+1. management, outer และ inner เป็นคนละ interface
+2. management interface ยังเป็นเจ้าของ default route เพียงตัวเดียว
+3. outer/inner ไม่มี gateway และ DNS
+4. สำรอง network และ nftables แล้ว
+5. ตั้ง timed rollback แล้ว
+6. ไม่มี `CHANGE_ME` หรือ `__TOKEN__` ใน staging config
+7. ผ่าน `python3 -m defender.validation.production`
+
+ขั้นตอนเตรียม interface อยู่ที่ `defender/network/virtualbox-nic-checklist.md`
+และคำสั่ง root อยู่ที่ `docs/root-operations.md`

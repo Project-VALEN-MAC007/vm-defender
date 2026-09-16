@@ -1,934 +1,142 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VM-Defender Dashboard - Adaptive Honeypot System</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
-            background: #f8fafc;
-            color: #1e293b;
-            line-height: 1.6;
-        }
-
-        /* Header */
-        header {
-            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
-            color: white;
-            padding: 28px 48px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            border-bottom: 3px solid #1e3a8a;
-        }
-
-        .header-content {
-            max-width: 1600px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .logo {
-            font-size: 42px;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
-        }
-
-        .header-title h1 {
-            font-size: 32px;
-            font-weight: 700;
-            margin-bottom: 4px;
-            letter-spacing: -0.5px;
-        }
-
-        .subtitle {
-            font-size: 15px;
-            opacity: 0.9;
-            font-weight: 400;
-        }
-
-        .header-right {
-            text-align: right;
-        }
-
-        .status-badge {
-            background: rgba(255,255,255,0.2);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 13px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 8px;
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            background: #22c55e;
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .last-update {
-            font-size: 13px;
-            opacity: 0.8;
-        }
-
-        /* Main Content */
-        .main-content {
-            max-width: 1600px;
-            margin: 0 auto;
-            padding: 32px 48px;
-        }
-
-        /* Stats Grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
-            margin-bottom: 32px;
-        }
-
-        .stat-card {
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-            transition: all 0.3s ease;
-        }
-
-        .stat-card:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-            transform: translateY(-2px);
-        }
-
-        .stat-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-
-        .stat-icon {
-            font-size: 32px;
-            opacity: 0.8;
-        }
-
-        .stat-label {
-            font-size: 13px;
-            color: #64748b;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-
-        .stat-value {
-            font-size: 36px;
-            font-weight: 700;
-            color: #0f172a;
-            line-height: 1;
-        }
-
-        .stat-change {
-            font-size: 13px;
-            color: #64748b;
-            margin-top: 8px;
-        }
-
-        /* Services Status */
-        .services-section {
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 28px;
-            margin-bottom: 32px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-        }
-
-        .section-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: #0f172a;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-        }
-
-        .service-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 14px 18px;
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            transition: all 0.2s;
-        }
-
-        .service-item:hover {
-            background: #f1f5f9;
-        }
-
-        .service-name {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 500;
-            font-size: 14px;
-        }
-
-        .status-indicator {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            display: inline-block;
-        }
-
-        .status-active {
-            background: #22c55e;
-            box-shadow: 0 0 8px rgba(34, 197, 94, 0.4);
-        }
-
-        .status-inactive {
-            background: #ef4444;
-            box-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
-        }
-
-        .status-unknown {
-            background: #94a3b8;
-        }
-
-        .service-status-text {
-            font-size: 12px;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-weight: 600;
-        }
-
-        .status-text-active {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .status-text-inactive {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .status-text-unknown {
-            background: #f1f5f9;
-            color: #475569;
-        }
-
-        /* Controls */
-        .controls {
-            background: white;
-            border: 1px solid #e2e8f0;
-            padding: 20px 24px;
-            border-radius: 12px;
-            margin-bottom: 24px;
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            align-items: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-        }
-
-        input[type="text"], select {
-            background: #f8fafc;
-            border: 1px solid #cbd5e1;
-            color: #1e293b;
-            padding: 10px 14px;
-            border-radius: 8px;
-            font-size: 14px;
-            transition: all 0.2s;
-        }
-
-        input[type="text"]:focus, select:focus {
-            outline: none;
-            border-color: #3b82f6;
-            background: white;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-
-        input[type="text"] {
-            flex: 1;
-            min-width: 250px;
-        }
-
-        select {
-            min-width: 160px;
-        }
-
-        button {
-            background: #3b82f6;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        button:hover {
-            background: #2563eb;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
-        }
-
-        button:active {
-            transform: translateY(0);
-        }
-
-        .btn-secondary {
-            background: #64748b;
-        }
-
-        .btn-secondary:hover {
-            background: #475569;
-        }
-
-        .auto-refresh {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 14px;
-            background: #f8fafc;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            font-size: 13px;
-            color: #475569;
-        }
-
-        input[type="checkbox"] {
-            width: 16px;
-            height: 16px;
-            cursor: pointer;
-        }
-
-        /* Tabs */
-        .tabs {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 24px;
-            border-bottom: 2px solid #e2e8f0;
-        }
-
-        .tab {
-            background: transparent;
-            border: none;
-            padding: 14px 24px;
-            border-radius: 0;
-            cursor: pointer;
-            font-size: 15px;
-            font-weight: 500;
-            color: #64748b;
-            transition: all 0.2s;
-            position: relative;
-        }
-
-        .tab:hover {
-            background: #f8fafc;
-            color: #1e293b;
-            transform: none;
-            box-shadow: none;
-        }
-
-        .tab.active {
-            background: transparent;
-            color: #3b82f6;
-        }
-
-        .tab.active::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: #3b82f6;
-            border-radius: 3px 3px 0 0;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        /* Table */
-        .table-container {
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-        }
-
-        .table-header {
-            background: #f8fafc;
-            padding: 20px 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .table-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: #0f172a;
-        }
-
-        .badge {
-            background: #3b82f6;
-            color: white;
-            padding: 6px 14px;
-            border-radius: 16px;
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-        .table-wrapper {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th {
-            background: #f8fafc;
-            padding: 14px 16px;
-            text-align: left;
-            font-size: 12px;
-            color: #64748b;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-weight: 600;
-            border-bottom: 2px solid #e2e8f0;
-        }
-
-        td {
-            padding: 16px;
-            border-bottom: 1px solid #f1f5f9;
-            font-size: 14px;
-        }
-
-        tr:hover {
-            background: #fafbfc;
-        }
-
-        tr:last-child td {
-            border-bottom: none;
-        }
-
-        .severity-1 {
-            color: #dc2626;
-            font-weight: 600;
-        }
-
-        .severity-2 {
-            color: #ea580c;
-            font-weight: 500;
-        }
-
-        .severity-3 {
-            color: #ca8a04;
-        }
-
-        .action-redirect {
-            color: #7c3aed;
-            font-weight: 500;
-        }
-
-        .action-block {
-            color: #dc2626;
-            font-weight: 500;
-        }
-
-        .action-allow {
-            color: #16a34a;
-            font-weight: 500;
-        }
-
-        .timestamp {
-            color: #64748b;
-            font-size: 13px;
-            font-family: 'Courier New', monospace;
-        }
-
-        .ip-address {
-            font-family: 'Courier New', monospace;
-            color: #0f172a;
-            font-weight: 500;
-        }
-
-        .no-data {
-            text-align: center;
-            padding: 60px 20px;
-            color: #94a3b8;
-            font-size: 15px;
-        }
-
-        .no-data-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
-            opacity: 0.5;
-        }
-
-        .loading-spinner {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 2px solid #e2e8f0;
-            border-top-color: #3b82f6;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .main-content {
-                padding: 20px;
-            }
-            header {
-                padding: 20px;
-            }
-            .header-content {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 16px;
-            }
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VM-Defender Dashboard</title>
+  <style>
+    :root{--bg:#f6f8fb;--panel:#fff;--text:#172033;--muted:#667085;--line:#d9e0ea;--blue:#2563eb;--shadow:0 1px 2px rgba(16,24,40,.08)}
+    *{box-sizing:border-box}html,body{min-height:100%;background:#101828}body{margin:0;font-family:Inter,"Segoe UI",Arial,sans-serif;color:var(--text);line-height:1.45;letter-spacing:0}
+    .app{min-height:100vh;display:grid;grid-template-columns:260px 1fr}aside{background:#101828;color:#eef2f6;padding:20px 16px;position:sticky;top:0;height:100vh}
+    .brand{display:flex;align-items:center;gap:10px;padding:4px 8px 18px;border-bottom:1px solid #344054}.mark{width:34px;height:34px;border-radius:8px;display:grid;place-items:center;background:#2563eb;font-weight:800}.brand h1{font-size:18px;margin:0}.brand p{color:#98a2b3;font-size:12px;margin:2px 0 0}
+    nav{display:grid;gap:6px;margin-top:18px}.nav-btn{width:100%;justify-content:flex-start;background:transparent;color:#d0d5dd;border:1px solid transparent;padding:10px 12px;border-radius:6px;box-shadow:none}.nav-btn:hover,.nav-btn.active{background:#1d2939;color:#fff;border-color:#344054;transform:none;box-shadow:none}
+    .user-box{position:absolute;left:16px;right:16px;bottom:16px;padding:12px;background:#1d2939;border:1px solid #344054;border-radius:8px}.user-box strong{display:block;font-size:14px}.user-box span{color:#98a2b3;font-size:12px}
+    main{min-width:0}header{background:var(--panel);border-bottom:1px solid var(--line);padding:16px 28px;display:flex;align-items:center;justify-content:space-between;gap:18px;position:sticky;top:0;z-index:3}.title h2{margin:0;font-size:22px}.title p{margin:3px 0 0;color:var(--muted);font-size:13px}.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    button,.button{background:var(--blue);color:#fff;border:0;border-radius:6px;padding:9px 12px;font:inherit;font-size:14px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;min-height:36px}button:hover,.button:hover{filter:brightness(.96)}.secondary{background:#eef2f6;color:#344054;border:1px solid #d0d5dd}
+    input,select,textarea{border:1px solid #cfd6e2;border-radius:6px;padding:9px 10px;background:#fff;color:var(--text);font:inherit;min-height:36px}textarea{width:100%;min-height:120px;font-family:Consolas,monospace;font-size:13px}input:focus,select:focus,textarea:focus{outline:2px solid rgba(37,99,235,.18);border-color:var(--blue)}
+    .content{padding:24px 28px 38px}.view{display:none}.view.active{display:block}.grid{display:grid;gap:16px}.stats{grid-template-columns:repeat(4,minmax(150px,1fr))}.two{grid-template-columns:minmax(0,1.2fr) minmax(320px,.8fr)}
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:8px;box-shadow:var(--shadow)}.card-head{padding:15px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px}.card-title{font-size:16px;font-weight:700;margin:0}.card-body{padding:16px}.stat{padding:16px}.stat .label{color:var(--muted);font-size:12px;text-transform:uppercase;font-weight:700}.stat .value{font-size:30px;font-weight:800;margin-top:8px}.stat .hint{color:var(--muted);font-size:12px;margin-top:4px}
+    .filters{display:grid;grid-template-columns:minmax(220px,1fr) 160px 180px auto;gap:10px;margin-bottom:14px}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:820px}th,td{padding:11px 12px;border-bottom:1px solid #edf1f7;text-align:left;font-size:13px;vertical-align:top}th{color:#475467;background:#f8fafc;font-size:12px;text-transform:uppercase}tr:hover td{background:#fbfcfe}
+    code,.mono{font-family:Consolas,"Courier New",monospace;font-size:12px}.pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 8px;font-size:12px;font-weight:700;border:1px solid transparent;white-space:nowrap}.ok{color:#166534;background:#dcfce7;border-color:#bbf7d0}.warn{color:#92400e;background:#fef3c7;border-color:#fde68a}.bad{color:#991b1b;background:#fee2e2;border-color:#fecaca}.info{color:#1e40af;background:#dbeafe;border-color:#bfdbfe}.violet{color:#5b21b6;background:#ede9fe;border-color:#ddd6fe}
+    .empty{color:var(--muted);padding:28px;text-align:center}.note{display:grid;gap:4px;padding:12px;border:1px solid var(--line);border-radius:7px;background:#fff;margin-bottom:10px}.note strong{font-size:14px}.note span{color:var(--muted);font-size:13px}.service-row{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid #edf1f7}.service-row:last-child{border-bottom:0}
+    .login-screen{min-height:100vh;min-height:100dvh;width:100%;display:grid;place-items:center;padding:24px;background:#101828}.login-card{width:min(420px,100%);background:#fff;border-radius:8px;padding:24px;box-shadow:0 18px 50px rgba(0,0,0,.25)}.login-card h1{margin:0 0 6px;font-size:24px}.login-card p{color:var(--muted);margin:0 0 18px}.form-grid{display:grid;gap:12px}.error{color:#b42318;min-height:18px;font-size:13px}.hidden{display:none!important}.split-actions{display:flex;gap:8px;flex-wrap:wrap}
+    @media(max-width:1000px){.app{grid-template-columns:1fr}aside{position:static;height:auto}.user-box{position:static;margin-top:18px}.stats,.two,.filters{grid-template-columns:1fr}header{align-items:flex-start;flex-direction:column}}
+  </style>
 </head>
 <body>
-    <header>
-        <div class="header-content">
-            <div class="header-left">
-                <div class="logo">🛡️</div>
-                <div class="header-title">
-                    <h1>VM-Defender Dashboard</h1>
-                    <p class="subtitle">Adaptive Honeypot Monitoring System</p>
-                </div>
-            </div>
-            <div class="header-right">
-                <div class="status-badge">
-                    <span class="status-dot"></span>
-                    <span>System Active</span>
-                </div>
-                <div class="last-update" id="last-update">Last updated: --</div>
-            </div>
-        </div>
-    </header>
+  <section id="login-screen" class="login-screen">
+    <form class="login-card" id="login-form">
+      <h1>VM-Defender</h1>
+      <p>เข้าสู่ระบบ MIMIC Defender Dashboard</p>
+      <div class="form-grid">
+        <input id="username" autocomplete="username" placeholder="Username" required>
+        <input id="password" autocomplete="current-password" type="password" placeholder="Password" required>
+        <button type="submit">Sign in</button>
+        <div class="error" id="login-error"></div>
+      </div>
+    </form>
+  </section>
 
-    <div class="main-content">
-        <!-- Stats Grid -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon">🔔</div>
-                <div class="stat-label">Total Alerts</div>
-                <div class="stat-value" id="total-alerts">0</div>
-                <div class="stat-change">Suricata detections</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">⚙️</div>
-                <div class="stat-label">Total Decisions</div>
-                <div class="stat-value" id="total-decisions">0</div>
-                <div class="stat-change">Engine responses</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">🔀</div>
-                <div class="stat-label">Active Redirects</div>
-                <div class="stat-value" id="active-redirects">0</div>
-                <div class="stat-change">Honeypot redirections</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">📊</div>
-                <div class="stat-label">Detection Rate</div>
-                <div class="stat-value" id="detection-rate">0%</div>
-                <div class="stat-change">Success percentage</div>
-            </div>
-        </div>
+  <section id="app" class="app hidden">
+    <aside>
+      <div class="brand"><div class="mark">M</div><div><h1>MIMIC Dashboard</h1><p>Adaptive honeypot control</p></div></div>
+      <nav>
+        <button class="nav-btn active" data-view="overview">Overview</button>
+        <button class="nav-btn" data-view="alerts">Alerts</button>
+        <button class="nav-btn" data-view="decisions">Decisions</button>
+        <button class="nav-btn" data-view="logs">Log Search</button>
+        <button class="nav-btn" data-view="rules" data-admin>Rule Management</button>
+        <button class="nav-btn" data-view="reports">Reports</button>
+      </nav>
+      <div class="user-box"><strong id="user-name">-</strong><span id="user-role">-</span></div>
+    </aside>
 
-        <!-- Services Status -->
-        <div class="services-section">
-            <div class="section-title">
-                <span>🔧</span> System Services Status
-            </div>
-            <div class="services-grid" id="services-status">
-                <div class="service-item">
-                    <div class="service-name">
-                        <span class="status-indicator status-unknown"></span>
-                        <span>Loading...</span>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <main>
+      <header>
+        <div class="title"><h2 id="view-title">Overview</h2><p id="last-updated">Last updated: -</p></div>
+        <div class="toolbar"><label class="pill info"><input type="checkbox" id="auto-refresh" checked> Auto refresh</label><button id="refresh">Refresh</button><button id="logout" class="secondary">Logout</button></div>
+      </header>
+      <div class="content">
+        <section id="overview" class="view active">
+          <div class="grid stats">
+            <div class="card stat"><div class="label">Alerts</div><div class="value" id="stat-alerts">0</div><div class="hint">Suricata events</div></div>
+            <div class="card stat"><div class="label">Decisions</div><div class="value" id="stat-decisions">0</div><div class="hint">Engine actions</div></div>
+            <div class="card stat"><div class="label">Redirects</div><div class="value" id="stat-redirects">0</div><div class="hint">Honeypot routes</div></div>
+            <div class="card stat"><div class="label">High Severity</div><div class="value" id="stat-high">0</div><div class="hint">Runtime Suricata alerts</div></div>
+          </div>
+          <div class="grid two" style="margin-top:16px">
+            <div class="card"><div class="card-head"><h3 class="card-title">Notifications</h3><span class="pill info" id="note-count">0 items</span></div><div class="card-body" id="notifications"></div></div>
+            <div class="card"><div class="card-head"><h3 class="card-title">Service Status</h3></div><div class="card-body" id="services"></div></div>
+          </div>
+        </section>
 
-        <!-- Controls -->
-        <div class="controls">
-            <input type="text" id="search" placeholder="🔍 ค้นหา IP address, signature, profile...">
-            <select id="filter-severity">
-                <option value="">All Severity Levels</option>
-                <option value="1">Critical (Level 1)</option>
-                <option value="2">High (Level 2)</option>
-                <option value="3">Medium (Level 3)</option>
-            </select>
-            <select id="filter-action">
-                <option value="">All Actions</option>
-                <option value="redirect_http">Redirect HTTP</option>
-                <option value="redirect_ssh">Redirect SSH</option>
-                <option value="block">Block</option>
-                <option value="allow">Allow</option>
-            </select>
-            <button onclick="refreshData()">🔄 Refresh</button>
-            <button onclick="exportCSV()" class="btn-secondary">📥 Export CSV</button>
-            <div class="auto-refresh">
-                <input type="checkbox" id="auto-refresh" checked>
-                <label for="auto-refresh">Auto-refresh (5s)</label>
-                <span class="loading-spinner" id="loading-indicator" style="display:none;"></span>
-            </div>
-        </div>
+        <section id="alerts" class="view">
+          <div class="filters"><input id="alert-search" placeholder="ค้นหา Source IP, signature, category"><select id="alert-severity"><option value="">All severity</option><option value="1">Severity 1</option><option value="2">Severity 2</option><option value="3">Severity 3</option></select><select id="alert-protocol"><option value="">All protocol</option><option>TCP</option><option>HTTP</option><option>TLS</option><option>SSH</option><option>TELNET</option></select><a class="button secondary" href="/api/alerts.csv" target="_blank">Export CSV</a></div>
+          <div class="card"><div class="card-head"><h3 class="card-title">Suricata Alerts</h3><div class="split-actions"><button class="secondary" id="alerts-prev">Previous</button><span class="pill info" id="alerts-count">0</span><button class="secondary" id="alerts-next">Next</button></div></div><div class="table-wrap"><table><thead><tr><th>Time</th><th>Source</th><th>Protocol</th><th>SID</th><th>Severity</th><th>Signature</th></tr></thead><tbody id="alerts-body"></tbody></table></div></div>
+        </section>
 
-        <!-- Tabs -->
-        <div class="tabs">
-            <button class="tab active" onclick="switchTab('alerts', event)">
-                🔔 Suricata Alerts
-            </button>
-            <button class="tab" onclick="switchTab('decisions', event)">
-                ⚙️ Decision Engine Logs
-            </button>
-        </div>
+        <section id="decisions" class="view">
+          <div class="filters"><input id="decision-search" placeholder="ค้นหา Source IP, action, profile, reason"><select id="decision-action"><option value="">All actions</option><option>allow</option><option>monitor</option><option>redirect_web</option><option>redirect_ssh</option><option>redirect_telnet</option><option>temporary_block</option></select><select id="decision-protocol"><option value="">All protocol</option><option>http</option><option>tls</option><option>ssh</option><option>telnet</option><option>scan</option></select><a class="button secondary" href="/api/decisions.csv" target="_blank">Export CSV</a></div>
+          <div class="card"><div class="card-head"><h3 class="card-title">Decision Engine</h3><div class="split-actions"><button class="secondary" id="decisions-prev">Previous</button><span class="pill info" id="decisions-count">0</span><button class="secondary" id="decisions-next">Next</button></div></div><div class="table-wrap"><table><thead><tr><th>Time</th><th>Source</th><th>Protocol</th><th>Risk</th><th>Action</th><th>Profile</th><th>Reason</th><th>Expiry</th></tr></thead><tbody id="decisions-body"></tbody></table></div></div>
+        </section>
 
-        <!-- Alerts Tab -->
-        <div id="alerts-tab" class="tab-content active">
-            <div class="table-container">
-                <div class="table-header">
-                    <div class="table-title">Suricata Security Alerts</div>
-                    <span class="badge" id="alerts-count">0 alerts</span>
-                </div>
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Timestamp</th>
-                                <th>Source IP</th>
-                                <th>Protocol</th>
-                                <th>Signature ID</th>
-                                <th>Severity</th>
-                                <th>Category</th>
-                            </tr>
-                        </thead>
-                        <tbody id="alerts-tbody">
-                            <tr>
-                                <td colspan="6" class="no-data">
-                                    <div class="no-data-icon">📭</div>
-                                    <div>No alerts data available</div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+        <section id="logs" class="view">
+          <div class="filters"><input id="log-search" placeholder="ค้นหา logs รวม alerts และ decisions"><select id="log-type"><option value="">All logs</option><option value="alert">Alerts</option><option value="decision">Decisions</option></select><select id="log-window"><option value="all">All time</option><option value="24">Last 24h</option><option value="1">Last hour</option></select></div>
+          <div class="card"><div class="card-head"><h3 class="card-title">Unified Log Search</h3><span class="pill info" id="logs-count">0</span></div><div class="table-wrap"><table><thead><tr><th>Type</th><th>Time</th><th>Source</th><th>Protocol</th><th>Summary</th><th>Result</th></tr></thead><tbody id="logs-body"></tbody></table></div></div>
+        </section>
 
-        <!-- Decisions Tab -->
-        <div id="decisions-tab" class="tab-content">
-            <div class="table-container">
-                <div class="table-header">
-                    <div class="table-title">Decision Engine Activity Logs</div>
-                    <span class="badge" id="decisions-count">0 decisions</span>
-                </div>
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Start Time</th>
-                                <th>Source IP</th>
-                                <th>Protocol</th>
-                                <th>Risk Score</th>
-                                <th>Action Taken</th>
-                                <th>Profile</th>
-                                <th>Reason</th>
-                                <th>Expiry</th>
-                            </tr>
-                        </thead>
-                        <tbody id="decisions-tbody">
-                            <tr>
-                                <td colspan="8" class="no-data">
-                                    <div class="no-data-icon">📭</div>
-                                    <div>No decision logs available</div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
+        <section id="rules" class="view">
+          <div class="grid two">
+            <div class="card"><div class="card-head"><h3 class="card-title">Detection Rules</h3><span class="pill info" id="rules-count">0</span></div><div class="table-wrap"><table><thead><tr><th>SID</th><th>Severity</th><th>Class</th><th>Message</th></tr></thead><tbody id="rules-body"></tbody></table></div></div>
+            <div class="card"><div class="card-head"><h3 class="card-title">Candidate Rule</h3><span class="pill warn">Master Admin only</span></div><div class="card-body"><div class="form-grid"><input id="candidate-id" placeholder="Rule ID, e.g. http-probe-001"><input id="candidate-version" placeholder="Version, e.g. 1.0.0"><input id="candidate-evidence" placeholder="Evidence reference"><input id="candidate-confidence" type="number" min="0" max="1" step="0.01" placeholder="Confidence 0.00-1.00"><input id="candidate-sid" placeholder="Expected SID, e.g. 2200501"><textarea id="candidate-rule" placeholder="Paste Suricata rule candidate here"></textarea><div class="split-actions"><button id="validate-rule" type="button">Validate</button><button id="deploy-rule" type="button">Deploy</button><button type="button" class="secondary" id="clear-candidate">Clear</button></div><div id="candidate-result" class="pill info">Waiting for candidate</div></div></div></div>
+          </div>
+        </section>
 
-    <script>
-        let alertsData = [];
-        let decisionsData = [];
-        let autoRefreshInterval;
+        <section id="reports" class="view">
+          <div class="grid stats">
+            <div class="card stat"><div class="label">High severity alerts</div><div class="value" id="report-high">0</div><div class="hint">Runtime</div></div>
+            <div class="card stat"><div class="label">Temporary blocks</div><div class="value" id="report-blocks">0</div><div class="hint">Runtime</div></div>
+            <div class="card stat"><div class="label">Decision latency</div><div class="value" id="report-decision-latency">0ms</div><div class="hint">Average</div></div>
+            <div class="card stat"><div class="label">Redirect latency</div><div class="value" id="report-redirect-latency">0ms</div><div class="hint">Average</div></div>
+          </div>
+          <div class="card" style="margin-top:16px"><div class="card-head"><h3 class="card-title">Protocol and Action Summary</h3></div><div class="card-body" id="report-summary"></div></div>
+        </section>
+      </div>
+    </main>
+  </section>
 
-        function switchTab(tab, event) {
-            if (event) {
-                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                event.target.classList.add('active');
-            }
-
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            document.getElementById(tab + '-tab').classList.add('active');
-        }
-
-        async function fetchData() {
-            const loading = document.getElementById('loading-indicator');
-            loading.style.display = 'inline-block';
-
-            try {
-                const [decisionsRes, alertsRes, statusRes] = await Promise.all([
-                    fetch('/api/decisions.json'),
-                    fetch('/api/alerts.json'),
-                    fetch('/api/status.json').catch(() => ({ json: () => ({}) }))
-                ]);
-
-                decisionsData = await decisionsRes.json();
-                alertsData = await alertsRes.json();
-                const status = await statusRes.json();
-
-                updateStats();
-                updateServicesStatus(status);
-                renderDecisions();
-                renderAlerts();
-
-                document.getElementById('last-update').textContent =
-                    `Last updated: ${new Date().toLocaleTimeString('th-TH')}`;
-
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            } finally {
-                loading.style.display = 'none';
-            }
-        }
-
-        function updateStats() {
-            document.getElementById('total-alerts').textContent = alertsData.length;
-            document.getElementById('total-decisions').textContent = decisionsData.length;
-
-            const activeRedirects = decisionsData.filter(d =>
-                d.action && d.action.includes('redirect')
-            ).length;
-            document.getElementById('active-redirects').textContent = activeRedirects;
-
-            const detectionRate = decisionsData.length > 0 ?
-                Math.round((activeRedirects / decisionsData.length) * 100) : 0;
-            document.getElementById('detection-rate').textContent = detectionRate + '%';
-        }
-
-        function updateServicesStatus(status) {
-            const services = status.services || status;
-            const container = document.getElementById('services-status');
-
-            const servicesList = [
-                { name: 'Suricata IDS', key: 'suricata', icon: '🔍' },
-                { name: 'Nginx Reverse Proxy', key: 'nginx', icon: '🌐' },
-                { name: 'Decision Engine', key: 'decision_engine', icon: '⚙️' }
-            ];
-
-            container.innerHTML = servicesList.map(svc => {
-                const state = services[svc.key] || 'unknown';
-                const statusClass = state === 'active' ? 'status-active' :
-                                  state === 'inactive' ? 'status-inactive' : 'status-unknown';
-                const textClass = state === 'active' ? 'status-text-active' :
-                                state === 'inactive' ? 'status-text-inactive' : 'status-text-unknown';
-                return `
-                    <div class="service-item">
-                        <div class="service-name">
-                            <span class="status-indicator ${statusClass}"></span>
-                            <span>${svc.icon} ${svc.name}</span>
-                        </div>
-                        <span class="service-status-text ${textClass}">${state}</span>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function renderAlerts() {
-            const tbody = document.getElementById('alerts-tbody');
-            const searchTerm = document.getElementById('search').value.toLowerCase();
-            const filterSeverity = document.getElementById('filter-severity').value;
-
-            const filtered = alertsData.filter(alert => {
-                const matchSearch = !searchTerm ||
-                    (alert.src_ip && alert.src_ip.toLowerCase().includes(searchTerm)) ||
-                    (alert.signature && alert.signature.toLowerCase().includes(searchTerm)) ||
-                    (alert.category && alert.category.toLowerCase().includes(searchTerm));
-
-                const matchSeverity = !filterSeverity ||
-                    (alert.severity && alert.severity.toString() === filterSeverity);
-
-                return matchSearch && matchSeverity;
-            });
-
-            document.getElementById('alerts-count').textContent = `${filtered.length} alerts`;
-
-            if (filtered.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="6" class="no-data">
-                            <div class="no-data-icon">📭</div>
-                            <div>No alerts match your filters</div>
-                        </td>
-                    </tr>`;
-                return;
-            }
-
-            tbody.innerHTML = filtered.slice(0, 100).map(alert => `
-                <tr>
-                    <td class="timestamp">${formatTimestamp(alert.timestamp)}</td>
-                    <td class="ip-address">${alert.src_ip || 'N/A'}</td>
-                    <td>${alert.proto || 'N/A'}</td>
-                    <td>SID:${alert.signature_id || 'N/A'}</td>
-                    <td class="severity-${alert.severity || 3}">Level ${alert.severity || 'N/A'}</td>
-                    <td>${alert.category || alert.signature || 'N/A'}</td>
-                </tr>
-            `).join('');
-        }
-
-        function renderDecisions() {
-            const tbody = document.getElementById('decisions-tbody');
-            const searchTerm = document.getElementById('search').value.toLowerCase();
-            const filterAction = document.getElementById('filter-action').value;
-
-            const filtered = decisionsData.filter(dec => {
-                const matchSearch = !searchTerm ||
-                    (dec.source_ip && dec.source_ip.toLowerCase().includes(searchTerm)) ||
-                    (dec.profile && dec.profile.toLowerCase().includes(searchTerm)) ||
-                    (dec.reason && dec.reason.toLowerCase().includes(searchTerm));
-
-                const matchAction = !filterAction || dec.action === filterAction;
-
-                return matchSearch && matchAction;
-            });
-
-            document.getElementById('decisions-count').textContent = `${filtered.length} decisions`;
-
-            if (filtered.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="8" class="no-data">
-                            <div class="no-data-icon">📭</div>
-                            <div>No decisions match your filters</div>
-                        </td>
-                    </tr>`;
-                return;
-            }
-
-            tbody.innerHTML = filtered.slice(0, 100).map(dec => {
-                const actionClass = dec.action && dec.action.includes('redirect') ? 'action-redirect' :
-                                  dec.action === 'block' ? 'action-block' : 'action-allow';
-                return `
-                    <tr>
-                        <td class="timestamp">${formatTimestamp(dec.start_time)}</td>
-                        <td class="ip-address">${dec.source_ip || 'N/A'}</td>
-                        <td>${dec.protocol || 'N/A'}</td>
-                        <td><strong>${dec.risk_score || 0}</strong></td>
-                        <td class="${actionClass}">${dec.action || 'N/A'}</td>
-                        <td>${dec.profile || 'N/A'}</td>
-                        <td>${dec.reason || 'N/A'}</td>
-                        <td class="timestamp">${dec.expiry ? formatTimestamp(dec.expiry) : '—'}</td>
-                    </tr>
-                `;
-            }).join('');
-        }
-
-        function formatTimestamp(ts) {
-            if (!ts) return 'N/A';
-            const date = new Date(ts);
-            return date.toLocaleString('th-TH', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            });
-        }
-
-        function refreshData() {
-            fetchData();
-        }
-
-        function exportCSV() {
-            // Check which tab is active
-            const alertsTabActive = document.getElementById('alerts-tab').classList.contains('active');
-            if (alertsTabActive) {
-                window.open('/api/alerts.csv', '_blank');
-            } else {
-                window.open('/api/decisions.csv', '_blank');
-            }
-        }
-
-        document.getElementById('search').addEventListener('input', () => {
-            renderAlerts();
-            renderDecisions();
-        });
-
-        document.getElementById('filter-severity').addEventListener('change', renderAlerts);
-        document.getElementById('filter-action').addEventListener('change', renderDecisions);
-
-        document.getElementById('auto-refresh').addEventListener('change', (e) => {
-            if (e.target.checked) {
-                autoRefreshInterval = setInterval(fetchData, 5000);
-            } else {
-                clearInterval(autoRefreshInterval);
-            }
-        });
-
-        // Initial load
-        fetchData();
-        autoRefreshInterval = setInterval(fetchData, 5000);
-    </script>
+  <script>
+    const state={user:null,csrf:'',alerts:[],alertsTotal:0,alertsOffset:0,decisions:[],decisionsTotal:0,decisionsOffset:0,status:{},metrics:{},rules:[],notes:[]};
+    const pageSize=100;let timer=null,filterTimer=null;
+    const $=id=>document.getElementById(id),text=v=>v===undefined||v===null||v===''?'-':String(v),when=v=>v?new Date(v).toLocaleString('th-TH'):'-',escapeHtml=v=>text(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+    async function api(url,options={}){const res=await fetch(url,options);if(res.status===401&&state.user){showLogin()}const data=res.status===204?null:await res.json().catch(()=>({}));if(!res.ok){const error=new Error(data.detail||data.error||url+' '+res.status);error.status=res.status;error.data=data;throw error}return data}
+    async function login(e){e.preventDefault();$('login-error').textContent='';try{const data=await api('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:$('username').value,password:$('password').value})});state.user=data.user;state.csrf=data.csrf_token;$('password').value='';showApp();await refresh()}catch(error){$('login-error').textContent=error.status===429?'ลองใหม่ภายหลัง: มีการเข้าสู่ระบบผิดหลายครั้ง':'Username หรือ Password ไม่ถูกต้อง'}}
+    async function logout(){try{await api('/api/logout',{method:'POST',headers:{'X-CSRF-Token':state.csrf}})}finally{showLogin()}}
+    function showLogin(){state.user=null;state.csrf='';$('app').classList.add('hidden');$('login-screen').classList.remove('hidden');if(timer)clearInterval(timer)}
+    function showApp(){$('login-screen').classList.add('hidden');$('app').classList.remove('hidden');$('user-name').textContent=state.user.name||state.user.username;$('user-role').textContent=state.user.role==='master_admin'?'Master Admin':'User';document.querySelectorAll('[data-admin]').forEach(el=>el.classList.toggle('hidden',state.user.role!=='master_admin'));if(timer)clearInterval(timer);timer=setInterval(()=>$('auto-refresh').checked&&refresh(),10000)}
+    function query(kind){const params=new URLSearchParams({limit:pageSize,offset:kind==='alerts'?state.alertsOffset:state.decisionsOffset});const prefix=kind==='alerts'?'alert':'decision';const q=$(prefix+'-search').value.trim(),severity=kind==='alerts'?$('alert-severity').value:'',protocol=$(prefix+'-protocol').value,action=kind==='decisions'?$('decision-action').value:'';if(q)params.set('q',q);if(severity)params.set('severity',severity);if(protocol)params.set('protocol',protocol);if(action)params.set('action',action);return params}
+    async function loadAlerts(){const data=await api('/api/alerts.json?'+query('alerts'));state.alerts=data.items;state.alertsTotal=data.total;renderAlerts()}
+    async function loadDecisions(){const data=await api('/api/decisions.json?'+query('decisions'));state.decisions=data.items;state.decisionsTotal=data.total;renderDecisions()}
+    async function refresh(){try{const common=[api('/api/status.json'),api('/api/metrics.json'),api('/api/notifications.json')];if(state.user.role==='master_admin')common.push(api('/api/rules.json'));const results=await Promise.all([loadAlerts(),loadDecisions(),...common]);state.status=results[2];state.metrics=results[3];state.notes=results[4];state.rules=state.user.role==='master_admin'?results[5]:[];renderAll()}catch(error){if(error.status!==401)$('last-updated').textContent='Refresh failed: '+error.message}}
+    function renderAll(){$('last-updated').textContent='Last updated: '+new Date().toLocaleTimeString('th-TH');$('stat-alerts').textContent=state.metrics.total_alerts||0;$('stat-decisions').textContent=state.metrics.total_decisions||0;$('stat-redirects').textContent=state.metrics.redirects||0;$('stat-high').textContent=state.metrics.high_severity_alerts||0;renderServices();renderNotes();renderAlerts();renderDecisions();renderLogs();renderRules();renderReports()}
+    function renderServices(){$('services').innerHTML=Object.entries(state.status).filter(([,v])=>typeof v==='string').map(([n,v])=>`<div class="service-row"><strong>${escapeHtml(n)}</strong><span class="pill ${v==='active'?'ok':v==='unknown'?'info':'warn'}">${escapeHtml(v)}</span></div>`).join('')||'<div class="empty">No service data</div>'}
+    function renderNotes(){$('note-count').textContent=state.notes.length+' items';$('notifications').innerHTML=state.notes.map(n=>`<div class="note"><strong><span class="pill ${noteClass(n.level)}">${escapeHtml(n.level)}</span> ${escapeHtml(n.title)}</strong><span>${escapeHtml(n.detail)}</span></div>`).join('')}
+    function noteClass(l){return l==='critical'?'bad':l==='high'?'violet':l==='warning'?'warn':'info'}
+    function renderAlerts(){const start=state.alertsTotal?state.alertsOffset+1:0,end=Math.min(state.alertsOffset+state.alerts.length,state.alertsTotal);$('alerts-count').textContent=`${start}-${end} of ${state.alertsTotal}`;$('alerts-prev').disabled=state.alertsOffset===0;$('alerts-next').disabled=end>=state.alertsTotal;$('alerts-body').innerHTML=state.alerts.map(a=>`<tr><td class="mono">${when(a.timestamp)}</td><td class="mono">${escapeHtml(a.src_ip)}</td><td>${escapeHtml(a.app_proto||a.proto)}</td><td class="mono">${escapeHtml(a.signature_id)}</td><td><span class="pill ${severityClass(a.severity)}">${escapeHtml(a.severity)}</span></td><td>${escapeHtml(a.signature||a.category)}</td></tr>`).join('')||'<tr><td colspan="6" class="empty">No alerts match the filters</td></tr>'}
+    function renderDecisions(){const start=state.decisionsTotal?state.decisionsOffset+1:0,end=Math.min(state.decisionsOffset+state.decisions.length,state.decisionsTotal);$('decisions-count').textContent=`${start}-${end} of ${state.decisionsTotal}`;$('decisions-prev').disabled=state.decisionsOffset===0;$('decisions-next').disabled=end>=state.decisionsTotal;$('decisions-body').innerHTML=state.decisions.map(d=>`<tr><td class="mono">${when(d.start_time)}</td><td class="mono">${escapeHtml(d.source_ip)}</td><td>${escapeHtml(d.protocol)}</td><td>${escapeHtml(d.risk_score)}</td><td><span class="pill ${actionClass(d.action)}">${escapeHtml(d.action)}</span></td><td>${escapeHtml(d.profile)}</td><td>${escapeHtml(d.reason)}</td><td class="mono">${when(d.expiry)}</td></tr>`).join('')||'<tr><td colspan="8" class="empty">No decisions match the filters</td></tr>'}
+    function renderLogs(){const q=$('log-search').value.toLowerCase(),type=$('log-type').value,hours=$('log-window').value,cutoff=hours==='all'?0:Date.now()-Number(hours)*3600000;const alerts=state.alerts.map(a=>({type:'alert',time:a.timestamp,source:a.src_ip,protocol:a.app_proto||a.proto,summary:a.signature,result:'severity '+text(a.severity)})),decisions=state.decisions.map(d=>({type:'decision',time:d.start_time,source:d.source_ip,protocol:d.protocol,summary:d.reason,result:d.action}));const rows=alerts.concat(decisions).filter(r=>(!type||r.type===type)&&(!q||JSON.stringify(r).toLowerCase().includes(q))&&(!cutoff||new Date(r.time).getTime()>=cutoff)).sort((a,b)=>new Date(b.time)-new Date(a.time));$('logs-count').textContent=rows.length+' rows on current pages';$('logs-body').innerHTML=rows.map(r=>`<tr><td><span class="pill info">${r.type}</span></td><td class="mono">${when(r.time)}</td><td class="mono">${escapeHtml(r.source)}</td><td>${escapeHtml(r.protocol)}</td><td>${escapeHtml(r.summary)}</td><td>${escapeHtml(r.result)}</td></tr>`).join('')||'<tr><td colspan="6" class="empty">No logs match the filters</td></tr>'}
+    function renderRules(){$('rules-count').textContent=state.rules.length+' rules';$('rules-body').innerHTML=state.rules.map(r=>`<tr><td class="mono">${escapeHtml(r.sid)}</td><td><span class="pill ${ruleSeverityClass(r.severity)}">${escapeHtml(r.severity)}</span></td><td>${escapeHtml(r.classtype)}</td><td>${escapeHtml(r.message)}</td></tr>`).join('')||'<tr><td colspan="4" class="empty">No rules found</td></tr>'}
+    function metric(v){return v===null||v===undefined?'N/A':Number(v).toFixed(1)+'ms'}
+    function renderReports(){$('report-high').textContent=state.metrics.high_severity_alerts||0;$('report-blocks').textContent=state.metrics.temporary_blocks||0;$('report-decision-latency').textContent=metric(state.metrics.decision_latency_ms);$('report-redirect-latency').textContent=metric(state.metrics.redirect_latency_ms);$('report-summary').innerHTML=`<div class="grid two"><div>${summaryBlock('Protocol',countBy(state.decisions,'protocol'))}</div><div>${summaryBlock('Action',countBy(state.decisions,'action'))}</div></div>`}
+    function countBy(rows,key){return rows.reduce((a,r)=>{const k=r[key]||'unknown';a[k]=(a[k]||0)+1;return a},{})}function summaryBlock(title,data){const rows=Object.entries(data).map(([k,v])=>`<div class="service-row"><strong>${escapeHtml(k)}</strong><span>${v}</span></div>`).join('');return`<h4>${title}</h4>${rows||'<div class="empty">No data</div>'}`}
+    function severityClass(v){return Number(v)===1?'bad':Number(v)===2?'warn':'info'}function ruleSeverityClass(v){return v==='high'?'bad':v==='medium'?'warn':'info'}function actionClass(v){v=String(v||'');return v.includes('block')?'bad':v.includes('redirect')?'violet':v==='monitor'?'warn':'ok'}
+    function candidate(){return{rule_id:$('candidate-id').value.trim(),version:$('candidate-version').value.trim(),evidence:$('candidate-evidence').value.trim(),confidence:Number($('candidate-confidence').value),expected_sid:Number($('candidate-sid').value),rule:$('candidate-rule').value.trim()}}
+    async function ruleAction(action){const result=$('candidate-result');result.className='pill info';result.textContent=action==='validate'?'Validating...':'Deploying...';try{const data=await api('/api/rules/'+action,{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':state.csrf},body:JSON.stringify(candidate())});result.className='pill ok';result.textContent=action==='validate'?`Passed ${data.gates.length} validation gates`:`Rule ${data.status}`;await refresh()}catch(error){result.className='pill bad';result.textContent=error.status===409?'Deploy is disabled in production config':error.message}}
+    function clearCandidate(){['candidate-id','candidate-version','candidate-evidence','candidate-confidence','candidate-sid','candidate-rule'].forEach(id=>$(id).value='');$('candidate-result').className='pill info';$('candidate-result').textContent='Waiting for candidate'}
+    function switchView(id){document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===id));document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.view===id));$('view-title').textContent=document.querySelector(`[data-view="${id}"]`).textContent}
+    function debounceLoad(kind){clearTimeout(filterTimer);filterTimer=setTimeout(()=>{if(kind==='alerts'){state.alertsOffset=0;loadAlerts()}else{state.decisionsOffset=0;loadDecisions()}},250)}
+    document.querySelectorAll('.nav-btn').forEach(b=>b.addEventListener('click',()=>switchView(b.dataset.view)));['alert-search','alert-severity','alert-protocol'].forEach(id=>$(id).addEventListener('input',()=>debounceLoad('alerts')));['decision-search','decision-action','decision-protocol'].forEach(id=>$(id).addEventListener('input',()=>debounceLoad('decisions')));['log-search','log-type','log-window'].forEach(id=>$(id).addEventListener('input',renderLogs));$('alerts-prev').addEventListener('click',()=>{state.alertsOffset=Math.max(0,state.alertsOffset-pageSize);loadAlerts()});$('alerts-next').addEventListener('click',()=>{state.alertsOffset+=pageSize;loadAlerts()});$('decisions-prev').addEventListener('click',()=>{state.decisionsOffset=Math.max(0,state.decisionsOffset-pageSize);loadDecisions()});$('decisions-next').addEventListener('click',()=>{state.decisionsOffset+=pageSize;loadDecisions()});$('validate-rule').addEventListener('click',()=>ruleAction('validate'));$('deploy-rule').addEventListener('click',()=>ruleAction('deploy'));$('clear-candidate').addEventListener('click',clearCandidate);$('login-form').addEventListener('submit',login);$('logout').addEventListener('click',logout);$('refresh').addEventListener('click',refresh);
+    api('/api/session.json').then(data=>{if(data.session){state.user=data.session.user;state.csrf=data.session.csrf_token;showApp();refresh()}}).catch(()=>{});
+  </script>
 </body>
 </html>

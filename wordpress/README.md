@@ -1,27 +1,58 @@
-# WordPress honeypot backend
+# แบ็กเอนด์ WordPress สำหรับทดสอบ
 
-ไดเรกทอรีนี้กำหนด WordPress backend สำหรับ Defender profile `wordpress`
-มันแยก WordPress ออกจาก Python decision engine ในขณะที่ให้ Nginx มีเป้าหมาย
-ภายในที่เสถียร
+directory นี้มี Docker Compose สำหรับสร้าง WordPress backend แยกจาก Decision
+Engine ใช้เป็นเป้าหมายของ profile `wordpress` หลังจากผู้ดูแลยืนยัน endpoint แล้ว
 
-## ค่า Local backend
+การติดตั้งบริการนี้ยังไม่ใช่ส่วนหนึ่งของขั้นตอนติดตั้ง Defender ปัจจุบัน
 
-ใช้ค่าเหล่านี้เมื่อ render `defender/nginx/adaptive-honeypot.conf.template`
-จาก VM-Defender ไปยัง inner honeypot VM:
+## บริการภายใน Docker Compose
+
+| Service | หน้าที่ |
+|---|---|
+| `wordpress` | WordPress บน Apache/PHP |
+| `db` | MariaDB สำหรับ WordPress |
+
+ค่า bind เริ่มต้นเป็น loopback:
 
 ```text
-__WORDPRESS_IP__=10.10.10.2
-__WORDPRESS_PORT__=8081
-health_path=/wp-login.php
-expected_status=200
+127.0.0.1:8081 -> wordpress:80
 ```
 
-รายการ person-2 contract ที่ตรงกันคือ:
+## เตรียมตัวแปรสภาพแวดล้อม
+
+ต้องกำหนดค่าต่อไปนี้ก่อนเริ่ม container:
+
+```dotenv
+WORDPRESS_BIND_IP=127.0.0.1
+WORDPRESS_PORT=8081
+WORDPRESS_DB_NAME=wordpress_honeypot
+WORDPRESS_DB_USER=wordpress
+WORDPRESS_DB_PASSWORD=CHANGE_TO_A_LONG_RANDOM_VALUE
+WORDPRESS_DB_ROOT_PASSWORD=CHANGE_TO_A_DIFFERENT_LONG_RANDOM_VALUE
+```
+
+ห้ามใช้ค่า `change-me-wordpress` หรือ `change-me-root` จาก fallback ของ compose
+ในระบบที่เปิดใช้งานจริง
+
+## เริ่มและตรวจสอบ
+
+```bash
+docker compose config
+docker compose up -d
+docker compose ps
+curl -fsS http://127.0.0.1:8081/wp-login.php
+```
+
+## ข้อตกลงข้อมูลสำหรับ Defender
+
+หลังยืนยันจากเครื่องที่รัน service แล้ว ให้ส่งค่าต่อไปนี้ตาม
+`docs/person2-contract.md`:
 
 ```json
 {
   "profiles": {
     "wordpress": {
+      "ip": "REQUIRED",
       "port": 8081,
       "health_path": "/wp-login.php",
       "expected_status": 200
@@ -30,18 +61,13 @@ expected_status=200
 }
 ```
 
-## การรัน
+Defender ต้องตรวจ health endpoint ผ่าน inner network ก่อนเปิด profile
 
-คัดลอกไฟล์ environment ตัวอย่างและแทนที่รหัสผ่าน placeholder ก่อนเริ่ม stack:
+## หยุดระบบ
 
 ```bash
-cd "/home/yakult/Desktop/Default Project/wordpress"
-cp .env.example .env
-docker compose up -d
-curl -fsS http://127.0.0.1:8081/wp-login.php
+docker compose down
 ```
 
-ถ้า VM นี้ยังไม่มี Docker ให้ติดตั้งก่อนจาก local operations runbook
-บน VM-Defender ให้ route traffic ผ่าน Defender Nginx template ไปยัง
-`10.10.10.2:8081` ห้าม bind Docker ไปยัง `10.10.10.2` เว้นแต่ stack
-กำลังรันบน honeypot VM ที่เป็นเจ้าของที่อยู่นั้น
+คำสั่งนี้ไม่ลบ named volumes หากต้องการลบข้อมูลต้องทบทวน target และนโยบาย
+เก็บหลักฐานก่อนทุกครั้ง

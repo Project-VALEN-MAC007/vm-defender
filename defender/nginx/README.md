@@ -1,42 +1,65 @@
-# การติดตั้ง D4 อย่างปลอดภัย
+# การตั้งค่า Nginx สำหรับเปลี่ยนเส้นทางเว็บ
 
-Nginx ยังไม่ได้ติดตั้งบน VM ที่สังเกตการณ์ การตั้งค่ายังคงเป็นเทมเพลตเนื่องจาก
-lab outer address และพอร์ต/health endpoints ของ backend person-2 
-ยังไม่ได้รับการตรวจสอบ
+Nginx รับ HTTP/HTTPS ที่ outer IP เลือก backend จาก source IP ใน
+`redirect_map.conf` และบันทึกผลให้ตรวจสอบย้อนหลังได้
 
-การตั้งค่า lab ที่สร้างขึ้นจะ redirect HTTP ไปยัง HTTPS และยุติ TLS บน
-Nginx ก่อนที่จะ proxy ไปยัง inner backend ที่เลือก เส้นทางใบรับรองที่ใช้โดย
-`defender/nginx/generated/adaptive-honeypot.http.conf` คือ:
+## ไฟล์
 
-```text
-/etc/adaptive-defender/tls/defender.lab.crt
-/etc/adaptive-defender/tls/defender.lab.key
-```
+| ไฟล์ | หน้าที่ |
+|---|---|
+| `adaptive-honeypot.conf.template` | template ที่ต้องแทน token ก่อนใช้ |
+| `generated/adaptive-honeypot.http.conf` | generated config สำหรับ outer IP ตัวอย่าง |
+| `generated/redirect_map.conf` | map ที่ Decision Engine จัดการ |
+| `redirect_map.conf.example` | ตัวอย่างรูปแบบ map |
 
-สร้างใบรับรองแบบ self-signed สำหรับ lab เท่านั้นที่เส้นทางเหล่านั้นก่อนรัน
-`nginx -t` หรือแทนที่เส้นทางด้วยใบรับรองและคีย์ที่ยืนยันแล้ว
+## ค่าที่ต้องยืนยัน
 
-ขั้นตอนการติดตั้ง:
+- outer IP ของ Defender
+- certificate และ private key
+- IP/port/health path ของทุก backend
+- path ของ redirect map
 
-1. สำรองข้อมูล `/etc/nginx` พร้อม timestamp UTC
-2. Render ทุก `__TOKEN__`; ปฏิเสธผลลัพธ์ถ้ายังมี token เหลืออยู่
-3. ตรวจสอบ health-check ของแต่ละ backend ที่ยืนยันแล้วจาก inner interface ของ Defender
-4. เขียน map ไปยังไฟล์ชั่วคราวและเปลี่ยนชื่อแบบ atomic
-5. รัน `sudo nginx -t`; reload เฉพาะเมื่อ exit 0
-6. ยืนยัน HTTP 308 redirect, HTTPS proxying, source-IP log fields และ managed 503 response
-7. หากล้มเหลว ให้กลับคืนสู่การสำรองข้อมูล รัน `nginx -t` แล้ว reload
+ห้ามเดาค่า endpoint และห้ามใช้ config ที่ยังมี `__TOKEN__`
 
-ไม่มีใบรับรอง ข้อมูลรับรอง หรือค่า backend จริงถูกเก็บไว้ที่นี่
-
-สำหรับ inner WordPress honeypot backend ให้ render:
-
-```text
-__WORDPRESS_IP__=10.10.10.2
-__WORDPRESS_PORT__=8081
-```
-
-ตรวจสอบก่อนเปิดใช้งาน Nginx:
+## ขั้นตอนตรวจสอบ
 
 ```bash
-curl -fsS http://10.10.10.2:8081/wp-login.php
+rg '__[A-Z0-9_]+__' /etc/nginx/sites-available/mimic
+curl -fsS http://BACKEND_IP:BACKEND_PORT/HEALTH_PATH
+sudo nginx -t
 ```
+
+ผ่านครบแล้วจึง reload:
+
+```bash
+sudo systemctl reload nginx
+sudo systemctl --no-pager --full status nginx
+```
+
+## ผลที่คาดหวัง
+
+| กรณี | ผล |
+|---|---|
+| HTTP | redirect ไป HTTPS |
+| source ไม่มี mapping | ใช้ profile `real` |
+| source มี mapping | ใช้ backend ตาม profile |
+| backend ใช้งานไม่ได้ | ตอบ managed `503` |
+| config ผิด | `nginx -t` ไม่ผ่านและห้าม reload |
+
+## ตารางเปลี่ยนเส้นทาง
+
+Decision Engine เขียน map แบบ atomic และเก็บ expiry ใน state file คู่กัน
+เมื่อ restart ระบบจะโหลด state กลับและลบรายการที่หมดอายุ
+
+ตัวอย่าง:
+
+```nginx
+# generated atomically; do not edit
+default real;
+192.0.2.30 wordpress;
+```
+
+## การย้อนคืน
+
+หาก validation หรือ reload ล้มเหลว adapter จะคืน map ก่อนหน้า สำหรับการคืน
+Nginx ทั้งชุดให้ใช้ backup และคำสั่งใน `docs/root-operations.md`

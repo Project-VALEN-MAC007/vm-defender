@@ -3,7 +3,7 @@
   "checkpoint_path": "../../../evidence/test-results/eve.checkpoint.json",
   "audit_path": "../../../evidence/test-results/decisions.jsonl",
   "nginx_map_path": "../../../defender/nginx/generated/redirect_map.conf",
-  "dry_run": false,
+  "dry_run": true,
   "decay_per_minute": 1.0,
   "expiry_seconds": 1800,
   "thresholds": {

@@ -1,17 +1,28 @@
 [Unit]
-Description=Adaptive Honeypot Decision Engine
+Description=MIMIC Defender Decision Engine
 After=suricata.service
 Requires=suricata.service
 
 [Service]
 Type=simple
-WorkingDirectory=/opt/adaptive-honeypot
+User=root
+Group=mimic-dashboard
+WorkingDirectory=/opt/mimic
 ExecStart=/usr/bin/python3 -m defender.decision_engine.adaptive_defender.cli --config /etc/adaptive-defender/live.json
 Restart=on-failure
 RestartSec=2s
+UMask=0027
+NoNewPrivileges=true
 PrivateTmp=true
 ProtectSystem=strict
 ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+CapabilityBoundingSet=CAP_NET_ADMIN
+AmbientCapabilities=CAP_NET_ADMIN
 ReadWritePaths=/var/lib/adaptive-defender /var/log/adaptive-defender /etc/nginx/maps
 
 [Install]

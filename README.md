@@ -1,58 +1,89 @@
-# Adaptive Honeypot — VM-Defender
+# MIMIC Defender
 
-โปรเจคนี้ประกอบด้วยส่วนประกอบของ VM-Defender สำหรับเฟส D1–D8 คำสั่งทั้งหมด
-ที่เปลี่ยนแปลงระบบจะต้องได้รับการยืนยันก่อน โหมดเริ่มต้นของทุก helper คือ
-validation หรือ dry-run เพื่อป้องกันไม่ให้ระบบทดสอบถูกเปิดเผยต่อเครือข่ายจริง
-โดยไม่ตั้งใจ
+MIMIC Defender คือระบบตรวจจับ วิเคราะห์ และตอบสนองต่อทราฟฟิกที่น่าสงสัย
+โดยรับเหตุการณ์จาก Suricata ประเมินความเสี่ยงด้วย Decision Engine แล้วสั่ง
+Nginx หรือ nftables ให้เฝ้าระวัง เปลี่ยนเส้นทาง หรือบล็อกต้นทางตามนโยบาย
 
-## ข้อจำกัดของระบบปัจจุบัน
+เอกสารใน repository นี้เป็นข้อมูลอ้างอิงหลักของโครงการ เนื้อหาในไฟล์ภายนอก
+เช่น Word หรือเอกสารที่นำเข้ามาใน `evidence/` ไม่ใช่ข้อกำหนดที่ระบบนำไปใช้
+โดยอัตโนมัติ
 
-Defender ปัจจุบันมี interface ที่จัดการได้หนึ่งตัวคือ `enp0s3` (`10.0.2.15/24`,
-VirtualBox NAT) interface ภายนอกและภายในที่จำเป็นสำหรับ lab ยังไม่มีอยู่
-ห้าม assign `192.168.56.10` หรือ `10.10.10.1` ให้กับ `enp0s3` ต้องเพิ่ม
-VirtualBox adapter แบบ isolated สองตัวก่อน และตรวจสอบการเข้าถึงผ่าน console
-ก่อนที่จะ apply D1
+## ขอบเขตปัจจุบัน
 
-Git, Nginx และ conntrack ยังไม่ได้ติดตั้ง Suricata 7.0.3 และ nftables
-ได้ติดตั้งแล้ว คำสั่งที่ต้องใช้สิทธิ์ root รวบรวมไว้ใน
-`docs/root-operations.md` คำสั่งเหล่านี้จะไม่ถูกรันโดยไม่มีหลักฐานและ
-แผนการ rollback ที่ทดสอบแล้ว
+รอบพัฒนาปัจจุบันเน้นเครื่อง Defender ก่อน ยังไม่รวมการติดตั้งเครื่อง Honeypot
+แบบอัตโนมัติ ส่วน endpoint ของ WordPress, phpMyAdmin, Cowrie และ Telnet
+จึงถือเป็นค่าภายนอกที่ต้องยืนยันก่อนเปิดใช้งานจริง
 
-## การตรวจสอบในเครื่องอย่างปลอดภัย
+| ส่วนประกอบ | หน้าที่ | สถานะ |
+|---|---|---|
+| Suricata | ตรวจจับ HTTP, TLS, SSH, Telnet และการสแกน | กฎพร้อมทดสอบแบบออฟไลน์ |
+| Decision Engine | รวมประวัติ คำนวณคะแนน และเลือก action | ชุดทดสอบผ่าน |
+| Nginx | รับ HTTP/HTTPS และเลือก backend ตาม source IP | config พร้อมตรวจสอบ ยังไม่ activate บนเครื่องจริง |
+| nftables | เปลี่ยนเส้นทาง SSH/Telnet และบล็อกชั่วคราว | template พร้อม ยังรอชื่อ interface จริง |
+| Dashboard | แสดงสถานะ เหตุการณ์ รายงาน และจัดการ rule | พร้อมใช้งานบน loopback |
+| Validation Pipeline | ตรวจ rule 5 gates พร้อม backup/rollback | ชุดทดสอบผ่าน; live deploy ปิดไว้เป็นค่าเริ่มต้น |
+
+สถานะโดยละเอียดอยู่ที่ `docs/project-status.md`
+
+## หลักความปลอดภัย
+
+- Dashboard ต้อง bind เฉพาะ `127.0.0.1`, `::1` หรือ `localhost`
+- ไฟล์ `config/mimic.example.json` เป็นแม่แบบ ห้ามใช้ก่อนแทนค่า `CHANGE_ME`
+- โหมด lab ต้องใช้ `dry_run: true`
+- ห้ามกำหนด outer/inner IP ให้ interface ที่มี default route
+- ก่อนเปลี่ยน network หรือ firewall ต้องสำรองค่าและตั้ง timed rollback
+- Dashboard ห้ามทำงานด้วยสิทธิ์ root
+- `rules.allow_deploy` ต้องเป็น `false` จนกว่าจะมี privileged helper ที่ผ่านการทบทวน
+
+## เริ่มใช้งานในเครื่อง
+
+ต้องใช้ Python 3.8 ขึ้นไป การทดสอบล่าสุดผ่านทั้ง Python 3.8 และ 3.12
 
 ```bash
-cd "/home/yakult/Documents/Default Project"
 python3 -m unittest discover -s tests -v
-python3 -m defender.decision_engine.adaptive_defender.cli \
-  --config defender/decision_engine/config/lab.json --once --dry-run
-python3 tests/generate_pcaps.py
-python3 -m tests.run_feedback_loop
+cp config/mimic.local.example.json config/mimic.json
+python3 -m defender.dashboard.manage_users \
+  --file config/users.json \
+  --username admin \
+  --name "Master Admin" \
+  --role master_admin
+python3 run_dashboard.py --config config/mimic.json
 ```
 
+เปิด Dashboard ที่ `http://127.0.0.1:9090/`
 
-ตรวจสอบความพร้อมในการ deploy จริง (อ่านอย่างเดียว):
+## ตรวจสอบก่อนติดตั้งจริง
+
+แก้ `/etc/mimic/mimic.json` ให้ตรงกับเครื่องปลายทางก่อน แล้วรันคำสั่งที่อ่าน
+สถานะอย่างเดียวต่อไปนี้:
 
 ```bash
+python3 -m unittest discover -s tests -v
+python3 -m defender.validation.production \
+  --config /etc/mimic/mimic.json --pretty
 python3 -m defender.validation.readiness --pretty
 ```
 
-Exit code `0` หมายความว่าผ่านการตรวจสอบทั้งหมด Exit code `2` หมายความว่า
-พบปัญหาที่ขัดขวาง เช่น lab NICs ที่หายไป, แพ็กเกจที่ขาดหาย หรือบริการที่ไม่ทำงาน
+ห้ามดำเนินการต่อหากรายงานมีสถานะ `blocked`
 
-ตรวจสอบ Dashboard (loopback เท่านั้น):
+## โครงสร้างสำคัญ
 
-```bash
-python3 -c 'from pathlib import Path; from defender.dashboard.app import serve; serve(Path("evidence/test-results/decisions.jsonl"), Path("evidence/test-results/status.json"))'
+```text
+config/                         แม่แบบการตั้งค่าระบบ
+defender/dashboard/             Dashboard, authentication และ API
+defender/decision_engine/       ตัวอ่าน EVE, risk engine และ adapters
+defender/network/               แบบเครือข่ายและขั้นตอนเตรียม interface
+defender/nginx/                 template และ generated config ของ Nginx
+defender/nftables/              template สำหรับ redirect และ block
+defender/suricata/              กฎตรวจจับและแผนทดสอบ
+defender/validation/            readiness และ rule validation pipeline
+deploy/                         ไฟล์ประกอบการติดตั้ง เช่น logrotate
+docs/                           คู่มือและสถานะโครงการ
+evidence/                       หลักฐานการทดสอบ ห้ามถือเป็น config หลัก
+tests/                          ชุดทดสอบอัตโนมัติ
 ```
 
-ห้าม bind dashboard ไปยังที่อยู่ที่ไม่ใช่ loopback ตัวโหลดการตั้งค่าและ
-server จะปฏิเสธเงื่อนไขนั้น
+## เอกสาร
 
-## WordPress backend
-
-Defender profile `wordpress` ควร redirect ผ่าน
-`defender/nginx/adaptive-honeypot.conf.template` ไปยัง inner honeypot backend
-ที่ `10.10.10.2:8081` โดยใช้ `__WORDPRESS_IP__=10.10.10.2` และ
-`__WORDPRESS_PORT__=8081`
-
-ดูผลลัพธ์จริงและสถานะของแต่ละเฟสได้ที่ `docs/person1-progress.md`
+เริ่มอ่านจาก `docs/README.md` ซึ่งอธิบายลำดับการอ่าน คำศัพท์ และเอกสารหลัก
+ของแต่ละงาน
