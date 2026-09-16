@@ -1,34 +1,35 @@
-# Telnet Honeypot Configuration
+# การตั้งค่า Telnet Honeypot
 
-## Overview
+## ภาพรวม
 
-The telnet honeypot simulates a vulnerable telnet service to attract and log attacker behavior. All connections and authentication attempts are logged for analysis.
+Telnet honeypot จำลองบริการ telnet ที่มีช่องโหว่เพื่อดึงดูดและบันทึกพฤติกรรมของผู้โจมตี 
+การเชื่อมต่อและความพยายามในการยืนยันตัวตนทั้งหมดจะถูกบันทึกเพื่อการวิเคราะห์
 
-## Quick Start
+## เริ่มต้นใช้งาน
 
-### Safe local testing (localhost only):
+### ทดสอบในเครื่องอย่างปลอดภัย (localhost เท่านั้น):
 
 ```bash
 cd "/home/yakult/Desktop/Default Project"
 python3 run_telnet.py
 ```
 
-Connect from another terminal:
+เชื่อมต่อจาก terminal อื่น:
 ```bash
 telnet 127.0.0.1 2323
 ```
 
-### Configuration Options
+### ตัวเลือกการตั้งค่า
 
-The `TelnetHoneypot` class accepts:
+คลาส `TelnetHoneypot` รับพารามิเตอร์:
 
-- `host`: IP address to bind (default: "127.0.0.1" for safety)
-- `port`: Port to listen on (default: 2323, non-privileged)
-- `log_path`: Path to JSONL log file
+- `host`: IP address ที่จะ bind (ค่าเริ่มต้น: "127.0.0.1" เพื่อความปลอดภัย)
+- `port`: พอร์ตที่จะ listen (ค่าเริ่มต้น: 2323, ไม่ต้องใช้สิทธิ์พิเศษ)
+- `log_path`: เส้นทางไฟล์ log ในรูปแบบ JSONL
 
-## Log Format
+## รูปแบบ Log
 
-Telnet sessions are logged to `evidence/telnet-logs/telnet.jsonl` in JSONL format:
+Session ของ Telnet จะถูกบันทึกไปยัง `evidence/telnet-logs/telnet.jsonl` ในรูปแบบ JSONL:
 
 ```json
 {
@@ -40,61 +41,61 @@ Telnet sessions are logged to `evidence/telnet-logs/telnet.jsonl` in JSONL forma
 }
 ```
 
-Event types:
-- `connection`: Session start/end
-- `login_attempt`: Username provided
-- `auth_attempt`: Password provided (logged for threat intelligence)
-- `login_retry`: Multiple login attempts
+ประเภทของ Event:
+- `connection`: เริ่มต้น/สิ้นสุด Session
+- `login_attempt`: มีการส่ง Username
+- `auth_attempt`: มีการส่ง Password (บันทึกเพื่อวิเคราะห์ภัยคุกคาม)
+- `login_retry`: มีการพยายาม login หลายครั้ง
 
-## Security Considerations
+## ข้อควรระวังด้านความปลอดภัย
 
-⚠️ **Default configuration binds to localhost only** to prevent accidental exposure.
+⚠️ **การตั้งค่าเริ่มต้น bind ที่ localhost เท่านั้น** เพื่อป้องกันการเปิดเผยโดยไม่ตั้งใจ
 
-To expose on the network (lab environment only):
+หากต้องการเปิดให้เข้าถึงผ่านเครือข่าย (ในสภาพแวดล้อม lab เท่านั้น):
 
 ```python
 honeypot = TelnetHoneypot(host="10.10.10.1", port=23, log_path=log_path)
 ```
 
-**Port 23 requires root:**
+**พอร์ต 23 ต้องใช้สิทธิ์ root:**
 ```bash
-sudo python3 run_telnet.py  # if binding to port 23
+sudo python3 run_telnet.py  # ถ้า bind ที่พอร์ต 23
 ```
 
-## Integration with VM-Defender
+## การผสานรวมกับ VM-Defender
 
-The telnet honeypot logs can be analyzed by the decision engine for adaptive responses:
+Log ของ telnet honeypot สามารถถูกวิเคราะห์โดย decision engine เพื่อการตอบสนองแบบปรับตัว:
 
-1. Parse `evidence/telnet-logs/telnet.jsonl` for authentication attempts
-2. Extract source IPs and attack patterns
-3. Feed into risk scoring system
-4. Trigger nftables blocks or redirects based on threat level
+1. แยกวิเคราะห์ `evidence/telnet-logs/telnet.jsonl` เพื่อหาความพยายามในการยืนยันตัวตน
+2. ดึง IP ต้นทางและรูปแบบการโจมตี
+3. ป้อนเข้าสู่ระบบให้คะแนนความเสี่ยง
+4. เรียกใช้การบลอกหรือเปลี่ยนเส้นทางด้วย nftables ตามระดับภัยคุกคาม
 
-## Testing
+## การทดสอบ
 
-Test the honeypot with:
+ทดสอบ honeypot ด้วย:
 
 ```bash
-# Terminal 1: Start honeypot
+# Terminal 1: เริ่ม honeypot
 python3 run_telnet.py
 
-# Terminal 2: Connect as attacker
+# Terminal 2: เชื่อมต่อในฐานะผู้โจมตี
 telnet 127.0.0.1 2323
-# Try username: admin
-# Try password: password123
+# ลอง username: admin
+# ลอง password: password123
 
-# Terminal 3: Watch logs
+# Terminal 3: ดู logs
 tail -f evidence/telnet-logs/telnet.jsonl
 ```
 
-## Production Deployment
+## การติดตั้งในโหมดจริง
 
-For production honeypot deployment:
+สำหรับการติดตั้ง honeypot ในโหมดจริง:
 
-1. Configure appropriate network interface (e.g., `10.10.10.1`)
-2. Use standard telnet port 23 (requires root)
-3. Ensure firewall rules allow external access
-4. Monitor logs for suspicious activity
-5. Integrate with decision engine for automated responses
+1. ตั้งค่า network interface ที่เหมาะสม (เช่น `10.10.10.1`)
+2. ใช้พอร์ต telnet มาตรฐาน 23 (ต้องใช้สิทธิ์ root)
+3. ตรวจสอบให้แน่ใจว่ากฎ firewall อนุญาตการเข้าถึงจากภายนอก
+4. ติดตาม logs เพื่อหากิจกรรมที่น่าสงสัย
+5. ผสานรวมกับ decision engine เพื่อการตอบสนองอัตโนมัติ
 
-See `docs/root-operations.md` for elevated privilege operations.
+ดู `docs/root-operations.md` สำหรับการใช้งานที่ต้องการสิทธิ์สูง

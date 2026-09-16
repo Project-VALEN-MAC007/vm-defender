@@ -1,41 +1,41 @@
-# D4 safe deployment
+# การติดตั้ง D4 อย่างปลอดภัย
 
-Nginx is not installed on the observed VM.  The configuration remains a
-template because the lab outer address and person-2 backend ports/health
-endpoints are not verified.
+Nginx ยังไม่ได้ติดตั้งบน VM ที่สังเกตการณ์ การตั้งค่ายังคงเป็นเทมเพลตเนื่องจาก
+lab outer address และพอร์ต/health endpoints ของ backend person-2 
+ยังไม่ได้รับการตรวจสอบ
 
-The active generated lab config redirects HTTP to HTTPS and terminates TLS on
-Nginx before proxying to the selected inner backend.  The lab certificate paths
-used by `defender/nginx/generated/adaptive-honeypot.http.conf` are:
+การตั้งค่า lab ที่สร้างขึ้นจะ redirect HTTP ไปยัง HTTPS และยุติ TLS บน
+Nginx ก่อนที่จะ proxy ไปยัง inner backend ที่เลือก เส้นทางใบรับรองที่ใช้โดย
+`defender/nginx/generated/adaptive-honeypot.http.conf` คือ:
 
 ```text
 /etc/adaptive-defender/tls/defender.lab.crt
 /etc/adaptive-defender/tls/defender.lab.key
 ```
 
-Create a lab-only self-signed certificate at those paths before running
-`nginx -t`, or replace the paths with the confirmed lab certificate and key.
+สร้างใบรับรองแบบ self-signed สำหรับ lab เท่านั้นที่เส้นทางเหล่านั้นก่อนรัน
+`nginx -t` หรือแทนที่เส้นทางด้วยใบรับรองและคีย์ที่ยืนยันแล้ว
 
-Deployment gate:
+ขั้นตอนการติดตั้ง:
 
-1. Back up `/etc/nginx` with a UTC timestamp.
-2. Render every `__TOKEN__`; reject output if a token remains.
-3. Health-check each confirmed backend from Defender's inner interface.
-4. Write the map to a sibling temporary file and atomically rename it.
-5. Run `sudo nginx -t`; reload only on exit 0.
-6. Confirm HTTP 308 redirect, HTTPS proxying, source-IP log fields and managed 503 response.
-7. On failure, restore the backup, run `nginx -t`, then reload.
+1. สำรองข้อมูล `/etc/nginx` พร้อม timestamp UTC
+2. Render ทุก `__TOKEN__`; ปฏิเสธผลลัพธ์ถ้ายังมี token เหลืออยู่
+3. ตรวจสอบ health-check ของแต่ละ backend ที่ยืนยันแล้วจาก inner interface ของ Defender
+4. เขียน map ไปยังไฟล์ชั่วคราวและเปลี่ยนชื่อแบบ atomic
+5. รัน `sudo nginx -t`; reload เฉพาะเมื่อ exit 0
+6. ยืนยัน HTTP 308 redirect, HTTPS proxying, source-IP log fields และ managed 503 response
+7. หากล้มเหลว ให้กลับคืนสู่การสำรองข้อมูล รัน `nginx -t` แล้ว reload
 
-No certificate, credential or real backend value is stored here.
+ไม่มีใบรับรอง ข้อมูลรับรอง หรือค่า backend จริงถูกเก็บไว้ที่นี่
 
-For the inner WordPress honeypot backend, render:
+สำหรับ inner WordPress honeypot backend ให้ render:
 
 ```text
 __WORDPRESS_IP__=10.10.10.2
 __WORDPRESS_PORT__=8081
 ```
 
-Verify it before activating Nginx:
+ตรวจสอบก่อนเปิดใช้งาน Nginx:
 
 ```bash
 curl -fsS http://10.10.10.2:8081/wp-login.php
