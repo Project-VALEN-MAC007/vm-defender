@@ -16,10 +16,18 @@ Nginx รับ HTTP/HTTPS ที่ outer IP เลือก backend จาก 
 
 - outer IP ของ Defender
 - certificate และ private key
-- IP/port/health path ของทุก backend
+- Real Web: `10.10.10.10:80`
+- WordPress Honeypot: `10.10.10.2:8081`
+- phpMyAdmin Honeypot: `10.10.10.2:8082`
+- health path ของทุก backend
 - path ของ redirect map
 
 ห้ามเดาค่า endpoint และห้ามใช้ config ที่ยังมี `__TOKEN__`
+
+ต้นแบบต้องแทนค่า `__REAL_WEB_IP__`, `__REAL_WEB_PORT__`,
+`__WORDPRESS_IP__`, `__WORDPRESS_PORT__`, `__PHPMYADMIN_IP__` และ
+`__PHPMYADMIN_PORT__` ก่อนติดตั้ง ห้ามแก้ไฟล์ใน `generated/` แล้วถือเป็น
+แหล่งตั้งค่าหลัก
 
 ## ขั้นตอนตรวจสอบ
 
