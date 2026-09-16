@@ -16,7 +16,7 @@ Nginx รับ HTTP/HTTPS ที่ outer IP เลือก backend จาก 
 
 - outer IP ของ Defender
 - certificate และ private key
-- Real Web: `10.10.10.10:80`
+- Real Web: `10.10.10.3:8080`
 - WordPress Honeypot: `10.10.10.2:8081`
 - phpMyAdmin Honeypot: `10.10.10.2:8082`
 - health path ของทุก backend

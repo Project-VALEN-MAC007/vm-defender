@@ -17,7 +17,7 @@ class NginxConfigTests(unittest.TestCase):
         rendered = (PROJECT_ROOT / "defender/nginx/generated/adaptive-honeypot.http.conf").read_text(
             encoding="utf-8"
         )
-        self.assertIn("real        http://10.10.10.10:80;", rendered)
+        self.assertIn("real        http://10.10.10.3:8080;", rendered)
         self.assertIn("wordpress   http://10.10.10.2:8081;", rendered)
         self.assertIn("phpmyadmin  http://10.10.10.2:8082;", rendered)
 
