@@ -20,6 +20,8 @@ class NginxConfigTests(unittest.TestCase):
         self.assertIn("real        http://10.10.10.3:8080;", rendered)
         self.assertIn("wordpress   http://10.10.10.2:8081;", rendered)
         self.assertIn("phpmyadmin  http://10.10.10.2:8082;", rendered)
+        self.assertIn("proxy_connect_timeout 5s;", rendered)
+        self.assertIn("proxy_read_timeout 30s;", rendered)
 
 
 if __name__ == "__main__":
