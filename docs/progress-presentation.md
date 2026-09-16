@@ -69,8 +69,8 @@ Dashboard และ audit logs
 
 | รายการ | ผล |
 |---|---|
-| Python 3.12 | ผ่าน 31 รายการทดสอบ |
-| Python 3.8 | ผ่าน 31 รายการทดสอบ |
+| Python 3.12 | ผ่าน 33 รายการทดสอบ |
+| Python 3.8 | ผ่าน 33 รายการทดสอบ |
 | API ไม่มี session | ตอบ `401` |
 | user เรียก Rule API | ตอบ `403` |
 | POST ไม่มี CSRF token | ตอบ `403` |
@@ -84,9 +84,10 @@ Dashboard และ audit logs
 
 ## 5. สถานะการติดตั้งจริง
 
-ส่วนซอฟต์แวร์หลักและชุดทดสอบพร้อม แต่ยังไม่ถือว่า deploy เสร็จ เพราะเครื่อง
-ปลายทางต้องมี outer/inner interface แยกจาก management interface และต้องทดสอบ
-Nginx, nftables และ Suricata ร่วมกับทราฟฟิกจริงในขอบเขตที่อนุญาต
+เครื่อง Defender แยก management, outer และ inner interface แล้ว Nginx รับ TLS
+ที่ `192.168.56.10` และส่งต่อไปยัง Real Web กับ WordPress Honeypot ได้จริงผ่าน
+`https://defender.lab` งานที่ยังเหลือคือจำกัด firewall ของ Real Product และ
+ทดสอบ Suricata, Decision Engine และ nftables แบบครบเส้นทาง
 
 Production preflight จะหยุดการติดตั้งหาก:
 
@@ -98,12 +99,12 @@ Production preflight จะหยุดการติดตั้งหาก:
 
 ## 6. งานถัดไป
 
-1. เตรียมเครื่อง Defender เปล่าตาม `docs/production-defender.md`
-2. ยืนยันชื่อ management, outer และ inner interface
+1. เปิด UFW บน Real Product โดยอนุญาต Defender เท่านั้น
+2. ใส่ชื่อ interface ที่ยืนยันแล้วใน production config
 3. รัน readiness และ syntax checks
-4. ทดสอบ live integration ทีละส่วน เริ่มจาก Suricata แล้ว Nginx และ nftables
-5. ทดสอบ reboot และ rollback
-6. เก็บผลทดสอบจริงแยกจาก fixture สังเคราะห์
+4. ทดสอบ Suricata alert ไปจนถึงการเปลี่ยน redirect map
+5. ทดสอบ nftables สำหรับ SSH, Telnet และ temporary block
+6. ทดสอบ reboot และ rollback
 
 ## 7. ข้อสรุป
 
