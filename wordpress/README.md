@@ -1,13 +1,13 @@
 # WordPress honeypot backend
 
-This directory defines the WordPress backend for the Defender `wordpress`
-profile. It keeps WordPress separate from the Python decision engine while
-giving Nginx a stable local target.
+ไดเรกทอรีนี้กำหนด WordPress backend สำหรับ Defender profile `wordpress`
+มันแยก WordPress ออกจาก Python decision engine ในขณะที่ให้ Nginx มีเป้าหมาย
+ภายในที่เสถียร
 
-## Local backend values
+## ค่า Local backend
 
-Use these values when rendering `defender/nginx/adaptive-honeypot.conf.template`
-from VM-Defender to the inner honeypot VM:
+ใช้ค่าเหล่านี้เมื่อ render `defender/nginx/adaptive-honeypot.conf.template`
+จาก VM-Defender ไปยัง inner honeypot VM:
 
 ```text
 __WORDPRESS_IP__=10.10.10.2
@@ -16,7 +16,7 @@ health_path=/wp-login.php
 expected_status=200
 ```
 
-The matching person-2 contract entry is:
+รายการ person-2 contract ที่ตรงกันคือ:
 
 ```json
 {
@@ -30,10 +30,9 @@ The matching person-2 contract entry is:
 }
 ```
 
-## Run
+## การรัน
 
-Copy the example environment file and replace the placeholder passwords before
-starting the stack:
+คัดลอกไฟล์ environment ตัวอย่างและแทนที่รหัสผ่าน placeholder ก่อนเริ่ม stack:
 
 ```bash
 cd "/home/yakult/Desktop/Default Project/wordpress"
@@ -42,7 +41,7 @@ docker compose up -d
 curl -fsS http://127.0.0.1:8081/wp-login.php
 ```
 
-If this VM does not have Docker yet, install it first from the local operations
-runbook. On VM-Defender, route traffic through the Defender Nginx template to
-`10.10.10.2:8081`; do not bind Docker to `10.10.10.2` unless the stack is
-running on the honeypot VM that owns that address.
+ถ้า VM นี้ยังไม่มี Docker ให้ติดตั้งก่อนจาก local operations runbook
+บน VM-Defender ให้ route traffic ผ่าน Defender Nginx template ไปยัง
+`10.10.10.2:8081` ห้าม bind Docker ไปยัง `10.10.10.2` เว้นแต่ stack
+กำลังรันบน honeypot VM ที่เป็นเจ้าของที่อยู่นั้น

@@ -1,41 +1,41 @@
 # D5 SSH/Telnet redirect safety gate
 
-The template contains no guessed interface or Cowrie endpoint. Before apply:
+เทมเพลตนี้ไม่มี interface หรือ Cowrie endpoint ที่เดา ก่อน apply:
 
-- confirm outer/inner names with `ip -br link` and routes with `ip route`;
-- receive Cowrie SSH IP/port, Telnet honeypot IP/port and return routes from person 2;
-- capture `sudo nft list ruleset` to a root-only backup;
-- render to a staging file and run `sudo nft -c -f STAGING_FILE`;
-- keep the VirtualBox console open and arm the timed rollback in
+- ยืนยันชื่อ outer/inner ด้วย `ip -br link` และ routes ด้วย `ip route`;
+- รับ Cowrie SSH IP/port, Telnet honeypot IP/port และ return routes จาก person 2;
+- จับภาพ `sudo nft list ruleset` ไปยังการสำรองข้อมูลที่ root-only;
+- render ไปยังไฟล์ staging และรัน `sudo nft -c -f STAGING_FILE`;
+- เปิด VirtualBox console ไว้และเตรียม timed rollback ใน
   `docs/root-operations.md`;
-- apply, then inspect `nft list ruleset`, `tcpdump` on both *observed* NICs and
-  `conntrack -L` using only authorized lab traffic.
+- apply แล้วตรวจสอบ `nft list ruleset`, `tcpdump` บนทั้งสอง NICs *ที่สังเกตการณ์* และ
+  `conntrack -L` โดยใช้เฉพาะ lab traffic ที่ได้รับอนุญาต
 
-Rollback deletes only `table inet adaptive_defender`, then restores the exact
-pre-change ruleset. Persistence is not enabled until runtime and restore tests
-pass.
+Rollback จะลบเฉพาะ `table inet adaptive_defender` แล้วกลับคืนสู่ ruleset
+ก่อนการเปลี่ยนแปลงเท่านั้น การคงอยู่จะไม่ถูกเปิดใช้งานจนกว่าการทดสอบ runtime และ restore
+จะผ่าน
 
-## Confirmed endpoint values
+## ค่า endpoint ที่ยืนยันแล้ว
 
-SSH/Cowrie honeypot endpoint received from the lab operator:
+SSH/Cowrie honeypot endpoint ที่ได้รับจาก lab operator:
 
 ```text
 __COWRIE_IP__=10.10.10.2
 __COWRIE_PORT__=2222
 ```
 
-Use `10.10.10.2` in nftables DNAT rules. The `/24` prefix belongs on the
-honeypot interface configuration, not in the DNAT destination. Telnet is still
-blocked from live rendering until `__TELNET_IP__`, `__TELNET_PORT__`,
-`__OUTER_INTERFACE__` and `__INNER_INTERFACE__` are confirmed.
+ใช้ `10.10.10.2` ใน nftables DNAT rules คำนำหน้า `/24` เป็นของการตั้งค่า
+honeypot interface ไม่ใช่ใน DNAT destination Telnet ยังถูกบลอกจากการ render
+จริงจนกว่า `__TELNET_IP__`, `__TELNET_PORT__`, `__OUTER_INTERFACE__` และ
+`__INNER_INTERFACE__` จะได้รับการยืนยัน
 
 ## SSH-only render
 
-Use `generated/ssh-redirect.cowrie-2222.ssh-only.nft` when only the SSH/Cowrie
-redirect is approved. It contains no Telnet rules, so the only remaining tokens
-are `__OUTER_INTERFACE__` and `__INNER_INTERFACE__`.
+ใช้ `generated/ssh-redirect.cowrie-2222.ssh-only.nft` เมื่อเฉพาะ SSH/Cowrie
+redirect ได้รับอนุมัติ มันไม่มีกฎ Telnet ดังนั้น tokens ที่เหลืออยู่เพียง
+`__OUTER_INTERFACE__` และ `__INNER_INTERFACE__`
 
-Render those tokens from observed NIC names, then validate before applying:
+Render tokens เหล่านั้นจากชื่อ NIC ที่สังเกตการณ์ แล้วตรวจสอบก่อน apply:
 
 ```bash
 cp defender/nftables/generated/ssh-redirect.cowrie-2222.ssh-only.nft /tmp/ssh-redirect.nft
@@ -45,4 +45,4 @@ sudo nft -f /tmp/ssh-redirect.nft
 sudo nft add element inet adaptive_defender ssh_redirect '{ 192.0.2.30 timeout 1800s }'
 ```
 
-Replace `192.0.2.30` with the authorized source IP that should be redirected.
+แทนที่ `192.0.2.30` ด้วย IP ต้นทางที่ได้รับอนุญาตที่ควรถูก redirect
