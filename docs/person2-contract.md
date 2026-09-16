@@ -9,39 +9,49 @@
 ```json
 {
   "schema_version": "1.0",
-  "service_host": {
-    "ip": "REQUIRED",
-    "interface": "REQUIRED",
-    "return_route_via": "REQUIRED"
+  "defender": {
+    "outer_ip": "192.168.56.10",
+    "inner_ip": "10.10.10.1",
+    "inner_interface": "ztpp6hfkv2",
+    "public_url": "https://defender.lab"
   },
   "profiles": {
+    "real_web": {
+      "host": "10.10.10.3",
+      "port": 8080,
+      "health_path": "/",
+      "expected_status": 200
+    },
     "wordpress": {
-      "port": "REQUIRED",
-      "health_path": "REQUIRED",
-      "expected_status": "REQUIRED"
+      "host": "10.10.10.2",
+      "port": 8081,
+      "health_path": "/",
+      "expected_status": 200
     },
     "phpmyadmin": {
-      "port": "REQUIRED",
-      "health_path": "REQUIRED",
-      "expected_status": "REQUIRED"
+      "host": "10.10.10.2",
+      "port": 8082,
+      "health_path": "/",
+      "expected_status": 200
     },
     "cowrie": {
-      "ip": "REQUIRED",
-      "port": "REQUIRED",
-      "health_method": "REQUIRED",
-      "json_log_path": "REQUIRED"
+      "host": "10.10.10.2",
+      "port": 2222,
+      "health_method": "tcp_connect",
+      "json_log_path": "/home/vboxuser/honeypot/cowrie-logs/cowrie.json"
     },
     "telnet": {
-      "ip": "REQUIRED",
-      "port": "REQUIRED",
-      "health_method": "REQUIRED",
-      "json_log_path": "REQUIRED"
+      "host": "10.10.10.2",
+      "port": 2223,
+      "health_method": "tcp_connect",
+      "json_log_path": "/home/vboxuser/honeypot/cowrie-logs/cowrie.json"
     }
   }
 }
 ```
 
-คำว่า `REQUIRED` หมายถึงยังห้ามนำ config ไปใช้จริง ห้ามเดาค่า endpoint
+ค่าชุดนี้ตรวจจากเครื่องจริงเมื่อวันที่ 17 กันยายน 2026 การเปลี่ยน IP, port,
+interface หรือ URL ต้องทดสอบจาก Defender และแก้เอกสารนี้พร้อม config ที่ใช้งาน
 
 ## รูปแบบเหตุการณ์มาตรฐาน
 
