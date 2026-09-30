@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import csv
+from collections import Counter
 from dataclasses import dataclass
+from datetime import datetime, timedelta, timezone
 from http import cookies
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import io
@@ -163,25 +165,81 @@ def runtime_metrics(alerts: list[dict], decisions: list[dict]) -> dict:
             "temporary_blocks": sum(1 for row in decisions if row.get("action") == "temporary_block")}
 
 
+def _event_time(row: dict) -> datetime | None:
+    value = row.get("timestamp") or row.get("start_time")
+    if not isinstance(value, str):
+        return None
+    try:
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+        return parsed.replace(tzinfo=timezone.utc) if parsed.tzinfo is None else parsed
+    except ValueError:
+        return None
+
+
+def analytics(alerts: list[dict], decisions: list[dict], window: str = "24h",
+              now: datetime | None = None) -> dict:
+    """Aggregate the bounded runtime snapshot, never fixture or sample metrics."""
+    if window not in {"24h", "7d", "30d", "all"}:
+        raise ValueError("invalid window")
+    now = now or datetime.now(timezone.utc)
+    cutoff = None if window == "all" else now - {"24h": timedelta(hours=24),
+                                                  "7d": timedelta(days=7),
+                                                  "30d": timedelta(days=30)}[window]
+    def in_window(row: dict) -> bool:
+        stamp = _event_time(row)
+        return stamp is not None and (cutoff is None or cutoff <= stamp <= now)
+    alerts = [row for row in alerts if in_window(row)]
+    decisions = [row for row in decisions if in_window(row)]
+    trend = Counter()
+    for row in alerts:
+        stamp = _event_time(row).astimezone(timezone.utc)
+        key = stamp.strftime("%Y-%m-%d %H:00") if window == "24h" else stamp.strftime("%Y-%m-%d")
+        trend[key] += 1
+    if window == "24h":
+        keys = [(now - timedelta(hours=i)).astimezone(timezone.utc).strftime("%Y-%m-%d %H:00")
+                for i in range(24, -1, -1)]
+    elif window in {"7d", "30d"}:
+        days = 7 if window == "7d" else 30
+        keys = [(now - timedelta(days=i)).astimezone(timezone.utc).strftime("%Y-%m-%d")
+                for i in range(days, -1, -1)]
+    else:
+        keys = sorted(trend)
+    actions = Counter(str(row.get("action") or "unknown") for row in decisions)
+    destinations = {"real": sum(count for action, count in actions.items()
+                                 if action in {"allow", "monitor"}),
+                    "honeypot": sum(count for action, count in actions.items()
+                                    if action.startswith("redirect")),
+                    "blocked": sum(count for action, count in actions.items() if "block" in action)}
+    return {"window": window, "scope": "bounded_runtime_snapshot", "total_alerts": len(alerts),
+            "unique_source_ips": len({row.get("src_ip") for row in alerts if row.get("src_ip")}),
+            "high_severity_alerts": sum(str(row.get("severity")) == "1" for row in alerts),
+            "total_decisions": len(decisions), "protocols": dict(Counter(
+                str(row.get("app_proto") or row.get("proto") or "unknown").upper() for row in alerts)),
+            "severities": dict(Counter(str(row.get("severity") or "unknown") for row in alerts)),
+            "actions": dict(actions), "destinations": destinations,
+            "trend": [{"time": key, "count": trend[key]} for key in keys],
+            "honeypot_telemetry_available": False}
+
+
 def notifications(rows: list[dict], alerts: list[dict], status: dict) -> list[dict]:
     notes = []
     for name, state in status.items():
         if state not in {"active", "unknown"}:
-            notes.append({"level": "warning", "title": f"{name} service is {state}",
-                          "detail": "Run the production readiness check before deployment"})
+            notes.append({"level": "warning", "title": f"บริการ {name} มีสถานะ {state}",
+                          "detail": "ตรวจสอบความพร้อมของระบบก่อนใช้งานจริง"})
     redirects = [row for row in rows if "redirect" in str(row.get("action", ""))]
     if redirects:
         latest = redirects[0]
-        notes.append({"level": "high", "title": "Redirect decision recorded",
-                      "detail": f"{latest.get('source_ip')} -> {latest.get('profile')}"})
+        notes.append({"level": "high", "title": "มีการตัดสินใจเปลี่ยนเส้นทาง",
+                      "detail": f"{latest.get('source_ip')} → {latest.get('profile')}"})
     critical = [alert for alert in alerts if int(alert.get("severity") or 0) == 1]
     if critical:
         latest = critical[0]
-        notes.append({"level": "critical", "title": "High severity Suricata alert",
-                      "detail": f"SID {latest.get('signature_id')} from {latest.get('src_ip')}"})
+        notes.append({"level": "critical", "title": "Suricata พบเหตุการณ์ความรุนแรงสูง",
+                      "detail": f"SID {latest.get('signature_id')} จาก {latest.get('src_ip')}"})
     if not notes:
-        notes.append({"level": "info", "title": "No actionable notifications",
-                      "detail": "No event currently requires action"})
+        notes.append({"level": "info", "title": "ไม่มีการแจ้งเตือนที่ต้องดำเนินการ",
+                      "detail": "ยังไม่พบเหตุการณ์ที่ต้องตรวจสอบเพิ่มเติม"})
     return notes[:20]
 
 
@@ -244,6 +302,55 @@ def _query_rows(rows: list[dict], query: dict[str, list[str]], kind: str) -> tup
     return rows[offset:offset + limit], total, limit, offset
 
 
+def search_logs(alerts: list[dict], decisions: list[dict], query: dict[str, list[str]]) -> dict:
+    """Search all retained alert and decision rows before pagination."""
+    rows = [{"type": "suricata", "time": a.get("timestamp"), "source": a.get("src_ip"),
+             "protocol": a.get("app_proto") or a.get("proto"), "severity": a.get("severity"),
+             "summary": a.get("signature") or a.get("category"), "result": "alert"}
+            for a in alerts]
+    rows += [{"type": "decision", "time": d.get("start_time"), "source": d.get("source_ip"),
+              "protocol": d.get("protocol"), "severity": None,
+              "summary": d.get("reason"), "result": d.get("action")}
+             for d in decisions]
+    def param(name: str) -> str:
+        return str((query.get(name) or [""])[0]).strip()
+    kind, source, protocol, severity = (param(name).lower() for name in
+                                        ("type", "source", "protocol", "severity"))
+    search = param("q").lower()
+    if kind:
+        rows = [r for r in rows if str(r["type"]).lower() == kind]
+    if source:
+        rows = [r for r in rows if source in str(r["source"] or "").lower()]
+    if protocol:
+        rows = [r for r in rows if str(r["protocol"] or "").lower() == protocol]
+    if severity:
+        rows = [r for r in rows if str(r["severity"] or "").lower() == severity]
+    if search:
+        rows = [r for r in rows if search in json.dumps(r, ensure_ascii=False).lower()]
+    for field, lower_bound in (("from", True), ("to", False)):
+        value = param(field)
+        if value:
+            try:
+                bound = datetime.fromisoformat(value.replace("Z", "+00:00"))
+                if bound.tzinfo is None:
+                    raise ValueError
+            except ValueError as exc:
+                raise ValueError("invalid time filter") from exc
+            rows = [r for r in rows if (_event_time({"timestamp": r["time"]}) is not None and
+                    (_event_time({"timestamp": r["time"]}) >= bound if lower_bound else
+                     _event_time({"timestamp": r["time"]}) <= bound))]
+    rows.sort(key=lambda r: _event_time({"timestamp": r["time"]}) or
+              datetime.min.replace(tzinfo=timezone.utc), reverse=True)
+    total = len(rows)
+    try:
+        limit = min(500, max(1, int(param("limit") or 100)))
+        offset = max(0, int(param("offset") or 0))
+    except ValueError:
+        limit, offset = 100, 0
+    return {"items": rows[offset:offset + limit], "total": total, "limit": limit,
+            "offset": offset, "scope": "bounded_runtime_snapshot"}
+
+
 def handler_factory(audit_path: Path | None = None, status_path: Path | None = None,
                     eve_paths: tuple = DEFAULT_EVE_PATHS,
                     settings: DashboardSettings | None = None):
@@ -262,6 +369,10 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
                 dashboard_file = Path(__file__).parent / "static/dashboard.html"
                 self._send("text/html; charset=utf-8", dashboard_file.read_bytes())
                 return
+            if route == "/static/dashboard.css":
+                stylesheet = Path(__file__).parent / "static/dashboard.css"
+                self._send("text/css; charset=utf-8", stylesheet.read_bytes())
+                return
             if route == "/api/session.json":
                 session = self._current_session()
                 payload = None if session is None else {
@@ -278,6 +389,13 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
             elif route == "/api/decisions.json":
                 items, total, limit, offset = _query_rows(runtime.decision_store.rows(), query, "decision")
                 self._send_json({"items": items, "total": total, "limit": limit, "offset": offset})
+            elif route == "/api/logs.json":
+                try:
+                    payload = search_logs(runtime.alert_store.rows(), runtime.decision_store.rows(), query)
+                except ValueError:
+                    self._send_json({"error": "invalid_time_filter"}, 400)
+                else:
+                    self._send_json(payload)
             elif route == "/api/alerts.csv":
                 self._send_download("text/csv; charset=utf-8", alerts_csv_export(runtime.alert_store.rows()).encode(), "alerts.csv")
             elif route == "/api/decisions.csv":
@@ -291,6 +409,14 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
                 self._send_json(runtime.status())
             elif route == "/api/metrics.json":
                 self._send_json(runtime_metrics(runtime.alert_store.rows(), runtime.decision_store.rows()))
+            elif route == "/api/analytics.json":
+                window = (query.get("window") or ["24h"])[0]
+                try:
+                    payload = analytics(runtime.alert_store.rows(), runtime.decision_store.rows(), window)
+                except ValueError:
+                    self._send_json({"error": "invalid_window"}, 400)
+                else:
+                    self._send_json(payload)
             elif route == "/api/notifications.json":
                 self._send_json(notifications(runtime.decision_store.rows(), runtime.alert_store.rows(), runtime.status()))
             elif route in {"/api/rules.json", "/api/rule-registry.json"}:
