@@ -52,6 +52,14 @@ python3 run_dashboard.py --config config/mimic.json
 
 เปิด Dashboard ที่ `http://127.0.0.1:9090/`
 
+หน้า Overview และ Reports เลือกสถิติย้อนหลัง 24 ชั่วโมง, 7 วัน, 30 วัน หรือทั้งหมดที่เก็บไว้ได้
+โดยแสดงแนวโน้ม Alert, Source IP ที่ไม่ซ้ำ, โปรโตคอล, ระดับความรุนแรง และผลการตัดสินใจ
+หน้า Log Search ค้นหา Suricata และ Decision Engine จากข้อมูลที่เก็บไว้ทั้งหมดก่อนแบ่งหน้า
+พร้อมกรองเวลา, Source IP, โปรโตคอล, แหล่งข้อมูล และความรุนแรง
+สถิติเป็น snapshot ของ log ที่ Dashboard เก็บได้สูงสุดตาม `dashboard.maximum_rows`
+จึงไม่ใช่ยอดสะสมถาวร ปัจจุบันยังไม่มี data adapter สำหรับ log จาก Web Honeypot และ Cowrie
+จึงไม่แสดงสถิติพฤติกรรมจากฮันนีพอต
+
 ## ตรวจสอบก่อนติดตั้งจริง
 
 แก้ `/etc/mimic/mimic.json` ให้ตรงกับเครื่องปลายทางก่อน แล้วรันคำสั่งที่อ่าน
