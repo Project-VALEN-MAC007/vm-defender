@@ -419,6 +419,9 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
                     self._send_json(payload)
             elif route == "/api/notifications.json":
                 self._send_json(notifications(runtime.decision_store.rows(), runtime.alert_store.rows(), runtime.status()))
+            elif route == "/api/users.json":
+                if self._has_role(user, "master_admin"):
+                    self._send_json({"items": runtime.users.list_public()})
             elif route in {"/api/rules.json", "/api/rule-registry.json"}:
                 if not self._has_role(user, "master_admin"):
                     return
@@ -445,8 +448,83 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
             elif route in {"/api/rules/validate", "/api/rules/deploy"}:
                 if self._has_role(user, "master_admin"):
                     self._rule_workflow(route, user)
+            elif route == "/api/account/password":
+                self._change_password(user)
+            elif route == "/api/users":
+                if self._has_role(user, "master_admin"):
+                    self._create_user(user)
+            elif route.startswith("/api/users/"):
+                if self._has_role(user, "master_admin"):
+                    self._manage_user(route, user)
             else:
                 self.send_error(404)
+
+        def _create_user(self, actor: dict) -> None:
+            payload = self._read_json()
+            try:
+                password = payload.get("password")
+                if password == "":
+                    password = None
+                account, password = runtime.users.create_user(
+                    str(payload.get("username", "")), str(payload.get("name", "")), password)
+            except ValueError as exc:
+                self._send_json({"error": str(exc)}, 409 if str(exc) == "username_exists" else 400)
+                return
+            except OSError:
+                self._send_json({"error": "user_store_unavailable"}, 503)
+                return
+            append_security_audit(settings.security_audit_path, "user_created", self.client_address[0],
+                                  actor["username"], {"target": account["username"]})
+            result = {"user": account}
+            if password is not None:
+                result["temporary_password"] = password
+            self._send_json(result, 201)
+
+        def _manage_user(self, route: str, actor: dict) -> None:
+            parts = route.split("/")
+            if len(parts) != 5 or parts[4] not in {"status", "reset-password"}:
+                self.send_error(404)
+                return
+            username, action = parts[3], parts[4]
+            try:
+                if action == "status":
+                    payload = self._read_json()
+                    if type(payload.get("disabled")) is not bool:
+                        self._send_json({"error": "invalid_status"}, 400)
+                        return
+                    account = runtime.users.set_disabled(username, payload["disabled"])
+                    result = {"user": account}
+                else:
+                    result = {"temporary_password": runtime.users.reset_password(username)}
+            except ValueError as exc:
+                self._send_json({"error": str(exc)}, 404)
+                return
+            except OSError:
+                self._send_json({"error": "user_store_unavailable"}, 503)
+                return
+            runtime.sessions.delete_user(username)
+            append_security_audit(settings.security_audit_path, "user_" + action.replace("-", "_"),
+                                  self.client_address[0], actor["username"], {"target": username})
+            self._send_json(result)
+
+        def _change_password(self, user: dict) -> None:
+            payload = self._read_json()
+            current, new = payload.get("current_password"), payload.get("new_password")
+            if not isinstance(current, str) or not isinstance(new, str):
+                self._send_json({"error": "invalid_password"}, 400)
+                return
+            try:
+                runtime.users.change_password(user["username"], current, new)
+            except ValueError as exc:
+                self._send_json({"error": str(exc)}, 400)
+                return
+            except OSError:
+                self._send_json({"error": "user_store_unavailable"}, 503)
+                return
+            runtime.sessions.delete_user(user["username"])
+            append_security_audit(settings.security_audit_path, "password_changed", self.client_address[0],
+                                  user["username"])
+            self._send_json({"ok": True}, headers={"Set-Cookie": self._expired_cookie()})
 
         def _login(self) -> None:
             payload = self._read_json()
@@ -550,7 +628,14 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
             return morsel.value if morsel else None
 
         def _current_session(self) -> Session | None:
-            return runtime.sessions.get(self._session_token())
+            token = self._session_token()
+            session = runtime.sessions.get(token)
+            if session:
+                account = runtime.users.load().get(session.user["username"])
+                if not account or account["disabled"] or account["role"] != session.user["role"]:
+                    runtime.sessions.delete(token)
+                    return None
+            return session
 
         def _require_user(self) -> dict | None:
             session = self._current_session()

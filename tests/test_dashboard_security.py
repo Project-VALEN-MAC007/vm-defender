@@ -145,6 +145,82 @@ class DashboardApiSecurityTests(unittest.TestCase):
         self.assertEqual(status, 409)
         self.assertEqual(payload["error"], "rule_deploy_disabled")
 
+    def test_admin_creates_user_and_password_is_shown_once(self):
+        cookie, csrf = self.login("admin", "Admin-password-123")
+        headers = {"Cookie": cookie, "X-CSRF-Token": csrf}
+        status, _, payload = self.request("POST", "/api/users", {
+            "username": "analyst01", "name": "Security Analyst"}, headers)
+        self.assertEqual(status, 201)
+        password = payload["temporary_password"]
+        self.assertGreaterEqual(len(password), 12)
+        self.assertEqual(payload["user"]["role"], "user")
+        new_cookie, _ = self.login("analyst01", password)
+        self.assertTrue(new_cookie)
+        status, _, listed = self.request("GET", "/api/users.json", headers={"Cookie": cookie})
+        self.assertEqual(status, 200)
+        self.assertNotIn("password_hash", json.dumps(listed))
+        self.assertNotIn(password, json.dumps(listed))
+        status, _, _ = self.request("POST", "/api/users", {
+            "username": "analyst01", "name": "Again"}, headers)
+        self.assertEqual(status, 409)
+
+    def test_user_cannot_manage_users_or_create_admin(self):
+        cookie, csrf = self.login("viewer", "Viewer-password-123")
+        headers = {"Cookie": cookie, "X-CSRF-Token": csrf}
+        self.assertEqual(self.request("GET", "/api/users.json", headers=headers)[0], 403)
+        self.assertEqual(self.request("POST", "/api/users", {
+            "username": "another", "name": "Another", "role": "master_admin"}, headers)[0], 403)
+        admin_cookie, admin_csrf = self.login("admin", "Admin-password-123")
+        status, _, payload = self.request("POST", "/api/users", {
+            "username": "another", "name": "Another", "role": "master_admin"},
+            {"Cookie": admin_cookie, "X-CSRF-Token": admin_csrf})
+        self.assertEqual(status, 201)
+        self.assertEqual(payload["user"]["role"], "user")
+
+    def test_disable_reset_and_change_password_revoke_sessions(self):
+        admin_cookie, csrf = self.login("admin", "Admin-password-123")
+        headers = {"Cookie": admin_cookie, "X-CSRF-Token": csrf}
+        viewer_cookie, viewer_csrf = self.login("viewer", "Viewer-password-123")
+        status, _, payload = self.request("POST", "/api/users/viewer/status", {"disabled": True}, headers)
+        self.assertEqual(status, 200)
+        self.assertTrue(payload["user"]["disabled"])
+        self.assertEqual(self.request("GET", "/api/alerts.json", headers={"Cookie": viewer_cookie})[0], 401)
+        self.assertEqual(self.request("POST", "/api/login", {
+            "username": "viewer", "password": "Viewer-password-123"})[0], 401)
+        self.assertEqual(self.request("POST", "/api/users/viewer/status", {"disabled": False}, headers)[0], 200)
+        viewer_cookie, viewer_csrf = self.login("viewer", "Viewer-password-123")
+        status, _, payload = self.request("POST", "/api/users/viewer/reset-password", {}, headers)
+        self.assertEqual(status, 200)
+        self.assertEqual(self.request("GET", "/api/alerts.json", headers={"Cookie": viewer_cookie})[0], 401)
+        viewer_cookie, viewer_csrf = self.login("viewer", payload["temporary_password"])
+        status, _, _ = self.request("POST", "/api/account/password", {
+            "current_password": payload["temporary_password"], "new_password": "New-viewer-password-123"},
+            {"Cookie": viewer_cookie, "X-CSRF-Token": viewer_csrf})
+        self.assertEqual(status, 200)
+        self.assertEqual(self.request("GET", "/api/alerts.json", headers={"Cookie": viewer_cookie})[0], 401)
+        self.login("viewer", "New-viewer-password-123")
+
+    def test_user_creation_needs_csrf_and_valid_name(self):
+        cookie, csrf = self.login("admin", "Admin-password-123")
+        self.assertEqual(self.request("POST", "/api/users", {
+            "username": "tester", "name": "Test"}, {"Cookie": cookie})[0], 403)
+        self.assertEqual(self.request("POST", "/api/users", {
+            "username": "../bad", "name": "Test"},
+            {"Cookie": cookie, "X-CSRF-Token": csrf})[0], 400)
+
+    def test_admin_can_choose_initial_user_password(self):
+        cookie, csrf = self.login("admin", "Admin-password-123")
+        headers = {"Cookie": cookie, "X-CSRF-Token": csrf}
+        status, _, payload = self.request("POST", "/api/users", {
+            "username": "analyst02", "name": "Analyst Two", "password": "Initial-password-123"}, headers)
+        self.assertEqual(status, 201)
+        self.assertNotIn("temporary_password", payload)
+        self.login("analyst02", "Initial-password-123")
+        status, _, payload = self.request("POST", "/api/users", {
+            "username": "analyst03", "name": "Analyst Three", "password": "short"}, headers)
+        self.assertEqual(status, 400)
+        self.assertEqual(payload["error"], "invalid_password")
+
 
 if __name__ == "__main__":
     unittest.main()
