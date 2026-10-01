@@ -19,7 +19,7 @@
 |---|---|
 | `/opt/mimic` | source code ที่ผ่านการทบทวน |
 | `/etc/mimic/mimic.json` | production config |
-| `/etc/mimic/users.json` | บัญชี Dashboard แบบ hash |
+| `/var/lib/mimic/dashboard-users/users.json` | บัญชี Dashboard แบบ hash ที่ service จัดการได้ |
 | `/etc/adaptive-defender/live.json` | config ของ Decision Engine |
 | `/var/lib/mimic` | registry, state และ backup ของระบบ |
 | `/var/log/mimic` | security audit ของ Dashboard |
@@ -63,6 +63,7 @@ sudo install -d -m 0750 \
   /var/log/adaptive-defender
 sudo chown -R root:root /opt/mimic
 sudo chown mimic-dashboard:mimic-dashboard /var/lib/mimic /var/log/mimic
+sudo install -d -o mimic-dashboard -g mimic-dashboard -m 0700 /var/lib/mimic/dashboard-users
 ```
 
 ## 3. สร้างค่าตั้งสำหรับระบบจริง
@@ -78,15 +79,32 @@ Master Admin โดยให้คำสั่งถามรหัสผ่า�
 ```bash
 cd /opt/mimic
 sudo python3 -m defender.dashboard.manage_users \
-  --file /etc/mimic/users.json \
+  --file /var/lib/mimic/dashboard-users/users.json \
   --username admin \
   --name "Master Admin" \
   --role master_admin
-sudo chown root:mimic-dashboard /etc/mimic/users.json
-sudo chmod 0640 /etc/mimic/users.json
+sudo chown mimic-dashboard:mimic-dashboard /var/lib/mimic/dashboard-users/users.json
+sudo chmod 0600 /var/lib/mimic/dashboard-users/users.json
 ```
 
 ห้ามเก็บรหัสผ่าน plain text ใน repository หรือ service unit
+
+Master Admin จัดการบัญชี `User` ต่อได้จากเมนู **จัดการบัญชี** ใน Dashboard:
+เลือกแท็บย่อย **ผู้ใช้งาน**, **สร้าง User** หรือ **บัญชีของฉัน**
+เพื่อสร้างบัญชี, ระงับ/เปิดใช้ และรีเซ็ตรหัสผ่าน สามารถกำหนดรหัสผ่านเริ่มต้นเอง
+หรือเว้นว่างให้ระบบสุ่มให้ (แสดงครั้งเดียว) ให้ส่งผ่านช่องทางส่วนตัว
+ผู้ใช้เปลี่ยนรหัสผ่านของตนเองได้จากเมนูเดียวกัน
+ไม่มีหน้าสมัครบัญชีสาธารณะ และสร้าง Master Admin เพิ่มผ่านหน้าเว็บไม่ได้
+
+หากอัปเกรดจากการติดตั้งเดิมที่เก็บบัญชีไว้ที่ `/etc/mimic/users.json`
+ให้คัดลอกไฟล์ไปยังพาธใหม่ แล้วแก้ `security.users_file` ใน
+`/etc/mimic/mimic.json` ก่อนรีสตาร์ตบริการ:
+
+```bash
+sudo install -o mimic-dashboard -g mimic-dashboard -m 0600 \
+  /etc/mimic/users.json /var/lib/mimic/dashboard-users/users.json
+sudo systemctl restart mimic-dashboard
+```
 
 ## 4. รันด่านตรวจสอบ
 

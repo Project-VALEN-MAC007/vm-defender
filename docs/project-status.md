@@ -11,7 +11,7 @@
 |---|---|---|---|
 | Network และ isolation | กำลังดำเนินการ | ยืนยัน management `enp0s9`, outer `enp0s3` และ inner `ztpp6hfkv2` แล้ว | ต้องเปิด UFW บน Real Product และทดสอบว่าเข้า backend โดยอ้อมไม่ได้ |
 | Suricata | กำลังดำเนินการ | syntax และ HTTP replay แบบออฟไลน์ผ่าน | ต้องทดสอบ live traffic ครบทุก protocol |
-| Detection rules | กำลังดำเนินการ | มีกฎ 8 รายการและ test matrix | TLS/SSH/Telnet/scan ยังต้อง replay บน topology จริง |
+| Detection rules | กำลังดำเนินการ | มีกฎ 11 รายการและ test matrix; syntax และ replay ออฟไลน์ผ่าน รวมถึง TLS 1.0/1.1 เป็น positive และ TLS 1.2 เป็น negative | HTTP หลัง TLS termination และ SSH/Telnet/scan ยังต้องทดสอบบน topology จริง |
 | Nginx redirect | ผ่านระดับ integration | Real Web และ WordPress Honeypot ตอบ `200` ผ่าน `https://defender.lab`; map และ timeout ทดสอบแล้ว | ต้องทดสอบ redirect จาก alert จริงและทดสอบหลัง reboot |
 | nftables redirect | ติดขัด | สร้างคำสั่ง nft แบบ dry-run และตรวจ input ได้ | ต้องยืนยัน interface/endpoint และทดสอบ packet จริง |
 | Decision Engine | ผ่านระดับซอฟต์แวร์ | checkpoint, retry, expiry และ state restart มี test | ต้องทดสอบร่วมกับ Nginx/nftables บน Ubuntu จริง |
