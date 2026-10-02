@@ -1,0 +1,195 @@
+[
+  {
+    "case": "syntax",
+    "exit_code": 0,
+    "expected_sid": null,
+    "sids": [],
+    "command": [
+      "wsl",
+      "-d",
+      "Ubuntu-24.04",
+      "--",
+      "suricata",
+      "-c",
+      "/etc/suricata/suricata.yaml",
+      "-S",
+      "/mnt/c/Users/Yakult/Documents/GitHub/vm-defender/defender/suricata/rules/et-open-selected.rules",
+      "-l",
+      "/mnt/c/Users/Yakult/Documents/GitHub/vm-defender/evidence/test-results/et-open-default-20261002/syntax",
+      "-T"
+    ]
+  },
+  {
+    "case": "htpasswd",
+    "exit_code": 0,
+    "expected_sid": 2101071,
+    "sids": [
+      2101071
+    ],
+    "command": [
+      "wsl",
+      "-d",
+      "Ubuntu-24.04",
+      "--",
+      "suricata",
+      "-c",
+      "/etc/suricata/suricata.yaml",
+      "-S",
+      "/mnt/c/Users/Yakult/Documents/GitHub/vm-defender/defender/suricata/rules/et-open-selected.rules",
+      "-l",
+      "/mnt/c/Users/Yakult/Documents/GitHub/vm-defender/evidence/test-results/et-open-default-20261002/htpasswd",
+      "-r",
+      "/mnt/c/Users/Yakult/Documents/GitHub/vm-defender/evidence/test-results/et-open-default-20261002/htpasswd.pcap",
+      "--runmode",
+      "single"
+    ]
+  },
+  {
+    "case": "env",
+    "exit_code": 0,
+    "expected_sid": 2031502,
+    "sids": [
+      2031502
+    ],
+    "command": [
+      "wsl",
+      "-d",
+      "Ubuntu-24.04",
+      "--",
+      "suricata",
+      "-c",
+      "/etc/suricata/suricata.yaml",
+      "-S",
+      "/mnt/c/Users/Yakult/Documents/GitHub/vm-defender/defender/suricata/rules/et-open-selected.rules",
+      "-l",
+      "/mnt/c/Users/Yakult/Documents/GitHub/vm-defender/evidence/test-results/et-open-default-20261002/env",
+      "-r",
+      "/mnt/c/Users/Yakult/Documents/GitHub/vm-defender/evidence/test-results/et-open-default-20261002/env.pcap",
+      "--runmode",
+      "single"
+    ]
+  },
+  {
+    "case": "passwd",
+    "exit_code": 0,
+    "expected_sid": 2049400,
+    "sids": [
+      2049400
+    ],
+    "command": [
+      "wsl",
+      "-d",
+      "Ubuntu-24.04",
+      "--",
+      "suricata",
+      "-c",
+      "/etc/suricata/suricata.yaml",
+      "-S",
+      "/mnt/c/Users/Yakult/Documents/GitHub/vm-defender/defender/suricata/rules/et-open-selected.rules",
+      "-l",
+      "/mnt/c/Users/Yakult/Documents/GitHub/vm-defender/evidence/test-results/et-open-default-20261002/passwd",
+      "-r",
+      "/mnt/c/Users/Yakult/Documents/GitHub/vm-defender/evidence/test-results/et-open-default-20261002/passwd.pcap",
+      "--runmode",
+      "single"
+    ]
+  },
+  {
+    "case": "nmap",
+    "exit_code": 0,
+    "expected_sid": 2009359,
+    "sids": [
+      2009359
+    ],
+    "command": [
+      "wsl",
+      "-d",
+      "Ubuntu-24.04",
+      "--",
+      "suricata",
+      "-c",
+      "/etc/suricata/suricata.yaml",
+      "-S",
+      "/mnt/c/Users/Yakult/Documents/GitHub/vm-defender/defender/suricata/rules/et-open-selected.rules",
+      "-l",
+      "/mnt/c/Users/Yakult/Documents/GitHub/vm-defender/evidence/test-results/et-open-default-20261002/nmap",
+      "-r",
+      "/mnt/c/Users/Yakult/Documents/GitHub/vm-defender/evidence/test-results/et-open-default-20261002/nmap.pcap",
+      "--runmode",
+      "single"
+    ]
+  },
+  {
+    "case": "masscan",
+    "exit_code": 0,
+    "expected_sid": 2017616,
+    "sids": [
+      2017616
+    ],
+    "command": [
+      "wsl",
+      "-d",
+      "Ubuntu-24.04",
+      "--",
+      "suricata",
+      "-c",
+      "/etc/suricata/suricata.yaml",
+      "-S",
+      "/mnt/c/Users/Yakult/Documents/GitHub/vm-defender/defender/suricata/rules/et-open-selected.rules",
+      "-l",
+      "/mnt/c/Users/Yakult/Documents/GitHub/vm-defender/evidence/test-results/et-open-default-20261002/masscan",
+      "-r",
+      "/mnt/c/Users/Yakult/Documents/GitHub/vm-defender/evidence/test-results/et-open-default-20261002/masscan.pcap",
+      "--runmode",
+      "single"
+    ]
+  },
+  {
+    "case": "sqlmap",
+    "exit_code": 0,
+    "expected_sid": 2008538,
+    "sids": [
+      2008538
+    ],
+    "command": [
+      "wsl",
+      "-d",
+      "Ubuntu-24.04",
+      "--",
+      "suricata",
+      "-c",
+      "/etc/suricata/suricata.yaml",
+      "-S",
+      "/mnt/c/Users/Yakult/Documents/GitHub/vm-defender/defender/suricata/rules/et-open-selected.rules",
+      "-l",
+      "/mnt/c/Users/Yakult/Documents/GitHub/vm-defender/evidence/test-results/et-open-default-20261002/sqlmap",
+      "-r",
+      "/mnt/c/Users/Yakult/Documents/GitHub/vm-defender/evidence/test-results/et-open-default-20261002/sqlmap.pcap",
+      "--runmode",
+      "single"
+    ]
+  },
+  {
+    "case": "benign",
+    "exit_code": 0,
+    "expected_sid": null,
+    "sids": [],
+    "command": [
+      "wsl",
+      "-d",
+      "Ubuntu-24.04",
+      "--",
+      "suricata",
+      "-c",
+      "/etc/suricata/suricata.yaml",
+      "-S",
+      "/mnt/c/Users/Yakult/Documents/GitHub/vm-defender/defender/suricata/rules/et-open-selected.rules",
+      "-l",
+      "/mnt/c/Users/Yakult/Documents/GitHub/vm-defender/evidence/test-results/et-open-default-20261002/benign",
+      "-r",
+      "/mnt/c/Users/Yakult/Documents/GitHub/vm-defender/evidence/test-results/et-open-default-20261002/benign.pcap",
+      "--runmode",
+      "single"
+    ]
+  }
+]

@@ -25,6 +25,11 @@ Nginx หรือ nftables ให้เฝ้าระวัง เปลี่
 
 สถานะโดยละเอียดอยู่ที่ `docs/project-status.md`
 
+กฎ Default ปัจจุบันใช้ ET Open 13 กฎใน
+`defender/suricata/rules/et-open-selected.rules` โดยตัดกฎเขียนเองเดิมออกแล้ว
+ดู [รายการกฎและขอบเขตการตรวจจับ](defender/suricata/et-open-selection.md)
+ชุดนี้ไม่มีกฎตรวจ TLS รุ่นเก่าโดยตรง; TLS ยังคงเก็บเป็น telemetry ได้
+
 ## หลักความปลอดภัย
 
 - Dashboard ต้อง bind เฉพาะ `127.0.0.1`, `::1` หรือ `localhost`

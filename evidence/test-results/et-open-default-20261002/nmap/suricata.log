@@ -1,0 +1,18 @@
+[491 - Suricata-Main] 2026-10-02 21:01:49 Notice: suricata: This is Suricata version 7.0.3 RELEASE running in USER mode
+[491 - Suricata-Main] 2026-10-02 21:01:49 Info: cpu: CPUs/cores online: 16
+[491 - Suricata-Main] 2026-10-02 21:01:49 Info: suricata: Setting engine mode to IDS mode by default
+[491 - Suricata-Main] 2026-10-02 21:01:49 Info: exception-policy: master exception-policy set to: auto
+[491 - Suricata-Main] 2026-10-02 21:01:49 Info: logopenfile: fast output device (regular) initialized: fast.log
+[491 - Suricata-Main] 2026-10-02 21:01:49 Info: logopenfile: eve-log output device (regular) initialized: eve.json
+[491 - Suricata-Main] 2026-10-02 21:01:49 Info: logopenfile: stats output device (regular) initialized: stats.log
+[491 - Suricata-Main] 2026-10-02 21:01:49 Info: detect: 1 rule files processed. 13 rules successfully loaded, 0 rules failed, 0
+[491 - Suricata-Main] 2026-10-02 21:01:49 Info: threshold-config: Threshold config parsed: 0 rule(s) found
+[491 - Suricata-Main] 2026-10-02 21:01:49 Info: detect: 13 signatures processed. 0 are IP-only rules, 3 are inspecting packet payload, 9 inspect application layer, 0 are decoder event only
+[491 - Suricata-Main] 2026-10-02 21:01:49 Info: unix-manager: unix socket '/var/run/suricata-command.socket'
+[492 - W#01] 2026-10-02 21:01:49 Info: pcap: Starting file run for /mnt/c/Users/Yakult/Documents/GitHub/vm-defender/evidence/test-results/et-open-default-20261002/nmap.pcap
+[491 - Suricata-Main] 2026-10-02 21:01:49 Notice: threads: Threads created -> W: 1 FM: 1 FR: 1   Engine started.
+[492 - W#01] 2026-10-02 21:01:49 Info: pcap: pcap file /mnt/c/Users/Yakult/Documents/GitHub/vm-defender/evidence/test-results/et-open-default-20261002/nmap.pcap end of file reached (pcap err code 0)
+[491 - Suricata-Main] 2026-10-02 21:01:49 Notice: suricata: Signal Received.  Stopping engine.
+[491 - Suricata-Main] 2026-10-02 21:01:49 Info: suricata: time elapsed 0.043s
+[492 - W#01] 2026-10-02 21:01:49 Notice: pcap: read 1 file, 4 packets, 276 bytes
+[491 - Suricata-Main] 2026-10-02 21:01:49 Info: counters: Alerts: 1

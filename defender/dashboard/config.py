@@ -67,7 +67,7 @@ def load_dashboard_settings(path: str | Path) -> DashboardSettings:
         eve_paths=tuple(_resolve(root, value, "paths.eve_paths") for value in eve_values),
         users_path=_resolve(root, security.get("users_file", "config/users.json"), "security.users_file"),
         security_audit_path=_resolve(root, security.get("audit_log", "evidence/audit/dashboard-security.jsonl"), "security.audit_log"),
-        active_rules_path=_resolve(root, rules.get("active_rules", "defender/suricata/rules/local.rules"), "rules.active_rules"),
+        active_rules_path=_resolve(root, rules.get("active_rules", "defender/suricata/rules/et-open-selected.rules"), "rules.active_rules"),
         baseline_path=_resolve(root, rules.get("baseline", "tests/fixtures/baseline.json"), "rules.baseline"),
         rule_registry_path=_resolve(root, rules.get("registry", "evidence/rules/registry.jsonl"), "rules.registry"),
         rule_backup_dir=_resolve(root, rules.get("backup_dir", "backups/rules"), "rules.backup_dir"),

@@ -1,0 +1,1 @@
+10/02/2026-21:01:40.000000  [**] [1:2017616:7] ET SCAN NETWORK Incoming Masscan detected [**] [Classification: Detection of a Network Scan] [Priority: 3] {TCP} 198.51.100.20:50000 -> 192.168.1.10:80

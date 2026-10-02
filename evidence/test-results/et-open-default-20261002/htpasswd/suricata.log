@@ -1,0 +1,18 @@
+[464 - Suricata-Main] 2026-10-02 21:01:47 Notice: suricata: This is Suricata version 7.0.3 RELEASE running in USER mode
+[464 - Suricata-Main] 2026-10-02 21:01:47 Info: cpu: CPUs/cores online: 16
+[464 - Suricata-Main] 2026-10-02 21:01:47 Info: suricata: Setting engine mode to IDS mode by default
+[464 - Suricata-Main] 2026-10-02 21:01:47 Info: exception-policy: master exception-policy set to: auto
+[464 - Suricata-Main] 2026-10-02 21:01:47 Info: logopenfile: fast output device (regular) initialized: fast.log
+[464 - Suricata-Main] 2026-10-02 21:01:47 Info: logopenfile: eve-log output device (regular) initialized: eve.json
+[464 - Suricata-Main] 2026-10-02 21:01:47 Info: logopenfile: stats output device (regular) initialized: stats.log
+[464 - Suricata-Main] 2026-10-02 21:01:47 Info: detect: 1 rule files processed. 13 rules successfully loaded, 0 rules failed, 0
+[464 - Suricata-Main] 2026-10-02 21:01:47 Info: threshold-config: Threshold config parsed: 0 rule(s) found
+[464 - Suricata-Main] 2026-10-02 21:01:47 Info: detect: 13 signatures processed. 0 are IP-only rules, 3 are inspecting packet payload, 9 inspect application layer, 0 are decoder event only
+[464 - Suricata-Main] 2026-10-02 21:01:47 Info: unix-manager: unix socket '/var/run/suricata-command.socket'
+[465 - W#01] 2026-10-02 21:01:47 Info: pcap: Starting file run for /mnt/c/Users/Yakult/Documents/GitHub/vm-defender/evidence/test-results/et-open-default-20261002/htpasswd.pcap
+[464 - Suricata-Main] 2026-10-02 21:01:47 Notice: threads: Threads created -> W: 1 FM: 1 FR: 1   Engine started.
+[465 - W#01] 2026-10-02 21:01:47 Info: pcap: pcap file /mnt/c/Users/Yakult/Documents/GitHub/vm-defender/evidence/test-results/et-open-default-20261002/htpasswd.pcap end of file reached (pcap err code 0)
+[464 - Suricata-Main] 2026-10-02 21:01:47 Notice: suricata: Signal Received.  Stopping engine.
+[464 - Suricata-Main] 2026-10-02 21:01:47 Info: suricata: time elapsed 0.042s
+[465 - W#01] 2026-10-02 21:01:47 Notice: pcap: read 1 file, 4 packets, 283 bytes
+[464 - Suricata-Main] 2026-10-02 21:01:47 Info: counters: Alerts: 1

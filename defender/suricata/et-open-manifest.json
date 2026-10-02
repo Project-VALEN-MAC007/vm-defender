@@ -1,0 +1,85 @@
+{
+  "retrieved_date": "2026-10-02",
+  "source": "https://rules.emergingthreats.net/open/suricata-7.0.3/emerging.rules.tar.gz",
+  "rule_count": 13,
+  "rules": [
+    {
+      "sid": 2001219,
+      "upstream_file": "rules/emerging-scan.rules",
+      "msg": "ET SCAN Potential SSH Scan",
+      "rule_sha256": "02fcd2ab9218fe2e700f4d95d4d4dc05b043c85218a05ccd3cff2f15bc052479"
+    },
+    {
+      "sid": 2002677,
+      "upstream_file": "rules/emerging-scan.rules",
+      "msg": "ET SCAN Nikto Web App Scan in Progress",
+      "rule_sha256": "bc801bff6303aab35207aa67ceac0deb6f5764d241320d15a710b2a8091d7531"
+    },
+    {
+      "sid": 2006446,
+      "upstream_file": "rules/emerging-web_server.rules",
+      "msg": "ET WEB_SERVER Possible SQL Injection Attempt UNION SELECT in HTTP URI",
+      "rule_sha256": "994222d780c6c0b72df3dcca1228e57e8390f3adc9ec0823bfc3301dc2bedcff"
+    },
+    {
+      "sid": 2006546,
+      "upstream_file": "rules/emerging-scan.rules",
+      "msg": "ET SCAN LibSSH Based Frequent SSH Connections Likely BruteForce Attack",
+      "rule_sha256": "852950f3925fc244655e72f618f91b59763229c3cd52b481283410518df98afd"
+    },
+    {
+      "sid": 2008538,
+      "upstream_file": "rules/emerging-scan.rules",
+      "msg": "ET SCAN Sqlmap SQL Injection Scan",
+      "rule_sha256": "e19814fe63871be06770bd71530a18b05258254bbba88061e775da95712dea41"
+    },
+    {
+      "sid": 2009359,
+      "upstream_file": "rules/emerging-scan.rules",
+      "msg": "ET SCAN Nmap Scripting Engine User-Agent Detected (Nmap NSE)",
+      "rule_sha256": "cea0cf0ab9ed997deb0fc4b5e1d2f55e0902a90f539bb881a092a0882ec81b3e"
+    },
+    {
+      "sid": 2017616,
+      "upstream_file": "rules/emerging-scan.rules",
+      "msg": "ET SCAN NETWORK Incoming Masscan detected",
+      "rule_sha256": "74371b0a4146ba7229c0b080b700c2d7a9b1d8c7dcef8e00d5b79ca0f2565fb7"
+    },
+    {
+      "sid": 2031502,
+      "upstream_file": "rules/emerging-info.rules",
+      "msg": "ET INFO Request to Hidden Environment File - Inbound",
+      "rule_sha256": "3198305d034244a056f26e292f3576e8d6d3b8b758e6ac7958ca46482bc1ac1c"
+    },
+    {
+      "sid": 2049400,
+      "upstream_file": "rules/emerging-web_server.rules",
+      "msg": "ET WEB_SERVER /etc/passwd Detected in URI",
+      "rule_sha256": "6654494a8fb3b86f7420bd96f806f46c57b2f4cd4f6539b4bc80836350f09806"
+    },
+    {
+      "sid": 2053468,
+      "upstream_file": "rules/emerging-web_server.rules",
+      "msg": "ET WEB_SERVER Possible SQL Injection UNION SELECT in HTTP Request Body",
+      "rule_sha256": "6eb747ed8432faf66274b64d9526b697a20cab39f7eafc4eb102b05b9d915557"
+    },
+    {
+      "sid": 2100492,
+      "upstream_file": "rules/emerging-telnet.rules",
+      "msg": "GPL TELNET TELNET login failed",
+      "rule_sha256": "fd9e1ec379a36c5df171e3229ead198466d710260542d8c758519169b1a1b238"
+    },
+    {
+      "sid": 2101071,
+      "upstream_file": "rules/emerging-web_server.rules",
+      "msg": "GPL WEB_SERVER .htpasswd access",
+      "rule_sha256": "c28e856971a6c21acc9f1df7c2d3642621f398628a1348784b736790a8006f33"
+    },
+    {
+      "sid": 2101251,
+      "upstream_file": "rules/emerging-telnet.rules",
+      "msg": "GPL TELNET Bad Login",
+      "rule_sha256": "eab0e51e54c70f230fb5c8733f0f71d061af10cd1b6dc7bcf3817e7039b18993"
+    }
+  ]
+}

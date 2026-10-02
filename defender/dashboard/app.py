@@ -30,7 +30,7 @@ DEFAULT_EVE_PATHS = ("/var/log/suricata/eve.json", "evidence/test-results/eve.js
                      "evidence/test-results/http-positive-run1/eve.json",
                      "evidence/test-results/http-benign-run1/eve.json")
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-RULES_PATH = PROJECT_ROOT / "defender/suricata/rules/local.rules"
+RULES_PATH = PROJECT_ROOT / "defender/suricata/rules/et-open-selected.rules"
 BASELINE_PATH = PROJECT_ROOT / "tests/fixtures/baseline.json"
 
 

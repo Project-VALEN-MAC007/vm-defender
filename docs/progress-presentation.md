@@ -33,8 +33,8 @@ Dashboard และ audit logs
 
 ### ระบบตรวจจับ
 
-- กฎ Suricata 8 รายการสำหรับ HTTP, TLS, SSH, Telnet และ SYN scan
-- กำหนด SID ของโครงการในช่วง `2200001–2200999`
+- กฎ Default จาก ET Open 13 รายการสำหรับ HTTP, SSH, Telnet และเครื่องมือสแกนเว็บ
+- คง SID ต้นฉบับ ET Open; ตัดกฎเขียนเองเดิมออกจากชุด Default
 - มี positive/negative test matrix
 - HTTP replay แบบออฟไลน์มีหลักฐานแล้ว
 

@@ -1,0 +1,20 @@
+[
+  {
+    "case": "syntax",
+    "exit_code": 0,
+    "sids": []
+  },
+  {
+    "case": "positive",
+    "exit_code": 0,
+    "sids": [
+      2101071,
+      2200008
+    ]
+  },
+  {
+    "case": "benign",
+    "exit_code": 0,
+    "sids": []
+  }
+]

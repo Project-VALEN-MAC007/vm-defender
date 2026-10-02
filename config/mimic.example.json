@@ -28,7 +28,7 @@
     "inner_ip": "10.10.10.1"
   },
   "rules": {
-    "active_rules": "/etc/suricata/rules/mimic.rules",
+    "active_rules": "/etc/suricata/rules/et-open-selected.rules",
     "baseline": "tests/fixtures/baseline.json",
     "registry": "/var/lib/mimic/rules/registry.jsonl",
     "backup_dir": "/var/lib/mimic/backups/rules",

@@ -42,7 +42,7 @@ class RiskEngine:
         severity_points = {1: 35, 2: 25, 3: 12}.get(event.severity, 8)
         protocol_points = {"scan": 25, "ssh": 10, "telnet": 10, "http": 5, "tls": 5}.get(event.protocol, 3)
         reasons = [f"severity={event.severity}:+{severity_points}", f"protocol={event.protocol}:+{protocol_points}"]
-        if event.signature_id == 2200301 or event.protocol == "scan":
+        if event.signature_id in {2002677, 2008538, 2009359, 2017616, 2001219} or event.protocol == "scan":
             state.scan_until = now + timedelta(seconds=self.expiry_seconds)
         if event.protocol == "ssh":
             state.ssh_until = now + timedelta(seconds=self.expiry_seconds)
@@ -69,7 +69,7 @@ class RiskEngine:
                 action, profile = "redirect_telnet", "telnet"
             else:
                 action = "redirect_web"
-                profile = "phpmyadmin" if event.signature_id == 2200002 else "wordpress"
+                profile = "wordpress"
         elif state.score >= self.thresholds["monitor"]:
             action, profile = "monitor", "real"
         else:

@@ -32,6 +32,14 @@ class Event:
         ipaddress.ip_address(source_ip)
         destination_port = int(raw.get("dest_port") or 0)
         signature_id = int(alert.get("signature_id") or 0)
+        # These ET Open rules inspect server responses. Attribute the event
+        # to the client, rather than redirecting the Telnet server itself.
+        if signature_id in {2100492, 2101251}:
+            if int(raw.get("src_port") or 0) != 23:
+                raise ValueError("ET Telnet response alert must originate on port 23")
+            source_ip = str(raw.get("dest_ip", ""))
+            ipaddress.ip_address(source_ip)
+            destination_port = 23
         protocol = str(raw.get("app_proto") or raw.get("proto") or "unknown").lower()
         metadata_protocol = (alert.get("metadata") or {}).get("protocol")
         if isinstance(metadata_protocol, list) and metadata_protocol:
@@ -39,9 +47,9 @@ class Event:
         if protocol in {"tcp", "unknown"} and metadata_protocol:
             protocol = str(metadata_protocol).lower()
         if protocol in {"tcp", "unknown"}:
-            if destination_port == 22 or signature_id in {2200201, 2200202}:
+            if destination_port == 22 or signature_id in {2001219, 2006546}:
                 protocol = "ssh"
-            elif destination_port == 23 or signature_id == 2200203:
+            elif destination_port == 23 or signature_id in {2100492, 2101251}:
                 protocol = "telnet"
         canonical = {
             "timestamp": raw.get("timestamp"),

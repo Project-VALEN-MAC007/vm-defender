@@ -13,7 +13,7 @@ from defender.decision_engine.adaptive_defender.reader import EveReader
 from defender.decision_engine.adaptive_defender.risk import RiskEngine
 
 
-def raw_event(flow_id=1, source="192.0.2.20", protocol="http", sid=2200001, severity=1,
+def raw_event(flow_id=1, source="192.0.2.20", protocol="http", sid=2006446, severity=1,
               dest_port=80, metadata=None):
     alert = {"signature_id": sid, "signature": "test", "severity": severity}
     if metadata is not None:
@@ -40,7 +40,7 @@ class RiskTests(unittest.TestCase):
     def test_dedup_and_cross_protocol_history(self):
         now = datetime(2026, 8, 4, 20, tzinfo=timezone.utc)
         engine = RiskEngine({"monitor":15,"redirect":40,"temporary_block":80}, 1, 1800, lambda: now)
-        scan = Event.from_eve(raw_event(protocol="scan", sid=2200301, severity=3))
+        scan = Event.from_eve(raw_event(protocol="http", sid=2009359, severity=3))
         self.assertIsNotNone(engine.decide(scan))
         self.assertIsNone(engine.decide(scan))
         decision = engine.decide(Event.from_eve(raw_event(flow_id=2, protocol="http", severity=3)))
@@ -59,12 +59,25 @@ class RiskTests(unittest.TestCase):
     def test_telnet_redirect_from_metadata_and_port(self):
         now = datetime(2026, 8, 4, 20, tzinfo=timezone.utc)
         engine = RiskEngine({"monitor":15,"redirect":40,"temporary_block":80}, 1, 1800, lambda: now)
-        event = Event.from_eve(raw_event(protocol="tcp", sid=2200203, severity=1,
-                                         dest_port=23, metadata={"protocol": ["telnet"]}))
+        event_raw = raw_event(protocol="tcp", sid=2101251, severity=1, dest_port=50000)
+        event_raw.update(src_ip="192.0.2.10", src_port=23, dest_ip="192.0.2.20")
+        event = Event.from_eve(event_raw)
         self.assertEqual(event.protocol, "telnet")
+        self.assertEqual(event.source_ip, "192.0.2.20")
+        self.assertEqual(event.destination_port, 23)
         decision = engine.decide(event)
         self.assertEqual(decision.action, "redirect_telnet")
         self.assertEqual(decision.profile, "telnet")
+
+    def test_telnet_response_requires_server_port_and_client_ip(self):
+        for sid in (2100492, 2101251):
+            record = raw_event(protocol="tcp", sid=sid, dest_port=50000)
+            record.update(src_port=80, dest_ip="192.0.2.20")
+            with self.assertRaises(ValueError):
+                Event.from_eve(record)
+            record.update(src_port=23, dest_ip="")
+            with self.assertRaises(ValueError):
+                Event.from_eve(record)
 
 
 class AdapterAndConfigTests(unittest.TestCase):
@@ -132,8 +145,9 @@ class EngineIntegrationTests(unittest.TestCase):
     def test_telnet_decision_uses_telnet_nft_set(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory); eve = root/"eve.json"
-            eve.write_text(json.dumps(raw_event(protocol="tcp", sid=2200203, severity=1,
-                                                dest_port=23, metadata={"protocol": ["telnet"]})) + "\n")
+            record = raw_event(protocol="tcp", sid=2101251, severity=1, dest_port=50000)
+            record.update(src_ip="192.0.2.10", src_port=23, dest_ip="192.0.2.20")
+            eve.write_text(json.dumps(record) + "\n")
             settings = Settings(eve, root/"checkpoint", root/"audit", root/"map", True, 1, 1800,
                                 {"monitor":15,"redirect":40,"temporary_block":80})
             decisions = DecisionEngine(settings).run_once()
