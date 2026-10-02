@@ -27,7 +27,8 @@ class DecisionEngine:
     def __init__(self, settings: Settings):
         self.settings = settings
         self.reader = EveReader(settings.eve_path, settings.checkpoint_path)
-        self.risk = RiskEngine(settings.thresholds, settings.decay_per_minute, settings.expiry_seconds)
+        self.risk = RiskEngine(settings.thresholds, settings.decay_per_minute, settings.expiry_seconds,
+                               web_profile=settings.web_profile)
         self.nft = NftSetAdapter(settings.nft_family, settings.nft_table, settings.dry_run)
         self.nginx = NginxMapAdapter(settings.nginx_map_path, settings.dry_run, None if settings.dry_run else _nginx_validate, None if settings.dry_run else _nginx_reload)
         self.web_state_path = settings.nginx_map_path.with_suffix(settings.nginx_map_path.suffix + ".state.json")

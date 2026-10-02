@@ -98,5 +98,12 @@ tests/                          ชุดทดสอบอัตโนมัต
 
 ## เอกสาร
 
+ชุดทดลองเว็บลวง SNARE + TANNER อยู่ที่
+[`honeypot/snare-tanner/README.md`](honeypot/snare-tanner/README.md)
+config ตัวอย่างของ Decision Engine (`lab.json` และ `live.json`) ตั้ง
+`web_profile: "snare"` แล้ว Nginx template รองรับ SNARE ที่พอร์ต 8083
+ทราฟฟิกเว็บที่ถึงเกณฑ์ redirect จะส่งไป SNARE ซึ่งเชื่อม TANNER ภายใน;
+ทราฟฟิกปกติยังเข้า Real Web ต้องยืนยัน build และ endpoint ก่อนใช้งานจริง
+
 เริ่มอ่านจาก `docs/README.md` ซึ่งอธิบายลำดับการอ่าน คำศัพท์ และเอกสารหลัก
 ของแต่ละงาน

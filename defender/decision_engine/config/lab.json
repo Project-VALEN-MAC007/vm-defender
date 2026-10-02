@@ -4,6 +4,7 @@
   "audit_path": "../../../evidence/test-results/decisions.jsonl",
   "nginx_map_path": "../../../defender/nginx/generated/redirect_map.conf",
   "dry_run": true,
+  "web_profile": "snare",
   "decay_per_minute": 1.0,
   "expiry_seconds": 1800,
   "thresholds": {

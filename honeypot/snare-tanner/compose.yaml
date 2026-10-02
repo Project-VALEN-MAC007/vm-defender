@@ -1,0 +1,61 @@
+name: mimic-web-honeypot
+services:
+  redis:
+    image: redis:7.4-alpine
+    command: [redis-server, --appendonly, 'yes']
+    volumes: [redis-data:/data]
+    networks: [honeypot]
+    healthcheck:
+      test: [CMD, redis-cli, ping]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+  tanner:
+    build:
+      context: .
+      dockerfile: Dockerfile.tanner
+    command: [tanner, --config, /etc/mimic/tanner.yaml]
+    volumes:
+      - ./tanner.yaml:/etc/mimic/tanner.yaml:ro
+      - ./data/tanner:/var/log/tanner
+    networks: [honeypot]
+    depends_on:
+      redis: {condition: service_healthy}
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8090/version', timeout=3)"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    restart: unless-stopped
+  snare:
+    build:
+      context: .
+      dockerfile: Dockerfile.snare
+    environment:
+      PAGE_DIR: ${SNARE_PAGE_DIR:-demo}
+      MIMIC_TRUSTED_PROXY_CIDRS: ${MIMIC_TRUSTED_PROXY_CIDRS:-}
+    ports: ["${SNARE_BIND_IP:-127.0.0.1}:${SNARE_PORT:-8083}:8080"]
+    volumes: [./data/snare:/opt/snare]
+    networks: [honeypot]
+    depends_on:
+      tanner: {condition: service_healthy}
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/', timeout=4)"]
+      interval: 15s
+      timeout: 6s
+      retries: 5
+    restart: unless-stopped
+  clone:
+    profiles: [tools]
+    build:
+      context: .
+      dockerfile: Dockerfile.snare
+    entrypoint: [clone]
+    volumes: [./data/snare:/opt/snare]
+    networks: [cloning]
+networks:
+  honeypot: {internal: true}
+  cloning: {}
+volumes:
+  redis-data: {}

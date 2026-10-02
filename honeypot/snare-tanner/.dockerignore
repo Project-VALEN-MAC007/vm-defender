@@ -1,0 +1,4 @@
+data
+vendor/*/.git
+**/__pycache__
+.env

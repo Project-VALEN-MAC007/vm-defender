@@ -19,7 +19,7 @@ class NginxMapAdapter:
             raise ValueError("apply mode requires an nginx config validator")
 
     def render(self, entries: dict[str, str]) -> str:
-        allowed = {"real", "wordpress", "phpmyadmin"}
+        allowed = {"real", "wordpress", "phpmyadmin", "snare"}
         lines = ["# generated atomically; do not edit", "default real;"]
         for address, profile in sorted(entries.items()):
             ipaddress.ip_address(address)
