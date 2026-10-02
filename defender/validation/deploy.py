@@ -28,7 +28,7 @@ def staged_deploy(candidate: dict, active_rules: Path, backup_dir: Path, registr
     if dry_run:
         return {**base, "status": "approved", "deploy_performed": False}
     backup_dir.mkdir(parents=True, exist_ok=True)
-    backup = backup_dir / f"local.rules.{now}.bak"
+    backup = backup_dir / f"{active_rules.name}.{now}.bak"
     if active_rules.exists():
         shutil.copy2(active_rules, backup)
         current = active_rules.read_text(encoding="utf-8")

@@ -30,7 +30,7 @@
     "inner_ip": "10.10.10.1"
   },
   "rules": {
-    "active_rules": "defender/suricata/rules/local.rules",
+    "active_rules": "defender/suricata/rules/et-open-selected.rules",
     "baseline": "tests/fixtures/baseline.json",
     "registry": "evidence/rules/registry.jsonl",
     "backup_dir": "backups/rules",

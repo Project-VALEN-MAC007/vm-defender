@@ -1,6 +1,6 @@
 # สถานะโครงการ MIMIC Defender
 
-ปรับปรุงล่าสุด: 17 กันยายน 2026
+ปรับปรุงล่าสุด: 2 ตุลาคม 2026
 
 เอกสารนี้เป็นแหล่งข้อมูลหลักสำหรับสถานะงาน ข้อความว่า `ผ่าน` ใช้เฉพาะงานที่
 มีการทดสอบและหลักฐานรองรับเท่านั้น
@@ -11,7 +11,7 @@
 |---|---|---|---|
 | Network และ isolation | กำลังดำเนินการ | ยืนยัน management `enp0s9`, outer `enp0s3` และ inner `ztpp6hfkv2` แล้ว | ต้องเปิด UFW บน Real Product และทดสอบว่าเข้า backend โดยอ้อมไม่ได้ |
 | Suricata | กำลังดำเนินการ | syntax และ HTTP replay แบบออฟไลน์ผ่าน | ต้องทดสอบ live traffic ครบทุก protocol |
-| Detection rules | กำลังดำเนินการ | มีกฎ 11 รายการและ test matrix; syntax และ replay ออฟไลน์ผ่าน รวมถึง TLS 1.0/1.1 เป็น positive และ TLS 1.2 เป็น negative | HTTP หลัง TLS termination และ SSH/Telnet/scan ยังต้องทดสอบบน topology จริง |
+| Detection rules | กำลังดำเนินการ | Default เป็น ET Open 13 กฎ ตัด local.rules เดิมออก; syntax โหลดครบและ HTTP replay 6 positive/1 benign ผ่าน | ยังต้องทดสอบทุก SID และ topology จริง; ไม่มีกฎ TLS รุ่นเก่าและ SYN burst ทุกพอร์ตในชุดปัจจุบัน |
 | Nginx redirect | ผ่านระดับ integration | Real Web และ WordPress Honeypot ตอบ `200` ผ่าน `https://defender.lab`; map และ timeout ทดสอบแล้ว | ต้องทดสอบ redirect จาก alert จริงและทดสอบหลัง reboot |
 | nftables redirect | ติดขัด | สร้างคำสั่ง nft แบบ dry-run และตรวจ input ได้ | ต้องยืนยัน interface/endpoint และทดสอบ packet จริง |
 | Decision Engine | ผ่านระดับซอฟต์แวร์ | checkpoint, retry, expiry และ state restart มี test | ต้องทดสอบร่วมกับ Nginx/nftables บน Ubuntu จริง |
@@ -19,6 +19,14 @@
 | Rule validation | ผ่านระดับซอฟต์แวร์ | validation 5 gates และ rollback มี test | live deploy ยังปิดไว้จนกว่าจะมี privileged helper |
 
 ## ผลทดสอบล่าสุด
+
+- 2 ตุลาคม 2026: Suricata 7.0.3 ใน WSL โหลด ET Open 13 กฎสำเร็จ
+  replay .htpasswd, .env, /etc/passwd, Nmap NSE, Masscan และ sqlmap
+  ได้ SID ที่คาดหวัง; /health กับ curl ไม่เกิด alert
+- ชุดทดสอบซอฟต์แวร์ Python ปัจจุบันผ่าน 42 รายการ รวมการระบุ client IP
+  ของกฎตอบกลับ Telnet และประวัติความเสี่ยงจาก SID เครื่องมือสแกนของ ET Open
+- หลักฐานชุดปัจจุบัน: `evidence/test-results/et-open-default-20261002/`
+  ผลของกฎเดิมด้านล่างเป็นประวัติ ไม่ใช่ผลยืนยันชุด Default ปัจจุบัน
 
 - Python 3.12: ผ่าน 33 รายการทดสอบ
 - Python 3.8: ผ่าน 33 รายการทดสอบ
