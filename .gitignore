@@ -13,3 +13,6 @@ config/mimic.json
 config/users.json
 evidence/audit/
 evidence/rules/
+honeypot/snare-tanner/vendor/
+honeypot/snare-tanner/data/
+honeypot/snare-tanner/settings.env

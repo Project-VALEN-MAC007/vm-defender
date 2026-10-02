@@ -8,6 +8,7 @@ map $adaptive_profile $adaptive_backend {
     real        http://__REAL_WEB_IP__:__REAL_WEB_PORT__;
     wordpress   http://__WORDPRESS_IP__:__WORDPRESS_PORT__;
     phpmyadmin  http://__PHPMYADMIN_IP__:__PHPMYADMIN_PORT__;
+    snare       http://__SNARE_IP__:__SNARE_PORT__;
 }
 
 log_format adaptive_json escape=json '{"timestamp":"$time_iso8601",'
@@ -33,6 +34,7 @@ server {
     location / {
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Request-ID $request_id;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto https;
         proxy_connect_timeout 5s;

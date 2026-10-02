@@ -1,0 +1,33 @@
+TANNER:
+  host: 0.0.0.0
+  port: 8090
+REDIS:
+  host: redis
+  port: 6379
+  poolsize: 80
+  timeout: 1
+EMULATORS:
+  root_dir: /tmp/tanner/emulators
+EMULATOR_ENABLED:
+  sqli: true
+  xss: true
+  crlf: true
+  rfi: false
+  lfi: false
+  cmd_exec: false
+  php_code_injection: false
+  php_object_injection: false
+  xxe_injection: false
+  template_injection: false
+LOGGER:
+  log_debug: /var/log/tanner/tanner.log
+  log_err: /var/log/tanner/tanner.err
+LOCALLOG:
+  enabled: true
+  PATH: /var/log/tanner/events.jsonl
+MONGO:
+  enabled: false
+HPFEEDS:
+  enabled: false
+SESSIONS:
+  delete_timeout: 300

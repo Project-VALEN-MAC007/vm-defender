@@ -1,0 +1,8 @@
+FROM python:3.10-slim-bookworm
+RUN apt-get update && apt-get install -y --no-install-recommends build-essential git && rm -rf /var/lib/apt/lists/*
+COPY vendor/tanner /src/tanner
+COPY constraints.txt /build/constraints.txt
+RUN pip install --no-cache-dir 'setuptools<81' wheel && pip install --no-cache-dir -c /build/constraints.txt -r /src/tanner/requirements.txt && pip install --no-deps /src/tanner
+RUN mkdir -p /tmp/tanner/emulators /var/log/tanner
+WORKDIR /opt/tanner
+CMD ["tanner", "--config", "/etc/mimic/tanner.yaml"]

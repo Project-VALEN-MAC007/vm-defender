@@ -24,6 +24,7 @@ class Settings:
     nft_table: str = "adaptive_defender"
     bind_host: str = "127.0.0.1"
     bind_port: int = 9090
+    web_profile: str = "wordpress"
 
 
 def _path(value: Any, field: str, base: Path) -> Path:
@@ -48,6 +49,9 @@ def load_settings(path: str | Path) -> Settings:
     if not ipaddress.ip_address(bind_host).is_loopback:
         raise ValueError("dashboard bind_host must be loopback")
     expiry = int(raw.get("expiry_seconds", 1800))
+    web_profile = str(raw.get("web_profile", "wordpress"))
+    if web_profile not in {"wordpress", "phpmyadmin", "snare"}:
+        raise ValueError("unsupported web_profile")
     if not 1 <= expiry <= 86400:
         raise ValueError("expiry_seconds must be 1..86400")
     return Settings(
@@ -63,4 +67,5 @@ def load_settings(path: str | Path) -> Settings:
         nft_table=str(raw.get("nft_table", "adaptive_defender")),
         bind_host=bind_host,
         bind_port=int(raw.get("bind_port", 9090)),
+        web_profile=web_profile,
     )

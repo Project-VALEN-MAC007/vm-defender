@@ -18,7 +18,10 @@ class SourceState:
 
 class RiskEngine:
     def __init__(self, thresholds: dict[str, float], decay_per_minute: float, expiry_seconds: int,
-                 clock: Callable[[], datetime] | None = None):
+                 clock: Callable[[], datetime] | None = None, web_profile: str = "wordpress"):
+        if web_profile not in {"wordpress", "phpmyadmin", "snare"}:
+            raise ValueError("unsupported web_profile")
+        self.web_profile = web_profile
         self.thresholds = thresholds
         self.decay_per_minute = decay_per_minute
         self.expiry_seconds = expiry_seconds
@@ -69,7 +72,7 @@ class RiskEngine:
                 action, profile = "redirect_telnet", "telnet"
             else:
                 action = "redirect_web"
-                profile = "wordpress"
+                profile = self.web_profile
         elif state.score >= self.thresholds["monitor"]:
             action, profile = "monitor", "real"
         else:

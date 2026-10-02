@@ -1,0 +1,9 @@
+FROM python:3.10-slim-bookworm
+RUN apt-get update && apt-get install -y --no-install-recommends build-essential git && rm -rf /var/lib/apt/lists/*
+COPY vendor/snare /src/snare
+RUN pip install --no-cache-dir 'setuptools<81' 'aiohttp==3.8.6' 'aiohttp-jinja2==1.5.0' 'beautifulsoup4==4.12.3' 'cssutils==2.11.1' 'GitPython==3.1.43' 'jinja2==3.0.3' && pip install --no-deps /src/snare
+COPY patch_snare.py /build/patch_snare.py
+RUN python /build/patch_snare.py
+COPY start_snare.py /usr/local/bin/start_snare.py
+WORKDIR /opt/snare
+ENTRYPOINT ["python", "/usr/local/bin/start_snare.py"]

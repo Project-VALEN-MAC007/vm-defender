@@ -19,6 +19,7 @@ Nginx รับ HTTP/HTTPS ที่ outer IP เลือก backend จาก 
 - Real Web: `10.10.10.3:8080`
 - WordPress Honeypot: `10.10.10.2:8081`
 - phpMyAdmin Honeypot: `10.10.10.2:8082`
+- SNARE + TANNER: SNARE ที่ `10.10.10.2:8083` (IP ตัวอย่าง ต้องแทนด้วยเครื่อง Honeypot จริง)
 - health path ของทุก backend
 - path ของ redirect map
 
@@ -28,6 +29,12 @@ Nginx รับ HTTP/HTTPS ที่ outer IP เลือก backend จาก 
 `__WORDPRESS_IP__`, `__WORDPRESS_PORT__`, `__PHPMYADMIN_IP__` และ
 `__PHPMYADMIN_PORT__` ก่อนติดตั้ง ห้ามแก้ไฟล์ใน `generated/` แล้วถือเป็น
 แหล่งตั้งค่าหลัก
+
+แทน `__SNARE_IP__` และ `__SNARE_PORT__` ด้วย endpoint ของ SNARE ด้วย
+config ของ Decision Engine ทั้ง `lab.json` และ `live.json` เลือก
+`web_profile: "snare"` แล้ว คำขอเว็บที่ถึงเกณฑ์ redirect จึงไป SNARE;
+SNARE ส่งคำขอให้ TANNER วิเคราะห์ภายใน Docker network ไม่ proxy ไป TANNER โดยตรง
+ดูขั้นตอนติดตั้งใน `honeypot/snare-tanner/README.md` และเริ่มด้วย lab dry-run ก่อน
 
 ## ขั้นตอนตรวจสอบ
 
@@ -67,7 +74,7 @@ Decision Engine เขียน map แบบ atomic และเก็บ expir
 ```nginx
 # generated atomically; do not edit
 default real;
-192.0.2.30 wordpress;
+192.0.2.30 snare;
 ```
 
 ## การย้อนคืน
