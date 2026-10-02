@@ -57,13 +57,43 @@ python3 run_dashboard.py --config config/mimic.json
 
 เปิด Dashboard ที่ `http://127.0.0.1:9090/`
 
+Dashboard ใช้ชื่อ TRAP: Threat Redirection and Analysis Platform
+หน้า Login รองรับรหัส TOTP 6 หลักตาม [RFC 6238](https://www.rfc-editor.org/rfc/rfc6238)
+ตั้งค่าได้ที่ จัดการบัญชี → บัญชีของฉัน → ตั้งค่า Authenticator โดยกรอกรหัสผ่านปัจจุบัน
+แล้วเพิ่มคีย์ในแอป Authenticator แบบอิงเวลาและยืนยันรหัสภายใน 5 นาที
+เมื่อเปิดใช้แล้วต้องกรอก TOTP ทุกครั้งที่เข้าสู่ระบบ รหัสที่ใช้สำเร็จแล้วใช้ซ้ำไม่ได้
+หน้า Login ให้กรอก Username และ Password ก่อน เมื่อกำหนด `security.require_totp: true` ทุกบัญชีต้องไปหน้ากรอก TOTP แยก
+และได้รับ session หลังยืนยัน TOTP สำเร็จเท่านั้น บัญชีที่ยังไม่ได้ตั้งค่าจะได้รับคีย์สำหรับเพิ่ม
+ในแอป Authenticator ที่หน้านี้ และต้องยืนยันรหัสก่อนเข้า Dashboard
+การเปลี่ยนหรือรีเซ็ตรหัสผ่านไม่ปิด TOTP
+หากสูญเสีย Authenticator ผู้ดูแลเครื่องต้องกู้บัญชีแบบออฟไลน์: หยุด Dashboard
+สำรอง `config/users.json` แล้วลบเฉพาะ `totp_secret` และ `totp_last_counter` ของบัญชีนั้น
+ก่อนเปิด Dashboard และตั้งค่า Authenticator ใหม่ เก็บไฟล์ผู้ใช้และสำรองไว้เป็นความลับ
+
 หน้า Overview และ Reports เลือกสถิติย้อนหลัง 24 ชั่วโมง, 7 วัน, 30 วัน หรือทั้งหมดที่เก็บไว้ได้
 โดยแสดงแนวโน้ม Alert, Source IP ที่ไม่ซ้ำ, โปรโตคอล, ระดับความรุนแรง และผลการตัดสินใจ
-หน้า Log Search ค้นหา Suricata และ Decision Engine จากข้อมูลที่เก็บไว้ทั้งหมดก่อนแบ่งหน้า
+หน้า Log Search ค้นหา Suricata, Decision Engine และ Honeypot จากข้อมูลที่เก็บไว้ทั้งหมดก่อนแบ่งหน้า
 พร้อมกรองเวลา, Source IP, โปรโตคอล, แหล่งข้อมูล และความรุนแรง
 สถิติเป็น snapshot ของ log ที่ Dashboard เก็บได้สูงสุดตาม `dashboard.maximum_rows`
-จึงไม่ใช่ยอดสะสมถาวร ปัจจุบันยังไม่มี data adapter สำหรับ log จาก Web Honeypot และ Cowrie
-จึงไม่แสดงสถิติพฤติกรรมจากฮันนีพอต
+จึงไม่ใช่ยอดสะสมถาวร รองรับ Cowrie JSONL และข้อมูล Session ที่แปลงรูปแบบแล้วจาก Web Honeypot
+ผ่าน `paths.honeypot_paths` เพื่อคำนวณเวลาระหว่าง Action แรกและ Action สุดท้าย
+รายละเอียดขอบเขตและข้อจำกัดอยู่ใน [ขอบเขต Dashboard 1.3.2.3](docs/dashboard-scope-1.3.2.3.md)
+การ Flush ประวัติที่แสดงต้องยืนยัน TOTP เสมอ รวมถึงในโหมดเดโม่ และเก็บไฟล์ Log ต้นฉบับไว้
+
+## ข้อมูลเดโม่ Dashboard
+
+สร้างข้อมูลจำลอง 18,000 Alerts และ 12,000 Decisions ย้อนหลัง 45 วัน:
+
+```bash
+python generate_demo_data.py
+python run_dashboard.py --config config/mimic.demo.json
+```
+
+ข้อมูลอยู่ใน `evidence/demo/` แยกจากหลักฐานจริง
+config เดโม่กำหนด `security.require_totp: false` เพื่อเข้าสู่ระบบด้วย Username/Password ได้ทันที
+config ปกติยังบังคับ TOTP ตามค่าเริ่มต้น
+สถานะบริการในโหมดนี้เป็นข้อมูลจำลอง การสร้างข้อมูลไม่แก้บัญชีผู้ใช้หรือ log เดิม
+กลับไปอ่านข้อมูลเดิมโดยหยุด Dashboard แล้วรัน `python run_dashboard.py --config config/mimic.json`
 
 ## ตรวจสอบก่อนติดตั้งจริง
 

@@ -15,13 +15,16 @@ def upsert_user(path: Path, username: str, name: str, role: str, password: str) 
     payload = {"users": []}
     if path.exists():
         payload = json.loads(path.read_text(encoding="utf-8"))
+    existing = next((item for item in payload.get("users", []) if item.get("username") == username), {})
     users = [item for item in payload.get("users", []) if item.get("username") != username]
     users.append({
+        **existing,
         "username": username,
         "name": name,
         "role": role,
         "password_hash": hash_password(password),
         "disabled": False,
+        "must_change_password": role == "master_admin",
     })
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(path.suffix + ".tmp")

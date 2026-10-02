@@ -4,10 +4,13 @@ from pathlib import Path
 import tempfile
 import threading
 import unittest
+import base64
+import time
+from unittest.mock import patch
 
 from defender.dashboard.app import handler_factory
 from defender.dashboard.config import DashboardSettings
-from defender.dashboard.security import hash_password
+from defender.dashboard.security import hash_password, totp_code, match_totp, UserStore
 from http.server import ThreadingHTTPServer
 
 
@@ -51,6 +54,7 @@ class DashboardApiSecurityTests(unittest.TestCase):
             rule_backup_dir=self.paths["backups"], suricata_config_path=root / "suricata.yaml",
             login_max_attempts=2,
         )
+        self.settings = settings
         self.server = ThreadingHTTPServer(("127.0.0.1", 0), handler_factory(settings=settings))
         self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
         self.thread.start()
@@ -79,6 +83,14 @@ class DashboardApiSecurityTests(unittest.TestCase):
         status, headers, payload = self.request(
             "POST", "/api/login", {"username": username, "password": password})
         self.assertEqual(status, 200)
+        self.assertTrue(payload["totp_required"])
+        self.assertNotIn("Set-Cookie", headers)
+        secret = payload.get("enrollment_secret") or UserStore(self.paths["users"]).load()[username]["totp_secret"]
+        counter = max(int(time.time()) // 30, UserStore(self.paths["users"]).load()[username]["totp_last_counter"] + 1)
+        with patch("defender.dashboard.security.time.time", return_value=counter * 30):
+            status, headers, payload = self.request("POST", "/api/login/totp", {
+                "challenge": payload["challenge"], "totp": totp_code(secret, counter)})
+        self.assertEqual(status, 200)
         cookie = headers["Set-Cookie"].split(";", 1)[0]
         return cookie, payload["csrf_token"]
 
@@ -86,6 +98,63 @@ class DashboardApiSecurityTests(unittest.TestCase):
         status, _, payload = self.request("GET", "/api/alerts.json")
         self.assertEqual(status, 401)
         self.assertEqual(payload["error"], "authentication_required")
+
+    def test_totp_rfc_vector_and_expiry(self):
+        secret = base64.b32encode(b"12345678901234567890").decode()
+        self.assertEqual(totp_code(secret, 59 // 30, 8), "94287082")
+        with patch("defender.dashboard.security.time.time", return_value=59):
+            self.assertEqual(match_totp(secret, "287082"), 1)
+            self.assertIsNone(match_totp(secret, "287082", 1))
+            self.assertIsNone(match_totp(secret, "28708"))
+        with patch("defender.dashboard.security.time.time", return_value=150):
+            self.assertIsNone(match_totp(secret, "287082"))
+
+    def test_totp_enrollment_login_and_replay(self):
+        credentials = {"username": "admin", "password": "Admin-password-123"}
+        status, first_headers, challenge = self.request("POST", "/api/login", credentials)
+        self.assertEqual(status, 200)
+        self.assertTrue(challenge["totp_required"])
+        self.assertNotIn("Set-Cookie", first_headers)
+        self.assertNotIn("user", challenge)
+        secret = challenge["enrollment_secret"]
+        self.assertNotIn(secret, self.paths["users"].read_text())
+        self.assertEqual(self.request("GET", "/api/alerts.json")[0], 401)
+        counter = int(time.time()) // 30
+        with patch("defender.dashboard.security.time.time", return_value=counter * 30):
+            second = {"challenge": challenge["challenge"], "totp": "bad"}
+            self.assertEqual(self.request("POST", "/api/login/totp", second)[0], 401)
+            second["totp"] = totp_code(secret, counter)
+            status, headers, result = self.request("POST", "/api/login/totp", second)
+            self.assertEqual(status, 200)
+            self.assertTrue(result["user"]["totp_enabled"])
+            self.assertIn("Set-Cookie", headers)
+            self.assertEqual(self.request("POST", "/api/login/totp", second)[0], 401)
+            _, headers, next_challenge = self.request("POST", "/api/login", credentials)
+            self.assertNotIn("enrollment_secret", next_challenge)
+            self.assertNotIn("Set-Cookie", headers)
+        store = UserStore(self.paths["users"])
+        self.assertNotIn(secret, json.dumps(store.list_public()))
+        store.change_password("admin", "Admin-password-123", "Changed-password-123")
+        self.assertEqual(store.load()["admin"]["totp_secret"], secret)
+        self.assertNotIn(secret, self.paths["audit"].read_text())
+
+    def test_totp_challenge_expiry_password_change_and_attempt_limit(self):
+        store = UserStore(self.paths["users"])
+        secret = store.setup_totp("admin", "Admin-password-123")
+        counter = int(time.time()) // 30
+        store.setup_totp("admin", "Admin-password-123", totp_code(secret, counter))
+        with patch("defender.dashboard.security.time.monotonic", return_value=100):
+            challenge = store.begin_login("admin", "Admin-password-123")["challenge"]
+        with patch("defender.dashboard.security.time.monotonic", return_value=401):
+            self.assertIsNone(store.complete_login(challenge, totp_code(secret, counter + 1)))
+        challenge = store.begin_login("admin", "Admin-password-123")["challenge"]
+        for _ in range(5):
+            self.assertIsNone(store.complete_login(challenge, "bad"))
+        self.assertIsNone(store.complete_login(challenge, totp_code(secret, counter + 1)))
+        challenge = store.begin_login("admin", "Admin-password-123")["challenge"]
+        store.change_password("admin", "Admin-password-123", "Changed-password-123")
+        self.assertIsNone(store.complete_login(challenge, totp_code(secret, counter + 1)))
+        self.assertIsNone(store.begin_login("admin", "Admin-password-123"))
 
     def test_user_cannot_access_rule_management(self):
         cookie, _ = self.login("viewer", "Viewer-password-123")
@@ -99,8 +168,7 @@ class DashboardApiSecurityTests(unittest.TestCase):
         self.assertEqual(status, 200)
         self.assertEqual(payload[0]["sid"], 2200901)
         self.assertEqual(headers["X-Frame-Options"], "DENY")
-        self.assertIn("HttpOnly", self.request("POST", "/api/login", {
-            "username": "admin", "password": "Admin-password-123"})[1]["Set-Cookie"])
+        self.assertIn("mimic_session=", cookie)
 
     def test_csrf_is_required_for_logout(self):
         cookie, csrf = self.login("admin", "Admin-password-123")
