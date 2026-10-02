@@ -27,7 +27,7 @@ aside { position: sticky; top: 0; height: 100vh; padding: 26px 14px 18px; backgr
 .brand { display: flex; align-items: center; gap: 11px; padding: 0 10px 27px; }
 .mark { width: 39px; height: 39px; flex: none; display: grid; place-items: center; background: var(--accent); color: #152014; border-radius: 11px; font-size: 21px; font-weight: 900; box-shadow: 0 8px 25px rgba(166, 240, 43, .15); }
 .brand h1 { margin: 0; font-size: 15px; font-weight: 780; letter-spacing: -.025em; line-height: 1.2; white-space: nowrap; }
-.brand p { margin: 4px 0 0; color: #8497ab; font-size: 9px; font-weight: 800; letter-spacing: .13em; }
+.brand p { margin: 4px 0 0; color: #8497ab; font-size: 9px; font-weight: 800; letter-spacing: .04em; line-height: 1.5; }
 .nav-label { padding: 0 13px; margin: 8px 0 13px; color: #71869b; font-size: 10px; font-weight: 800; letter-spacing: .18em; }
 nav { display: grid; gap: 4px; }
 .nav-btn { width: 100%; min-height: 44px; display: flex; align-items: center; justify-content: flex-start; gap: 12px; padding: 10px 13px; border: 1px solid transparent; border-radius: 10px; background: transparent; color: #afbdcb; text-align: left; font-size: 13px; font-weight: 650; transition: background .18s, color .18s, border-color .18s; }
@@ -168,6 +168,27 @@ code, .mono { font-family: Consolas, "Courier New", monospace; font-size: 11px; 
 .credential-box button { justify-self: start; }
 .success { margin: 14px 0 0; color: #c9f7a0; font-size: 12px; }
 .success:empty { display: none; }
+.scope-gap { margin-top: 20px; }
+.event-filters { margin-bottom: 18px; }
+.event-filters label { color: var(--muted); font-size: 12px; }
+.events-table { min-width: 1080px; }
+.events-table td { max-width: 290px; }
+.events-table small, .rules-table small { display: block; margin-top: 7px; color: var(--muted); line-height: 1.5; }
+.events-table .unread-row td:first-child { border-left: 3px solid var(--accent); }
+.events-table button, .rules-table button { min-height: 30px; padding: 5px 8px; font-size: 11px; }
+.rules-table, .dwell-table { min-width: 540px; }
+.threshold-grid { display: grid; grid-template-columns: 1fr 1fr auto; gap: 16px; align-items: end; }
+.threshold-grid label { display: grid; gap: 8px; color: var(--muted); font-size: 12px; }
+.report-heading { display: flex; justify-content: space-between; align-items: center; gap: 15px; margin-bottom: 18px; }
+.report-heading .section-intro { margin: 0; }
+#severity-rank .bar-row { grid-template-columns: 135px 1fr 45px; }
+dialog { width: min(520px, calc(100% - 32px)); padding: 26px; background: var(--panel); color: var(--text); border: 1px solid var(--line); border-radius: 16px; }
+dialog::backdrop { background: rgba(0,0,0,.7); backdrop-filter: blur(3px); }
+dialog p { color: var(--muted); font-size: 13px; line-height: 1.6; }
+pre { max-width: 100%; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; color: #c7dfb0; font-size: 11px; }
+#rule-text { min-height: 180px; }
+#rule-backups { width: 100%; margin: 12px 0; }
+@media (max-width: 700px) { .threshold-grid { grid-template-columns: 1fr; }.report-heading { align-items: start; flex-direction: column; } }
 
 @media (max-width: 1180px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 1100px) { .two { grid-template-columns: 1fr; }.filters { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

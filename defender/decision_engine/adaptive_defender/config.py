@@ -25,6 +25,7 @@ class Settings:
     bind_host: str = "127.0.0.1"
     bind_port: int = 9090
     web_profile: str = "wordpress"
+    config_path: Path | None = None
 
 
 def _path(value: Any, field: str, base: Path) -> Path:
@@ -68,4 +69,5 @@ def load_settings(path: str | Path) -> Settings:
         bind_host=bind_host,
         bind_port=int(raw.get("bind_port", 9090)),
         web_profile=web_profile,
+        config_path=config_path,
     )

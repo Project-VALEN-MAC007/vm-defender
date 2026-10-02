@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>MIMIC | ศูนย์ติดตามภัยคุกคาม</title>
+  <title>TRAP: Threat Redirection and Analysis Platform</title>
   <link rel="stylesheet" href="/static/dashboard.css">
 </head>
 <body>
@@ -19,8 +19,8 @@
   </svg>
   <section id="login-screen" class="login-screen">
     <form class="login-card" id="login-form">
-      <h1>MIMIC Defender</h1>
-      <p>เข้าสู่ระบบ MIMIC Defender Dashboard</p>
+      <h1>TRAP</h1>
+      <p>Threat Redirection and Analysis Platform</p>
       <div class="form-grid">
         <input id="username" autocomplete="username" placeholder="Username" required>
         <input id="password" autocomplete="current-password" type="password" placeholder="Password" required>
@@ -28,16 +28,30 @@
         <div class="error" id="login-error"></div>
       </div>
     </form>
+    <form class="login-card hidden" id="totp-login-form">
+      <h1>ยืนยัน TOTP</h1>
+      <p>กรอกรหัส 6 หลักจากแอป Authenticator เพื่อเข้าสู่ TRAP</p>
+      <div class="form-grid">
+        <div id="login-totp-enrollment" class="hidden">
+          <p>ตั้งค่า TOTP ก่อนเข้าใช้งานครั้งแรก: เพิ่มบัญชี TRAP ในแอป Authenticator เลือกกรอกคีย์เองและชนิดอิงเวลา แล้วกรอกรหัส 6 หลักด้านล่างภายใน 5 นาที</p>
+          <label>คีย์สำหรับตั้งค่า<input id="login-totp-secret" readonly autocomplete="off"></label>
+        </div>
+        <label for="totp">รหัส TOTP</label>
+        <input id="totp" autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="123456" required>
+        <button type="submit">ยืนยันและเข้าสู่ระบบ</button>
+        <button id="totp-back" type="button" class="secondary">กลับไปหน้าเข้าสู่ระบบ</button>
+        <div class="error" id="totp-login-error" role="status"></div>
+      </div>
+    </form>
   </section>
 
   <section id="app" class="app hidden">
     <aside>
-      <div class="brand"><div class="mark">M</div><div><h1>MIMIC Defender</h1><p>ADAPTIVE DECEPTION SYSTEM</p></div></div>
+      <div class="brand"><div class="mark">T</div><div><h1>TRAP</h1><p>Threat Redirection and Analysis Platform</p></div></div>
       <div class="nav-label">WORKSPACE</div>
       <nav aria-label="เมนูหลัก">
         <button class="nav-btn active" data-view="overview"><svg aria-hidden="true"><use href="#icon-grid"></use></svg>ภาพรวม</button>
         <button class="nav-btn" data-view="alerts"><svg aria-hidden="true"><use href="#icon-alert"></use></svg>การแจ้งเตือน</button>
-        <button class="nav-btn" data-view="decisions"><svg aria-hidden="true"><use href="#icon-route"></use></svg>การตัดสินใจ</button>
         <button class="nav-btn" data-view="logs"><svg aria-hidden="true"><use href="#icon-list"></use></svg>ค้นหา Log</button>
         <button class="nav-btn" data-view="rules" data-admin><svg aria-hidden="true"><use href="#icon-rule"></use></svg>จัดการกฎ</button>
         <button class="nav-btn" data-view="reports"><svg aria-hidden="true"><use href="#icon-chart"></use></svg>รายงาน</button>
@@ -48,12 +62,12 @@
 
     <main>
       <header>
-        <div class="title"><span class="breadcrumb">MIMIC / DEFENDER</span><h2 id="view-title">ภาพรวม</h2><p id="last-updated">อัปเดตล่าสุด: -</p></div>
+        <div class="title"><span class="breadcrumb">TRAP / DASHBOARD</span><h2 id="view-title">ภาพรวม</h2><p id="last-updated">อัปเดตล่าสุด: -</p></div>
         <div class="toolbar"><label for="analytics-window">ช่วงเวลาสถิติ</label><select id="analytics-window"><option value="24h">24 ชั่วโมง</option><option value="7d">7 วัน</option><option value="30d">30 วัน</option><option value="all">ทั้งหมดที่เก็บไว้</option></select><label class="pill info"><input type="checkbox" id="auto-refresh" checked> อัปเดตอัตโนมัติ</label><button id="refresh">รีเฟรช</button><button id="logout" class="secondary">ออกจากระบบ</button></div>
       </header>
       <div class="content">
         <section id="overview" class="view active">
-          <div class="overview-intro"><div><span class="section-kicker">SYSTEM SNAPSHOT</span><p>สถานะการตรวจจับและการตอบสนองตามช่วงเวลาที่เลือก</p></div><span class="overview-context">MIMIC DEFENDER / LIVE OVERVIEW</span></div>
+          <div class="overview-intro"><div><span class="section-kicker">SYSTEM SNAPSHOT</span><p>สถานะการตรวจจับและการตอบสนองตามช่วงเวลาที่เลือก</p></div><span class="overview-context">TRAP / LIVE OVERVIEW</span></div>
           <div class="grid stats">
             <div class="card stat"><svg class="stat-icon" aria-hidden="true"><use href="#icon-alert"></use></svg><div class="label">เหตุการณ์ที่ตรวจพบ</div><div class="value" id="stat-alerts">0</div><div class="hint">Suricata alerts</div></div>
             <div class="card stat"><svg class="stat-icon" aria-hidden="true"><use href="#icon-globe"></use></svg><div class="label">Source IP ไม่ซ้ำ</div><div class="value" id="stat-sources">0</div><div class="hint">ต้นทางของเหตุการณ์</div></div>
@@ -72,44 +86,43 @@
             <div class="card"><div class="card-head"><h3 class="card-title">การแจ้งเตือนระบบ</h3><span class="pill info" id="note-count">0 รายการ</span></div><div class="card-body" id="notifications"></div></div>
             <div class="card"><div class="card-head"><h3 class="card-title">สถานะบริการ</h3></div><div class="card-body" id="services"></div></div>
           </div>
-          <div class="status-banner">ข้อมูลพฤติกรรมจาก Web Honeypot และ Cowrie ยังไม่เชื่อมต่อกับ Dashboard นี้ จึงไม่มีตัวเลข session หรือคำสั่งจาก Honeypot ให้แสดง</div>
+          <div class="card scope-gap"><div class="card-head"><h3 class="card-title">อันดับ Source IP ที่มีเหตุการณ์รุนแรงสูง</h3><span class="pill info">10 อันดับ</span></div><div class="card-body" id="severity-rank"></div></div><p id="honeypot-availability" class="data-note"></p>
         </section>
 
         <section id="alerts" class="view">
-          <div class="filters"><input id="alert-search" placeholder="ค้นหา Source IP, signature, category"><select id="alert-severity"><option value="">All severity</option><option value="1">Severity 1</option><option value="2">Severity 2</option><option value="3">Severity 3</option></select><select id="alert-protocol"><option value="">All protocol</option><option>TCP</option><option>HTTP</option><option>TLS</option><option>SSH</option><option>TELNET</option></select><a class="button secondary" href="/api/alerts.csv" target="_blank">Export CSV</a></div>
-          <div class="card"><div class="card-head"><h3 class="card-title">Suricata Alerts</h3><div class="split-actions"><button class="secondary" id="alerts-prev">Previous</button><span class="pill info" id="alerts-count">0</span><button class="secondary" id="alerts-next">Next</button></div></div><div class="table-wrap"><table><thead><tr><th>Time</th><th>Source</th><th>Protocol</th><th>SID</th><th>Severity</th><th>Signature</th></tr></thead><tbody id="alerts-body"></tbody></table></div></div>
-        </section>
-
-        <section id="decisions" class="view">
-          <div class="filters"><input id="decision-search" placeholder="ค้นหา Source IP, action, profile, reason"><select id="decision-action"><option value="">All actions</option><option>allow</option><option>monitor</option><option>redirect_web</option><option>redirect_ssh</option><option>redirect_telnet</option><option>temporary_block</option></select><select id="decision-protocol"><option value="">All protocol</option><option>http</option><option>tls</option><option>ssh</option><option>telnet</option><option>scan</option></select><a class="button secondary" href="/api/decisions.csv" target="_blank">Export CSV</a></div>
-          <div class="card"><div class="card-head"><h3 class="card-title">Decision Engine</h3><div class="split-actions"><button class="secondary" id="decisions-prev">Previous</button><span class="pill info" id="decisions-count">0</span><button class="secondary" id="decisions-next">Next</button></div></div><div class="table-wrap"><table><thead><tr><th>Time</th><th>Source</th><th>Protocol</th><th>Risk</th><th>Action</th><th>Profile</th><th>Reason</th><th>Expiry</th></tr></thead><tbody id="decisions-body"></tbody></table></div></div>
-        </section>
+<div class="log-page-head"><div><span class="section-kicker">DECISION ENGINE</span><h3>แจ้งเตือนเหตุการณ์</h3><p>รายละเอียดการตรวจพบ การส่งต่อ และเวลาที่อยู่ใน Honeypot</p></div><span class="pill warn" id="events-unread"></span></div>
+<div class="split-actions event-filters"><label>สถานะ <select id="events-status"><option value="">ทั้งหมด</option><option value="unread">ยังไม่อ่าน</option><option value="read">อ่านแล้ว</option></select></label><label>เรียงตาม <select id="events-order"><option value="latest">ล่าสุดก่อน</option><option value="oldest">เก่าสุดก่อน</option></select></label></div>
+<div class="card"><div class="card-head"><h3 class="card-title">ข้อความแจ้งเตือน</h3><div class="split-actions"><button class="secondary" id="events-prev">ก่อนหน้า</button><span id="events-count" class="pill info"></span><button class="secondary" id="events-next">ถัดไป</button></div></div><div class="table-wrap"><table class="events-table"><thead><tr><th>วันและเวลา</th><th>Source IP</th><th>ประเภทการส่งต่อ</th><th>กฎ / รายละเอียด</th><th>ความรุนแรง</th><th>เวลาใน Honeypot</th><th>สถานะ / จัดการ</th></tr></thead><tbody id="events-body"></tbody></table></div></div><p id="events-error" class="error"></p>
+</section>
 
         <section id="logs" class="view">
-          <div class="log-page-head"><div><span class="section-kicker">EVENT EXPLORER</span><h3>บันทึกเหตุการณ์</h3><p>ค้นหาเหตุการณ์จาก Suricata และ Decision Engine ในข้อมูลที่ระบบเก็บไว้</p></div><div class="log-total"><strong id="logs-total">0</strong><span>รายการที่ตรงเงื่อนไข</span></div></div>
-          <div class="card log-filter-card"><div class="card-head"><div><h3 class="card-title">ตัวกรองเหตุการณ์</h3><p class="data-note">ระบุเงื่อนไขเพื่อค้นหาในข้อมูลที่เก็บไว้</p></div><button id="logs-clear" type="button" class="secondary">ล้างตัวกรอง</button></div><div class="card-body"><div class="log-filter-grid"><label class="log-query-field">คำค้นหา<input id="log-search" placeholder="ข้อความหรือรายละเอียดเหตุการณ์"></label><label>Source IP<input id="log-source" placeholder="เช่น 192.0.2.10"></label><label>แหล่งข้อมูล<select id="log-type"><option value="">ทุกแหล่งข้อมูล</option><option value="suricata">Suricata</option><option value="decision">Decision Engine</option></select></label></div><div class="log-filter-grid"><label>โปรโตคอล<select id="log-protocol"><option value="">ทุกโปรโตคอล</option><option>HTTP</option><option>TLS</option><option>SSH</option><option>TELNET</option><option>TCP</option></select></label><label>ความรุนแรง<select id="log-severity"><option value="">ทุกระดับ</option><option value="1">1 สูง</option><option value="2">2 กลาง</option><option value="3">3 ต่ำ</option></select></label><label>ตั้งแต่<input id="log-from" type="datetime-local"></label><label>ถึง<input id="log-to" type="datetime-local"></label></div></div></div>
+          <div class="log-page-head"><div><span class="section-kicker">EVENT EXPLORER</span><h3>บันทึกเหตุการณ์</h3><p>ค้นหาเหตุการณ์จาก Suricata, Decision Engine และ Honeypot ตามวันและเวลา</p></div><div class="log-total"><strong id="logs-total">0</strong><span>รายการที่ตรงเงื่อนไข</span></div></div>
+          <div class="card log-filter-card"><div class="card-head"><div><h3 class="card-title">ตัวกรองเหตุการณ์</h3><p class="data-note">ระบุเงื่อนไขเพื่อค้นหาในข้อมูลที่เก็บไว้</p></div><div class="split-actions"><button id="logs-clear" type="button" class="secondary">ล้างตัวกรอง</button><button id="logs-flush" type="button" class="secondary">Flush ข้อมูล</button></div></div><div class="card-body"><div class="log-filter-grid"><label class="log-query-field">คำค้นหา<input id="log-search" placeholder="ข้อความหรือรายละเอียดเหตุการณ์"></label><label>Source IP<input id="log-source" placeholder="เช่น 192.0.2.10"></label><label>แหล่งข้อมูล<select id="log-type"><option value="">ทุกแหล่งข้อมูล</option><option value="suricata">Suricata</option><option value="decision">Decision Engine</option><option value="honeypot">Honeypot</option></select></label></div><div class="log-filter-grid"><label>โปรโตคอล<select id="log-protocol"><option value="">ทุกโปรโตคอล</option><option>HTTP</option><option>TLS</option><option>SSH</option><option>TELNET</option><option>TCP</option><option>DNS</option><option>UDP</option><option>ICMP</option><option>COWRIE</option><option>SNARE</option></select></label><label>ความรุนแรง<select id="log-severity"><option value="">ทุกระดับ</option><option value="1">1 สูง</option><option value="2">2 กลาง</option><option value="3">3 ต่ำ</option></select></label><label>ตั้งแต่<input id="log-from" type="datetime-local"></label><label>ถึง<input id="log-to" type="datetime-local"></label></div></div></div>
           <div class="card log-results"><div class="card-head"><div><h3 class="card-title">รายการเหตุการณ์</h3><p class="data-note">เรียงจากเหตุการณ์ล่าสุด</p></div><div class="split-actions"><button class="secondary" id="logs-prev">ก่อนหน้า</button><span class="pill info" id="logs-count">0</span><button class="secondary" id="logs-next">ถัดไป</button></div></div><div class="table-wrap"><table class="log-table"><thead><tr><th>เวลา</th><th>แหล่งข้อมูล</th><th>Source IP</th><th>โปรโตคอล</th><th>ความรุนแรง</th><th>รายละเอียด</th><th>ผลลัพธ์</th></tr></thead><tbody id="logs-body"></tbody></table></div></div>
           <p id="logs-error" class="error" role="status"></p>
         </section>
 
         <section id="rules" class="view">
-          <div class="grid two">
-            <div class="card"><div class="card-head"><h3 class="card-title">Detection Rules</h3><span class="pill info" id="rules-count">0</span></div><div class="table-wrap"><table><thead><tr><th>SID</th><th>Severity</th><th>Class</th><th>Message</th></tr></thead><tbody id="rules-body"></tbody></table></div></div>
-            <div class="card"><div class="card-head"><h3 class="card-title">Candidate Rule</h3><span class="pill warn">Master Admin only</span></div><div class="card-body"><div class="form-grid"><input id="candidate-id" placeholder="Rule ID, e.g. http-probe-001"><input id="candidate-version" placeholder="Version, e.g. 1.0.0"><input id="candidate-evidence" placeholder="Evidence reference"><input id="candidate-confidence" type="number" min="0" max="1" step="0.01" placeholder="Confidence 0.00-1.00"><input id="candidate-sid" placeholder="Expected SID, e.g. 2200501"><textarea id="candidate-rule" placeholder="Paste Suricata rule candidate here"></textarea><div class="split-actions"><button id="validate-rule" type="button">Validate</button><button id="deploy-rule" type="button">Deploy</button><button type="button" class="secondary" id="clear-candidate">Clear</button></div><div id="candidate-result" class="pill info">Waiting for candidate</div></div></div></div>
-          </div>
-        </section>
+<div class="card"><div class="card-head"><h3 class="card-title">เกณฑ์คะแนน Decision Engine</h3><span class="pill info">Master Admin</span></div><div class="card-body"><form id="threshold-form" class="threshold-grid"><label>คะแนนเฝ้าระวัง<input id="threshold-monitor" type="number" min="0" max="99" step="0.1" required></label><label>คะแนนส่งไป Honeypot<input id="threshold-redirect" type="number" min="1" max="100" step="0.1" required></label><button type="submit">บันทึกเกณฑ์</button></form><p id="threshold-result" class="data-note" role="status"></p></div></div>
+<p id="rule-mode" class="data-note"></p>
+<div class="grid two scope-gap">
+<div class="card"><div class="card-head"><h3 class="card-title">กฎตรวจจับ Suricata</h3><div class="split-actions"><span class="pill info" id="rules-count"></span><button id="rule-new" class="secondary">เพิ่มกฎ</button></div></div><div class="table-wrap"><table class="rules-table"><thead><tr><th>SID</th><th>ระดับ</th><th>กฎตรวจจับ</th><th>สถานะ</th><th>จัดการ</th></tr></thead><tbody id="rules-body"></tbody></table></div></div>
+<div class="card"><div class="card-head"><h3 class="card-title" id="rule-editor-title">เพิ่มกฎใหม่</h3></div><div class="card-body"><form id="rule-editor-form" class="form-grid"><input id="rule-sid" type="hidden"><label>รายละเอียดกฎ<textarea id="rule-text" required placeholder='alert http ... (msg:"..."; classtype:web-application-attack; sid:9901001; rev:1;)'></textarea></label><button id="rule-save">บันทึกและสำรองกฎเดิม</button><p id="rule-error" class="error" role="status"></p></form><hr><label>ชุดสำรองกฎ<select id="rule-backups"></select></label><button id="rule-restore" class="secondary">คืนค่ากฎจากชุดสำรอง</button></div></div>
+</div><div class="grid two scope-gap">
+<div class="card"><div class="card-head"><h3 class="card-title">ตรวจสอบกฎที่เสนอ</h3></div><div class="card-body"><div class="form-grid"><label>รหัสกฎ<input id="candidate-id" placeholder="http-probe-001"></label><label>เวอร์ชัน<input id="candidate-version" placeholder="1.0.0"></label><label>หลักฐานเหตุการณ์<input id="candidate-evidence" placeholder="อ้างอิง Log / Session / รายงานทดสอบ"></label><label>ความเชื่อมั่น<input id="candidate-confidence" type="number" min="0" max="1" step="0.01" placeholder="0.00–1.00"></label><label>SID<input id="candidate-sid" type="number"></label><label>รายละเอียดกฎ<textarea id="candidate-rule"></textarea></label><div class="split-actions"><button id="validate-rule" type="button">ตรวจสอบกฎ</button><button id="deploy-rule" type="button">ส่งเข้าคิวอนุมัติ</button><button id="clear-candidate" type="button" class="secondary">ล้างฟอร์ม</button></div><p id="candidate-result" class="pill info">รอข้อมูลกฎ</p><p class="data-note">ผลทดสอบใช้ Baseline ที่กำหนดไว้ การทดสอบ Suricata บนเครื่องจริงเป็นขั้นตอนก่อน Deploy</p></div></div></div>
+<div class="card"><div class="card-head"><h3 class="card-title">กฎรออนุมัติและผลทดสอบ</h3></div><div class="card-body" id="candidate-queue"></div></div></div></section>
 
         <section id="reports" class="view">
-          <p class="section-intro">ตัวเลขสรุปใช้ช่วงเวลาที่เลือกด้านบน ส่วนค่า latency ใช้ข้อมูล runtime ที่เก็บไว้ทั้งหมด</p>
+          <div class="report-heading"><p class="section-intro">สรุปเหตุการณ์ Decision Engine การส่งต่อ และเวลาเฉลี่ยใน Honeypot ตามช่วงเวลาที่เลือก</p><a id="report-export" class="button secondary" href="/api/reports.csv">ส่งออกรายงาน CSV</a></div>
           <div class="grid stats">
             <div class="card stat"><div class="label">Alert รุนแรงสูง</div><div class="value" id="report-high">0</div><div class="hint">ตามช่วงเวลาที่เลือก</div></div>
-            <div class="card stat"><div class="label">การบล็อก</div><div class="value" id="report-blocks">0</div><div class="hint">ตามช่วงเวลาที่เลือก</div></div>
-            <div class="card stat"><div class="label">เวลาตัดสินใจ</div><div class="value" id="report-decision-latency">N/A</div><div class="hint">ค่าเฉลี่ยข้อมูลที่เก็บไว้</div></div>
-            <div class="card stat"><div class="label">เวลาเปลี่ยนเส้นทาง</div><div class="value" id="report-redirect-latency">N/A</div><div class="hint">ค่าเฉลี่ยข้อมูลที่เก็บไว้</div></div>
+            <div class="card stat"><div class="label">เปลี่ยนเส้นทางไป Honeypot</div><div class="value" id="report-redirects">0</div><div class="hint">ตามช่วงเวลาที่เลือก</div></div>
+            <div class="card stat"><div class="label">ส่งต่อไปบริการจริง</div><div class="value" id="report-real">0</div><div class="hint">ตามช่วงเวลาที่เลือก</div></div>
+            <div class="card stat"><div class="label">Session ใน Honeypot</div><div class="value" id="report-sessions">0</div><div class="hint">ตามช่วงเวลาที่เลือก</div></div>
           </div>
-          <div class="card" style="margin-top:16px"><div class="card-head"><h3 class="card-title">สรุปการตรวจจับและการส่งต่อ</h3></div><div class="card-body" id="report-summary"></div></div>
+          <div class="card scope-gap"><div class="card-head"><h3 class="card-title">สรุปการตรวจจับและการส่งต่อ</h3></div><div class="card-body" id="report-summary"></div></div><div class="card scope-gap"><div class="card-head"><h3 class="card-title">เวลาเฉลี่ยที่อยู่ใน Honeypot แต่ละแบบ</h3></div><div class="table-wrap"><table class="dwell-table"><thead><tr><th>Honeypot</th><th>จำนวน Session</th><th>เวลาเฉลี่ย Action แรก → Action สุดท้าย</th></tr></thead><tbody id="dwell-body"></tbody></table></div></div>
         </section>
-        <section id="account" class="view">
+        <section id="account" class="view"><p id="password-required-note" class="status-banner hidden">กรุณาเปลี่ยนรหัสผ่านเริ่มต้นของ Master Admin ก่อนใช้ระบบ</p>
           <div class="account-tabs" role="tablist" aria-label="หมวดจัดการบัญชี">
             <button type="button" class="account-tab" data-account-tab="users" id="account-tab-users" role="tab" aria-controls="account-users" aria-selected="false" data-admin>ผู้ใช้งาน</button>
             <button type="button" class="account-tab" data-account-tab="create" id="account-tab-create" role="tab" aria-controls="account-create" aria-selected="false" data-admin>สร้าง User</button>
@@ -117,7 +130,7 @@
           </div>
           <div id="issued-password" class="credential-box hidden" role="status"><strong id="issued-title">รหัสผ่านเริ่มต้น</strong><p>คัดลอกและส่งให้ผู้ใช้ผ่านช่องทางส่วนตัว รหัสนี้จะแสดงครั้งเดียว</p><code id="issued-secret"></code><button type="button" class="secondary" id="copy-secret">คัดลอก</button></div>
           <div id="account-users" class="account-panel hidden" role="tabpanel" aria-labelledby="account-tab-users" data-admin>
-            <p class="section-intro">รายชื่อบัญชีในระบบ Master Admin สามารถระงับ เปิดใช้ และรีเซ็ตรหัสผ่านของ User</p>
+            <p class="section-intro">Master Admin สามารถเพิ่ม ลบ แก้ไขข้อมูล และเปลี่ยนสิทธิ์ผู้ใช้ได้</p>
             <div class="card"><div class="card-head"><h3 class="card-title">บัญชีในระบบ</h3><span class="pill info" id="users-count">0 บัญชี</span></div><div class="table-wrap"><table class="users-table"><thead><tr><th>ชื่อผู้ใช้</th><th>ชื่อที่แสดง</th><th>สิทธิ์</th><th>สถานะ</th><th>จัดการ</th></tr></thead><tbody id="users-body"></tbody></table></div></div>
             <div id="users-error" class="error" role="status"></div>
           </div>
@@ -127,79 +140,30 @@
             <p id="user-success" class="success" role="status"></p>
           </div>
           <div id="account-self" class="account-panel account-form-panel hidden" role="tabpanel" aria-labelledby="account-tab-self">
+            <div class="card account-card"><div class="card-head"><h3 class="card-title">ยืนยันตัวตนด้วย TOTP</h3></div><div class="card-body">
+              <p id="totp-status"></p>
+              <form id="totp-setup-form" class="form-grid">
+                <label>รหัสผ่านปัจจุบัน<input id="totp-password" type="password" autocomplete="current-password" required></label>
+                <button id="totp-start" type="submit">ตั้งค่า Authenticator</button>
+                <div id="totp-enrollment" class="hidden">
+                  <p>เพิ่มบัญชีในแอป Authenticator แบบกรอกคีย์เอง ชื่อบัญชี TRAP และเลือกแบบอิงเวลา จากนั้นกรอกรหัสเพื่อยืนยันภายใน 5 นาที</p>
+                  <label>คีย์สำหรับตั้งค่า<input id="totp-secret" readonly autocomplete="off"></label>
+                  <label>รหัส TOTP<input id="totp-confirm-code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" placeholder="123456"></label>
+                  <button id="totp-confirm" type="button">ยืนยันและเปิดใช้ TOTP</button>
+                </div>
+                <div id="totp-error" class="error" role="status"></div>
+              </form>
+            </div></div>
             <p class="section-intro">เปลี่ยนรหัสผ่านของบัญชี <strong id="account-username"></strong> หลังเปลี่ยนสำเร็จ ระบบจะให้เข้าสู่ระบบอีกครั้ง</p>
             <div class="card account-card"><div class="card-head"><h3 class="card-title">ความปลอดภัยของบัญชี</h3></div><div class="card-body"><form id="password-form" class="form-grid"><label>รหัสผ่านปัจจุบัน<input id="current-password" type="password" autocomplete="current-password" required></label><label>รหัสผ่านใหม่ อย่างน้อย 12 ตัวอักษร<input id="new-password" type="password" autocomplete="new-password" minlength="12" required></label><label>ยืนยันรหัสผ่านใหม่<input id="confirm-password" type="password" autocomplete="new-password" minlength="12" required></label><button type="submit">เปลี่ยนรหัสผ่าน</button><div class="error" id="password-error" role="status"></div></form></div></div>
           </div>
         </section>
       </div>
+<dialog id="user-edit-dialog"><form id="user-edit-form" class="form-grid"><h3>แก้ไขบัญชีผู้ใช้</h3><label>Username<input id="edit-username" readonly></label><label>ชื่อที่แสดง<input id="edit-name" maxlength="100" required></label><label>สิทธิ์<select id="edit-role"><option value="user">User</option><option value="master_admin">Master Admin</option></select></label><div class="split-actions"><button>บันทึก</button><button type="button" id="user-edit-cancel" class="secondary">ยกเลิก</button></div><p id="user-edit-error" class="error"></p></form></dialog>
+<dialog id="flush-dialog"><form id="flush-form" class="form-grid"><h3>ยืนยัน Flush ข้อมูลด้วย TOTP</h3><p>ล้างประวัติที่แสดงใน Dashboard สำหรับทุกบัญชี ข้อมูล Log ต้นฉบับยังเก็บไว้ เหตุการณ์ใหม่จะแสดงตามปกติ</p><label>พิมพ์ FLUSH เพื่อยืนยัน<input id="flush-confirmation" pattern="FLUSH" required></label><label>รหัส TOTP 6 หลัก<input id="flush-totp" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required></label><div class="split-actions"><button>ยืนยัน Flush</button><button type="button" id="flush-cancel" class="secondary">ยกเลิก</button></div><p id="flush-error" class="error"></p></form></dialog>
     </main>
   </section>
 
-  <script>
-    const state={user:null,csrf:'',alerts:[],alertsTotal:0,alertsOffset:0,decisions:[],decisionsTotal:0,decisionsOffset:0,logs:[],logsTotal:0,logsOffset:0,status:{},metrics:{},analytics:{},rules:[],notes:[],users:[]};
-    const pageSize=100;let timer=null,filterTimer=null;
-    const $=id=>document.getElementById(id),text=v=>v===undefined||v===null||v===''?'-':String(v),when=v=>v?new Date(v).toLocaleString('th-TH'):'-',escapeHtml=v=>text(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
-    async function api(url,options={}){const res=await fetch(url,options);if(res.status===401&&state.user){showLogin()}const data=res.status===204?null:await res.json().catch(()=>({}));if(!res.ok){const error=new Error(data.detail||data.error||url+' '+res.status);error.status=res.status;error.data=data;throw error}return data}
-    async function login(e){e.preventDefault();$('login-error').textContent='';try{const data=await api('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:$('username').value,password:$('password').value})});state.user=data.user;state.csrf=data.csrf_token;$('password').value='';showApp();await refresh()}catch(error){$('login-error').textContent=error.status===429?'ลองใหม่ภายหลัง: มีการเข้าสู่ระบบผิดหลายครั้ง':'Username หรือ Password ไม่ถูกต้อง'}}
-    async function logout(){try{await api('/api/logout',{method:'POST',headers:{'X-CSRF-Token':state.csrf}})}finally{showLogin()}}
-    function showLogin(){state.user=null;state.csrf='';state.users=[];$('issued-secret').textContent='';$('issued-password').classList.add('hidden');$('user-success').textContent='';$('app').classList.add('hidden');$('login-screen').classList.remove('hidden');if(timer)clearInterval(timer)}
-    function showApp(){$('login-screen').classList.add('hidden');$('app').classList.remove('hidden');$('user-name').textContent=state.user.name||state.user.username;$('account-username').textContent=state.user.username;$('user-role').textContent=state.user.role==='master_admin'?'Master Admin':'User';document.querySelectorAll('[data-admin]').forEach(el=>el.classList.toggle('hidden',state.user.role!=='master_admin'));selectAccountTab(state.user.role==='master_admin'?'users':'self');switchView('overview');if(timer)clearInterval(timer);timer=setInterval(()=>$('auto-refresh').checked&&refresh(),10000)}
-    function query(kind){const params=new URLSearchParams({limit:pageSize,offset:kind==='alerts'?state.alertsOffset:state.decisionsOffset});const prefix=kind==='alerts'?'alert':'decision';const q=$(prefix+'-search').value.trim(),severity=kind==='alerts'?$('alert-severity').value:'',protocol=$(prefix+'-protocol').value,action=kind==='decisions'?$('decision-action').value:'';if(q)params.set('q',q);if(severity)params.set('severity',severity);if(protocol)params.set('protocol',protocol);if(action)params.set('action',action);return params}
-    async function loadAlerts(){const data=await api('/api/alerts.json?'+query('alerts'));state.alerts=data.items;state.alertsTotal=data.total;renderAlerts()}
-    async function loadDecisions(){const data=await api('/api/decisions.json?'+query('decisions'));state.decisions=data.items;state.decisionsTotal=data.total;renderDecisions()}
-    function logQuery(){const params=new URLSearchParams({limit:pageSize,offset:state.logsOffset});for(const [id,key] of [['log-search','q'],['log-source','source'],['log-type','type'],['log-protocol','protocol'],['log-severity','severity']]){const value=$(id).value.trim();if(value)params.set(key,value)}for(const [id,key] of [['log-from','from'],['log-to','to']]){const value=$(id).value;if(value)params.set(key,new Date(value).toISOString())}return params}
-    async function loadLogs(){const data=await api('/api/logs.json?'+logQuery());state.logs=data.items;state.logsTotal=data.total;renderLogs()}
-    async function refresh(){try{const common=[api('/api/status.json'),api('/api/metrics.json'),api('/api/notifications.json'),api('/api/analytics.json?window='+encodeURIComponent($('analytics-window').value))];if(state.user.role==='master_admin')common.push(api('/api/rules.json'));const results=await Promise.all([loadAlerts(),loadDecisions(),loadLogs(),...common]);state.status=results[3];state.metrics=results[4];state.notes=results[5];state.analytics=results[6];state.rules=state.user.role==='master_admin'?results[7]:[];renderAll()}catch(error){if(error.status!==401)$('last-updated').textContent='รีเฟรชไม่สำเร็จ: '+error.message}}
-    function renderAll(){$('last-updated').textContent='อัปเดตล่าสุด: '+new Date().toLocaleTimeString('th-TH');$('stat-alerts').textContent=state.analytics.total_alerts||0;$('stat-sources').textContent=state.analytics.unique_source_ips||0;$('stat-redirects').textContent=(state.analytics.destinations||{}).honeypot||0;$('stat-high').textContent=state.analytics.high_severity_alerts||0;renderAnalytics();renderServices();renderNotes();renderAlerts();renderDecisions();renderLogs();renderRules();renderReports()}
-    function renderBars(id,values,colors={}){const entries=Object.entries(values||{}).sort((a,b)=>b[1]-a[1]);const max=Math.max(1,...entries.map(([,v])=>v));$(id).innerHTML=entries.length?entries.map(([name,value])=>`<div class="bar-row"><span title="${escapeHtml(name)}">${escapeHtml(name)}</span><div class="bar-track"><div class="bar-fill ${colors[name]||''}" style="width:${Math.max(0,Math.min(100,Number(value)/max*100))}%"></div></div><strong>${value}</strong></div>`).join(''):'<div class="empty">ยังไม่มีข้อมูลในช่วงเวลานี้</div>'}
-    function renderAnalytics(){const a=state.analytics,trend=a.trend||[];const max=Math.max(1,...trend.map(p=>p.count));$('trend-total').textContent=(a.total_alerts||0)+' เหตุการณ์';$('alert-trend').innerHTML=a.total_alerts?trend.map(p=>`<div class="chart-bar" style="height:${Math.max(2,p.count/max*100)}%" title="${escapeHtml(p.time)} UTC: ${p.count}"></div>`).join(''):'<div class="empty">ยังไม่มีเหตุการณ์ในช่วงเวลานี้</div>';$('alert-trend').setAttribute('aria-label',`แนวโน้ม ${a.total_alerts||0} เหตุการณ์`);$('trend-caption').innerHTML=trend.length&&a.total_alerts?`<span>${escapeHtml(trend[0].time)}</span><span>${escapeHtml(trend[trend.length-1].time)} UTC</span>`:'';renderBars('protocol-chart',a.protocols);renderBars('severity-chart',a.severities,{'1':'red-fill','2':'orange-fill'});renderBars('destination-chart',a.destinations,{'honeypot':'violet-fill','blocked':'red-fill'})}
-    function renderServices(){const labels={active:'ทำงาน',inactive:'หยุดทำงาน',unavailable:'ตรวจสอบไม่ได้','not-found':'ไม่พบบริการ',unknown:'ไม่ทราบสถานะ'};$('services').innerHTML=Object.entries(state.status).filter(([,v])=>typeof v==='string').map(([n,v])=>`<div class="service-row"><strong>${escapeHtml(n)}</strong><span class="pill ${v==='active'?'ok':v==='unknown'?'info':'warn'}">${escapeHtml(labels[v]||v)}</span></div>`).join('')||'<div class="empty">ไม่มีข้อมูลสถานะบริการ</div>'}
-    function renderNotes(){const levels={critical:'วิกฤต',high:'สูง',warning:'เตือน',info:'ข้อมูล'};$('note-count').textContent=state.notes.length+' รายการ';$('notifications').innerHTML=state.notes.map(n=>`<div class="note"><strong><span class="pill ${noteClass(n.level)}">${escapeHtml(levels[n.level]||n.level)}</span> ${escapeHtml(n.title)}</strong><span>${escapeHtml(n.detail)}</span></div>`).join('')}
-    function noteClass(l){return l==='critical'?'bad':l==='high'?'violet':l==='warning'?'warn':'info'}
-    function renderAlerts(){const start=state.alertsTotal?state.alertsOffset+1:0,end=Math.min(state.alertsOffset+state.alerts.length,state.alertsTotal);$('alerts-count').textContent=`${start}-${end} of ${state.alertsTotal}`;$('alerts-prev').disabled=state.alertsOffset===0;$('alerts-next').disabled=end>=state.alertsTotal;$('alerts-body').innerHTML=state.alerts.map(a=>`<tr><td class="mono">${when(a.timestamp)}</td><td class="mono">${escapeHtml(a.src_ip)}</td><td>${escapeHtml(a.app_proto||a.proto)}</td><td class="mono">${escapeHtml(a.signature_id)}</td><td><span class="pill ${severityClass(a.severity)}">${escapeHtml(a.severity)}</span></td><td>${escapeHtml(a.signature||a.category)}</td></tr>`).join('')||'<tr><td colspan="6" class="empty">No alerts match the filters</td></tr>'}
-    function renderDecisions(){const start=state.decisionsTotal?state.decisionsOffset+1:0,end=Math.min(state.decisionsOffset+state.decisions.length,state.decisionsTotal);$('decisions-count').textContent=`${start}-${end} of ${state.decisionsTotal}`;$('decisions-prev').disabled=state.decisionsOffset===0;$('decisions-next').disabled=end>=state.decisionsTotal;$('decisions-body').innerHTML=state.decisions.map(d=>`<tr><td class="mono">${when(d.start_time)}</td><td class="mono">${escapeHtml(d.source_ip)}</td><td>${escapeHtml(d.protocol)}</td><td>${escapeHtml(d.risk_score)}</td><td><span class="pill ${actionClass(d.action)}">${escapeHtml(d.action)}</span></td><td>${escapeHtml(d.profile)}</td><td>${escapeHtml(d.reason)}</td><td class="mono">${when(d.expiry)}</td></tr>`).join('')||'<tr><td colspan="8" class="empty">No decisions match the filters</td></tr>'}
-    function renderLogs(){const start=state.logsTotal?state.logsOffset+1:0,end=Math.min(state.logsOffset+state.logs.length,state.logsTotal);$('logs-total').textContent=state.logsTotal.toLocaleString('th-TH');$('logs-count').textContent=`${start}-${end} จาก ${state.logsTotal}`;$('logs-prev').disabled=state.logsOffset===0;$('logs-next').disabled=end>=state.logsTotal;$('logs-body').innerHTML=state.logs.map(r=>`<tr class="${r.type==='suricata'?'from-suricata':'from-decision'}"><td class="mono log-time">${when(r.time)}</td><td><span class="log-type ${r.type==='suricata'?'suricata':'decision'}">${escapeHtml(r.type==='suricata'?'Suricata':'Decision Engine')}</span></td><td class="mono log-ip">${escapeHtml(r.source)}</td><td>${escapeHtml(r.protocol)}</td><td>${r.severity?`<span class="pill ${severityClass(r.severity)}">ระดับ ${escapeHtml(r.severity)}</span>`:'—'}</td><td class="log-summary">${escapeHtml(r.summary)}</td><td><span class="pill ${r.type==='decision'?actionClass(r.result):'info'}">${escapeHtml(r.result)}</span></td></tr>`).join('')||'<tr><td colspan="7" class="empty">ไม่พบ Log ตามเงื่อนไข</td></tr>'}
-    function renderRules(){$('rules-count').textContent=state.rules.length+' rules';$('rules-body').innerHTML=state.rules.map(r=>`<tr><td class="mono">${escapeHtml(r.sid)}</td><td><span class="pill ${ruleSeverityClass(r.severity)}">${escapeHtml(r.severity)}</span></td><td>${escapeHtml(r.classtype)}</td><td>${escapeHtml(r.message)}</td></tr>`).join('')||'<tr><td colspan="4" class="empty">No rules found</td></tr>'}
-    function metric(v){return v===null||v===undefined?'N/A':Number(v).toFixed(1)+'ms'}
-    function renderReports(){$('report-high').textContent=state.analytics.high_severity_alerts||0;$('report-blocks').textContent=(state.analytics.destinations||{}).blocked||0;$('report-decision-latency').textContent=metric(state.metrics.decision_latency_ms);$('report-redirect-latency').textContent=metric(state.metrics.redirect_latency_ms);$('report-summary').innerHTML=`<div class="grid two"><div>${summaryBlock('โปรโตคอลของ Alert',state.analytics.protocols||{})}</div><div>${summaryBlock('การตอบสนองของ Decision Engine',state.analytics.actions||{})}</div></div><p class="data-note">Alert ${state.analytics.total_alerts||0} รายการ · Decision ${state.analytics.total_decisions||0} รายการ · Source IP ${state.analytics.unique_source_ips||0} หมายเลข จากข้อมูลที่เก็บไว้สูงสุดตามการตั้งค่าระบบ</p>`}
-    function countBy(rows,key){return rows.reduce((a,r)=>{const k=r[key]||'unknown';a[k]=(a[k]||0)+1;return a},{})}function summaryBlock(title,data){const rows=Object.entries(data).map(([k,v])=>`<div class="service-row"><strong>${escapeHtml(k)}</strong><span>${v}</span></div>`).join('');return`<h4>${title}</h4>${rows||'<div class="empty">No data</div>'}`}
-    function severityClass(v){return Number(v)===1?'bad':Number(v)===2?'warn':'info'}function ruleSeverityClass(v){return v==='high'?'bad':v==='medium'?'warn':'info'}function actionClass(v){v=String(v||'');return v.includes('block')?'bad':v.includes('redirect')?'violet':v==='monitor'?'warn':'ok'}
-    function candidate(){return{rule_id:$('candidate-id').value.trim(),version:$('candidate-version').value.trim(),evidence:$('candidate-evidence').value.trim(),confidence:Number($('candidate-confidence').value),expected_sid:Number($('candidate-sid').value),rule:$('candidate-rule').value.trim()}}
-    async function ruleAction(action){const result=$('candidate-result');result.className='pill info';result.textContent=action==='validate'?'Validating...':'Deploying...';try{const data=await api('/api/rules/'+action,{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':state.csrf},body:JSON.stringify(candidate())});result.className='pill ok';result.textContent=action==='validate'?`Passed ${data.gates.length} validation gates`:`Rule ${data.status}`;await refresh()}catch(error){result.className='pill bad';result.textContent=error.status===409?'Deploy is disabled in production config':error.message}}
-    function clearCandidate(){['candidate-id','candidate-version','candidate-evidence','candidate-confidence','candidate-sid','candidate-rule'].forEach(id=>$(id).value='');$('candidate-result').className='pill info';$('candidate-result').textContent='Waiting for candidate'}
-    async function loadUsers(){if(state.user.role!=='master_admin')return;const data=await api('/api/users.json');state.users=data.items;renderUsers()}
-    function renderUsers(){$('users-count').textContent=state.users.length+' บัญชี';$('users-body').innerHTML=state.users.map(u=>`<tr><td class="mono">${escapeHtml(u.username)}</td><td>${escapeHtml(u.name)}</td><td>${escapeHtml(u.role==='master_admin'?'Master Admin':'User')}</td><td><span class="pill ${u.disabled?'warn':'ok'}">${u.disabled?'ระงับ':'ใช้งาน'}</span></td><td>${u.role==='user'?`<div class="split-actions"><button type="button" class="secondary user-action" data-action="status" data-username="${escapeHtml(u.username)}">${u.disabled?'เปิดใช้':'ระงับ'}</button><button type="button" class="secondary user-action" data-action="reset" data-username="${escapeHtml(u.username)}">รีเซ็ตรหัส</button></div>`:'—'}</td></tr>`).join('')||'<tr><td colspan="5" class="empty">ยังไม่มีบัญชี</td></tr>'}
-    function showIssued(title,password){$('issued-title').textContent=title;$('issued-secret').textContent=password;$('issued-password').classList.remove('hidden');$('issued-password').scrollIntoView({behavior:'smooth',block:'center'})}
-    async function createUser(event){event.preventDefault();const password=$('initial-password').value,confirmation=$('initial-password-confirm').value;$('user-error').textContent='';$('user-success').textContent='';$('issued-password').classList.add('hidden');$('issued-secret').textContent='';if(password!==confirmation){$('user-error').textContent='ยืนยันรหัสผ่านเริ่มต้นไม่ตรงกัน';return}try{const data=await api('/api/users',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':state.csrf},body:JSON.stringify({username:$('new-username').value.trim(),name:$('new-name').value.trim(),password})});$('create-user-form').reset();if(data.temporary_password)showIssued('รหัสผ่านเริ่มต้นของ '+data.user.username,data.temporary_password);else $('user-success').textContent='สร้างบัญชี '+data.user.username+' แล้ว กรุณาส่งรหัสผ่านที่ตั้งไว้ให้ผู้ใช้';await loadUsers()}catch(error){$('user-error').textContent=error.status===409?'Username นี้มีอยู่แล้ว':error.status===503?'ที่เก็บบัญชีไม่พร้อมให้เขียน':error.message==='invalid_password'?'รหัสผ่านต้องมี 12–128 ตัวอักษร':error.message}}
-    async function manageUser(event){const button=event.target.closest('.user-action');if(!button)return;const username=button.dataset.username,action=button.dataset.action,account=state.users.find(u=>u.username===username);if(!account)return;const message=action==='reset'?`รีเซ็ตรหัสผ่านของ ${username}? Session เดิมจะถูกออกจากระบบ`:`${account.disabled?'เปิดใช้':'ระงับ'} ${username}?`;if(!confirm(message))return;$('users-error').textContent='';$('issued-password').classList.add('hidden');$('issued-secret').textContent='';try{const endpoint='/api/users/'+encodeURIComponent(username)+'/'+(action==='reset'?'reset-password':'status');const data=await api(endpoint,{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':state.csrf},body:JSON.stringify(action==='reset'?{}:{disabled:!account.disabled})});if(action==='reset')showIssued('รหัสผ่านใหม่ของ '+username,data.temporary_password);await loadUsers()}catch(error){$('users-error').textContent=error.message}}
-    async function changePassword(event){event.preventDefault();const current=$('current-password').value,next=$('new-password').value;if(next!==$('confirm-password').value){$('password-error').textContent='รหัสผ่านใหม่ไม่ตรงกัน';return}$('password-error').textContent='';try{await api('/api/account/password',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':state.csrf},body:JSON.stringify({current_password:current,new_password:next})});$('password-form').reset();showLogin();$('login-error').textContent='เปลี่ยนรหัสผ่านแล้ว กรุณาเข้าสู่ระบบอีกครั้ง'}catch(error){$('password-error').textContent=error.message==='invalid_current_password'?'รหัสผ่านปัจจุบันไม่ถูกต้อง':error.message==='password_unchanged'?'กรุณาใช้รหัสผ่านใหม่':error.message}}
-    function selectAccountTab(id){if(state.user.role!=='master_admin')id='self';$('issued-secret').textContent='';$('issued-password').classList.add('hidden');for(const button of document.querySelectorAll('.account-tab')){const selected=button.dataset.accountTab===id;button.classList.toggle('active',selected);button.setAttribute('aria-selected',String(selected))}for(const panel of document.querySelectorAll('.account-panel'))panel.classList.toggle('hidden',panel.id!=='account-'+id)}
-    function switchView(id){if(id!=='account'){$('issued-secret').textContent='';$('issued-password').classList.add('hidden');$('user-success').textContent=''}document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===id));document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.view===id));$('view-title').textContent=document.querySelector(`[data-view="${id}"]`).textContent}
-    function debounceLoad(kind){clearTimeout(filterTimer);filterTimer=setTimeout(()=>{if(kind==='alerts'){state.alertsOffset=0;loadAlerts()}else{state.decisionsOffset=0;loadDecisions()}},250)}
-    document.querySelectorAll('.nav-btn').forEach(b=>b.addEventListener('click',()=>{switchView(b.dataset.view);if(b.dataset.view==='account'&&state.user.role==='master_admin')loadUsers().catch(error=>$('users-error').textContent=error.message)}));
-    document.querySelectorAll('.account-tab').forEach(b=>b.addEventListener('click',()=>selectAccountTab(b.dataset.accountTab)));
-    $('create-user-form').addEventListener('submit',createUser);
-    $('users-body').addEventListener('click',manageUser);
-    $('password-form').addEventListener('submit',changePassword);
-    $('copy-secret').addEventListener('click',()=>navigator.clipboard.writeText($('issued-secret').textContent).then(()=>$('copy-secret').textContent='คัดลอกแล้ว').catch(()=>$('user-error').textContent='คัดลอกไม่สำเร็จ กรุณาคัดลอกข้อความด้วยตนเอง'));
-    $('analytics-window').addEventListener('change',refresh);
-    ['alert-search','alert-severity','alert-protocol'].forEach(id=>$(id).addEventListener('input',()=>debounceLoad('alerts')));
-    ['decision-search','decision-action','decision-protocol'].forEach(id=>$(id).addEventListener('input',()=>debounceLoad('decisions')));
-    ['log-search','log-source','log-type','log-protocol','log-severity','log-from','log-to'].forEach(id=>$(id).addEventListener('input',()=>{clearTimeout(filterTimer);filterTimer=setTimeout(()=>{state.logsOffset=0;$('logs-error').textContent='';loadLogs().catch(error=>$('logs-error').textContent=error.message)},250)}));
-    $('logs-clear').addEventListener('click',()=>{['log-search','log-source','log-type','log-protocol','log-severity','log-from','log-to'].forEach(id=>$(id).value='');state.logsOffset=0;$('logs-error').textContent='';loadLogs().catch(error=>$('logs-error').textContent=error.message)});
-    $('logs-prev').addEventListener('click',()=>{state.logsOffset=Math.max(0,state.logsOffset-pageSize);loadLogs().catch(error=>$('logs-error').textContent=error.message)});
-    $('logs-next').addEventListener('click',()=>{state.logsOffset+=pageSize;loadLogs().catch(error=>$('logs-error').textContent=error.message)});
-    $('alerts-prev').addEventListener('click',()=>{state.alertsOffset=Math.max(0,state.alertsOffset-pageSize);loadAlerts()});
-    $('alerts-next').addEventListener('click',()=>{state.alertsOffset+=pageSize;loadAlerts()});
-    $('decisions-prev').addEventListener('click',()=>{state.decisionsOffset=Math.max(0,state.decisionsOffset-pageSize);loadDecisions()});
-    $('decisions-next').addEventListener('click',()=>{state.decisionsOffset+=pageSize;loadDecisions()});
-    $('validate-rule').addEventListener('click',()=>ruleAction('validate'));
-    $('deploy-rule').addEventListener('click',()=>ruleAction('deploy'));
-    $('clear-candidate').addEventListener('click',clearCandidate);
-    $('login-form').addEventListener('submit',login);
-    $('logout').addEventListener('click',logout);
-    $('refresh').addEventListener('click',refresh);
-    api('/api/session.json').then(data=>{if(data.session){state.user=data.session.user;state.csrf=data.session.csrf_token;showApp();refresh()}}).catch(()=>{});
-  </script>
+  <script src="/static/dashboard.js"></script>
 </body>
 </html>

@@ -8,15 +8,18 @@ from http import cookies
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import io
 import json
+import re
 from pathlib import Path
 import subprocess
 import tempfile
-from urllib.parse import parse_qs, urlparse
+from urllib.parse import parse_qs, urlparse, quote, urlencode
 
 from .config import DashboardSettings
 from .data_store import JsonlTail, alert_transform, decision_transform
 from .metrics import calculate
-from .security import LoginLimiter, Session, SessionStore, UserStore, append_security_audit
+from .security import LoginLimiter, Session, SessionStore, UserStore, append_security_audit, verify_password
+from .scope import (DashboardState, RuleStore, honeypot_transform, sessions_from_events,
+                    extend_analytics, event_notifications, report_csv, threshold_config, stamp)
 from ..validation.deploy import staged_deploy
 from ..validation.pipeline import ValidationError, validate
 
@@ -128,6 +131,9 @@ def read_rules(path: Path = RULES_PATH) -> list[dict]:
     rows = []
     for line_number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
         stripped = line.strip()
+        enabled = not stripped.startswith("# DISABLED ")
+        if not enabled:
+            stripped = stripped[11:]
         if not stripped or stripped.startswith("#"):
             continue
         sid = _between(stripped, "sid:", ";")
@@ -135,11 +141,16 @@ def read_rules(path: Path = RULES_PATH) -> list[dict]:
         if "metadata:severity " in stripped:
             severity = (_between(stripped, "metadata:severity ", ",") or
                         _between(stripped, "metadata:severity ", ";") or "unknown")
+        else:
+            match = re.search(r"\bsignature_severity\s+(\w+)", stripped)
+            if match:
+                severity = {"critical": "high", "major": "high", "minor": "medium",
+                            "informational": "low"}.get(match.group(1).lower(), "unknown")
         rows.append({"line": line_number,
                      "sid": int(sid) if sid and sid.isdigit() else None,
                      "message": _between(stripped, 'msg:"', '";') or "unnamed rule",
                      "classtype": _between(stripped, "classtype:", ";") or "unknown",
-                     "severity": severity, "enabled": True, "rule": stripped})
+                     "severity": severity, "enabled": enabled, "rule": stripped})
     return rows
 
 
@@ -177,7 +188,7 @@ def _event_time(row: dict) -> datetime | None:
 
 
 def analytics(alerts: list[dict], decisions: list[dict], window: str = "24h",
-              now: datetime | None = None) -> dict:
+              now: datetime | None = None, sessions: list[dict] | None = None) -> dict:
     """Aggregate the bounded runtime snapshot, never fixture or sample metrics."""
     if window not in {"24h", "7d", "30d", "all"}:
         raise ValueError("invalid window")
@@ -210,7 +221,7 @@ def analytics(alerts: list[dict], decisions: list[dict], window: str = "24h",
                     "honeypot": sum(count for action, count in actions.items()
                                     if action.startswith("redirect")),
                     "blocked": sum(count for action, count in actions.items() if "block" in action)}
-    return {"window": window, "scope": "bounded_runtime_snapshot", "total_alerts": len(alerts),
+    result = {"window": window, "scope": "bounded_runtime_snapshot", "total_alerts": len(alerts),
             "unique_source_ips": len({row.get("src_ip") for row in alerts if row.get("src_ip")}),
             "high_severity_alerts": sum(str(row.get("severity")) == "1" for row in alerts),
             "total_decisions": len(decisions), "protocols": dict(Counter(
@@ -219,11 +230,15 @@ def analytics(alerts: list[dict], decisions: list[dict], window: str = "24h",
             "actions": dict(actions), "destinations": destinations,
             "trend": [{"time": key, "count": trend[key]} for key in keys],
             "honeypot_telemetry_available": False}
+    sessions = [s for s in (sessions or []) if in_window({"timestamp": s.get("first_action")})]
+    return extend_analytics(result, alerts, decisions, sessions)
 
 
 def notifications(rows: list[dict], alerts: list[dict], status: dict) -> list[dict]:
     notes = []
     for name, state in status.items():
+        if name == "demo":
+            continue
         if state not in {"active", "unknown"}:
             notes.append({"level": "warning", "title": f"บริการ {name} มีสถานะ {state}",
                           "detail": "ตรวจสอบความพร้อมของระบบก่อนใช้งานจริง"})
@@ -256,6 +271,24 @@ class DashboardRuntime:
                                      self.settings.maximum_rows)
         self.decision_store = JsonlTail((self.settings.decisions_path,), decision_transform,
                                         self.settings.maximum_rows)
+        self.honeypot_store = JsonlTail(self.settings.honeypot_paths, honeypot_transform, self.settings.maximum_rows)
+        self.state = DashboardState(self.settings.state_path or self.settings.users_path.with_name("dashboard-state.json"))
+        self.rules = RuleStore(self.settings.active_rules_path, self.settings.rule_backup_dir)
+
+    def alerts(self):
+        return self.state.visible(self.alert_store.rows())
+
+    def decisions(self):
+        return self.state.visible(self.decision_store.rows())
+
+    def sessions_data(self):
+        return self.state.visible(sessions_from_events(self.honeypot_store.rows()))
+
+    def report(self, window):
+        return analytics(self.alerts(), self.decisions(), window, sessions=self.sessions_data())
+
+    def event_notes(self):
+        return event_notifications(self.decisions(), self.alerts(), self.sessions_data())
 
     def status(self) -> dict:
         if self.settings.status_path.exists():
@@ -302,16 +335,20 @@ def _query_rows(rows: list[dict], query: dict[str, list[str]], kind: str) -> tup
     return rows[offset:offset + limit], total, limit, offset
 
 
-def search_logs(alerts: list[dict], decisions: list[dict], query: dict[str, list[str]]) -> dict:
+def search_logs(alerts: list[dict], decisions: list[dict], query: dict[str, list[str]], sessions: list[dict] | None = None) -> dict:
     """Search all retained alert and decision rows before pagination."""
     rows = [{"type": "suricata", "time": a.get("timestamp"), "source": a.get("src_ip"),
              "protocol": a.get("app_proto") or a.get("proto"), "severity": a.get("severity"),
              "summary": a.get("signature") or a.get("category"), "result": "alert"}
             for a in alerts]
     rows += [{"type": "decision", "time": d.get("start_time"), "source": d.get("source_ip"),
-              "protocol": d.get("protocol"), "severity": None,
+              "protocol": d.get("protocol"), "severity": d.get("severity"),
               "summary": d.get("reason"), "result": d.get("action")}
              for d in decisions]
+    rows += [{"type": "honeypot", "time": s["first_action"], "source": s["source_ip"],
+              "protocol": s["profile"], "severity": None,
+              "summary": f"Session {s['session_id']} · {s['actions']} actions · {s['dwell_seconds']:.1f}s",
+              "result": s["profile"]} for s in (sessions or [])]
     def param(name: str) -> str:
         return str((query.get(name) or [""])[0]).strip()
     kind, source, protocol, severity = (param(name).lower() for name in
@@ -373,6 +410,10 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
                 stylesheet = Path(__file__).parent / "static/dashboard.css"
                 self._send("text/css; charset=utf-8", stylesheet.read_bytes())
                 return
+            if route == "/static/dashboard.js":
+                script = Path(__file__).parent / "static/dashboard.js"
+                self._send("application/javascript; charset=utf-8", script.read_bytes())
+                return
             if route == "/api/session.json":
                 session = self._current_session()
                 payload = None if session is None else {
@@ -384,41 +425,43 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
             if user is None:
                 return
             if route == "/api/alerts.json":
-                items, total, limit, offset = _query_rows(runtime.alert_store.rows(), query, "alert")
+                items, total, limit, offset = _query_rows(runtime.alerts(), query, "alert")
                 self._send_json({"items": items, "total": total, "limit": limit, "offset": offset})
             elif route == "/api/decisions.json":
-                items, total, limit, offset = _query_rows(runtime.decision_store.rows(), query, "decision")
+                items, total, limit, offset = _query_rows(runtime.decisions(), query, "decision")
                 self._send_json({"items": items, "total": total, "limit": limit, "offset": offset})
             elif route == "/api/logs.json":
                 try:
-                    payload = search_logs(runtime.alert_store.rows(), runtime.decision_store.rows(), query)
+                    payload = search_logs(runtime.alerts(), runtime.decisions(), query, runtime.sessions_data())
                 except ValueError:
                     self._send_json({"error": "invalid_time_filter"}, 400)
                 else:
                     self._send_json(payload)
             elif route == "/api/alerts.csv":
-                self._send_download("text/csv; charset=utf-8", alerts_csv_export(runtime.alert_store.rows()).encode(), "alerts.csv")
+                self._send_download("text/csv; charset=utf-8", alerts_csv_export(runtime.alerts()).encode(), "alerts.csv")
             elif route == "/api/decisions.csv":
-                self._send_download("text/csv; charset=utf-8", csv_export(runtime.decision_store.rows()).encode(), "decisions.csv")
+                self._send_download("text/csv; charset=utf-8", csv_export(runtime.decisions()).encode(), "decisions.csv")
             elif route == "/api/summary.json":
-                alerts, decisions = runtime.alert_store.rows(), runtime.decision_store.rows()
+                alerts, decisions = runtime.alerts(), runtime.decisions()
                 payload = summary(decisions)
                 payload["total_alerts"] = len(alerts)
                 self._send_json(payload)
             elif route == "/api/status.json":
                 self._send_json(runtime.status())
             elif route == "/api/metrics.json":
-                self._send_json(runtime_metrics(runtime.alert_store.rows(), runtime.decision_store.rows()))
+                self._send_json(runtime_metrics(runtime.alerts(), runtime.decisions()))
             elif route == "/api/analytics.json":
                 window = (query.get("window") or ["24h"])[0]
                 try:
-                    payload = analytics(runtime.alert_store.rows(), runtime.decision_store.rows(), window)
+                    payload = runtime.report(window)
                 except ValueError:
                     self._send_json({"error": "invalid_window"}, 400)
                 else:
                     self._send_json(payload)
             elif route == "/api/notifications.json":
-                self._send_json(notifications(runtime.decision_store.rows(), runtime.alert_store.rows(), runtime.status()))
+                self._send_json(notifications(runtime.decisions(), runtime.alerts(), runtime.status()))
+            elif route in {"/api/events.json", "/api/reports.csv", "/api/honeypot.json", "/api/capabilities.json", "/api/thresholds.json", "/api/rule-backups.json", "/api/candidates.json"}:
+                self._scope_get(route, query, user)
             elif route == "/api/users.json":
                 if self._has_role(user, "master_admin"):
                     self._send_json({"items": runtime.users.list_public()})
@@ -432,7 +475,7 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
 
         def do_POST(self):
             route = urlparse(self.path).path
-            if route == "/api/login":
+            if route in {"/api/login", "/api/login/totp"}:
                 self._login()
                 return
             user = self._require_user()
@@ -450,14 +493,108 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
                     self._rule_workflow(route, user)
             elif route == "/api/account/password":
                 self._change_password(user)
+            elif route in {"/api/account/totp/setup", "/api/account/totp/confirm"}:
+                self._setup_totp(route, user)
             elif route == "/api/users":
                 if self._has_role(user, "master_admin"):
                     self._create_user(user)
             elif route.startswith("/api/users/"):
                 if self._has_role(user, "master_admin"):
                     self._manage_user(route, user)
+            elif route in {"/api/events/update", "/api/logs/flush", "/api/thresholds", "/api/rules/change", "/api/candidates/save", "/api/candidates/approve"}:
+                self._scope_post(route, user)
             else:
                 self.send_error(404)
+
+        def _scope_get(self, route, query, user):
+            if route in {"/api/thresholds.json", "/api/rule-backups.json", "/api/candidates.json"} and not self._has_role(user, "master_admin"):
+                return
+            try:
+                if route == "/api/events.json":
+                    self._send_json(runtime.state.notifications(user["username"], runtime.event_notes(), query))
+                elif route == "/api/reports.csv":
+                    report = runtime.report((query.get("window") or ["24h"])[0])
+                    self._send_download("text/csv; charset=utf-8", report_csv(report).encode("utf-8"), "trap-report.csv")
+                elif route == "/api/honeypot.json":
+                    self._send_json({"items": runtime.sessions_data()[:100]})
+                elif route == "/api/capabilities.json":
+                    self._send_json({"rule_edit_available": settings.demo_mode,
+                                     "default_password_change": settings.force_default_password_change,
+                                     "flush_requires_totp": True})
+                elif route == "/api/thresholds.json":
+                    self._send_json(threshold_config(settings.engine_config_path))
+                elif route == "/api/rule-backups.json":
+                    self._send_json({"items": runtime.rules.backups()})
+                elif route == "/api/candidates.json":
+                    self._send_json({"items": list(runtime.state.load().get("candidates", {}).values())})
+            except (ValueError, OSError) as exc:
+                self._send_json({"error": str(exc)}, 400)
+
+        def _scope_post(self, route, user):
+            if route not in {"/api/events/update", "/api/logs/flush"} and not self._has_role(user, "master_admin"):
+                return
+            payload = self._read_json()
+            try:
+                if route == "/api/events/update":
+                    runtime.state.mark(user["username"], payload.get("id"), payload.get("action"),
+                                       {r["id"] for r in runtime.event_notes()})
+                    result = {"ok": True}
+                elif route == "/api/logs/flush":
+                    key = "flush:" + user["username"]
+                    allowed, retry = runtime.limiter.check(key)
+                    if not allowed:
+                        self._send_json({"error": "rate_limited"}, 429, {"Retry-After": str(retry)})
+                        return
+                    if payload.get("confirmation") != "FLUSH" or not runtime.users.verify_totp_action(user["username"], payload.get("totp", "")):
+                        runtime.limiter.failure(key)
+                        self._send_json({"error": "flush_totp_required"}, 403)
+                        return
+                    runtime.state.flush()
+                    result = {"ok": True}
+                elif route == "/api/thresholds":
+                    result = threshold_config(settings.engine_config_path, payload)
+                elif route == "/api/rules/change":
+                    if not settings.demo_mode:
+                        self._send_json({"error": "live_rule_edit_requires_deployment_helper"}, 409)
+                        return
+                    result = runtime.rules.change(payload)
+                elif route == "/api/candidates/save":
+                    payload.update(reviewer=user["username"], status="candidate")
+                    with tempfile.TemporaryDirectory() as directory:
+                        path = Path(directory) / "candidate.json"
+                        path.write_text(json.dumps(payload), encoding="utf-8")
+                        report = validate(path, settings.active_rules_path, settings.baseline_path)
+                    with runtime.state.lock:
+                        data = runtime.state.load()
+                        data.setdefault("candidates", {})[payload["rule_id"]] = {**payload, "test_results": report, "status": "pending"}
+                        runtime.state.save(data)
+                    result = {"ok": True, "test_results": report}
+                elif route == "/api/candidates/approve":
+                    if not settings.demo_mode:
+                        self._send_json({"error": "live_rule_edit_requires_deployment_helper"}, 409)
+                        return
+                    with runtime.state.lock:
+                        data = runtime.state.load()
+                        candidate = data.get("candidates", {}).get(payload.get("rule_id"))
+                        if not candidate or candidate["status"] != "pending":
+                            raise ValueError("candidate_not_pending")
+                        # Revalidate immediately before approval, including duplicate SID.
+                        with tempfile.TemporaryDirectory() as directory:
+                            path = Path(directory) / "candidate.json"
+                            path.write_text(json.dumps({**candidate, "status": "candidate"}), encoding="utf-8")
+                            validate(path, settings.active_rules_path, settings.baseline_path)
+                        result = runtime.rules.change({"action": "add", "rule": candidate["rule"]})
+                        candidate["status"] = "approved"
+                        runtime.state.save(data)
+                else:
+                    raise ValueError("unknown_operation")
+            except (ValueError, OSError, KeyError, TypeError) as exc:
+                self._send_json({"error": str(exc)}, 400)
+                return
+            append_security_audit(settings.security_audit_path, route[5:],
+                                  self.client_address[0], user["username"],
+                                  {"action": payload.get("action"), "target": payload.get("id") or payload.get("sid")})
+            self._send_json(result)
 
         def _create_user(self, actor: dict) -> None:
             payload = self._read_json()
@@ -482,7 +619,7 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
 
         def _manage_user(self, route: str, actor: dict) -> None:
             parts = route.split("/")
-            if len(parts) != 5 or parts[4] not in {"status", "reset-password"}:
+            if len(parts) != 5 or parts[4] not in {"status", "reset-password", "edit", "delete"}:
                 self.send_error(404)
                 return
             username, action = parts[3], parts[4]
@@ -494,8 +631,15 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
                         return
                     account = runtime.users.set_disabled(username, payload["disabled"])
                     result = {"user": account}
-                else:
+                elif action == "reset-password":
                     result = {"temporary_password": runtime.users.reset_password(username)}
+                else:
+                    payload = self._read_json()
+                    account = runtime.users.load().get(username)
+                    if not account:
+                        raise ValueError("user_not_found")
+                    result = {"user": runtime.users.edit_user(username, payload.get("name", account["name"]),
+                              payload.get("role", account["role"]), delete=action == "delete")}
             except ValueError as exc:
                 self._send_json({"error": str(exc)}, 404)
                 return
@@ -526,9 +670,38 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
                                   user["username"])
             self._send_json({"ok": True}, headers={"Set-Cookie": self._expired_cookie()})
 
+        def _setup_totp(self, route: str, user: dict) -> None:
+            payload = self._read_json()
+            password = payload.get("current_password")
+            code = payload.get("totp") if route.endswith("/confirm") else None
+            if not isinstance(password, str) or (route.endswith("/confirm") and not isinstance(code, str)):
+                self._send_json({"error": "invalid_input"}, 400)
+                return
+            key = f"totp:{self.client_address[0]}:{user['username']}"
+            allowed, retry = runtime.limiter.check(key)
+            if not allowed:
+                self._send_json({"error": "rate_limited"}, 429, {"Retry-After": str(retry)})
+                return
+            try:
+                secret = runtime.users.setup_totp(user["username"], password, code)
+            except ValueError as error:
+                runtime.limiter.failure(key)
+                self._send_json({"error": str(error)}, 400)
+                return
+            if secret:
+                uri = "otpauth://totp/" + quote("TRAP:" + user["username"], safe="") + "?" + urlencode({
+                    "secret": secret, "issuer": "TRAP", "algorithm": "SHA1", "digits": 6, "period": 30})
+                self._send_json({"secret": secret, "otpauth_uri": uri})
+            else:
+                runtime.sessions.delete_user(user["username"])
+                append_security_audit(settings.security_audit_path, "totp_enabled", self.client_address[0], user["username"])
+                self._send_json({"ok": True})
+
         def _login(self) -> None:
             payload = self._read_json()
             username, password = str(payload.get("username", "")).strip(), str(payload.get("password", ""))
+            if urlparse(self.path).path == "/api/login/totp":
+                username = ""
             key = f"{self.client_address[0]}:{username.lower()}"
             allowed, retry_after = runtime.limiter.check(key)
             if not allowed:
@@ -536,13 +709,24 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
                 self._send_json({"ok": False, "error": "rate_limited"}, 429,
                                 {"Retry-After": str(retry_after)})
                 return
-            account = runtime.users.authenticate(username, password)
+            if urlparse(self.path).path == "/api/login/totp":
+                account = runtime.users.complete_login(payload.get("challenge"), payload.get("totp", ""))
+            else:
+                account = runtime.users.begin_login(username, password, require_totp=settings.require_totp)
             if not account:
                 runtime.limiter.failure(key)
                 append_security_audit(settings.security_audit_path, "login_failed", self.client_address[0], username)
                 self._send_json({"ok": False, "error": "invalid_login"}, 401)
                 return
+            if account.get("totp_required"):
+                self._send_json({"ok": True, **account})
+                return
+            username = account["username"]
             runtime.limiter.success(key)
+            runtime.limiter.success(f"{self.client_address[0]}:{username.lower()}")
+            stored = runtime.users.load()[username]
+            account["must_change_password"] = bool(settings.force_default_password_change and
+                account["role"] == "master_admin" and (stored["must_change_password"] or verify_password("admin", stored["password_hash"])))
             token, session = runtime.sessions.create(account)
             append_security_audit(settings.security_audit_path, "login_succeeded", self.client_address[0], username)
             body = json.dumps({"ok": True, "user": account, "csrf_token": session.csrf_token}).encode()
@@ -641,6 +825,10 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
             session = self._current_session()
             if session is None:
                 self._send_json({"error": "authentication_required"}, 401)
+                return None
+            if session.user.get("must_change_password") and urlparse(self.path).path not in {
+                    "/api/account/password", "/api/logout", "/api/account/totp/setup", "/api/account/totp/confirm"}:
+                self._send_json({"error": "password_change_required"}, 403)
                 return None
             return session.user
 

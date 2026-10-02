@@ -19,6 +19,27 @@ PBKDF2_ITERATIONS = 600_000
 ALLOWED_ROLES = {"master_admin", "user"}
 
 
+def totp_code(secret: str, counter: int, digits: int = 6) -> str:
+    key = base64.b32decode(secret.upper(), casefold=True)
+    digest = hmac.new(key, counter.to_bytes(8, "big"), hashlib.sha1).digest()
+    offset = digest[-1] & 15
+    value = int.from_bytes(digest[offset:offset + 4], "big") & 0x7fffffff
+    return str(value % (10 ** digits)).zfill(digits)
+
+
+def match_totp(secret: str, code: str, last_counter: int = -1) -> int | None:
+    if not isinstance(code, str) or not re.fullmatch(r"[0-9]{6}", code):
+        return None
+    counter = int(time.time()) // 30
+    try:
+        for candidate in (counter, counter - 1, counter + 1):
+            if candidate > last_counter and hmac.compare_digest(totp_code(secret, candidate), code):
+                return candidate
+    except (ValueError, TypeError):
+        pass
+    return None
+
+
 def hash_password(password: str, iterations: int = PBKDF2_ITERATIONS) -> str:
     if len(password) < 12:
         raise ValueError("password must contain at least 12 characters")
@@ -53,6 +74,53 @@ class UserStore:
     def __init__(self, path: Path):
         self.path = path
         self._lock = threading.RLock()
+        self._pending_totp = {}
+        self._login_challenges = {}
+
+    def begin_login(self, username: str, password: str, require_totp: bool = True) -> dict | None:
+        with self._lock:
+            account = self.load().get(username)
+            if not account or account["disabled"] or not verify_password(password, account["password_hash"]):
+                return None
+            if not require_totp:
+                return {**{key: account[key] for key in ("username", "name", "role")},
+                        "totp_enabled": bool(account["totp_secret"])}
+            now = time.monotonic()
+            self._login_challenges = {key: value for key, value in self._login_challenges.items()
+                                      if value["expiry"] > now}
+            token = secrets.token_urlsafe(32)
+            self._login_challenges[token] = {
+                "username": username, "password_hash": account["password_hash"],
+                "original_secret": account["totp_secret"],
+                "secret": account["totp_secret"] or base64.b32encode(secrets.token_bytes(20)).decode("ascii"),
+                "expiry": now + 300, "attempts": 0}
+            result = {"totp_required": True, "challenge": token}
+            if not account["totp_secret"]:
+                result["enrollment_secret"] = self._login_challenges[token]["secret"]
+            return result
+
+    def complete_login(self, token: str, code: str) -> dict | None:
+        with self._lock:
+            challenge = self._login_challenges.get(token) if isinstance(token, str) else None
+            if not challenge:
+                return None
+            users = self.load()
+            account = users.get(challenge["username"])
+            if (challenge["expiry"] <= time.monotonic() or challenge["attempts"] >= 5
+                    or not account or account["disabled"]
+                    or account["password_hash"] != challenge["password_hash"]
+                    or account["totp_secret"] != challenge["original_secret"]):
+                self._login_challenges.pop(token, None)
+                return None
+            challenge["attempts"] += 1
+            counter = match_totp(challenge["secret"], code, account["totp_last_counter"])
+            if counter is None:
+                return None
+            account["totp_secret"] = challenge["secret"]
+            account["totp_last_counter"] = counter
+            self._save(users)
+            self._login_challenges.pop(token, None)
+            return {**{key: account[key] for key in ("username", "name", "role")}, "totp_enabled": True}
 
     def load(self) -> dict[str, dict]:
         if not self.path.is_file():
@@ -70,23 +138,62 @@ class UserStore:
                     "role": role,
                     "password_hash": password_hash,
                     "disabled": bool(item.get("disabled", False)),
+                    "totp_secret": item.get("totp_secret", ""),
+                    "totp_last_counter": int(item.get("totp_last_counter", -1)),
+                    "must_change_password": bool(item.get("must_change_password", False)),
                 }
         return users
 
-    def authenticate(self, username: str, password: str) -> dict | None:
-        account = self.load().get(username)
-        if not account or account["disabled"]:
+    def authenticate(self, username: str, password: str, code: str = "") -> dict | None:
+        with self._lock:
+            users = self.load()
+            account = users.get(username)
+            if not account or account["disabled"] or not verify_password(password, account["password_hash"]):
+                return None
+            if account["totp_secret"]:
+                counter = match_totp(account["totp_secret"], code, account["totp_last_counter"])
+                if counter is None:
+                    return None
+                account["totp_last_counter"] = counter
+                self._save(users)
+            else:
+                return None
+            return {**{key: account[key] for key in ("username", "name", "role")},
+                    "totp_enabled": bool(account["totp_secret"])}
+
+    def setup_totp(self, username: str, password: str, code: str | None = None) -> str | None:
+        with self._lock:
+            users = self.load()
+            account = users.get(username)
+            if not account or account["disabled"] or not verify_password(password, account["password_hash"]):
+                raise ValueError("invalid_current_password")
+            if account["totp_secret"]:
+                raise ValueError("totp_already_enabled")
+            if code is None:
+                secret = base64.b32encode(secrets.token_bytes(20)).decode("ascii")
+                self._pending_totp[username] = (secret, time.monotonic() + 300, 0)
+                return secret
+            secret, expiry, attempts = self._pending_totp.get(username, ("", 0, 0))
+            if time.monotonic() > expiry or attempts >= 5:
+                self._pending_totp.pop(username, None)
+                raise ValueError("totp_setup_expired")
+            counter = match_totp(secret, code)
+            if counter is None:
+                self._pending_totp[username] = (secret, expiry, attempts + 1)
+                raise ValueError("invalid_totp")
+            account["totp_secret"] = secret
+            account["totp_last_counter"] = counter
+            self._save(users)
+            self._pending_totp.pop(username, None)
             return None
-        if not verify_password(password, account["password_hash"]):
-            return None
-        return {key: account[key] for key in ("username", "name", "role")}
 
     def list_public(self) -> list[dict]:
         return [self._public(account) for account in sorted(self.load().values(), key=lambda a: a["username"])]
 
     @staticmethod
     def _public(account: dict) -> dict:
-        return {key: account[key] for key in ("username", "name", "role", "disabled")}
+        return {**{key: account[key] for key in ("username", "name", "role", "disabled")},
+                "totp_enabled": bool(account.get("totp_secret"))}
 
     def create_user(self, username: str, name: str, password: str | None = None) -> tuple[dict, str | None]:
         username, name = username.strip(), name.strip()
@@ -138,7 +245,39 @@ class UserStore:
             if current == new:
                 raise ValueError("password_unchanged")
             account["password_hash"] = hash_password(new)
+            account["must_change_password"] = False
             self._save(users)
+
+    def verify_totp_action(self, username: str, code: str) -> bool:
+        with self._lock:
+            users = self.load()
+            account = users.get(username)
+            if not account or account["disabled"] or not account["totp_secret"]:
+                return False
+            counter = match_totp(account["totp_secret"], code, account["totp_last_counter"])
+            if counter is None:
+                return False
+            account["totp_last_counter"] = counter
+            self._save(users)
+            return True
+
+    def edit_user(self, username: str, name: str, role: str, delete: bool = False) -> dict:
+        with self._lock:
+            users = self.load()
+            account = users.get(username)
+            if not account:
+                raise ValueError("user_not_found")
+            if role not in ALLOWED_ROLES or not isinstance(name, str) or not name.strip() or len(name) > 100:
+                raise ValueError("invalid_user")
+            if account["role"] == "master_admin" and (delete or role != "master_admin"):
+                if sum(u["role"] == "master_admin" and not u["disabled"] for u in users.values()) <= 1:
+                    raise ValueError("last_master_admin")
+            if delete:
+                del users[username]
+            else:
+                account.update(name=name.strip(), role=role)
+            self._save(users)
+            return self._public(account)
 
     def _save(self, users: dict[str, dict]) -> None:
         self.path.parent.mkdir(parents=True, exist_ok=True)

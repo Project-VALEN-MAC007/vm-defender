@@ -25,6 +25,12 @@ class DashboardSettings:
     login_window_seconds: int = 300
     maximum_rows: int = 5000
     allow_rule_deploy: bool = False
+    require_totp: bool = True
+    honeypot_paths: tuple[Path, ...] = ()
+    state_path: Path | None = None
+    engine_config_path: Path | None = None
+    demo_mode: bool = False
+    force_default_password_change: bool = True
 
 
 def _resolve(root: Path, value: str, field: str) -> Path:
@@ -80,4 +86,10 @@ def load_dashboard_settings(path: str | Path) -> DashboardSettings:
         login_window_seconds=int(security.get("login_window_seconds", 300)),
         maximum_rows=int(dashboard.get("maximum_rows", 5000)),
         allow_rule_deploy=bool(rules.get("allow_deploy", False)),
+        require_totp=security.get("require_totp", True) is not False,
+        honeypot_paths=tuple(_resolve(root, value, "paths.honeypot_paths") for value in paths.get("honeypot_paths", [])),
+        state_path=_resolve(root, paths.get("dashboard_state", "evidence/audit/dashboard-state.json"), "paths.dashboard_state"),
+        engine_config_path=_resolve(root, paths.get("engine_config", "defender/decision_engine/config/lab.json"), "paths.engine_config"),
+        demo_mode=raw.get("demo_mode") is True,
+        force_default_password_change=security.get("force_default_password_change", True) is not False,
     )

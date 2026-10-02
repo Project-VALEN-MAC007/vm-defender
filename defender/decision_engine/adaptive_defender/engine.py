@@ -7,7 +7,7 @@ import os
 from pathlib import Path
 
 from .adapters import NftSetAdapter, NginxMapAdapter
-from .config import Settings
+from .config import Settings, load_settings
 from .models import Event
 from .reader import EveReader
 from .risk import RiskEngine
@@ -104,6 +104,9 @@ class DecisionEngine:
             raise
 
     def run_once(self) -> list[dict]:
+        if self.settings.config_path:
+            # Reload only thresholds; preserve accumulated risk and adapter state.
+            self.risk.thresholds = load_settings(self.settings.config_path).thresholds
         decisions: list[dict] = []
         self.reconcile_web_redirects()
         for pending in self.reader.pending_records():
