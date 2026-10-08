@@ -18,3 +18,7 @@ config/mimic.demo.json
 honeypot/snare-tanner/vendor/
 honeypot/snare-tanner/data/
 honeypot/snare-tanner/settings.env
+config/rabbit-hole.json
+config/rabbit-hole.secret
+evidence/rabbit-hole/
+config/rabbit-hole-scenarios/

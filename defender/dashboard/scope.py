@@ -173,6 +173,13 @@ def report_csv(report):
                 writer.writerow([report["window"], name, key, count, ""])
     for item in report.get("honeypot_dwell", []):
         writer.writerow([report["window"], "honeypot_dwell", item["profile"], item["sessions"], item["average_seconds"]])
+    rabbit = report.get("rabbit_hole") or {}
+    for name, block in [("all", rabbit.get("overall"))] + sorted((rabbit.get("by_protocol") or {}).items()):
+        if not block:
+            continue
+        for key in ("sessions", "sessions_followed", "follow_rate", "average_resources", "average_depth",
+                    "max_depth", "average_duration_seconds", "average_connection_seconds"):
+            writer.writerow([report["window"], "rabbit_hole_" + name, key, block.get(key), ""])
     return "\ufeff" + stream.getvalue()
 
 

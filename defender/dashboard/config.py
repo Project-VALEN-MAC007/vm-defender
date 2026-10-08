@@ -31,6 +31,10 @@ class DashboardSettings:
     engine_config_path: Path | None = None
     demo_mode: bool = False
     force_default_password_change: bool = True
+    rabbit_hole_config_path: Path | None = None
+    rabbit_hole_log_paths: tuple[Path, ...] = ()
+    deploy_agent_url: str | None = None
+    deploy_agent_token_path: Path | None = None
 
 
 def _resolve(root: Path, value: str, field: str) -> Path:
@@ -92,4 +96,11 @@ def load_dashboard_settings(path: str | Path) -> DashboardSettings:
         engine_config_path=_resolve(root, paths.get("engine_config", "defender/decision_engine/config/lab.json"), "paths.engine_config"),
         demo_mode=raw.get("demo_mode") is True,
         force_default_password_change=security.get("force_default_password_change", True) is not False,
+        rabbit_hole_config_path=(_resolve(root, paths["rabbit_hole_config"], "paths.rabbit_hole_config")
+                                 if paths.get("rabbit_hole_config") else None),
+        deploy_agent_url=(raw.get("web_deploy") or {}).get("agent_url") or None,
+        deploy_agent_token_path=(_resolve(root, raw["web_deploy"]["token_file"], "web_deploy.token_file")
+                                 if (raw.get("web_deploy") or {}).get("token_file") else None),
+        rabbit_hole_log_paths=tuple(_resolve(root, value, "paths.rabbit_hole_logs")
+                                    for value in paths.get("rabbit_hole_logs", [])),
     )

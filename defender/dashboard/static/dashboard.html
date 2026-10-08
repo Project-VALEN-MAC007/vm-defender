@@ -15,11 +15,13 @@
     <symbol id="icon-rule" viewBox="0 0 24 24"><path d="M4 7h16M4 17h16M8 4v6M16 14v6"/></symbol>
     <symbol id="icon-chart" viewBox="0 0 24 24"><path d="M4 20V5M4 20h16M8 16l4-5 3 2 5-7"/></symbol>
     <symbol id="icon-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></symbol>
+    <symbol id="icon-hole" viewBox="0 0 24 24"><path d="M3 5h18M5 10h14M7 15h10M9 20h6"/></symbol>
+    <symbol id="icon-deploy" viewBox="0 0 24 24"><path d="M12 15V3M7 8l5-5 5 5M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/></symbol>
     <symbol id="icon-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2H3ZM17 5a3 3 0 0 1 0 6M18 15a5 5 0 0 1 3 5"/></symbol>
   </svg>
   <section id="login-screen" class="login-screen">
     <form class="login-card" id="login-form">
-      <h1>TRAP</h1>
+      <h1 class="glitch" data-text="TRAP">TRAP</h1>
       <p>Threat Redirection and Analysis Platform</p>
       <div class="form-grid">
         <input id="username" autocomplete="username" placeholder="Username" required>
@@ -39,7 +41,7 @@
         <label for="totp">รหัส TOTP</label>
         <input id="totp" autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="123456" required>
         <button type="submit">ยืนยันและเข้าสู่ระบบ</button>
-        <button id="totp-back" type="button" class="secondary">กลับไปหน้าเข้าสู่ระบบ</button>
+        <button id="totp-back" type="button" class="text">กลับไปหน้าเข้าสู่ระบบ</button>
         <div class="error" id="totp-login-error" role="status"></div>
       </div>
     </form>
@@ -52,8 +54,10 @@
       <nav aria-label="เมนูหลัก">
         <button class="nav-btn active" data-view="overview"><svg aria-hidden="true"><use href="#icon-grid"></use></svg>ภาพรวม</button>
         <button class="nav-btn" data-view="alerts"><svg aria-hidden="true"><use href="#icon-alert"></use></svg>การแจ้งเตือน</button>
+        <button class="nav-btn" data-view="rabbit"><svg aria-hidden="true"><use href="#icon-hole"></use></svg>Rabbit Hole</button>
         <button class="nav-btn" data-view="logs"><svg aria-hidden="true"><use href="#icon-list"></use></svg>ค้นหา Log</button>
         <button class="nav-btn" data-view="rules" data-admin><svg aria-hidden="true"><use href="#icon-rule"></use></svg>จัดการกฎ</button>
+        <button class="nav-btn" data-view="deploy" data-admin><svg aria-hidden="true"><use href="#icon-deploy"></use></svg>Deploy หน้าเว็บ</button>
         <button class="nav-btn" data-view="reports"><svg aria-hidden="true"><use href="#icon-chart"></use></svg>รายงาน</button>
         <button class="nav-btn" data-view="account"><svg aria-hidden="true"><use href="#icon-users"></use></svg>จัดการบัญชี</button>
       </nav>
@@ -63,42 +67,130 @@
     <main>
       <header>
         <div class="title"><span class="breadcrumb">TRAP / DASHBOARD</span><h2 id="view-title">ภาพรวม</h2><p id="last-updated">อัปเดตล่าสุด: -</p></div>
-        <div class="toolbar"><label for="analytics-window">ช่วงเวลาสถิติ</label><select id="analytics-window"><option value="24h">24 ชั่วโมง</option><option value="7d">7 วัน</option><option value="30d">30 วัน</option><option value="all">ทั้งหมดที่เก็บไว้</option></select><label class="pill info"><input type="checkbox" id="auto-refresh" checked> อัปเดตอัตโนมัติ</label><button id="refresh">รีเฟรช</button><button id="logout" class="secondary">ออกจากระบบ</button></div>
+        <div class="toolbar"><label for="analytics-window">ช่วงเวลาสถิติ</label><select id="analytics-window"><option value="24h">24 ชั่วโมง</option><option value="7d">7 วัน</option><option value="30d">30 วัน</option><option value="all">ทั้งหมดที่เก็บไว้</option></select><label class="pill info"><input type="checkbox" id="auto-refresh" checked> อัปเดตอัตโนมัติ</label><button id="refresh" class="secondary"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/></svg>รีเฟรช</button><button id="logout" class="text">ออกจากระบบ</button></div>
       </header>
       <div class="content">
         <section id="overview" class="view active">
-          <div class="overview-intro"><div><span class="section-kicker">SYSTEM SNAPSHOT</span><p>สถานะการตรวจจับและการตอบสนองตามช่วงเวลาที่เลือก</p></div><span class="overview-context">TRAP / LIVE OVERVIEW</span></div>
-          <div class="grid stats">
-            <div class="card stat"><svg class="stat-icon" aria-hidden="true"><use href="#icon-alert"></use></svg><div class="label">เหตุการณ์ที่ตรวจพบ</div><div class="value" id="stat-alerts">0</div><div class="hint">Suricata alerts</div></div>
-            <div class="card stat"><svg class="stat-icon" aria-hidden="true"><use href="#icon-globe"></use></svg><div class="label">Source IP ไม่ซ้ำ</div><div class="value" id="stat-sources">0</div><div class="hint">ต้นทางของเหตุการณ์</div></div>
-            <div class="card stat"><svg class="stat-icon" aria-hidden="true"><use href="#icon-route"></use></svg><div class="label">เปลี่ยนเส้นทาง</div><div class="value" id="stat-redirects">0</div><div class="hint">Decision ไป Honeypot</div></div>
-            <div class="card stat"><svg class="stat-icon" aria-hidden="true"><use href="#icon-chart"></use></svg><div class="label">ความรุนแรงสูง</div><div class="value" id="stat-high">0</div><div class="hint">Suricata severity 1</div></div>
+          <div class="group">
+            <h3 class="group-title">สถานการณ์ในช่วงเวลาที่เลือก</h3>
+            <div class="grid stats stats-3">
+              <div class="card stat"><div class="label">เหตุการณ์ที่ตรวจพบ</div><div class="value" id="stat-alerts">0</div><div class="hint">จาก Suricata</div></div>
+              <div class="card stat"><div class="label">หมายเลข IP ต้นทาง</div><div class="value" id="stat-sources">0</div><div class="hint">ไม่นับซ้ำ</div></div>
+              <div class="card stat stat-accent"><div class="label">ส่งต่อไปยัง Honeypot</div><div class="value" id="stat-redirects">0</div><div class="hint">การตัดสินใจของ Decision Engine</div></div>
+            </div>
           </div>
-          <div class="grid two" style="margin-top:16px">
-            <div class="card"><div class="card-head"><h3 class="card-title">แนวโน้มเหตุการณ์</h3><span class="pill info" id="trend-total">0 เหตุการณ์</span></div><div class="card-body"><div id="alert-trend" class="chart" role="img" aria-label="แนวโน้มจำนวนเหตุการณ์"></div><div id="trend-caption" class="chart-caption"></div><p class="data-note">เวลาในกราฟเป็น UTC</p></div></div>
-            <div class="card"><div class="card-head"><h3 class="card-title">แยกตามโปรโตคอล</h3></div><div class="card-body" id="protocol-chart"></div></div>
+          <div class="grid two">
+            <div class="group">
+              <h3 class="group-title">เหตุการณ์ความรุนแรงสูง</h3>
+              <div class="card"><div class="card-head"><h4 class="card-title">อันดับ IP ต้นทางที่มีเหตุการณ์รุนแรงสูงมากที่สุด</h4><span class="pill bad" id="stat-high-pill">0 เหตุการณ์</span></div><div class="card-body" id="severity-rank"></div></div>
+            </div>
+            <div class="group">
+              <h3 class="group-title">สถานะการทำงานของระบบ</h3>
+              <div class="card"><div class="card-head"><h4 class="card-title">บริการในระบบ</h4></div><div class="card-body" id="services"></div></div>
+            </div>
           </div>
-          <div class="grid two" style="margin-top:16px">
-            <div class="card"><div class="card-head"><h3 class="card-title">ระดับความรุนแรง</h3></div><div class="card-body" id="severity-chart"></div></div>
-            <div class="card"><div class="card-head"><h3 class="card-title">ผลการตัดสินใจ</h3></div><div class="card-body" id="destination-chart"></div></div>
-          </div>
-          <div class="grid two" style="margin-top:16px">
-            <div class="card"><div class="card-head"><h3 class="card-title">การแจ้งเตือนระบบ</h3><span class="pill info" id="note-count">0 รายการ</span></div><div class="card-body" id="notifications"></div></div>
-            <div class="card"><div class="card-head"><h3 class="card-title">สถานะบริการ</h3></div><div class="card-body" id="services"></div></div>
-          </div>
-          <div class="card scope-gap"><div class="card-head"><h3 class="card-title">อันดับ Source IP ที่มีเหตุการณ์รุนแรงสูง</h3><span class="pill info">10 อันดับ</span></div><div class="card-body" id="severity-rank"></div></div><p id="honeypot-availability" class="data-note"></p>
+          <div class="legacy-hidden" hidden aria-hidden="true"><span id="stat-high"></span><span id="trend-total"></span><div id="alert-trend"></div><div id="trend-caption"></div><div id="protocol-chart"></div><div id="severity-chart"></div><div id="destination-chart"></div><span id="note-count"></span><div id="notifications"></div><div id="overview-rabbit"><button id="overview-rabbit-open" type="button"></button><div id="overview-strata"></div><div id="overview-rabbit-figures"></div></div><p id="honeypot-availability"></p></div>
         </section>
 
         <section id="alerts" class="view">
-<div class="log-page-head"><div><span class="section-kicker">DECISION ENGINE</span><h3>แจ้งเตือนเหตุการณ์</h3><p>รายละเอียดการตรวจพบ การส่งต่อ และเวลาที่อยู่ใน Honeypot</p></div><span class="pill warn" id="events-unread"></span></div>
+<div class="log-page-head"><div><h3>แจ้งเตือนเหตุการณ์</h3><p>รายละเอียดการตรวจพบ การส่งต่อ และเวลาที่อยู่ใน Honeypot</p></div><span class="pill warn" id="events-unread"></span></div>
 <div class="split-actions event-filters"><label>สถานะ <select id="events-status"><option value="">ทั้งหมด</option><option value="unread">ยังไม่อ่าน</option><option value="read">อ่านแล้ว</option></select></label><label>เรียงตาม <select id="events-order"><option value="latest">ล่าสุดก่อน</option><option value="oldest">เก่าสุดก่อน</option></select></label></div>
-<div class="card"><div class="card-head"><h3 class="card-title">ข้อความแจ้งเตือน</h3><div class="split-actions"><button class="secondary" id="events-prev">ก่อนหน้า</button><span id="events-count" class="pill info"></span><button class="secondary" id="events-next">ถัดไป</button></div></div><div class="table-wrap"><table class="events-table"><thead><tr><th>วันและเวลา</th><th>Source IP</th><th>ประเภทการส่งต่อ</th><th>กฎ / รายละเอียด</th><th>ความรุนแรง</th><th>เวลาใน Honeypot</th><th>สถานะ / จัดการ</th></tr></thead><tbody id="events-body"></tbody></table></div></div><p id="events-error" class="error"></p>
+<div class="card"><div class="card-head"><h3 class="card-title">ข้อความแจ้งเตือน</h3><div class="split-actions"><button class="secondary small" id="events-prev">ก่อนหน้า</button><span id="events-count" class="pill info"></span><button class="secondary small" id="events-next">ถัดไป</button></div></div><div class="table-wrap"><table class="events-table"><thead><tr><th>วันและเวลา</th><th>Source IP</th><th>ประเภทการส่งต่อ</th><th>กฎ / รายละเอียด</th><th>ความรุนแรง</th><th>เวลาใน Honeypot</th><th>สถานะ / จัดการ</th></tr></thead><tbody id="events-body"></tbody></table></div></div><p id="events-error" class="error"></p>
 </section>
 
+        <section id="rabbit" class="view">
+          <div class="rh-head"><div><h3>เส้นทางลวงต่อเนื่อง</h3><p>ผู้โจมตีที่ถูกส่งเข้า Honeypot เจอเบาะแสแล้วเดินตามลึกแค่ไหน และอยู่ในเส้นทางลวงนานเท่าไร</p></div><span class="pill" id="rh-state">-</span></div>
+          <div class="rh-tabs" role="tablist" aria-label="หมวด Rabbit Hole">
+            <button type="button" role="tab" data-rh-tab="summary" class="active" aria-selected="true">ภาพรวม</button>
+            <button type="button" role="tab" data-rh-tab="sessions" aria-selected="false">เส้นทางราย Session</button>
+            <button type="button" role="tab" data-rh-tab="setup" aria-selected="false" data-admin>ตั้งค่าและฉาก</button>
+          </div>
+          <p id="rh-error" class="error" role="status"></p>
+
+          <div class="rh-panel" id="rh-summary">
+            <div class="card rh-hero"><div class="tunnel" id="rh-tunnel" role="img" aria-label="จำนวนการเข้าเส้นทางลวงที่ไปถึงแต่ละชั้น"></div><div class="figures" id="rh-figures"></div></div>
+            <div class="rh-panel">
+              <div class="card"><div class="card-head"><h4 class="card-title">เทียบกับ Honeypot แบบคงที่</h4></div><div class="card-body"><div id="rh-compare"></div><p class="data-note" id="rh-compare-note"></p></div></div>
+              <div class="card"><div class="card-head"><h4 class="card-title">แยกตามโปรโตคอล</h4></div><div class="table-wrap"><table><thead><tr><th>โปรโตคอล</th><th>Session</th><th>เดินตามเบาะแส</th><th>ความลึกเฉลี่ย / สูงสุด</th><th>เวลาโต้ตอบเฉลี่ย</th><th>เวลาเชื่อมต่อ SSH/Telnet เฉลี่ย</th></tr></thead><tbody id="rh-protocols"></tbody></table></div></div>
+            </div>
+            <div hidden aria-hidden="true"><div id="rh-strata"></div><div id="rh-resources"></div></div>
+          </div>
+
+          <div class="rh-panel hidden" id="rh-sessions">
+            <div class="rh-filters"><label>โปรโตคอล <select id="rh-filter-protocol"><option value="">ทั้งหมด</option><option value="web">Web</option><option value="ssh">SSH</option><option value="telnet">Telnet</option></select></label><label>ความลึกอย่างน้อย <select id="rh-filter-depth"><option value="0">ทุกระดับ</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label><label><input type="checkbox" id="rh-filter-followed"> เฉพาะที่เดินตามเบาะแส</label><span class="pill info" id="rh-window-count"></span></div>
+            <div class="rh-columns">
+              <div class="card"><div class="table-wrap"><table class="rh-windows"><thead><tr><th>เริ่ม</th><th>Source IP</th><th>โปรโตคอล</th><th>ความลึก</th><th>เปิด / ตามเบาะแส</th><th>เวลาโต้ตอบ</th></tr></thead><tbody id="rh-windows-body"></tbody></table></div></div>
+              <div class="card"><div class="card-head"><h3 class="card-title">เส้นทางที่เดิน</h3></div><div class="card-body" id="rh-trail"><div class="empty">เลือก Session จากตารางเพื่อดูว่าผู้โจมตีเปิดอะไร ตามลำดับไหน</div></div></div>
+            </div>
+          </div>
+
+          <div class="rh-panel hidden" id="rh-setup" data-admin>
+            <div class="card"><div class="card-head"><h3 class="card-title">ข้อมูลองค์กรและขอบเขต</h3><span class="data-note">ระบบใช้ค่าเหล่านี้สร้างไฟล์ลวงให้ดูเป็นขององค์กรนี้</span></div><div class="card-body">
+              <form id="rh-settings-form" class="form-grid">
+                <label class="switch-row"><input type="checkbox" id="rh-enabled"> เปิดใช้เส้นทางลวงต่อเนื่อง</label>
+                <div class="settings-grid">
+                  <label>ชื่อองค์กร<input id="rh-org-name" maxlength="80" required></label>
+                  <label>ชื่อย่อ<input id="rh-org-short_name" maxlength="80" required></label>
+                  <label>โดเมน<input id="rh-org-domain" maxlength="63" required></label>
+                  <label>ชื่อเซิร์ฟเวอร์<input id="rh-org-hostname" maxlength="63" required></label>
+                  <label>ชื่อบัญชีผู้ดูแล<input id="rh-org-admin_user" maxlength="32" required></label>
+                  <label>ชื่อฐานข้อมูล<input id="rh-org-db_name" maxlength="32" required></label>
+                  <label>Subnet ภายใน (3 ส่วนแรก)<input id="rh-org-internal_subnet" placeholder="10.20.0" required></label>
+                </div>
+                <div class="settings-grid">
+                  <label>ความลึกสูงสุด<input id="rh-limit-max_depth" type="number" min="1" max="10" required></label>
+                  <label>ทางแยกสูงสุดต่อจุด<input id="rh-limit-max_branches" type="number" min="1" max="5" required></label>
+                  <label>ทรัพยากรสูงสุดต่อ Session<input id="rh-limit-max_resources_per_session" type="number" min="1" max="500" required></label>
+                  <label>Idle Timeout (วินาที)<input id="rh-limit-idle_timeout_seconds" type="number" min="30" max="3600" required></label>
+                  <label>อายุ Session (วินาที)<input id="rh-limit-session_ttl_seconds" type="number" min="300" max="86400" required></label>
+                </div>
+                <div class="form-actions"><a class="button secondary" href="/api/rabbit-hole/cowrie-bundle.zip" id="rh-bundle"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>ดาวน์โหลดไฟล์ลวงสำหรับ Cowrie</a><button type="submit">บันทึกการตั้งค่า</button></div>
+                <p id="rh-settings-result" class="data-note" role="status"></p>
+              </form>
+            </div></div>
+            <div class="group" id="rh-library">
+              <div class="library-head"><h3 class="group-title">คลังฉากเส้นทางลวง</h3><div class="split-actions"><button type="button" class="tonal" id="rh-new-web">+ สร้างฉาก Web</button><button type="button" class="tonal" id="rh-new-shell">+ สร้างฉาก SSH/Telnet</button></div></div>
+              <p class="data-note">เลือกฉากที่จะใช้แล้วกด "บันทึกการตั้งค่า" ด้านบน · เทมเพลตแก้ไม่ได้ กด "ใช้เป็นต้นแบบ" เพื่อคัดลอกมาแก้เป็นฉากของคุณ</p>
+              <div id="rh-scenarios" class="rh-panel"></div>
+            </div>
+            <div id="rh-editor" class="hidden"></div>
+            <div class="card hidden" id="rh-preview-card"><div class="card-head"><h3 class="card-title" id="rh-preview-title">ตัวอย่างที่ผู้โจมตีเห็น</h3><button type="button" class="text" id="rh-preview-close">ปิดตัวอย่าง</button></div><div class="card-body" id="rh-preview"></div></div>
+          </div>
+        </section>
+
+        <section id="deploy" class="view">
+          <div class="rh-head"><div><h3>Deploy หน้าเว็บ Honeypot</h3><p>Clone เว็บจริงด้วย SNARE ตรวจดูก่อน แล้วเปลี่ยนหน้าเว็บที่ผู้โจมตีเห็นได้ในคลิกเดียว ย้อนกลับเวอร์ชันเดิมได้เสมอ</p></div><span class="pill" id="dp-mode">-</span></div>
+          <p id="dp-error" class="error" role="status"></p>
+          <div id="dp-missing" class="empty-box hidden">ยังไม่ได้เชื่อม Deploy agent บนเครื่อง Honeypot · ติดตั้งตาม <code>honeypot/deploy-agent/README.md</code> แล้วเพิ่ม <code>web_deploy</code> ใน mimic.json · ลองบนเครื่องตัวเองได้ด้วย <code>python run_deploy_agent.py --config evidence/demo/deploy-agent.json</code></div>
+          <div id="dp-body" class="rh-panel">
+            <div class="group">
+              <h3 class="group-title">หน้าเว็บที่ผู้โจมตีเห็นตอนนี้</h3>
+              <div class="figures dp-now"><div class="figure"><span>เวอร์ชันที่ใช้อยู่</span><b class="dp-version" id="dp-active">-</b><small id="dp-active-url">-</small></div><div class="figure"><span>สถานะ SNARE</span><b id="dp-health">-</b><small>ตรวจจาก health URL บนเครื่อง Honeypot</small></div></div>
+            </div>
+            <div class="group">
+              <h3 class="group-title">Clone เว็บใหม่</h3>
+              <div class="card"><div class="card-body">
+                <form id="dp-clone-form" class="dp-clone">
+                  <label>ลิงก์เว็บที่จะ clone<input id="dp-url" class="mono-input" list="dp-targets" placeholder="http://10.10.10.3:8080/" required autocomplete="off"></label>
+                  <label>ความลึก<select id="dp-depth"><option value="1">1 ชั้น</option><option value="2" selected>2 ชั้น</option><option value="3">3 ชั้น</option><option value="4">4 ชั้น</option><option value="5">5 ชั้น</option></select></label>
+                  <button type="submit" id="dp-clone-btn">Clone</button>
+                </form>
+                <datalist id="dp-targets"></datalist>
+                <p class="data-note" id="dp-allowed"></p>
+                <div id="dp-job" class="dp-job hidden"><div class="dp-job-head"><strong id="dp-job-title">กำลัง clone</strong><span class="pill" id="dp-job-status">-</span></div><pre id="dp-job-log"></pre></div>
+              </div></div>
+            </div>
+            <div class="group">
+              <h3 class="group-title">เวอร์ชันที่ clone ไว้</h3>
+              <div class="card"><div class="table-wrap"><table><thead><tr><th>เวอร์ชัน</th><th>จาก</th><th>เมื่อ</th><th>หน้า</th><th>คำเตือน</th><th></th></tr></thead><tbody id="dp-versions"></tbody></table></div></div>
+            </div>
+            <div class="card hidden" id="dp-preview-card"><div class="card-head"><h4 class="card-title" id="dp-preview-title">ตัวอย่าง</h4><div class="split-actions"><select id="dp-page" aria-label="เลือกหน้า"></select><button type="button" class="text" id="dp-preview-close">ปิดตัวอย่าง</button></div></div><div class="card-body dp-preview"><div id="dp-findings"></div><iframe id="dp-frame" title="ตัวอย่างหน้าเว็บที่ clone มา" sandbox=""></iframe></div></div>
+          </div>
+        </section>
         <section id="logs" class="view">
-          <div class="log-page-head"><div><span class="section-kicker">EVENT EXPLORER</span><h3>บันทึกเหตุการณ์</h3><p>ค้นหาเหตุการณ์จาก Suricata, Decision Engine และ Honeypot ตามวันและเวลา</p></div><div class="log-total"><strong id="logs-total">0</strong><span>รายการที่ตรงเงื่อนไข</span></div></div>
-          <div class="card log-filter-card"><div class="card-head"><div><h3 class="card-title">ตัวกรองเหตุการณ์</h3><p class="data-note">ระบุเงื่อนไขเพื่อค้นหาในข้อมูลที่เก็บไว้</p></div><div class="split-actions"><button id="logs-clear" type="button" class="secondary">ล้างตัวกรอง</button><button id="logs-flush" type="button" class="secondary">Flush ข้อมูล</button></div></div><div class="card-body"><div class="log-filter-grid"><label class="log-query-field">คำค้นหา<input id="log-search" placeholder="ข้อความหรือรายละเอียดเหตุการณ์"></label><label>Source IP<input id="log-source" placeholder="เช่น 192.0.2.10"></label><label>แหล่งข้อมูล<select id="log-type"><option value="">ทุกแหล่งข้อมูล</option><option value="suricata">Suricata</option><option value="decision">Decision Engine</option><option value="honeypot">Honeypot</option></select></label></div><div class="log-filter-grid"><label>โปรโตคอล<select id="log-protocol"><option value="">ทุกโปรโตคอล</option><option>HTTP</option><option>TLS</option><option>SSH</option><option>TELNET</option><option>TCP</option><option>DNS</option><option>UDP</option><option>ICMP</option><option>COWRIE</option><option>SNARE</option></select></label><label>ความรุนแรง<select id="log-severity"><option value="">ทุกระดับ</option><option value="1">1 สูง</option><option value="2">2 กลาง</option><option value="3">3 ต่ำ</option></select></label><label>ตั้งแต่<input id="log-from" type="datetime-local"></label><label>ถึง<input id="log-to" type="datetime-local"></label></div></div></div>
-          <div class="card log-results"><div class="card-head"><div><h3 class="card-title">รายการเหตุการณ์</h3><p class="data-note">เรียงจากเหตุการณ์ล่าสุด</p></div><div class="split-actions"><button class="secondary" id="logs-prev">ก่อนหน้า</button><span class="pill info" id="logs-count">0</span><button class="secondary" id="logs-next">ถัดไป</button></div></div><div class="table-wrap"><table class="log-table"><thead><tr><th>เวลา</th><th>แหล่งข้อมูล</th><th>Source IP</th><th>โปรโตคอล</th><th>ความรุนแรง</th><th>รายละเอียด</th><th>ผลลัพธ์</th></tr></thead><tbody id="logs-body"></tbody></table></div></div>
+          <div class="log-page-head"><div><h3>บันทึกเหตุการณ์</h3><p>ค้นหาเหตุการณ์จาก Suricata, Decision Engine, Honeypot และ Rabbit Hole ตามวันและเวลา</p></div><div class="log-total"><strong id="logs-total">0</strong><span>รายการที่ตรงเงื่อนไข</span></div></div>
+          <div class="card log-filter-card"><div class="card-head"><div><h3 class="card-title">ตัวกรองเหตุการณ์</h3><p class="data-note">ระบุเงื่อนไขเพื่อค้นหาในข้อมูลที่เก็บไว้</p></div><div class="split-actions"><button id="logs-clear" type="button" class="text">ล้างตัวกรอง</button><button id="logs-flush" type="button" class="danger">Flush ข้อมูล</button></div></div><div class="card-body"><div class="log-filter-grid"><label class="log-query-field">คำค้นหา<input id="log-search" placeholder="ข้อความหรือรายละเอียดเหตุการณ์"></label><label>Source IP<input id="log-source" placeholder="เช่น 192.0.2.10"></label><label>แหล่งข้อมูล<select id="log-type"><option value="">ทุกแหล่งข้อมูล</option><option value="suricata">Suricata</option><option value="decision">Decision Engine</option><option value="honeypot">Honeypot</option><option value="rabbit_hole">Rabbit Hole</option></select></label></div><div class="log-filter-grid"><label>โปรโตคอล<select id="log-protocol"><option value="">ทุกโปรโตคอล</option><option>HTTP</option><option>TLS</option><option>SSH</option><option>TELNET</option><option>TCP</option><option>DNS</option><option>UDP</option><option>ICMP</option><option>COWRIE</option><option>SNARE</option></select></label><label>ความรุนแรง<select id="log-severity"><option value="">ทุกระดับ</option><option value="1">1 สูง</option><option value="2">2 กลาง</option><option value="3">3 ต่ำ</option></select></label><label>ตั้งแต่<input id="log-from" type="datetime-local"></label><label>ถึง<input id="log-to" type="datetime-local"></label></div></div></div>
+          <div class="card log-results"><div class="card-head"><div><h3 class="card-title">รายการเหตุการณ์</h3><p class="data-note">เรียงจากเหตุการณ์ล่าสุด</p></div><div class="split-actions"><button class="secondary small" id="logs-prev">ก่อนหน้า</button><span class="pill info" id="logs-count">0</span><button class="secondary small" id="logs-next">ถัดไป</button></div></div><div class="table-wrap"><table class="log-table"><thead><tr><th>เวลา</th><th>แหล่งข้อมูล</th><th>Source IP</th><th>โปรโตคอล</th><th>ความรุนแรง</th><th>รายละเอียด</th><th>ผลลัพธ์</th></tr></thead><tbody id="logs-body"></tbody></table></div></div>
           <p id="logs-error" class="error" role="status"></p>
         </section>
 
@@ -106,21 +198,22 @@
 <div class="card"><div class="card-head"><h3 class="card-title">เกณฑ์คะแนน Decision Engine</h3><span class="pill info">Master Admin</span></div><div class="card-body"><form id="threshold-form" class="threshold-grid"><label>คะแนนเฝ้าระวัง<input id="threshold-monitor" type="number" min="0" max="99" step="0.1" required></label><label>คะแนนส่งไป Honeypot<input id="threshold-redirect" type="number" min="1" max="100" step="0.1" required></label><button type="submit">บันทึกเกณฑ์</button></form><p id="threshold-result" class="data-note" role="status"></p></div></div>
 <p id="rule-mode" class="data-note"></p>
 <div class="grid two scope-gap">
-<div class="card"><div class="card-head"><h3 class="card-title">กฎตรวจจับ Suricata</h3><div class="split-actions"><span class="pill info" id="rules-count"></span><button id="rule-new" class="secondary">เพิ่มกฎ</button></div></div><div class="table-wrap"><table class="rules-table"><thead><tr><th>SID</th><th>ระดับ</th><th>กฎตรวจจับ</th><th>สถานะ</th><th>จัดการ</th></tr></thead><tbody id="rules-body"></tbody></table></div></div>
-<div class="card"><div class="card-head"><h3 class="card-title" id="rule-editor-title">เพิ่มกฎใหม่</h3></div><div class="card-body"><form id="rule-editor-form" class="form-grid"><input id="rule-sid" type="hidden"><label>รายละเอียดกฎ<textarea id="rule-text" required placeholder='alert http ... (msg:"..."; classtype:web-application-attack; sid:9901001; rev:1;)'></textarea></label><button id="rule-save">บันทึกและสำรองกฎเดิม</button><p id="rule-error" class="error" role="status"></p></form><hr><label>ชุดสำรองกฎ<select id="rule-backups"></select></label><button id="rule-restore" class="secondary">คืนค่ากฎจากชุดสำรอง</button></div></div>
+<div class="card"><div class="card-head"><h3 class="card-title">กฎตรวจจับ Suricata</h3><div class="split-actions"><span class="pill info" id="rules-count"></span><button id="rule-new" class="tonal">เพิ่มกฎ</button></div></div><div class="table-wrap"><table class="rules-table"><thead><tr><th>SID</th><th>ระดับ</th><th>กฎตรวจจับ</th><th>สถานะ</th><th>จัดการ</th></tr></thead><tbody id="rules-body"></tbody></table></div></div>
+<div class="card"><div class="card-head"><h3 class="card-title" id="rule-editor-title">เพิ่มกฎใหม่</h3></div><div class="card-body"><form id="rule-editor-form" class="form-grid"><input id="rule-sid" type="hidden"><label>รายละเอียดกฎ<textarea id="rule-text" required placeholder='alert http ... (msg:"..."; classtype:web-application-attack; sid:9901001; rev:1;)'></textarea></label><div class="form-actions"><button id="rule-save">บันทึกและสำรองกฎเดิม</button></div><p id="rule-error" class="error" role="status"></p></form><hr><div class="restore-row"><label>ชุดสำรองกฎ<select id="rule-backups"></select></label><button id="rule-restore" class="secondary">คืนค่ากฎ</button></div></div></div>
 </div><div class="grid two scope-gap">
-<div class="card"><div class="card-head"><h3 class="card-title">ตรวจสอบกฎที่เสนอ</h3></div><div class="card-body"><div class="form-grid"><label>รหัสกฎ<input id="candidate-id" placeholder="http-probe-001"></label><label>เวอร์ชัน<input id="candidate-version" placeholder="1.0.0"></label><label>หลักฐานเหตุการณ์<input id="candidate-evidence" placeholder="อ้างอิง Log / Session / รายงานทดสอบ"></label><label>ความเชื่อมั่น<input id="candidate-confidence" type="number" min="0" max="1" step="0.01" placeholder="0.00–1.00"></label><label>SID<input id="candidate-sid" type="number"></label><label>รายละเอียดกฎ<textarea id="candidate-rule"></textarea></label><div class="split-actions"><button id="validate-rule" type="button">ตรวจสอบกฎ</button><button id="deploy-rule" type="button">ส่งเข้าคิวอนุมัติ</button><button id="clear-candidate" type="button" class="secondary">ล้างฟอร์ม</button></div><p id="candidate-result" class="pill info">รอข้อมูลกฎ</p><p class="data-note">ผลทดสอบใช้ Baseline ที่กำหนดไว้ การทดสอบ Suricata บนเครื่องจริงเป็นขั้นตอนก่อน Deploy</p></div></div></div>
+<div class="card"><div class="card-head"><h3 class="card-title">ตรวจสอบกฎที่เสนอ</h3></div><div class="card-body"><div class="form-grid"><label>รหัสกฎ<input id="candidate-id" placeholder="http-probe-001"></label><label>เวอร์ชัน<input id="candidate-version" placeholder="1.0.0"></label><label>หลักฐานเหตุการณ์<input id="candidate-evidence" placeholder="อ้างอิง Log / Session / รายงานทดสอบ"></label><label>ความเชื่อมั่น<input id="candidate-confidence" type="number" min="0" max="1" step="0.01" placeholder="0.00–1.00"></label><label>SID<input id="candidate-sid" type="number"></label><label>รายละเอียดกฎ<textarea id="candidate-rule"></textarea></label><div class="form-actions"><button id="clear-candidate" type="button" class="text">ล้างฟอร์ม</button><button id="validate-rule" type="button" class="secondary">ตรวจสอบกฎ</button><button id="deploy-rule" type="button">ส่งเข้าคิวอนุมัติ</button></div><p id="candidate-result" class="pill info">รอข้อมูลกฎ</p><p class="data-note">ผลทดสอบใช้ Baseline ที่กำหนดไว้ การทดสอบ Suricata บนเครื่องจริงเป็นขั้นตอนก่อน Deploy</p></div></div></div>
 <div class="card"><div class="card-head"><h3 class="card-title">กฎรออนุมัติและผลทดสอบ</h3></div><div class="card-body" id="candidate-queue"></div></div></div></section>
 
         <section id="reports" class="view">
-          <div class="report-heading"><p class="section-intro">สรุปเหตุการณ์ Decision Engine การส่งต่อ และเวลาเฉลี่ยใน Honeypot ตามช่วงเวลาที่เลือก</p><a id="report-export" class="button secondary" href="/api/reports.csv">ส่งออกรายงาน CSV</a></div>
-          <div class="grid stats">
-            <div class="card stat"><div class="label">Alert รุนแรงสูง</div><div class="value" id="report-high">0</div><div class="hint">ตามช่วงเวลาที่เลือก</div></div>
+          <div class="report-heading"><p class="section-intro">สรุปเหตุการณ์ Decision Engine การส่งต่อ และเวลาเฉลี่ยใน Honeypot ตามช่วงเวลาที่เลือก</p><a id="report-export" class="button tonal" href="/api/reports.csv"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>ส่งออกรายงาน CSV</a></div>
+          <div class="group"><h3 class="group-title">การตรวจจับและการส่งต่อ</h3><div class="grid stats">
+            <div class="card stat"><div class="label">เหตุการณ์ที่ Decision Engine ตรวจพบ</div><div class="value" id="report-high">0</div><div class="hint">ตามช่วงเวลาที่เลือก</div></div>
             <div class="card stat"><div class="label">เปลี่ยนเส้นทางไป Honeypot</div><div class="value" id="report-redirects">0</div><div class="hint">ตามช่วงเวลาที่เลือก</div></div>
             <div class="card stat"><div class="label">ส่งต่อไปบริการจริง</div><div class="value" id="report-real">0</div><div class="hint">ตามช่วงเวลาที่เลือก</div></div>
             <div class="card stat"><div class="label">Session ใน Honeypot</div><div class="value" id="report-sessions">0</div><div class="hint">ตามช่วงเวลาที่เลือก</div></div>
           </div>
-          <div class="card scope-gap"><div class="card-head"><h3 class="card-title">สรุปการตรวจจับและการส่งต่อ</h3></div><div class="card-body" id="report-summary"></div></div><div class="card scope-gap"><div class="card-head"><h3 class="card-title">เวลาเฉลี่ยที่อยู่ใน Honeypot แต่ละแบบ</h3></div><div class="table-wrap"><table class="dwell-table"><thead><tr><th>Honeypot</th><th>จำนวน Session</th><th>เวลาเฉลี่ย Action แรก → Action สุดท้าย</th></tr></thead><tbody id="dwell-body"></tbody></table></div></div>
+          <div class="card"><div class="card-head"><h4 class="card-title">เหตุการณ์แยกตามประเภทการเชื่อมต่อและระดับความรุนแรง</h4></div><div class="card-body" id="report-summary"></div></div></div><div class="group"><h3 class="group-title">พฤติกรรมใน Honeypot</h3><div class="card scope-gap"><div class="card-head"><h3 class="card-title">เวลาเฉลี่ยที่อยู่ใน Honeypot แต่ละแบบ</h3></div><div class="table-wrap"><table class="dwell-table"><thead><tr><th>Honeypot</th><th>จำนวน Session</th><th>เวลาเฉลี่ย Action แรก → Action สุดท้าย</th></tr></thead><tbody id="dwell-body"></tbody></table></div></div>
+          <div class="card"><div class="card-head"><h3 class="card-title">Rabbit Hole แยกตามโปรโตคอล</h3><span class="data-note">รวมอยู่ในไฟล์ CSV</span></div><div class="table-wrap"><table><thead><tr><th>โปรโตคอล</th><th>Session</th><th>เดินตามเบาะแส</th><th>ความลึกเฉลี่ย / สูงสุด</th><th>ทรัพยากรเฉลี่ย</th><th>เวลาโต้ตอบเฉลี่ย</th><th>เวลาเชื่อมต่อเฉลี่ย</th></tr></thead><tbody id="report-rabbit-body"></tbody></table></div></div></div>
         </section>
         <section id="account" class="view"><p id="password-required-note" class="status-banner hidden">กรุณาเปลี่ยนรหัสผ่านเริ่มต้นของ Master Admin ก่อนใช้ระบบ</p>
           <div class="account-tabs" role="tablist" aria-label="หมวดจัดการบัญชี">
@@ -128,7 +221,7 @@
             <button type="button" class="account-tab" data-account-tab="create" id="account-tab-create" role="tab" aria-controls="account-create" aria-selected="false" data-admin>สร้าง User</button>
             <button type="button" class="account-tab" data-account-tab="self" id="account-tab-self" role="tab" aria-controls="account-self" aria-selected="false">บัญชีของฉัน</button>
           </div>
-          <div id="issued-password" class="credential-box hidden" role="status"><strong id="issued-title">รหัสผ่านเริ่มต้น</strong><p>คัดลอกและส่งให้ผู้ใช้ผ่านช่องทางส่วนตัว รหัสนี้จะแสดงครั้งเดียว</p><code id="issued-secret"></code><button type="button" class="secondary" id="copy-secret">คัดลอก</button></div>
+          <div id="issued-password" class="credential-box hidden" role="status"><strong id="issued-title">รหัสผ่านเริ่มต้น</strong><p>คัดลอกและส่งให้ผู้ใช้ผ่านช่องทางส่วนตัว รหัสนี้จะแสดงครั้งเดียว</p><code id="issued-secret"></code><button type="button" class="tonal" id="copy-secret">คัดลอก</button></div>
           <div id="account-users" class="account-panel hidden" role="tabpanel" aria-labelledby="account-tab-users" data-admin>
             <p class="section-intro">Master Admin สามารถเพิ่ม ลบ แก้ไขข้อมูล และเปลี่ยนสิทธิ์ผู้ใช้ได้</p>
             <div class="card"><div class="card-head"><h3 class="card-title">บัญชีในระบบ</h3><span class="pill info" id="users-count">0 บัญชี</span></div><div class="table-wrap"><table class="users-table"><thead><tr><th>ชื่อผู้ใช้</th><th>ชื่อที่แสดง</th><th>สิทธิ์</th><th>สถานะ</th><th>จัดการ</th></tr></thead><tbody id="users-body"></tbody></table></div></div>
@@ -159,8 +252,9 @@
           </div>
         </section>
       </div>
-<dialog id="user-edit-dialog"><form id="user-edit-form" class="form-grid"><h3>แก้ไขบัญชีผู้ใช้</h3><label>Username<input id="edit-username" readonly></label><label>ชื่อที่แสดง<input id="edit-name" maxlength="100" required></label><label>สิทธิ์<select id="edit-role"><option value="user">User</option><option value="master_admin">Master Admin</option></select></label><div class="split-actions"><button>บันทึก</button><button type="button" id="user-edit-cancel" class="secondary">ยกเลิก</button></div><p id="user-edit-error" class="error"></p></form></dialog>
-<dialog id="flush-dialog"><form id="flush-form" class="form-grid"><h3>ยืนยัน Flush ข้อมูลด้วย TOTP</h3><p>ล้างประวัติที่แสดงใน Dashboard สำหรับทุกบัญชี ข้อมูล Log ต้นฉบับยังเก็บไว้ เหตุการณ์ใหม่จะแสดงตามปกติ</p><label>พิมพ์ FLUSH เพื่อยืนยัน<input id="flush-confirmation" pattern="FLUSH" required></label><label>รหัส TOTP 6 หลัก<input id="flush-totp" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required></label><div class="split-actions"><button>ยืนยัน Flush</button><button type="button" id="flush-cancel" class="secondary">ยกเลิก</button></div><p id="flush-error" class="error"></p></form></dialog>
+<dialog id="user-edit-dialog"><form id="user-edit-form" class="form-grid"><h3>แก้ไขบัญชีผู้ใช้</h3><label>Username<input id="edit-username" readonly></label><label>ชื่อที่แสดง<input id="edit-name" maxlength="100" required></label><label>สิทธิ์<select id="edit-role"><option value="user">User</option><option value="master_admin">Master Admin</option></select></label><div class="split-actions"><button type="button" id="user-edit-cancel" class="text">ยกเลิก</button><button>บันทึก</button></div><p id="user-edit-error" class="error"></p></form></dialog>
+<dialog id="deploy-dialog"><form id="deploy-form" class="form-grid"><h3>Deploy หน้าเว็บ</h3><p>ผู้โจมตีที่ถูกส่งเข้า Web Honeypot จะเห็นเวอร์ชัน <code id="deploy-version"></code> ทันที ถ้า SNARE ไม่ตอบหลังเปลี่ยน ระบบจะย้อนกลับเวอร์ชันเดิมให้เอง</p><p id="deploy-findings" class="problems"></p><label>รหัสผ่านของคุณ<input id="deploy-password" type="password" autocomplete="current-password" required></label><label id="deploy-totp-row">รหัส TOTP 6 หลัก<input id="deploy-totp" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6"></label><label>พิมพ์ DEPLOY เพื่อยืนยัน<input id="deploy-confirm" pattern="DEPLOY" required autocomplete="off"></label><div class="split-actions"><button type="button" id="deploy-cancel" class="text">ยกเลิก</button><button id="deploy-submit">Deploy</button></div><p id="deploy-error" class="error"></p></form></dialog>
+<dialog id="flush-dialog"><form id="flush-form" class="form-grid"><h3>ยืนยัน Flush ข้อมูลด้วย TOTP</h3><p>ล้างประวัติที่แสดงใน Dashboard สำหรับทุกบัญชี ข้อมูล Log ต้นฉบับยังเก็บไว้ เหตุการณ์ใหม่จะแสดงตามปกติ</p><label>พิมพ์ FLUSH เพื่อยืนยัน<input id="flush-confirmation" pattern="FLUSH" required></label><label>รหัส TOTP 6 หลัก<input id="flush-totp" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required></label><div class="split-actions"><button type="button" id="flush-cancel" class="text">ยกเลิก</button><button class="danger-filled">ยืนยัน Flush</button></div><p id="flush-error" class="error"></p></form></dialog>
     </main>
   </section>
 

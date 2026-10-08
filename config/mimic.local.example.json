@@ -20,7 +20,9 @@
       "evidence/test-results/eve.json",
       "evidence/test-results/http-positive-run1/eve.json",
       "evidence/test-results/http-benign-run1/eve.json"
-    ]
+    ],
+    "rabbit_hole_config": "config/rabbit-hole.json",
+    "rabbit_hole_logs": ["evidence/rabbit-hole/web.jsonl"]
   },
   "network": {
     "management_interface": "CHANGE_ME",

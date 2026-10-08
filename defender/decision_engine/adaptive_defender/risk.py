@@ -19,7 +19,7 @@ class SourceState:
 class RiskEngine:
     def __init__(self, thresholds: dict[str, float], decay_per_minute: float, expiry_seconds: int,
                  clock: Callable[[], datetime] | None = None, web_profile: str = "wordpress"):
-        if web_profile not in {"wordpress", "phpmyadmin", "snare"}:
+        if web_profile not in {"wordpress", "phpmyadmin", "snare", "rabbithole"}:
             raise ValueError("unsupported web_profile")
         self.web_profile = web_profile
         self.thresholds = thresholds

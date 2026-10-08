@@ -1,0 +1,15 @@
+{
+  "bind_host": "10.10.10.2",
+  "bind_port": 8091,
+  "token_file": "/etc/trap/deploy-agent.token",
+  "allowed_clients": ["10.10.10.1/32"],
+  "allowed_targets": ["10.10.10.3:8080"],
+  "compose_dir": "/opt/vm-defender/honeypot/snare-tanner",
+  "env_file": "/opt/vm-defender/honeypot/snare-tanner/settings.env",
+  "data_dir": "/opt/vm-defender/honeypot/snare-tanner/data/snare",
+  "health_url": "http://10.10.10.2:8083/",
+  "run_as": "CHANGE_ME_UID:CHANGE_ME_GID",
+  "keep_versions": 10,
+  "clone_timeout": 900,
+  "dry_run": false
+}
