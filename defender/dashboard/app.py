@@ -275,7 +275,8 @@ class DashboardRuntime:
                                         self.settings.maximum_rows)
         self.honeypot_store = JsonlTail(self.settings.honeypot_paths, honeypot_transform, self.settings.maximum_rows)
         self.state = DashboardState(self.settings.state_path or self.settings.users_path.with_name("dashboard-state.json"))
-        self.rules = RuleStore(self.settings.active_rules_path, self.settings.rule_backup_dir)
+        self.rules = RuleStore(self.settings.active_rules_path, self.settings.rule_backup_dir,
+                               self.settings.rule_apply_dir, direct_edit=self.settings.demo_mode)
         self.rabbit_store = JsonlTail(self.settings.rabbit_hole_log_paths, rabbit_transform,
                                       self.settings.maximum_rows)
         self.rabbit = RabbitHoleService(self.settings.rabbit_hole_config_path, PROJECT_ROOT)
@@ -431,7 +432,7 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
     runtime = DashboardRuntime(settings)
 
     class Handler(BaseHTTPRequestHandler):
-        server_version = "MIMICDashboard/1.0"
+        server_version = "TRAPDashboard/1.0"
 
         def do_GET(self):
             parsed = urlparse(self.path)
@@ -444,8 +445,15 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
                 stylesheet = Path(__file__).parent / "static/dashboard.css"
                 self._send("text/css; charset=utf-8", stylesheet.read_bytes())
                 return
+            if route == "/static/logo.svg":
+                self._send("image/svg+xml", (Path(__file__).parent / "static/logo.svg").read_bytes())
+                return
             if route == "/static/dashboard.js":
                 script = Path(__file__).parent / "static/dashboard.js"
+                self._send("application/javascript; charset=utf-8", script.read_bytes())
+                return
+            if route == "/static/guide.js":
+                script = Path(__file__).parent / "static/guide.js"
                 self._send("application/javascript; charset=utf-8", script.read_bytes())
                 return
             if route == "/api/session.json":
@@ -508,7 +516,7 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
             elif route in {"/api/rules.json", "/api/rule-registry.json"}:
                 if not self._has_role(user, "master_admin"):
                     return
-                self._send_json(read_rules(settings.active_rules_path) if route == "/api/rules.json"
+                self._send_json(read_rules(runtime.rules.source()) if route == "/api/rules.json"
                                 else read_decisions(settings.rule_registry_path))
             else:
                 self.send_error(404)
@@ -568,7 +576,8 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
                 elif route == "/api/honeypot.json":
                     self._send_json({"items": runtime.sessions_data()[:100]})
                 elif route == "/api/capabilities.json":
-                    self._send_json({"rule_edit_available": settings.demo_mode,
+                    self._send_json({"rule_edit_available": runtime.rules.editable,
+                                     "rule_apply": runtime.rules.apply_status(),
                                      "default_password_change": settings.force_default_password_change,
                                      "flush_requires_totp": True})
                 elif route == "/api/thresholds.json":
@@ -717,7 +726,7 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
                 elif route == "/api/thresholds":
                     result = threshold_config(settings.engine_config_path, payload)
                 elif route == "/api/rules/change":
-                    if not settings.demo_mode:
+                    if not runtime.rules.editable:
                         self._send_json({"error": "live_rule_edit_requires_deployment_helper"}, 409)
                         return
                     result = runtime.rules.change(payload)
@@ -726,14 +735,14 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
                     with tempfile.TemporaryDirectory() as directory:
                         path = Path(directory) / "candidate.json"
                         path.write_text(json.dumps(payload), encoding="utf-8")
-                        report = validate(path, settings.active_rules_path, settings.baseline_path)
+                        report = validate(path, runtime.rules.source(), settings.baseline_path)
                     with runtime.state.lock:
                         data = runtime.state.load()
                         data.setdefault("candidates", {})[payload["rule_id"]] = {**payload, "test_results": report, "status": "pending"}
                         runtime.state.save(data)
                     result = {"ok": True, "test_results": report}
                 elif route == "/api/candidates/approve":
-                    if not settings.demo_mode:
+                    if not runtime.rules.editable:
                         self._send_json({"error": "live_rule_edit_requires_deployment_helper"}, 409)
                         return
                     with runtime.state.lock:
@@ -745,7 +754,7 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
                         with tempfile.TemporaryDirectory() as directory:
                             path = Path(directory) / "candidate.json"
                             path.write_text(json.dumps({**candidate, "status": "candidate"}), encoding="utf-8")
-                            validate(path, settings.active_rules_path, settings.baseline_path)
+                            validate(path, runtime.rules.source(), settings.baseline_path)
                         result = runtime.rules.change({"action": "add", "rule": candidate["rule"]})
                         candidate["status"] = "approved"
                         runtime.state.save(data)
@@ -972,7 +981,7 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
                 jar = cookies.SimpleCookie(raw)
             except cookies.CookieError:
                 return None
-            morsel = jar.get("mimic_session")
+            morsel = jar.get("trap_session")
             return morsel.value if morsel else None
 
         def _current_session(self) -> Session | None:
@@ -1012,12 +1021,12 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
 
         def _session_cookie(self, token: str) -> str:
             secure = "; Secure" if settings.secure_cookie else ""
-            return (f"mimic_session={token}; HttpOnly; SameSite=Strict; Path=/; "
+            return (f"trap_session={token}; HttpOnly; SameSite=Strict; Path=/; "
                     f"Max-Age={settings.session_ttl_seconds}{secure}")
 
         def _expired_cookie(self) -> str:
             secure = "; Secure" if settings.secure_cookie else ""
-            return f"mimic_session=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0{secure}"
+            return f"trap_session=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0{secure}"
 
         def _security_headers(self) -> None:
             self.send_header("Cache-Control", "no-store")

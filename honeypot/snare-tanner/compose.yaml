@@ -1,4 +1,4 @@
-name: mimic-web-honeypot
+name: trap-web-honeypot
 services:
   redis:
     image: redis:7.4-alpine
@@ -15,9 +15,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.tanner
-    command: [tanner, --config, /etc/mimic/tanner.yaml]
+    command: [tanner, --config, /etc/trap/tanner.yaml]
     volumes:
-      - ./tanner.yaml:/etc/mimic/tanner.yaml:ro
+      - ./tanner.yaml:/etc/trap/tanner.yaml:ro
       - ./data/tanner:/var/log/tanner
     networks: [honeypot]
     depends_on:
@@ -34,7 +34,7 @@ services:
       dockerfile: Dockerfile.snare
     environment:
       PAGE_DIR: ${SNARE_PAGE_DIR:-demo}
-      MIMIC_TRUSTED_PROXY_CIDRS: ${MIMIC_TRUSTED_PROXY_CIDRS:-}
+      TRAP_TRUSTED_PROXY_CIDRS: ${TRAP_TRUSTED_PROXY_CIDRS:-}
     ports: ["${SNARE_BIND_IP:-127.0.0.1}:${SNARE_PORT:-8083}:8080"]
     volumes: [./data/snare:/opt/snare]
     networks: [honeypot]

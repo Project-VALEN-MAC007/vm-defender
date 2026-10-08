@@ -37,7 +37,7 @@ def upsert_user(path: Path, username: str, name: str, role: str, password: str) 
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Create or update a MIMIC dashboard user")
+    parser = argparse.ArgumentParser(description="Create or update a TRAP dashboard user")
     parser.add_argument("--file", required=True, type=Path)
     parser.add_argument("--username", required=True)
     parser.add_argument("--name")

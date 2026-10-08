@@ -168,7 +168,7 @@ class DashboardApiSecurityTests(unittest.TestCase):
         self.assertEqual(status, 200)
         self.assertEqual(payload[0]["sid"], 2200901)
         self.assertEqual(headers["X-Frame-Options"], "DENY")
-        self.assertIn("mimic_session=", cookie)
+        self.assertIn("trap_session=", cookie)
 
     def test_csrf_is_required_for_logout(self):
         cookie, csrf = self.login("admin", "Admin-password-123")

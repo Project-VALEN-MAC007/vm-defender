@@ -26,7 +26,7 @@ class SnareProfileTests(unittest.TestCase):
         self.assertTrue(load_settings(root / 'defender/decision_engine/config/lab.json').dry_run)
 
     def test_snare_redirect_and_remote_shell_profiles(self):
-        for protocol, profile in [('http', 'snare'), ('ssh', 'cowrie'), ('telnet', 'telnet')]:
+        for protocol, profile in [('http', 'snare'), ('ssh', 'cowrie'), ('telnet', 'cowrie')]:
             engine = RiskEngine({'monitor': 15, 'redirect': 40, 'temporary_block': 80},
                                 1, 1800, web_profile='snare')
             decision = engine.decide(Event.from_eve(raw_event(protocol=protocol)))

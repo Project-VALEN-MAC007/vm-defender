@@ -45,7 +45,7 @@ decoy จะเชื่อ header เหล่านี้เฉพาะเม
 ## ขั้นตอนตรวจสอบ
 
 ```bash
-rg '__[A-Z0-9_]+__' /etc/nginx/sites-available/mimic
+rg '__[A-Z0-9_]+__' /etc/nginx/sites-available/trap
 curl -fsS http://BACKEND_IP:BACKEND_PORT/HEALTH_PATH
 sudo nginx -t
 ```

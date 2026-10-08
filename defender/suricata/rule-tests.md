@@ -4,7 +4,7 @@
 ด้วย config เดียวกัน ตรวจ SID, IP, เวลา และ severity จาก eve.json
 
 ```bash
-suricata -T -c /etc/suricata/suricata.yaml -S /opt/mimic/defender/suricata/rules/et-open-selected.rules
+suricata -T -c /etc/suricata/suricata.yaml -S /opt/trap/defender/suricata/rules/et-open-selected.rules
 ```
 
 กรณีทดสอบหลัก:

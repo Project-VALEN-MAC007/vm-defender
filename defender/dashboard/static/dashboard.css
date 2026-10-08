@@ -622,3 +622,47 @@ dialog code { color: var(--accent); word-break: break-all; }
 @media (max-width: 860px) {
   .dp-clone, .dp-now { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* ---------- คู่มือติดตั้ง ---------- */
+.guide-count { margin-left: 8px; padding: 0 8px; border-radius: var(--r-full); background: var(--panel-2, rgba(255,255,255,.06)); color: var(--muted); font-size: 12px; }
+.rh-tabs button.active .guide-count { background: var(--accent-tonal); color: var(--accent); }
+.guide-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px 24px; }
+.guide-head > div:first-child { display: grid; gap: 8px; max-width: 78ch; }
+.guide-head p { margin: 0; color: var(--text); }
+.guide-live { display: flex; flex-wrap: wrap; gap: 8px; }
+.guide-diagram-card { padding: 16px; overflow-x: auto; }
+.guide-diagram { display: block; width: 100%; min-width: 640px; height: auto; color: var(--muted); }
+.guide-diagram rect { fill: var(--panel); stroke: var(--line); stroke-width: 1.5; }
+.guide-diagram .gd-accent > rect:first-of-type { stroke: var(--accent); stroke-width: 2; }
+.guide-diagram rect.gd-inner { fill: var(--bg); stroke: var(--line-soft, var(--line)); }
+.guide-diagram text { font-family: var(--font); fill: var(--text); text-anchor: middle; }
+.guide-diagram .gd-name { font-size: 17px; font-weight: 700; }
+.guide-diagram .gd-accent .gd-name { fill: var(--accent); }
+.guide-diagram .gd-sub { font-size: 12.5px; fill: var(--muted); }
+.guide-diagram .gd-item { font-size: 13px; }
+.guide-diagram .gd-left { text-anchor: start; font-family: var(--mono); font-size: 12.5px; }
+.guide-diagram .gd-dim { fill: var(--dim); }
+.guide-diagram .gd-lines path { stroke: currentColor; stroke-width: 1.8; }
+.guide-diagram .gd-edge { font-size: 12px; fill: var(--accent); text-anchor: middle; }
+.guide-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; counter-reset: none; }
+.guide-step { background: var(--panel); border: 1px solid var(--line); border-left: 3px solid var(--line); border-radius: var(--r-md); padding: 16px 20px; display: grid; gap: 10px; }
+.guide-step.done { border-left-color: var(--accent); }
+.guide-step p { margin: 0; color: var(--muted); max-width: 90ch; }
+.guide-step-head { display: flex; align-items: center; gap: 12px; }
+.guide-step-head h4 { margin: 0; font-size: 16px; flex: 1; }
+.guide-no { flex: none; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 13px; background: var(--accent-tonal); color: var(--accent); }
+.guide-step.done .guide-no { background: var(--accent); color: var(--on-accent); }
+.guide-step.done h4 { color: var(--muted); }
+.guide-check { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); cursor: pointer; white-space: nowrap; }
+.guide-check input { accent-color: var(--accent); width: 16px; height: 16px; }
+.guide-code { position: relative; }
+.guide-code pre { margin: 0; padding: 14px 16px; padding-right: 92px; background: var(--bg); border: 1px solid var(--line); border-radius: var(--r-sm); overflow-x: auto; white-space: pre; line-height: 1.55; color: var(--text); }
+.guide-code .guide-copy { position: absolute; top: 8px; right: 8px; }
+@media (max-width: 640px) { .guide-step { padding: 14px; } .guide-step-head { flex-wrap: wrap; } .guide-code pre { padding-right: 16px; padding-top: 44px; } }
+#guide-body > *, .guide-steps > li, .guide-step > *, .guide-head > div { min-width: 0; }
+.guide-head .pill { justify-self: start; }
+
+/* ---------- TRAP logo ---------- */
+.logo-mark { width: 44px; height: 44px; background: none; clip-path: none; display: block; flex: none; }
+.brand-colon { color: #ff3e8e; margin: 0 1px; }
+.login-logo { display: block; width: 88px; height: 88px; border-radius: 22px; margin: 0 0 18px; box-shadow: 0 10px 40px rgba(200, 255, 60, .18); }

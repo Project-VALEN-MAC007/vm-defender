@@ -11,12 +11,12 @@ from defender.dashboard.app import serve
 from defender.dashboard.config import load_dashboard_settings
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Run the loopback-only MIMIC dashboard")
+    parser = argparse.ArgumentParser(description="Run the loopback-only TRAP dashboard")
     parser.add_argument("--config", type=Path,
-                        default=Path(__file__).parent / "config/mimic.json")
+                        default=Path(__file__).parent / "config/trap.json")
     args = parser.parse_args()
     if not args.config.is_file():
-        parser.error(f"missing config: {args.config}; copy config/mimic.example.json and review it")
+        parser.error(f"missing config: {args.config}; copy config/trap.example.json and review it")
     settings = load_dashboard_settings(args.config)
     if not settings.users_path.is_file():
         parser.error("users file is missing; create an account with python -m defender.dashboard.manage_users")

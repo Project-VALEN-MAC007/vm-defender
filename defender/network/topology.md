@@ -1,4 +1,4 @@
-# แบบเครือข่ายของ MIMIC Defender
+# แบบเครือข่ายของ TRAP Defender
 
 ## หลักการ
 
@@ -10,13 +10,13 @@
         |
 management interface (มี default route)
         |
-   MIMIC Defender
+   TRAP Defender
         | outer: 192.168.56.10/24
 เครือข่ายรับทราฟฟิก
         |
 แหล่งทราฟฟิกที่ได้รับอนุญาต
 
-   MIMIC Defender
+   TRAP Defender
         | inner: 10.10.10.1/24
 เครือข่ายบริการภายใน
         |

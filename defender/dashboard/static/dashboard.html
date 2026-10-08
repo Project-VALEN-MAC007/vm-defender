@@ -5,9 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>TRAP: Threat Redirection and Analysis Platform</title>
   <link rel="stylesheet" href="/static/dashboard.css">
+  <link rel="icon" type="image/svg+xml" href="/static/logo.svg">
 </head>
 <body>
   <svg class="icon-sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <symbol id="trap-logo" viewBox="0 0 200 200"><rect width="200" height="200" rx="44" fill="#c8ff3c"/><g transform="translate(-158.4 -93.6) scale(0.78)"><path fill="#111111" d="M266,172 H396 C410,172 413,188 415,204 C421,230 425,258 423,286 C420,328 394,344 330,344 C266,344 240,328 237,286 C235,258 239,230 245,204 C247,188 251,172 266,172 Z"/><rect x="290" y="236" width="22" height="20" fill="#c8ff3c"/><rect x="344" y="236" width="22" height="20" fill="#c8ff3c"/><rect x="286" y="284" width="88" height="12" fill="#c8ff3c"/><path fill="#ff3e8e" d="M320,296 H352 V318 A16,16 0 0 1 320,318 Z"/><rect x="260" y="152" width="138" height="22" rx="11" fill="#ffad00"/><rect x="280" y="160" width="16" height="48" rx="8" fill="#ffad00"/><rect x="366" y="160" width="16" height="70" rx="8" fill="#ffad00"/><circle cx="375" cy="241" r="7" fill="#ffad00"/></g></symbol>
     <symbol id="icon-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="5" rx="1"/><rect x="13" y="10" width="8" height="11" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/></symbol>
     <symbol id="icon-alert" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></symbol>
     <symbol id="icon-route" viewBox="0 0 24 24"><circle cx="5" cy="5" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="19" cy="19" r="2"/><path d="M7 5h5a5 5 0 0 1 5 5v7M7 5v10a4 4 0 0 0 4 4h6"/></symbol>
@@ -17,10 +19,12 @@
     <symbol id="icon-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></symbol>
     <symbol id="icon-hole" viewBox="0 0 24 24"><path d="M3 5h18M5 10h14M7 15h10M9 20h6"/></symbol>
     <symbol id="icon-deploy" viewBox="0 0 24 24"><path d="M12 15V3M7 8l5-5 5 5M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/></symbol>
+    <symbol id="icon-book" viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2V5ZM4 21a2 2 0 0 1 2-2h13v2M8 7h7M8 11h5"/></symbol>
     <symbol id="icon-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2H3ZM17 5a3 3 0 0 1 0 6M18 15a5 5 0 0 1 3 5"/></symbol>
   </svg>
   <section id="login-screen" class="login-screen">
     <form class="login-card" id="login-form">
+      <svg class="login-logo" aria-hidden="true"><use href="#trap-logo"></use></svg>
       <h1 class="glitch" data-text="TRAP">TRAP</h1>
       <p>Threat Redirection and Analysis Platform</p>
       <div class="form-grid">
@@ -49,7 +53,7 @@
 
   <section id="app" class="app hidden">
     <aside>
-      <div class="brand"><div class="mark">T</div><div><h1>TRAP</h1><p>Threat Redirection and Analysis Platform</p></div></div>
+      <div class="brand"><svg class="mark logo-mark" aria-hidden="true"><use href="#trap-logo"></use></svg><div><h1 aria-label="TRAP">TRA<span class="brand-colon" aria-hidden="true">:</span>P</h1><p>Threat Redirection and Analysis Platform</p></div></div>
       <div class="nav-label">WORKSPACE</div>
       <nav aria-label="เมนูหลัก">
         <button class="nav-btn active" data-view="overview"><svg aria-hidden="true"><use href="#icon-grid"></use></svg>ภาพรวม</button>
@@ -60,6 +64,7 @@
         <button class="nav-btn" data-view="deploy" data-admin><svg aria-hidden="true"><use href="#icon-deploy"></use></svg>Deploy หน้าเว็บ</button>
         <button class="nav-btn" data-view="reports"><svg aria-hidden="true"><use href="#icon-chart"></use></svg>รายงาน</button>
         <button class="nav-btn" data-view="account"><svg aria-hidden="true"><use href="#icon-users"></use></svg>จัดการบัญชี</button>
+        <button class="nav-btn" data-view="guide" data-admin><svg aria-hidden="true"><use href="#icon-book"></use></svg>คู่มือติดตั้ง</button>
       </nav>
       <div class="user-box"><strong id="user-name">-</strong><span id="user-role">-</span></div>
     </aside>
@@ -161,7 +166,7 @@
         <section id="deploy" class="view">
           <div class="rh-head"><div><h3>Deploy หน้าเว็บ Honeypot</h3><p>Clone เว็บจริงด้วย SNARE ตรวจดูก่อน แล้วเปลี่ยนหน้าเว็บที่ผู้โจมตีเห็นได้ในคลิกเดียว ย้อนกลับเวอร์ชันเดิมได้เสมอ</p></div><span class="pill" id="dp-mode">-</span></div>
           <p id="dp-error" class="error" role="status"></p>
-          <div id="dp-missing" class="empty-box hidden">ยังไม่ได้เชื่อม Deploy agent บนเครื่อง Honeypot · ติดตั้งตาม <code>honeypot/deploy-agent/README.md</code> แล้วเพิ่ม <code>web_deploy</code> ใน mimic.json · ลองบนเครื่องตัวเองได้ด้วย <code>python run_deploy_agent.py --config evidence/demo/deploy-agent.json</code></div>
+          <div id="dp-missing" class="empty-box hidden">ยังไม่ได้เชื่อม Deploy agent บนเครื่อง Honeypot · ติดตั้งตาม <code>honeypot/deploy-agent/README.md</code> แล้วเพิ่ม <code>web_deploy</code> ใน trap.json · ลองบนเครื่องตัวเองได้ด้วย <code>python run_deploy_agent.py --config evidence/demo/deploy-agent.json</code></div>
           <div id="dp-body" class="rh-panel">
             <div class="group">
               <h3 class="group-title">หน้าเว็บที่ผู้โจมตีเห็นตอนนี้</h3>
@@ -215,6 +220,12 @@
           <div class="card"><div class="card-head"><h4 class="card-title">เหตุการณ์แยกตามประเภทการเชื่อมต่อและระดับความรุนแรง</h4></div><div class="card-body" id="report-summary"></div></div></div><div class="group"><h3 class="group-title">พฤติกรรมใน Honeypot</h3><div class="card scope-gap"><div class="card-head"><h3 class="card-title">เวลาเฉลี่ยที่อยู่ใน Honeypot แต่ละแบบ</h3></div><div class="table-wrap"><table class="dwell-table"><thead><tr><th>Honeypot</th><th>จำนวน Session</th><th>เวลาเฉลี่ย Action แรก → Action สุดท้าย</th></tr></thead><tbody id="dwell-body"></tbody></table></div></div>
           <div class="card"><div class="card-head"><h3 class="card-title">Rabbit Hole แยกตามโปรโตคอล</h3><span class="data-note">รวมอยู่ในไฟล์ CSV</span></div><div class="table-wrap"><table><thead><tr><th>โปรโตคอล</th><th>Session</th><th>เดินตามเบาะแส</th><th>ความลึกเฉลี่ย / สูงสุด</th><th>ทรัพยากรเฉลี่ย</th><th>เวลาโต้ตอบเฉลี่ย</th><th>เวลาเชื่อมต่อเฉลี่ย</th></tr></thead><tbody id="report-rabbit-body"></tbody></table></div></div></div>
         </section>
+        <section id="guide" class="view">
+          <div class="rh-head"><div><h3>คู่มือติดตั้งระบบ TRAP</h3><p>ทำตามทีละเครื่อง: ต้องลงอะไร ติดตั้งที่ไหน ตั้งค่าอะไร ติ๊ก "ทำแล้ว" เพื่อจำความคืบหน้าไว้ในเบราว์เซอร์นี้</p></div></div>
+          <div class="rh-tabs" id="guide-tabs" role="tablist"></div>
+          <div id="guide-body" class="rh-panel"></div>
+        </section>
+
         <section id="account" class="view"><p id="password-required-note" class="status-banner hidden">กรุณาเปลี่ยนรหัสผ่านเริ่มต้นของ Master Admin ก่อนใช้ระบบ</p>
           <div class="account-tabs" role="tablist" aria-label="หมวดจัดการบัญชี">
             <button type="button" class="account-tab" data-account-tab="users" id="account-tab-users" role="tab" aria-controls="account-users" aria-selected="false" data-admin>ผู้ใช้งาน</button>
@@ -259,5 +270,6 @@
   </section>
 
   <script src="/static/dashboard.js"></script>
+  <script src="/static/guide.js"></script>
 </body>
 </html>

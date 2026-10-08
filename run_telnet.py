@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
-Telnet Honeypot Runner
-รัน telnet honeypot บน localhost:2323
+Local Telnet test stub (not part of the TRAP redirect path).
+Production Telnet goes to Cowrie on the Honeypot (10.10.10.2:2223) via nftables.
+รัน telnet stub บน localhost:2323
 กด Ctrl+C เพื่อหยุด
 """
 
@@ -17,7 +18,7 @@ if __name__ == "__main__":
     print("=" * 60)
     print(f"Log file: {log_path}")
     print()
-    print("⚠️  WARNING: Binding to localhost only for safety")
+    print("⚠️  Local test stub only - real Telnet traffic is redirected to Cowrie")
     print("Telnet honeypot running at: telnet://127.0.0.1:2323")
     print("Press Ctrl+C to stop")
     print("=" * 60)

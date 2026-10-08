@@ -1,0 +1,7 @@
+[Unit]
+Description=TRAP: test and install Dashboard rule changes into Suricata
+After=suricata.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /opt/trap/defender/suricata/apply_rules.py --apply-dir /var/lib/trap/rules --active /etc/suricata/rules/et-open-selected.rules --suricata-config /etc/suricata/suricata.yaml

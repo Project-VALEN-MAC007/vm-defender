@@ -1,4 +1,4 @@
-# SNARE + TANNER for MIMIC
+# SNARE + TANNER for TRAP
 
 ชุด Docker สำหรับเว็บลวงทั่วไป ใช้ SNARE เป็น sensor, TANNER วิเคราะห์คำขอ
 และ Redis เก็บ session ไม่ใช้ WordPress ตัวต้นฉบับอยู่ที่
@@ -43,7 +43,7 @@ headers, cookies และ error pages เทียบก่อน/หลัง�
 
 1. ตั้ง SNARE_BIND_IP เป็น IP ฝั่ง inner ของเครื่อง Honeypot ที่ตรวจแล้ว
    และยืนยันว่า Defender เข้า `http://HONEY_IP:8083/` ได้
-2. ตั้ง MIMIC_TRUSTED_PROXY_CIDRS เป็น IP ของ proxy ที่ SNARE เห็นจริงแบบ /32
+2. ตั้ง TRAP_TRUSTED_PROXY_CIDRS เป็น IP ของ proxy ที่ SNARE เห็นจริงแบบ /32
    หรือ /128 ตรวจ log ก่อนกำหนด; ไม่ใช้ทั้ง subnet โดยไม่จำเป็น
    Docker NAT อาจทำให้ peer address ต่างจาก IP Defender
 3. ใช้ `../../defender/nginx/adaptive-honeypot.conf.template` หรือ `nginx-snare.conf.template`
@@ -53,13 +53,13 @@ headers, cookies และ error pages เทียบก่อน/หลัง�
 4. config ตัวอย่าง `../../defender/decision_engine/config/lab.json` และ `live.json`
    ตั้ง `"web_profile": "snare"` แล้ว หากมี config ที่ติดตั้งไว้เดิม ให้เพิ่มค่านี้
    ใน `/etc/adaptive-defender/live.json` ด้วย แล้วเริ่มใน dry_run ก่อน
-   config นี้เป็นของ Decision Engine ไม่ใช่ dashboard mimic.json
+   config นี้เป็นของ Decision Engine ไม่ใช่ dashboard trap.json
 5. ทดสอบ source IP, expiry, benign traffic และความต่อเนื่องของเว็บก่อนเปิดจริง
 
 การแก้ repository ไม่ได้เปลี่ยน live Nginx/firewall หรือ config ที่ติดตั้งไว้เดิม
 backend ต้องเข้าถึงจาก Defender เท่านั้น เพื่อไม่ให้ใครปลอม X-Real-IP ผ่าน proxy ที่ไว้ใจ
 SNARE patch รับ X-Real-IP เฉพาะ peer ที่ตรง trusted CIDR
-ยังไม่ได้ส่งต่อ client source port; ค่า peer port ใน TANNER เป็น connection ของ proxy
+Nginx ส่ง `X-Real-Port` และ patch ของ SNARE ใช้ค่านี้เป็น peer port เมื่อคำขอมาจาก proxy ที่เชื่อถือ (`TRAP_TRUSTED_PROXY_CIDRS`) ต้อง build image ใหม่หลังอัปเดต patch
 
 ### นำไปลองบน VM Linux
 
@@ -83,7 +83,7 @@ TANNER ไม่มี public port; Nginx ต้องส่งไป SNARE ไ�
 ตรวจการตัดสินใจด้วย config ที่ติดตั้งไว้ในโหมด dry-run:
 
 ```bash
-cd /opt/mimic
+cd /opt/trap
 python3 -m defender.decision_engine.adaptive_defender.cli \
   --config /etc/adaptive-defender/live.json --dry-run --once
 ```
@@ -97,7 +97,7 @@ dry-run ไม่เขียน map หรือเปิด redirect จริ
 
 TANNER เขียน `data/tanner/events.jsonl`, `tanner.log`, `tanner.err`
 SNARE เขียน `data/snare/snare.log`, `snare.err`
-events.jsonl เป็น upstream schema; Dashboard ของ MIMIC ยังไม่มี adapter สำหรับ log นี้
+events.jsonl ถูก `deploy/trap-sync.sh` ดึงไปที่ `/var/log/trap/honeypot/tanner-events.jsonl` บน Defender แล้ว Dashboard แปลงเป็นเหตุการณ์และ Session ของ profile `snare` (ใส่ path นี้ใน `honeypot_paths`)
 และ SNARE upstream เน้น form POST ไม่ใช่การเก็บ raw body ทุกชนิด
 log อาจมี payload/cookies/ข้อมูล login สำหรับ lab ต้องจำกัดสิทธิ์การอ่าน
 

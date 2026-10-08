@@ -10,7 +10,7 @@ class ProductionConfigTests(unittest.TestCase):
     def test_placeholders_block_production_gate(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            config = root / "mimic.json"
+            config = root / "trap.json"
             config.write_text(json.dumps({
                 "project_root": ".",
                 "network": {

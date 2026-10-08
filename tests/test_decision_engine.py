@@ -67,7 +67,7 @@ class RiskTests(unittest.TestCase):
         self.assertEqual(event.destination_port, 23)
         decision = engine.decide(event)
         self.assertEqual(decision.action, "redirect_telnet")
-        self.assertEqual(decision.profile, "telnet")
+        self.assertEqual(decision.profile, "cowrie")
 
     def test_telnet_response_requires_server_port_and_client_ip(self):
         for sid in (2100492, 2101251):
@@ -189,3 +189,56 @@ class EngineIntegrationTests(unittest.TestCase):
 
 
 if __name__ == "__main__": unittest.main()
+
+
+class EngineResilienceTests(unittest.TestCase):
+    def settings(self, root, eve, dry_run=True):
+        return Settings(eve, root/"checkpoint", root/"audit", root/"map", dry_run, 1, 1800,
+                        {"monitor": 15, "redirect": 40, "temporary_block": 80})
+
+    def test_unreadable_alert_is_skipped_not_stuck(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory); eve = root/"eve.json"
+            bad = raw_event(protocol="tcp", sid=2101251, dest_port=50000)
+            bad.update(src_ip="192.0.2.10", src_port=80, dest_ip="192.0.2.20")
+            good = raw_event(flow_id=2, source="192.0.2.9")
+            eve.write_text(json.dumps(bad) + "\n" + json.dumps(good) + "\n")
+            decisions = DecisionEngine(self.settings(root, eve)).run_once()
+            self.assertEqual([d["source_ip"] for d in decisions], ["192.0.2.9"])
+            self.assertIn('"reason": "unreadable_alert"', (root/"audit").read_text())
+
+    def test_adapter_failure_retries_then_moves_on(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory); eve = root/"eve.json"
+            eve.write_text(json.dumps(raw_event(protocol="http", severity=1)) + "\n"
+                           + json.dumps(raw_event(flow_id=2, source="192.0.2.9", protocol="http", severity=1)) + "\n")
+            engine = DecisionEngine(self.settings(root, eve))
+            engine.reconcile_web_redirects()
+            calls = []
+            def update(entries):
+                calls.append(dict(entries))
+                if "192.0.2.20" in entries:
+                    raise RuntimeError("reload failed")
+                return "ok"
+            engine.nginx.update = update
+            self.assertEqual(engine.run_once(), [])
+            self.assertEqual(engine.run_once(), [])
+            result = engine.run_once()
+            self.assertEqual([d["source_ip"] for d in result], ["192.0.2.9"])
+            self.assertIn('"reason": "adapter_failed"', (root/"audit").read_text())
+
+    def test_ipv6_shell_attacker_is_blocked_not_redirected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory); eve = root/"eve.json"
+            eve.write_text(json.dumps(raw_event(source="2001:db8::5", protocol="ssh", dest_port=22, severity=1)) + "\n"
+                           + json.dumps(raw_event(flow_id=2, source="2001:db8::5", protocol="ssh", dest_port=22, severity=1)) + "\n")
+            decisions = DecisionEngine(self.settings(root, eve)).run_once()
+            last = decisions[-1]
+            self.assertEqual(last["action"], "temporary_block")
+            self.assertIn("temporary_block6", last["adapter_command"])
+
+    def test_nft_rejects_ipv6_redirect_sets(self):
+        adapter = NftSetAdapter("inet", "adaptive_defender", True)
+        with self.assertRaises(ValueError):
+            adapter.add("ssh_redirect", "2001:db8::5", 60)
+        self.assertIn("temporary_block6", adapter.add("temporary_block", "2001:db8::5", 60))

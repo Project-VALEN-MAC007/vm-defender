@@ -1,6 +1,8 @@
 #!/usr/sbin/nft -f
 
 # Do not render/apply until the marked values are observed on the lab.
+# __COWRIE_IP__:__COWRIE_PORT__ = Cowrie SSH (10.10.10.2:2222)
+# __TELNET_IP__:__TELNET_PORT__ = Cowrie Telnet (10.10.10.2:2223). defender/telnet is a local test stub only.
 table inet adaptive_defender {
     set ssh_redirect {
         type ipv4_addr
@@ -20,9 +22,17 @@ table inet adaptive_defender {
         timeout 30m
     }
 
+    # IPv6 clients cannot be NATed to the IPv4 honeypot; risky ones are blocked.
+    set temporary_block6 {
+        type ipv6_addr
+        flags timeout
+        timeout 30m
+    }
+
     chain prerouting {
         type nat hook prerouting priority dstnat; policy accept;
         iifname "__OUTER_INTERFACE__" ip saddr @temporary_block drop
+        iifname "__OUTER_INTERFACE__" ip6 saddr @temporary_block6 drop
         iifname "__OUTER_INTERFACE__" ip saddr @ssh_redirect tcp dport 22 \
             dnat ip to __COWRIE_IP__:__COWRIE_PORT__
         iifname "__OUTER_INTERFACE__" ip saddr @telnet_redirect tcp dport 23 \

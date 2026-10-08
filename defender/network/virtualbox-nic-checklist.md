@@ -22,8 +22,8 @@
 ชื่อ network ตัวอย่าง:
 
 ```text
-outer: mimic-outer
-inner: mimic-inner
+outer: trap-outer
+inner: trap-inner
 ```
 
 ## หลังเปิดเครื่อง

@@ -1,0 +1,21 @@
+[Unit]
+Description=TRAP Rabbit Hole web decoy
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=traprabbit
+Group=traprabbit
+WorkingDirectory=/opt/trap
+ExecStart=/usr/bin/python3 /opt/trap/run_rabbit_hole.py --config /var/lib/trap/rabbit-hole.json
+Restart=on-failure
+RestartSec=3s
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadOnlyPaths=/opt/trap /var/lib/trap
+ReadWritePaths=/var/log/trap
+
+[Install]
+WantedBy=multi-user.target

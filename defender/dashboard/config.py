@@ -35,6 +35,7 @@ class DashboardSettings:
     rabbit_hole_log_paths: tuple[Path, ...] = ()
     deploy_agent_url: str | None = None
     deploy_agent_token_path: Path | None = None
+    rule_apply_dir: Path | None = None
 
 
 def _resolve(root: Path, value: str, field: str) -> Path:
@@ -90,6 +91,7 @@ def load_dashboard_settings(path: str | Path) -> DashboardSettings:
         login_window_seconds=int(security.get("login_window_seconds", 300)),
         maximum_rows=int(dashboard.get("maximum_rows", 5000)),
         allow_rule_deploy=bool(rules.get("allow_deploy", False)),
+        rule_apply_dir=(_resolve(root, rules["apply_dir"], "rules.apply_dir") if rules.get("apply_dir") else None),
         require_totp=security.get("require_totp", True) is not False,
         honeypot_paths=tuple(_resolve(root, value, "paths.honeypot_paths") for value in paths.get("honeypot_paths", [])),
         state_path=_resolve(root, paths.get("dashboard_state", "evidence/audit/dashboard-state.json"), "paths.dashboard_state"),

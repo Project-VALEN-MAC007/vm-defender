@@ -1,4 +1,4 @@
-/var/log/mimic/*.jsonl /var/log/adaptive-defender/*.jsonl {
+/var/log/trap/*.jsonl /var/log/adaptive-defender/*.jsonl {
     daily
     rotate 14
     compress

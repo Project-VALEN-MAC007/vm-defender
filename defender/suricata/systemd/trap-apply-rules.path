@@ -1,0 +1,9 @@
+[Unit]
+Description=TRAP: watch for rule changes made in the Dashboard
+
+[Path]
+PathModified=/var/lib/trap/rules/request
+Unit=trap-apply-rules.service
+
+[Install]
+WantedBy=multi-user.target
