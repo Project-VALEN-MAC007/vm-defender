@@ -48,6 +48,25 @@ def seed_demo_candidate(directory: Path) -> None:
     state_path.write_text(json.dumps(state, indent=2), encoding="utf-8")
 
 
+def write_deploy_demo(directory: Path) -> dict:
+    """Dry-run deploy agent config so the Deploy page works without Docker."""
+    import secrets
+    token = directory / "deploy-agent.token"
+    if not token.exists():
+        token.write_text(secrets.token_hex(32) + "\n", encoding="utf-8")
+    snare = directory / "snare"
+    (snare / "data" / "snare" / "pages").mkdir(parents=True, exist_ok=True)
+    if not (snare / "settings.env").exists():
+        (snare / "settings.env").write_text("SNARE_BIND_IP=127.0.0.1\nSNARE_PORT=8083\nSNARE_PAGE_DIR=demo\n", encoding="utf-8")
+    (directory / "deploy-agent.json").write_text(json.dumps({
+        "bind_host": "127.0.0.1", "bind_port": 8091, "token_file": "deploy-agent.token",
+        "allowed_clients": ["127.0.0.1/32"],
+        "allowed_targets": ["www.example.com", "shop.example.com", "10.10.10.3:8080"],
+        "compose_dir": "snare", "env_file": "snare/settings.env", "data_dir": "snare/data/snare",
+        "health_url": "http://127.0.0.1:8083/", "dry_run": True}, indent=2) + "\n", encoding="utf-8")
+    return {"agent_url": "http://127.0.0.1:8091", "token_file": "evidence/demo/deploy-agent.token"}
+
+
 def generate(alert_count: int, decision_count: int, seed: int) -> dict:
     rng = random.Random(seed)
     now = datetime.now(timezone.utc) - timedelta(seconds=5)
@@ -111,8 +130,13 @@ def generate(alert_count: int, decision_count: int, seed: int) -> dict:
     config["dashboard"]["maximum_rows"] = max(alert_count, decision_count)
     config["paths"].update({"eve_paths": ["evidence/demo/eve.json"],
                             "decisions": "evidence/demo/decisions.jsonl", "status": "evidence/demo/status.json"})
-    config["paths"].update({"honeypot_paths": ["evidence/demo/honeypot.jsonl"],
-                            "dashboard_state": "evidence/demo/dashboard-state.json", "engine_config": "evidence/demo/engine.json"})
+    from defender.rabbit_hole.demo import write_demo
+    rabbit = write_demo(ROOT, directory, seed)
+    config["paths"].update({"honeypot_paths": ["evidence/demo/honeypot.jsonl", "evidence/demo/cowrie.jsonl"],
+                            "dashboard_state": "evidence/demo/dashboard-state.json", "engine_config": "evidence/demo/engine.json",
+                            "rabbit_hole_config": "evidence/demo/rabbit-hole.json",
+                            "rabbit_hole_logs": ["evidence/demo/rabbit-hole-web.jsonl"]})
+    config["web_deploy"] = write_deploy_demo(directory)
     config["demo_mode"] = True
     config["rules"]["allow_deploy"] = False
     if not (directory / "rules.rules").exists():
@@ -126,7 +150,8 @@ def generate(alert_count: int, decision_count: int, seed: int) -> dict:
     (ROOT / "config/mimic.demo.json").write_text(json.dumps(config, indent=2) + "\n", encoding="utf-8")
     summary = {"synthetic": True, "generated_at": now.isoformat(), "alerts": alert_count,
                "decisions": len(selected), "source_ips": len({entry[1]["src_ip"] for entry in records}),
-               "days": 45, "honeypot_sessions": len(session_rows), "actions": dict(actions), "seed": seed}
+               "days": 45, "honeypot_sessions": len(session_rows), "actions": dict(actions), "seed": seed,
+               "rabbit_hole_web_events": rabbit["web_events"], "rabbit_hole_shell_events": rabbit["shell_events"]}
     (directory / "summary.json").write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
     seed_demo_candidate(directory)
     return summary

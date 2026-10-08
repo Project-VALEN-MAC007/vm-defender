@@ -21,9 +21,13 @@ Nginx หรือ nftables ให้เฝ้าระวัง เปลี่
 | Nginx | รับ HTTP/HTTPS และเลือก backend ตาม source IP | config พร้อมตรวจสอบ ยังไม่ activate บนเครื่องจริง |
 | nftables | เปลี่ยนเส้นทาง SSH/Telnet และบล็อกชั่วคราว | template พร้อม ยังรอชื่อ interface จริง |
 | Dashboard | แสดงสถานะ เหตุการณ์ รายงาน และจัดการ rule | พร้อมใช้งานบน loopback |
+| Deploy หน้าเว็บ | Clone เว็บด้วย SNARE และสลับหน้าเว็บ Honeypot ผ่าน Dashboard (agent บนเครื่อง Honeypot) | ชุดทดสอบผ่าน; ต้องติดตั้ง agent ตาม `honeypot/deploy-agent/README.md` |
+| Rabbit Hole | เส้นทางลวงต่อเนื่อง Web + ไฟล์ลวงสำหรับ Cowrie และหน้า Dashboard | ชุดทดสอบผ่าน; ต้องติดตั้งบนเครื่อง Honeypot จริง |
 | Validation Pipeline | ตรวจ rule 5 gates พร้อม backup/rollback | ชุดทดสอบผ่าน; live deploy ปิดไว้เป็นค่าเริ่มต้น |
 
 สถานะโดยละเอียดอยู่ที่ `docs/project-status.md`
+ผลตรวจระบบเทียบกับเอกสาร TRAP อยู่ที่ `docs/trap-doc-audit.md`
+วิธีใช้ Rabbit Hole อยู่ที่ `docs/rabbit-hole.md`
 
 กฎ Default ปัจจุบันใช้ ET Open 13 กฎใน
 `defender/suricata/rules/et-open-selected.rules` โดยตัดกฎเขียนเองเดิมออกแล้ว
@@ -117,6 +121,7 @@ defender/dashboard/             Dashboard, authentication และ API
 defender/decision_engine/       ตัวอ่าน EVE, risk engine และ adapters
 defender/network/               แบบเครือข่ายและขั้นตอนเตรียม interface
 defender/nginx/                 template และ generated config ของ Nginx
+defender/rabbit_hole/           เส้นทางลวงต่อเนื่อง: ฉาก, web decoy, Cowrie bundle, การวัดผล
 defender/nftables/              template สำหรับ redirect และ block
 defender/suricata/              กฎตรวจจับและแผนทดสอบ
 defender/validation/            readiness และ rule validation pipeline

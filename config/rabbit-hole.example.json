@@ -1,0 +1,34 @@
+{
+  "project_root": "..",
+  "enabled": true,
+  "organization": {
+    "name": "Acme Logistics Co., Ltd.",
+    "short_name": "acme",
+    "domain": "acme-logistics.co.th",
+    "hostname": "web-prod-01",
+    "admin_user": "sysadmin",
+    "db_name": "acme_erp",
+    "internal_subnet": "10.20.0"
+  },
+  "scenarios": {
+    "web": ["web-backup-api", "web-env-admin"],
+    "shell": "linux-server"
+  },
+  "limits": {
+    "max_depth": 5,
+    "max_branches": 2,
+    "max_resources_per_session": 40,
+    "idle_timeout_seconds": 300,
+    "session_ttl_seconds": 3600,
+    "max_sessions": 5000
+  },
+  "web": {
+    "host": "127.0.0.1",
+    "port": 8084,
+    "log_path": "evidence/rabbit-hole/web.jsonl",
+    "trusted_proxies": ["127.0.0.1/32"],
+    "server_header": "nginx/1.24.0"
+  },
+  "secret_path": "config/rabbit-hole.secret",
+  "extra_scenario_dirs": []
+}

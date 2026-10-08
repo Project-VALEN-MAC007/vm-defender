@@ -20,6 +20,8 @@ from .metrics import calculate
 from .security import LoginLimiter, Session, SessionStore, UserStore, append_security_audit, verify_password
 from .scope import (DashboardState, RuleStore, honeypot_transform, sessions_from_events,
                     extend_analytics, event_notifications, report_csv, threshold_config, stamp)
+from .web_deploy import AgentError, DeployClient
+from .rabbit import RabbitHoleService, log_rows as rabbit_log_rows, rabbit_transform
 from ..validation.deploy import staged_deploy
 from ..validation.pipeline import ValidationError, validate
 
@@ -274,6 +276,10 @@ class DashboardRuntime:
         self.honeypot_store = JsonlTail(self.settings.honeypot_paths, honeypot_transform, self.settings.maximum_rows)
         self.state = DashboardState(self.settings.state_path or self.settings.users_path.with_name("dashboard-state.json"))
         self.rules = RuleStore(self.settings.active_rules_path, self.settings.rule_backup_dir)
+        self.rabbit_store = JsonlTail(self.settings.rabbit_hole_log_paths, rabbit_transform,
+                                      self.settings.maximum_rows)
+        self.rabbit = RabbitHoleService(self.settings.rabbit_hole_config_path, PROJECT_ROOT)
+        self.deploy = DeployClient(self.settings.deploy_agent_url, self.settings.deploy_agent_token_path)
 
     def alerts(self):
         return self.state.visible(self.alert_store.rows())
@@ -282,10 +288,36 @@ class DashboardRuntime:
         return self.state.visible(self.decision_store.rows())
 
     def sessions_data(self):
-        return self.state.visible(sessions_from_events(self.honeypot_store.rows()))
+        # Rabbit Hole web sessions count as Web Honeypot sessions. They come from tracking
+        # windows (split on idle timeout) so a returning scanner is not one multi-day session.
+        return self.state.visible(sessions_from_events(self.honeypot_store.rows() + self.rabbit_sessions()))
+
+    def rabbit_sessions(self):
+        if not self.rabbit.available or not self.settings.rabbit_hole_log_paths:
+            return []
+        try:
+            return self.rabbit.web_sessions(self.rabbit_store.rows())
+        except (ValueError, OSError, KeyError):
+            return []
+
+    def rabbit_events(self):
+        if not self.rabbit.available:
+            return []
+        return self.state.visible(self.rabbit.events(self.rabbit_store.rows(), self.honeypot_store.rows()))
+
+    def rabbit_report(self, window):
+        static = [s for s in self.state.visible(sessions_from_events(self.honeypot_store.rows()))
+                  if s.get("profile") != "cowrie"]
+        return self.rabbit.report(self.rabbit_events(), window, static)
 
     def report(self, window):
-        return analytics(self.alerts(), self.decisions(), window, sessions=self.sessions_data())
+        result = analytics(self.alerts(), self.decisions(), window, sessions=self.sessions_data())
+        if self.rabbit.available:
+            try:
+                result["rabbit_hole"] = self.rabbit_report(window)["summary"]
+            except (ValueError, OSError, KeyError):
+                result["rabbit_hole"] = None
+        return result
 
     def event_notes(self):
         return event_notifications(self.decisions(), self.alerts(), self.sessions_data())
@@ -335,7 +367,8 @@ def _query_rows(rows: list[dict], query: dict[str, list[str]], kind: str) -> tup
     return rows[offset:offset + limit], total, limit, offset
 
 
-def search_logs(alerts: list[dict], decisions: list[dict], query: dict[str, list[str]], sessions: list[dict] | None = None) -> dict:
+def search_logs(alerts: list[dict], decisions: list[dict], query: dict[str, list[str]], sessions: list[dict] | None = None,
+                rabbit_events: list[dict] | None = None) -> dict:
     """Search all retained alert and decision rows before pagination."""
     rows = [{"type": "suricata", "time": a.get("timestamp"), "source": a.get("src_ip"),
              "protocol": a.get("app_proto") or a.get("proto"), "severity": a.get("severity"),
@@ -349,6 +382,7 @@ def search_logs(alerts: list[dict], decisions: list[dict], query: dict[str, list
               "protocol": s["profile"], "severity": None,
               "summary": f"Session {s['session_id']} · {s['actions']} actions · {s['dwell_seconds']:.1f}s",
               "result": s["profile"]} for s in (sessions or [])]
+    rows += rabbit_log_rows(rabbit_events or [])
     def param(name: str) -> str:
         return str((query.get(name) or [""])[0]).strip()
     kind, source, protocol, severity = (param(name).lower() for name in
@@ -432,7 +466,8 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
                 self._send_json({"items": items, "total": total, "limit": limit, "offset": offset})
             elif route == "/api/logs.json":
                 try:
-                    payload = search_logs(runtime.alerts(), runtime.decisions(), query, runtime.sessions_data())
+                    payload = search_logs(runtime.alerts(), runtime.decisions(), query, runtime.sessions_data(),
+                                          runtime.rabbit_events())
                 except ValueError:
                     self._send_json({"error": "invalid_time_filter"}, 400)
                 else:
@@ -462,6 +497,11 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
                 self._send_json(notifications(runtime.decisions(), runtime.alerts(), runtime.status()))
             elif route in {"/api/events.json", "/api/reports.csv", "/api/honeypot.json", "/api/capabilities.json", "/api/thresholds.json", "/api/rule-backups.json", "/api/candidates.json"}:
                 self._scope_get(route, query, user)
+            elif route.startswith("/api/rabbit-hole"):
+                self._rabbit_get(route, query, user)
+            elif route.startswith("/api/web-deploy/"):
+                if self._has_role(user, "master_admin"):
+                    self._deploy_get(route, query)
             elif route == "/api/users.json":
                 if self._has_role(user, "master_admin"):
                     self._send_json({"items": runtime.users.list_public()})
@@ -501,6 +541,16 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
             elif route.startswith("/api/users/"):
                 if self._has_role(user, "master_admin"):
                     self._manage_user(route, user)
+            elif route == "/api/rabbit-hole/settings":
+                if self._has_role(user, "master_admin"):
+                    self._rabbit_save(user)
+            elif route in {"/api/web-deploy/clone", "/api/web-deploy/activate"}:
+                if self._has_role(user, "master_admin"):
+                    self._deploy_post(route, user)
+            elif route in {"/api/rabbit-hole/scenario/check", "/api/rabbit-hole/scenario/preview",
+                           "/api/rabbit-hole/scenario/save", "/api/rabbit-hole/scenario/delete"}:
+                if self._has_role(user, "master_admin"):
+                    self._rabbit_scenario(route, user)
             elif route in {"/api/events/update", "/api/logs/flush", "/api/thresholds", "/api/rules/change", "/api/candidates/save", "/api/candidates/approve"}:
                 self._scope_post(route, user)
             else:
@@ -529,6 +579,119 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
                     self._send_json({"items": list(runtime.state.load().get("candidates", {}).values())})
             except (ValueError, OSError) as exc:
                 self._send_json({"error": str(exc)}, 400)
+
+        def _rabbit_get(self, route, query, user):
+            if not runtime.rabbit.available:
+                self._send_json({"error": "rabbit_hole_not_configured"}, 404)
+                return
+            admin_only = {"/api/rabbit-hole/preview.json", "/api/rabbit-hole/cowrie-bundle.zip",
+                          "/api/rabbit-hole/scenario.json"}
+            if route in admin_only and not self._has_role(user, "master_admin"):
+                return
+            try:
+                if route == "/api/rabbit-hole.json":
+                    self._send_json(runtime.rabbit_report((query.get("window") or ["24h"])[0]))
+                elif route == "/api/rabbit-hole/window.json":
+                    self._send_json(runtime.rabbit.window_detail(runtime.rabbit_events(),
+                                                                 (query.get("id") or [""])[0]))
+                elif route == "/api/rabbit-hole/preview.json":
+                    self._send_json(runtime.rabbit.preview((query.get("scenario") or [""])[0]))
+                elif route == "/api/rabbit-hole/scenario.json":
+                    self._send_json(runtime.rabbit.definition((query.get("id") or [""])[0]))
+                elif route == "/api/rabbit-hole/cowrie-bundle.zip":
+                    self._send_download("application/zip", runtime.rabbit.bundle(), "rabbit-hole-cowrie.zip")
+                else:
+                    self.send_error(404)
+            except (ValueError, OSError, KeyError) as exc:
+                self._send_json({"error": str(exc)}, 400)
+
+        def _deploy_get(self, route, query):
+            value = lambda name: (query.get(name) or [""])[0]
+            try:
+                if route == "/api/web-deploy/status.json":
+                    result = runtime.deploy.status()
+                elif route == "/api/web-deploy/job.json":
+                    result = runtime.deploy.job(value("id"))
+                elif route == "/api/web-deploy/pages.json":
+                    result = runtime.deploy.pages(value("version"))
+                elif route == "/api/web-deploy/page.json":
+                    result = runtime.deploy.page(value("version"), value("url") or "/index.html")
+                else:
+                    self.send_error(404)
+                    return
+            except AgentError as exc:
+                self._send_json({"error": str(exc)}, exc.status)
+                return
+            self._send_json(result)
+
+        def _deploy_post(self, route, user):
+            payload = self._read_json()
+            try:
+                if route == "/api/web-deploy/clone":
+                    depth = payload.get("depth")
+                    result = runtime.deploy.clone(str(payload.get("url", "")), depth if isinstance(depth, int) else 0)
+                    audit = {"url": payload.get("url"), "depth": depth}
+                else:
+                    # Switching what attackers see is a production change: re-check the
+                    # password, and the TOTP code when the account has one.
+                    key = "deploy:" + user["username"]
+                    allowed, retry = runtime.limiter.check(key)
+                    if not allowed:
+                        self._send_json({"error": "rate_limited"}, 429, {"Retry-After": str(retry)})
+                        return
+                    account = runtime.users.begin_login(user["username"], str(payload.get("password", "")),
+                                                        require_totp=False)
+                    if (payload.get("confirmation") != "DEPLOY" or not account or
+                            (account.get("totp_enabled") and
+                             not runtime.users.verify_totp_action(user["username"], str(payload.get("totp", ""))))):
+                        runtime.limiter.failure(key)
+                        self._send_json({"error": "deploy_confirmation_failed"}, 403)
+                        return
+                    runtime.limiter.success(key)
+                    result = runtime.deploy.activate(str(payload.get("version", "")))
+                    audit = {"version": payload.get("version")}
+            except AgentError as exc:
+                self._send_json({"error": str(exc)}, exc.status)
+                return
+            append_security_audit(settings.security_audit_path, "web_deploy_" + route.rsplit("/", 1)[1],
+                                  self.client_address[0], user["username"], audit)
+            self._send_json(result, 202)
+
+        def _rabbit_scenario(self, route, user):
+            if not runtime.rabbit.available:
+                self._send_json({"error": "rabbit_hole_not_configured"}, 404)
+                return
+            payload = self._read_json()
+            action = route.rsplit("/", 1)[1]
+            try:
+                if action == "check":
+                    result = runtime.rabbit.check_draft(payload.get("definition") or {})
+                elif action == "preview":
+                    result = runtime.rabbit.preview_draft(payload.get("definition") or {})
+                elif action == "save":
+                    result = runtime.rabbit.save_scenario(payload.get("definition") or {})
+                else:
+                    result = runtime.rabbit.delete_scenario(payload.get("id"))
+            except (ValueError, OSError, KeyError, TypeError) as exc:
+                self._send_json({"error": str(exc)}, 400)
+                return
+            if action in {"save", "delete"}:
+                append_security_audit(settings.security_audit_path, "rabbit_hole_scenario_" + action,
+                                      self.client_address[0], user["username"],
+                                      {"scenario": result.get("id") or payload.get("id")})
+            self._send_json(result)
+
+        def _rabbit_save(self, user):
+            payload = self._read_json()
+            try:
+                result = runtime.rabbit.save(payload)
+            except (ValueError, OSError, KeyError, TypeError) as exc:
+                self._send_json({"error": str(exc)}, 400)
+                return
+            append_security_audit(settings.security_audit_path, "rabbit_hole_settings", self.client_address[0],
+                                  user["username"], {"enabled": result["settings"]["enabled"],
+                                                     "scenarios": result["settings"]["scenarios"]})
+            self._send_json(result)
 
         def _scope_post(self, route, user):
             if route not in {"/api/events/update", "/api/logs/flush"} and not self._has_role(user, "master_admin"):
@@ -792,7 +955,8 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
             if self.headers.get_content_type() != "application/json":
                 return {}
             length = int(self.headers.get("Content-Length") or 0)
-            if length <= 0 or length > 65536:
+            limit = 1048576 if urlparse(self.path).path.startswith("/api/rabbit-hole/scenario/") else 65536
+            if length <= 0 or length > limit:
                 return {}
             try:
                 value = json.loads(self.rfile.read(length).decode("utf-8"))

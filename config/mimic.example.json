@@ -18,7 +18,9 @@
     "status": "/var/lib/mimic/status.json",
     "eve_paths": [
       "/var/log/suricata/eve.json"
-    ]
+    ],
+    "rabbit_hole_config": "/etc/mimic/rabbit-hole.json",
+    "rabbit_hole_logs": ["/var/log/mimic/rabbit-hole-web.jsonl"]
   },
   "network": {
     "management_interface": "CHANGE_ME",

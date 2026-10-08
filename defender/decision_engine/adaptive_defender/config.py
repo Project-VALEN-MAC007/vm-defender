@@ -51,7 +51,7 @@ def load_settings(path: str | Path) -> Settings:
         raise ValueError("dashboard bind_host must be loopback")
     expiry = int(raw.get("expiry_seconds", 1800))
     web_profile = str(raw.get("web_profile", "wordpress"))
-    if web_profile not in {"wordpress", "phpmyadmin", "snare"}:
+    if web_profile not in {"wordpress", "phpmyadmin", "snare", "rabbithole"}:
         raise ValueError("unsupported web_profile")
     if not 1 <= expiry <= 86400:
         raise ValueError("expiry_seconds must be 1..86400")

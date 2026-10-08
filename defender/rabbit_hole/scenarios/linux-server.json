@@ -1,0 +1,42 @@
+{
+  "id": "linux-server",
+  "title": "เซิร์ฟเวอร์ Linux ที่มีไฟล์สำรองฐานข้อมูล",
+  "description": "ผู้โจมตีที่เข้า Shell จะพบโน้ตและประวัติคำสั่งของผู้ดูแล ซึ่งชี้ไปยังไฟล์ตั้งค่าสำรองข้อมูลและไฟล์ Dump ฐานข้อมูล",
+  "protocol": "shell",
+  "entry": ["notes", "history"],
+  "nodes": [
+    {"id": "notes", "kind": "file", "path": "/home/{{org.admin_user}}/notes.txt",
+     "body_lines": [
+       "- rotate DB password (see {{node:backup-conf}})",
+       "- old dumps are in {{node:dumps-dir}}, clean up before audit",
+       "- vpn: {{ip:vpn}}"],
+     "next": ["backup-conf", "dumps-dir"]},
+    {"id": "history", "kind": "file", "path": "/home/{{org.admin_user}}/.bash_history",
+     "body_lines": [
+       "sudo systemctl status nginx",
+       "vi {{node:backup-conf}}",
+       "mysql -h {{ip:db}} -u root -p",
+       "ls -la /var/backups",
+       "sudo crontab -e"],
+     "next": ["backup-conf"]},
+    {"id": "backup-conf", "kind": "file", "path": "/opt/backup/backup.conf",
+     "body_lines": [
+       "# {{org.name}} database backup",
+       "DB_HOST={{ip:db}}",
+       "DB_NAME={{org.db_name}}",
+       "DB_USER=root",
+       "DB_PASS={{secret:password:dbroot}}",
+       "DUMP_DIR={{node:dumps-dir}}",
+       "KEEP_DAYS=7"],
+     "next": ["dumps-dir"]},
+    {"id": "dumps-dir", "kind": "dir", "path": "/var/backups/db", "next": ["dump-file"]},
+    {"id": "dump-file", "kind": "file", "path": "/var/backups/db/{{org.db_name}}-{{date:-1}}.sql",
+     "body_lines": [
+       "-- MySQL dump 10.13  Distrib 8.0.36",
+       "-- Host: {{ip:db}}    Database: {{org.db_name}}",
+       "CREATE TABLE `users` (`id` int, `name` varchar(80), `email` varchar(120), `password_hash` char(60));",
+       "INSERT INTO `users` VALUES (1001,'{{person:1:name}}','{{person:1:email}}','$2y$10${{secret:hex:53:h1}}');",
+       "INSERT INTO `users` VALUES (1002,'{{person:2:name}}','{{person:2:email}}','$2y$10${{secret:hex:53:h2}}');",
+       "INSERT INTO `users` VALUES (1003,'{{person:3:name}}','{{person:3:email}}','$2y$10${{secret:hex:53:h3}}');"]}
+  ]
+}

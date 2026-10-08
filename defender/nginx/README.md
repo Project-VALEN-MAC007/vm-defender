@@ -20,6 +20,7 @@ Nginx รับ HTTP/HTTPS ที่ outer IP เลือก backend จาก 
 - WordPress Honeypot: `10.10.10.2:8081`
 - phpMyAdmin Honeypot: `10.10.10.2:8082`
 - SNARE + TANNER: SNARE ที่ `10.10.10.2:8083` (IP ตัวอย่าง ต้องแทนด้วยเครื่อง Honeypot จริง)
+- Rabbit Hole web decoy: `10.10.10.2:8084` (IP ตัวอย่าง ดู `docs/rabbit-hole.md`)
 - health path ของทุก backend
 - path ของ redirect map
 
@@ -35,6 +36,11 @@ config ของ Decision Engine ทั้ง `lab.json` และ `live.json` �
 `web_profile: "snare"` แล้ว คำขอเว็บที่ถึงเกณฑ์ redirect จึงไป SNARE;
 SNARE ส่งคำขอให้ TANNER วิเคราะห์ภายใน Docker network ไม่ proxy ไป TANNER โดยตรง
 ดูขั้นตอนติดตั้งใน `honeypot/snare-tanner/README.md` และเริ่มด้วย lab dry-run ก่อน
+
+แทน `__RABBIT_HOLE_IP__` และ `__RABBIT_HOLE_PORT__` ด้วย endpoint ของ Rabbit Hole web decoy
+ถ้าต้องการให้คำขอเว็บที่ถึงเกณฑ์ไปที่เส้นทางลวงต่อเนื่อง ให้ตั้ง `web_profile: "rabbithole"`
+Template ส่ง `X-Real-Port` และ `X-Forwarded-Port` เพิ่ม เพื่อให้ decoy บันทึกพอร์ตต้นทางและปลายทางได้
+decoy จะเชื่อ header เหล่านี้เฉพาะเมื่อ peer อยู่ใน `web.trusted_proxies` ของ `rabbit-hole.json`
 
 ## ขั้นตอนตรวจสอบ
 
