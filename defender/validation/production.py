@@ -55,7 +55,7 @@ def assess_config(path: Path) -> dict:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Read-only MIMIC production configuration gate")
+    parser = argparse.ArgumentParser(description="Read-only TRAP production configuration gate")
     parser.add_argument("--config", type=Path, required=True)
     parser.add_argument("--pretty", action="store_true")
     args = parser.parse_args()

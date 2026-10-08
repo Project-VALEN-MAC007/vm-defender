@@ -141,7 +141,7 @@ def convert(md: str) -> str:
     body = "\n".join(html)
     return (
         "<!DOCTYPE html>\n<html lang='th'>\n<head>\n<meta charset='utf-8'>\n"
-        "<title>รายงานความก้าวหน้า MIMIC Defender</title>\n</head>\n"
+        "<title>รายงานความก้าวหน้า TRAP Defender</title>\n</head>\n"
         "<body style=\"font-family:'Sarabun','Segoe UI',Arial,sans-serif;"
         "max-width:820px;margin:0 auto;padding:28pt;color:#1a1a1a;\">\n"
         f"{body}\n</body>\n</html>\n"

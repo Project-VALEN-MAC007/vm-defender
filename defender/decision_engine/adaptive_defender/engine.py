@@ -34,6 +34,8 @@ class DecisionEngine:
         self.web_state_path = settings.nginx_map_path.with_suffix(settings.nginx_map_path.suffix + ".state.json")
         self.web_entries = self._load_web_entries()
         self._web_reconciled = False
+        # Adapter failures on one record, keyed by its position in eve.json.
+        self._failures: dict[tuple[int, int], int] = {}
 
     @staticmethod
     def _retry(operation, attempts: int = 3):
@@ -103,6 +105,35 @@ class DecisionEngine:
             self.web_entries = previous
             raise
 
+    MAX_ADAPTER_ATTEMPTS = 3
+
+    def _skip(self, pending, reason: str, detail: str) -> None:
+        """Record why an alert was not acted on and move past it."""
+        self._audit({"status": "skipped", "reason": reason, "detail": detail[:500],
+                     "event_offset": pending.offset, "dry_run": self.settings.dry_run})
+        self.reader.commit(pending)
+
+    def _apply(self, decision) -> dict:
+        payload = decision.as_dict()
+        address_v6 = ":" in decision.source_ip
+        action = decision.action
+        if address_v6 and action in {"redirect_ssh", "redirect_telnet"}:
+            # Cowrie is reached over IPv4 NAT; an IPv6 client cannot be translated
+            # to it, so keep the real service safe by blocking for the same period.
+            payload["action"] = action = "temporary_block"
+            payload["profile"] = "none"
+            payload["reason"] = (payload.get("reason") or "") + ";ipv6_shell_redirect_unsupported:block"
+        if action == "redirect_web":
+            payload["adapter_result"] = self._apply_web_redirect(decision)
+        elif action == "redirect_ssh":
+            payload["adapter_command"] = self._retry(lambda: self.nft.add("ssh_redirect", decision.source_ip, self.settings.expiry_seconds))
+        elif action == "redirect_telnet":
+            payload["adapter_command"] = self._retry(lambda: self.nft.add("telnet_redirect", decision.source_ip, self.settings.expiry_seconds))
+        elif action == "temporary_block":
+            payload["adapter_command"] = self._retry(lambda: self.nft.add("temporary_block", decision.source_ip, self.settings.expiry_seconds))
+        payload["dry_run"] = self.settings.dry_run
+        return payload
+
     def run_once(self) -> list[dict]:
         if self.settings.config_path:
             # Reload only thresholds; preserve accumulated risk and adapter state.
@@ -114,30 +145,37 @@ class DecisionEngine:
             if raw.get("event_type") != "alert":
                 self.reader.commit(pending)
                 continue
-            previous_states = copy.deepcopy(self.risk.states)
-            previous_seen = copy.deepcopy(self.risk.seen)
             try:
                 event = Event.from_eve(raw)
+            except (ValueError, TypeError, KeyError, AttributeError) as exc:
+                # A record we cannot read will never become readable; skipping it
+                # keeps one odd alert from stopping every later redirect.
+                self._skip(pending, "unreadable_alert", f"{type(exc).__name__}: {exc}")
+                continue
+            previous_states = copy.deepcopy(self.risk.states)
+            previous_seen = copy.deepcopy(self.risk.seen)
+            key = (pending.inode, pending.offset)
+            try:
                 decision = self.risk.decide(event)
                 if decision is None:
                     self.reader.commit(pending)
                     continue
-                payload = decision.as_dict()
-                if decision.action == "redirect_web":
-                    payload["adapter_result"] = self._apply_web_redirect(decision)
-                elif decision.action == "redirect_ssh":
-                    payload["adapter_command"] = self._retry(lambda: self.nft.add("ssh_redirect", decision.source_ip, self.settings.expiry_seconds))
-                elif decision.action == "redirect_telnet":
-                    payload["adapter_command"] = self._retry(lambda: self.nft.add("telnet_redirect", decision.source_ip, self.settings.expiry_seconds))
-                elif decision.action == "temporary_block":
-                    payload["adapter_command"] = self._retry(lambda: self.nft.add("temporary_block", decision.source_ip, self.settings.expiry_seconds))
-                payload["dry_run"] = self.settings.dry_run
+                payload = self._apply(decision)
                 self._audit(payload)
                 self.reader.commit(pending)
+                self._failures.pop(key, None)
                 decisions.append(payload)
             except Exception as exc:
                 self.risk.states = previous_states
                 self.risk.seen = previous_seen
-                self._audit({"status": "error", "error": type(exc).__name__, "detail": str(exc), "dry_run": self.settings.dry_run})
+                attempts = self._failures.get(key, 0) + 1
+                self._audit({"status": "error", "error": type(exc).__name__, "detail": str(exc),
+                             "attempt": attempts, "dry_run": self.settings.dry_run})
+                if attempts >= self.MAX_ADAPTER_ATTEMPTS:
+                    # Give up on this record only; later alerts still get processed.
+                    self._failures.pop(key, None)
+                    self._skip(pending, "adapter_failed", f"{type(exc).__name__}: {exc}")
+                    continue
+                self._failures[key] = attempts
                 break
         return decisions

@@ -1,4 +1,4 @@
-# MIMIC default rules: selected ET Open only.
+# TRAP default rules: selected ET Open only.
 # Retrieved 2026-10-02 from https://rules.emergingthreats.net/open/suricata-7.0.3/emerging.rules.tar.gz
 # Upstream rule text, SID and rev preserved. See ../licenses/ and ../et-open-selection.md.
 # Load this file once; do not also load the full ET Open ruleset.

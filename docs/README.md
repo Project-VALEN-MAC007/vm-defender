@@ -1,4 +1,4 @@
-# สารบัญเอกสาร MIMIC Defender
+# สารบัญเอกสาร TRAP Defender
 
 เอกสารชุดนี้เขียนสำหรับโค้ดและการตั้งค่าใน repository ปัจจุบัน ไม่ได้นำ
 ข้อกำหนดจากไฟล์ Word หรือเอกสารภายนอกมาใช้เป็นคำสั่งโดยอัตโนมัติ
@@ -18,11 +18,12 @@
 | เรื่อง | เอกสารหลัก |
 |---|---|
 | สถานะและผลทดสอบ | `docs/project-status.md` |
-| ค่า runtime | `config/mimic.example.json` และ config บนเครื่องปลายทาง |
+| ค่า runtime | `config/trap.example.json` และ config บนเครื่องปลายทาง |
 | แบบเครือข่าย | `defender/network/topology.md` |
 | ขั้นตอนติดตั้ง | `docs/production-defender.md` |
 | ขั้นตอน root/rollback | `docs/root-operations.md` |
 | สัญญาข้อมูลระหว่างส่วนประกอบ | `docs/person2-contract.md` |
+| ย้ายเครื่องที่ติดตั้งชื่อเดิม MIMIC | `docs/rename-to-trap.md` |
 
 ไฟล์ใต้ `evidence/` เป็นหลักฐานจากการทดสอบหรือการนำเข้าข้อมูล ไม่ควรแก้เพื่อ
 ให้ผลดูผ่าน และไม่ควรใช้แทน config หลัก

@@ -1,6 +1,6 @@
-# MIMIC Defender
+# TRAP Defender
 
-MIMIC Defender คือระบบตรวจจับ วิเคราะห์ และตอบสนองต่อทราฟฟิกที่น่าสงสัย
+TRAP Defender คือระบบตรวจจับ วิเคราะห์ และตอบสนองต่อทราฟฟิกที่น่าสงสัย
 โดยรับเหตุการณ์จาก Suricata ประเมินความเสี่ยงด้วย Decision Engine แล้วสั่ง
 Nginx หรือ nftables ให้เฝ้าระวัง เปลี่ยนเส้นทาง หรือบล็อกต้นทางตามนโยบาย
 
@@ -37,7 +37,7 @@ Nginx หรือ nftables ให้เฝ้าระวัง เปลี่
 ## หลักความปลอดภัย
 
 - Dashboard ต้อง bind เฉพาะ `127.0.0.1`, `::1` หรือ `localhost`
-- ไฟล์ `config/mimic.example.json` เป็นแม่แบบ ห้ามใช้ก่อนแทนค่า `CHANGE_ME`
+- ไฟล์ `config/trap.example.json` เป็นแม่แบบ ห้ามใช้ก่อนแทนค่า `CHANGE_ME`
 - โหมด lab ต้องใช้ `dry_run: true`
 - ห้ามกำหนด outer/inner IP ให้ interface ที่มี default route
 - ก่อนเปลี่ยน network หรือ firewall ต้องสำรองค่าและตั้ง timed rollback
@@ -50,13 +50,13 @@ Nginx หรือ nftables ให้เฝ้าระวัง เปลี่
 
 ```bash
 python3 -m unittest discover -s tests -v
-cp config/mimic.local.example.json config/mimic.json
+cp config/trap.local.example.json config/trap.json
 python3 -m defender.dashboard.manage_users \
   --file config/users.json \
   --username admin \
   --name "Master Admin" \
   --role master_admin
-python3 run_dashboard.py --config config/mimic.json
+python3 run_dashboard.py --config config/trap.json
 ```
 
 เปิด Dashboard ที่ `http://127.0.0.1:9090/`
@@ -90,24 +90,24 @@ Dashboard ใช้ชื่อ TRAP: Threat Redirection and Analysis Platform
 
 ```bash
 python generate_demo_data.py
-python run_dashboard.py --config config/mimic.demo.json
+python run_dashboard.py --config config/trap.demo.json
 ```
 
 ข้อมูลอยู่ใน `evidence/demo/` แยกจากหลักฐานจริง
 config เดโม่กำหนด `security.require_totp: false` เพื่อเข้าสู่ระบบด้วย Username/Password ได้ทันที
 config ปกติยังบังคับ TOTP ตามค่าเริ่มต้น
 สถานะบริการในโหมดนี้เป็นข้อมูลจำลอง การสร้างข้อมูลไม่แก้บัญชีผู้ใช้หรือ log เดิม
-กลับไปอ่านข้อมูลเดิมโดยหยุด Dashboard แล้วรัน `python run_dashboard.py --config config/mimic.json`
+กลับไปอ่านข้อมูลเดิมโดยหยุด Dashboard แล้วรัน `python run_dashboard.py --config config/trap.json`
 
 ## ตรวจสอบก่อนติดตั้งจริง
 
-แก้ `/etc/mimic/mimic.json` ให้ตรงกับเครื่องปลายทางก่อน แล้วรันคำสั่งที่อ่าน
+แก้ `/etc/trap/trap.json` ให้ตรงกับเครื่องปลายทางก่อน แล้วรันคำสั่งที่อ่าน
 สถานะอย่างเดียวต่อไปนี้:
 
 ```bash
 python3 -m unittest discover -s tests -v
 python3 -m defender.validation.production \
-  --config /etc/mimic/mimic.json --pretty
+  --config /etc/trap/trap.json --pretty
 python3 -m defender.validation.readiness --pretty
 ```
 

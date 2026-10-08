@@ -19,7 +19,7 @@ SCENARIOS = [
     ("http", 80, "Automated sensitive file discovery", "Web Application Attack", 2, "/.env", "redirect_web", "snare"),
     ("ssh", 22, "SSH authentication brute force", "Attempted Administrator Privilege Gain", 1, "", "redirect_ssh", "cowrie"),
     ("ssh", 22, "SSH service enumeration", "Detection of a Network Scan", 3, "", "monitor", "none"),
-    ("telnet", 23, "Telnet credential guessing", "Attempted Administrator Privilege Gain", 1, "", "redirect_telnet", "telnet"),
+    ("telnet", 23, "Telnet credential guessing", "Attempted Administrator Privilege Gain", 1, "", "redirect_telnet", "cowrie"),
     ("tls", 443, "Suspicious TLS client fingerprint", "Potentially Bad Traffic", 2, "", "monitor", "none"),
     ("dns", 53, "High-volume DNS queries", "Potentially Bad Traffic", 2, "", "monitor", "none"),
     ("tcp", 445, "TCP port scan", "Detection of a Network Scan", 2, "", "monitor", "none"),
@@ -126,7 +126,7 @@ def generate(alert_count: int, decision_count: int, seed: int) -> dict:
         "demo": "ข้อมูลจำลองสำหรับเดโม่ — สถานะบริการและเหตุการณ์ไม่ใช่ข้อมูลจากระบบจริง",
         "suricata": "active", "nginx": "active", "decision_engine": "active"
     }, ensure_ascii=False, indent=2), encoding="utf-8")
-    config = json.loads((ROOT / "config/mimic.json").read_text(encoding="utf-8"))
+    config = json.loads((ROOT / "config/trap.json").read_text(encoding="utf-8"))
     config["dashboard"]["maximum_rows"] = max(alert_count, decision_count)
     config["paths"].update({"eve_paths": ["evidence/demo/eve.json"],
                             "decisions": "evidence/demo/decisions.jsonl", "status": "evidence/demo/status.json"})
@@ -147,7 +147,7 @@ def generate(alert_count: int, decision_count: int, seed: int) -> dict:
     config["rules"]["backup_dir"] = "evidence/demo/rule-backups"
     config["security"]["require_totp"] = False
     config["security"]["force_default_password_change"] = False
-    (ROOT / "config/mimic.demo.json").write_text(json.dumps(config, indent=2) + "\n", encoding="utf-8")
+    (ROOT / "config/trap.demo.json").write_text(json.dumps(config, indent=2) + "\n", encoding="utf-8")
     summary = {"synthetic": True, "generated_at": now.isoformat(), "alerts": alert_count,
                "decisions": len(selected), "source_ips": len({entry[1]["src_ip"] for entry in records}),
                "days": 45, "honeypot_sessions": len(session_rows), "actions": dict(actions), "seed": seed,

@@ -28,17 +28,17 @@ sudo systemctl daemon-reload && sudo systemctl enable --now trap-deploy-agent
 sudo ufw allow from 10.10.10.1 to any port 8091 proto tcp
 ```
 
-คัดลอก token เดียวกันไปไว้บนเครื่อง Defender (เช่น `/etc/mimic/deploy-agent.token`, chmod 600 เจ้าของคือผู้ใช้ที่รัน Dashboard)
-แล้วเพิ่มใน `mimic.json`:
+คัดลอก token เดียวกันไปไว้บนเครื่อง Defender (เช่น `/etc/trap/deploy-agent.token`, chmod 600 เจ้าของคือผู้ใช้ที่รัน Dashboard)
+แล้วเพิ่มใน `trap.json`:
 
 ```json
 "web_deploy": {
   "agent_url": "http://10.10.10.2:8091",
-  "token_file": "/etc/mimic/deploy-agent.token"
+  "token_file": "/etc/trap/deploy-agent.token"
 }
 ```
 
-ทดสอบจาก Defender: `curl -H "Authorization: Bearer $(cat /etc/mimic/deploy-agent.token)" http://10.10.10.2:8091/v1/status`
+ทดสอบจาก Defender: `curl -H "Authorization: Bearer $(cat /etc/trap/deploy-agent.token)" http://10.10.10.2:8091/v1/status`
 
 ## ลองบนเครื่องตัวเองโดยไม่มี Docker
 

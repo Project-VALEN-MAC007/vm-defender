@@ -1,4 +1,4 @@
-# คู่มือติดตั้ง MIMIC Defender บนเครื่องใช้งานจริง
+# คู่มือติดตั้ง TRAP Defender บนเครื่องใช้งานจริง
 
 คู่มือนี้ครอบคลุมเฉพาะเครื่อง Defender ยังไม่รวมการติดตั้งเครื่อง Honeypot
 หรือบริการภายใน
@@ -17,12 +17,12 @@
 
 | Path | ใช้เก็บ |
 |---|---|
-| `/opt/mimic` | source code ที่ผ่านการทบทวน |
-| `/etc/mimic/mimic.json` | production config |
-| `/var/lib/mimic/dashboard-users/users.json` | บัญชี Dashboard แบบ hash ที่ service จัดการได้ |
+| `/opt/trap` | source code ที่ผ่านการทบทวน |
+| `/etc/trap/trap.json` | production config |
+| `/var/lib/trap/dashboard-users/users.json` | บัญชี Dashboard แบบ hash ที่ service จัดการได้ |
 | `/etc/adaptive-defender/live.json` | config ของ Decision Engine |
-| `/var/lib/mimic` | registry, state และ backup ของระบบ |
-| `/var/log/mimic` | security audit ของ Dashboard |
+| `/var/lib/trap` | registry, state และ backup ของระบบ |
+| `/var/log/trap` | security audit ของ Dashboard |
 | `/var/log/adaptive-defender` | decision audit |
 
 ## 1. เตรียมแพ็กเกจ
@@ -45,46 +45,46 @@ conntrack -V
 
 ## 2. ติดตั้งซอร์สโค้ดและสร้างไดเรกทอรี
 
-นำ source ที่ผ่านการทดสอบไปไว้ที่ `/opt/mimic` แล้วกำหนด owner เป็น root
+นำ source ที่ผ่านการทดสอบไปไว้ที่ `/opt/trap` แล้วกำหนด owner เป็น root
 เพื่อไม่ให้ service แก้ source code ได้
 
 ```bash
-sudo install -d -m 0755 /opt/mimic
-sudo groupadd --system mimic-dashboard 2>/dev/null || true
-sudo useradd --system --gid mimic-dashboard --home /nonexistent \
-  --shell /usr/sbin/nologin mimic-dashboard 2>/dev/null || true
+sudo install -d -m 0755 /opt/trap
+sudo groupadd --system trap-dashboard 2>/dev/null || true
+sudo useradd --system --gid trap-dashboard --home /nonexistent \
+  --shell /usr/sbin/nologin trap-dashboard 2>/dev/null || true
 getent group suricata
 sudo install -d -m 0750 \
-  /etc/mimic \
+  /etc/trap \
   /etc/adaptive-defender \
-  /var/lib/mimic \
-  /var/log/mimic \
+  /var/lib/trap \
+  /var/log/trap \
   /var/lib/adaptive-defender \
   /var/log/adaptive-defender
-sudo chown -R root:root /opt/mimic
-sudo chown mimic-dashboard:mimic-dashboard /var/lib/mimic /var/log/mimic
-sudo install -d -o mimic-dashboard -g mimic-dashboard -m 0700 /var/lib/mimic/dashboard-users
+sudo chown -R root:root /opt/trap
+sudo chown trap-dashboard:trap-dashboard /var/lib/trap /var/log/trap
+sudo install -d -o trap-dashboard -g trap-dashboard -m 0700 /var/lib/trap/dashboard-users
 ```
 
 ## 3. สร้างค่าตั้งสำหรับระบบจริง
 
 ```bash
-sudo cp /opt/mimic/config/mimic.example.json /etc/mimic/mimic.json
-sudo editor /etc/mimic/mimic.json
+sudo cp /opt/trap/config/trap.example.json /etc/trap/trap.json
+sudo editor /etc/trap/trap.json
 ```
 
 แทนค่า `CHANGE_ME` ทุกจุดด้วยชื่อ interface ที่ตรวจพบจริง จากนั้นสร้างบัญชี
 Master Admin โดยให้คำสั่งถามรหัสผ่านผ่าน terminal:
 
 ```bash
-cd /opt/mimic
+cd /opt/trap
 sudo python3 -m defender.dashboard.manage_users \
-  --file /var/lib/mimic/dashboard-users/users.json \
+  --file /var/lib/trap/dashboard-users/users.json \
   --username admin \
   --name "Master Admin" \
   --role master_admin
-sudo chown mimic-dashboard:mimic-dashboard /var/lib/mimic/dashboard-users/users.json
-sudo chmod 0600 /var/lib/mimic/dashboard-users/users.json
+sudo chown trap-dashboard:trap-dashboard /var/lib/trap/dashboard-users/users.json
+sudo chmod 0600 /var/lib/trap/dashboard-users/users.json
 ```
 
 ห้ามเก็บรหัสผ่าน plain text ใน repository หรือ service unit
@@ -96,23 +96,23 @@ Master Admin จัดการบัญชี `User` ต่อได้จา�
 ผู้ใช้เปลี่ยนรหัสผ่านของตนเองได้จากเมนูเดียวกัน
 ไม่มีหน้าสมัครบัญชีสาธารณะ และสร้าง Master Admin เพิ่มผ่านหน้าเว็บไม่ได้
 
-หากอัปเกรดจากการติดตั้งเดิมที่เก็บบัญชีไว้ที่ `/etc/mimic/users.json`
+หากอัปเกรดจากการติดตั้งเดิมที่เก็บบัญชีไว้ที่ `/etc/trap/users.json`
 ให้คัดลอกไฟล์ไปยังพาธใหม่ แล้วแก้ `security.users_file` ใน
-`/etc/mimic/mimic.json` ก่อนรีสตาร์ตบริการ:
+`/etc/trap/trap.json` ก่อนรีสตาร์ตบริการ:
 
 ```bash
-sudo install -o mimic-dashboard -g mimic-dashboard -m 0600 \
-  /etc/mimic/users.json /var/lib/mimic/dashboard-users/users.json
-sudo systemctl restart mimic-dashboard
+sudo install -o trap-dashboard -g trap-dashboard -m 0600 \
+  /etc/trap/users.json /var/lib/trap/dashboard-users/users.json
+sudo systemctl restart trap-dashboard
 ```
 
 ## 4. รันด่านตรวจสอบ
 
 ```bash
-cd /opt/mimic
+cd /opt/trap
 python3 -m unittest discover -s tests -v
 python3 -m defender.validation.production \
-  --config /etc/mimic/mimic.json --pretty
+  --config /etc/trap/trap.json --pretty
 python3 -m defender.validation.readiness --pretty
 sudo suricata -T -c /etc/suricata/suricata.yaml
 sudo nginx -t
@@ -137,13 +137,13 @@ apply ทุกครั้ง
 ## 6. ติดตั้ง systemd และการหมุนเวียนบันทึก
 
 ```bash
-sudo cp /opt/mimic/defender/decision_engine/systemd/adaptive-defender.service \
+sudo cp /opt/trap/defender/decision_engine/systemd/adaptive-defender.service \
   /etc/systemd/system/adaptive-defender.service
-sudo cp /opt/mimic/defender/decision_engine/config/live.json \
+sudo cp /opt/trap/defender/decision_engine/config/live.json \
   /etc/adaptive-defender/live.json
-sudo cp /opt/mimic/defender/dashboard/systemd/mimic-dashboard.service \
-  /etc/systemd/system/mimic-dashboard.service
-sudo cp /opt/mimic/deploy/logrotate/mimic /etc/logrotate.d/mimic
+sudo cp /opt/trap/defender/dashboard/systemd/trap-dashboard.service \
+  /etc/systemd/system/trap-dashboard.service
+sudo cp /opt/trap/deploy/logrotate/trap /etc/logrotate.d/trap
 sudo systemctl daemon-reload
 ```
 
@@ -152,7 +152,7 @@ sudo systemctl daemon-reload
 ```bash
 sudo systemd-analyze verify \
   /etc/systemd/system/adaptive-defender.service \
-  /etc/systemd/system/mimic-dashboard.service
+  /etc/systemd/system/trap-dashboard.service
 ```
 
 ## 7. เปิดบริการทีละตัว
@@ -160,15 +160,15 @@ sudo systemd-analyze verify \
 ```bash
 sudo systemctl enable --now adaptive-defender
 sudo systemctl --no-pager --full status adaptive-defender
-sudo systemctl enable --now mimic-dashboard
-sudo systemctl --no-pager --full status mimic-dashboard
+sudo systemctl enable --now trap-dashboard
+sudo systemctl --no-pager --full status trap-dashboard
 ```
 
 ตรวจ Dashboard จากเครื่องเดียวกัน:
 
 ```bash
 curl -I http://127.0.0.1:9090/
-journalctl -u adaptive-defender -u mimic-dashboard --since today
+journalctl -u adaptive-defender -u trap-dashboard --since today
 ```
 
 Dashboard ต้องไม่ listen บน `0.0.0.0` หรือ IP ของ outer/inner interface
@@ -182,7 +182,7 @@ sudo reboot
 หลังเครื่องกลับมา:
 
 ```bash
-systemctl is-active suricata nginx adaptive-defender mimic-dashboard
+systemctl is-active suricata nginx adaptive-defender trap-dashboard
 ss -lntp
 sudo nft list table inet adaptive_defender
 curl -I http://127.0.0.1:9090/

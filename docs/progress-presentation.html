@@ -2,13 +2,13 @@
 <html lang='th'>
 <head>
 <meta charset='utf-8'>
-<title>รายงานความก้าวหน้า MIMIC Defender</title>
+<title>รายงานความก้าวหน้า TRAP Defender</title>
 </head>
 <body style="font-family:'Sarabun','Segoe UI',Arial,sans-serif;max-width:820px;margin:0 auto;padding:28pt;color:#1a1a1a;">
-<h1 style="font-size:20pt;font-weight:700;color:#1a3a6b;margin:24pt 0 10pt;">สรุปโครงการ MIMIC Defender สำหรับนำเสนอ</h1>
+<h1 style="font-size:20pt;font-weight:700;color:#1a3a6b;margin:24pt 0 10pt;">สรุปโครงการ TRAP Defender สำหรับนำเสนอ</h1>
 <p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">เอกสารนี้สรุปสถานะจากโค้ดและผลทดสอบปัจจุบัน รายละเอียดทางเทคนิคให้อ้างอิง <code style='background:#f0f2f5;padding:1pt 3pt;font-family:\"Courier New\",monospace;font-size:9.5pt;'>docs/project-status.md</code> และเอกสารของแต่ละ component</p>
 <h2 style="font-size:15pt;font-weight:700;color:#22508f;margin:18pt 0 8pt;">1. เป้าหมาย</h2>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">MIMIC Defender รับ alert จาก Suricata แล้วประเมินความเสี่ยงราย source IP เพื่อเลือกการตอบสนองที่เหมาะสม ตั้งแต่เฝ้าระวัง เปลี่ยนเส้นทางไปยังบริการลวง จนถึงบล็อกชั่วคราว โดยบันทึกเหตุผลและอายุของทุก decision เพื่อให้ตรวจสอบย้อนหลังได้</p>
+<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">TRAP Defender รับ alert จาก Suricata แล้วประเมินความเสี่ยงราย source IP เพื่อเลือกการตอบสนองที่เหมาะสม ตั้งแต่เฝ้าระวัง เปลี่ยนเส้นทางไปยังบริการลวง จนถึงบล็อกชั่วคราว โดยบันทึกเหตุผลและอายุของทุก decision เพื่อให้ตรวจสอบย้อนหลังได้</p>
 <h2 style="font-size:15pt;font-weight:700;color:#22508f;margin:18pt 0 8pt;">2. ลำดับการทำงาน</h2>
 <pre style="background:#f4f6f8;border:1px solid #ccd;border-left:3px solid #22508f;padding:8pt 10pt;font-family:'Courier New',monospace;font-size:9pt;white-space:pre-wrap;margin:0 0 10pt;">ทราฟฟิก
    |
@@ -85,6 +85,6 @@ Dashboard และ audit logs</pre>
 <h2 style="font-size:15pt;font-weight:700;color:#22508f;margin:18pt 0 8pt;">6. งานถัดไป</h2>
 <p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">1. เปิด UFW บน Real Product โดยอนุญาต Defender เท่านั้น 2. ใส่ชื่อ interface ที่ยืนยันแล้วใน production config 3. รัน readiness และ syntax checks 4. ทดสอบ Suricata alert ไปจนถึงการเปลี่ยน redirect map 5. ทดสอบ nftables สำหรับ SSH, Telnet และ temporary block 6. ทดสอบ reboot และ rollback</p>
 <h2 style="font-size:15pt;font-weight:700;color:#22508f;margin:18pt 0 8pt;">7. ข้อสรุป</h2>
-<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">MIMIC Defender ผ่านระดับซอฟต์แวร์และมีมาตรการป้องกันความผิดพลาดในการ deploy มากขึ้นแล้ว แต่สถานะ production ต้องยืนยันจากเครื่องปลายทางจริง ไม่ควรใช้ผล unit test แทนผล network integration หรือ operational acceptance</p>
+<p style="font-size:11pt;line-height:1.55;margin:0 0 8pt;">TRAP Defender ผ่านระดับซอฟต์แวร์และมีมาตรการป้องกันความผิดพลาดในการ deploy มากขึ้นแล้ว แต่สถานะ production ต้องยืนยันจากเครื่องปลายทางจริง ไม่ควรใช้ผล unit test แทนผล network integration หรือ operational acceptance</p>
 </body>
 </html>

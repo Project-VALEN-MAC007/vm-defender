@@ -33,7 +33,46 @@ def atomic_text(path, content):
         temporary.unlink(missing_ok=True)
 
 
+def tanner_event(event):
+    """One TANNER events.jsonl line (a request SNARE forwarded) -> TRAP honeypot event.
+
+    TANNER writes the SNARE request as-is plus response_msg and a naive UTC
+    timestamp. The session id is TANNER's own session uuid.
+    """
+    peer = event.get("peer") or {}
+    headers = {str(k).lower(): v for k, v in (event.get("headers") or {}).items()}
+    message = ((event.get("response_msg") or {}).get("response") or {}).get("message") or {}
+    if not isinstance(message, dict):
+        message = {}
+    detection = message.get("detection") or {}
+    timestamp = str(event.get("timestamp") or "")
+    if timestamp and not timestamp.endswith("Z") and "+" not in timestamp[10:]:
+        timestamp += "+00:00"
+    try:
+        dest_port = int(headers.get("x-forwarded-port") or 0) or None
+    except (TypeError, ValueError):
+        dest_port = None
+    return {
+        "timestamp": timestamp,
+        "session_id": message.get("sess_uuid") or event.get("uuid"),
+        "source_ip": peer.get("ip"),
+        "src_port": peer.get("port"),
+        "dest_port": dest_port,
+        "protocol": "https" if dest_port == 443 else "http",
+        "method": event.get("method"),
+        "path": event.get("path"),
+        "headers": event.get("headers"),
+        "user_agent": headers.get("user-agent"),
+        "payload": event.get("post_data"),
+        "status": event.get("status"),
+        "attack_type": detection.get("name") if isinstance(detection, dict) else None,
+        "profile": "snare",
+    }
+
+
 def honeypot_transform(event, path):
+    if "peer" in event and "response_msg" in event:
+        event = tanner_event(event)
     session = event.get("session_id") or event.get("session")
     timestamp = event.get("timestamp") or event.get("first_action")
     if not session or not stamp(timestamp):
@@ -184,9 +223,46 @@ def report_csv(report):
 
 
 class RuleStore:
-    def __init__(self, path, backup_dir):
-        self.path, self.backup_dir = path, backup_dir
+    """Rule file edits from the Dashboard.
+
+    Without apply_dir (demo / local lab) the active rules file is edited in place.
+    With apply_dir the Dashboard never touches Suricata's file: it writes
+    pending.rules and a request stamp, and the root-owned trap-apply-rules unit
+    tests the file with `suricata -T`, installs it, reloads Suricata and writes
+    result.json.
+    """
+
+    def __init__(self, path, backup_dir, apply_dir=None, direct_edit=True):
+        self.path, self.backup_dir, self.apply_dir = path, backup_dir, apply_dir
+        self.direct_edit = direct_edit
         self.lock = threading.RLock()
+
+    @property
+    def editable(self):
+        return self.apply_dir is not None or self.direct_edit
+
+    @property
+    def pending_path(self):
+        return self.apply_dir / "pending.rules" if self.apply_dir else None
+
+    def source(self):
+        """The file the Dashboard should show: a pending edit wins over the active file."""
+        pending = self.pending_path
+        if pending is not None and pending.exists():
+            return pending
+        return self.path
+
+    def apply_status(self):
+        if self.apply_dir is None:
+            return {"mode": "direct" if self.direct_edit else "disabled"}
+        status = {"mode": "helper", "pending": self.pending_path.exists()}
+        try:
+            status.update(json.loads((self.apply_dir / "result.json").read_text(encoding="utf-8")))
+        except (OSError, ValueError):
+            pass
+        if status["pending"]:
+            status["state"] = "waiting"
+        return status
 
     @staticmethod
     def check(rule):
@@ -200,7 +276,8 @@ class RuleStore:
 
     def backup(self):
         token = "dashboard-" + datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S") + "-" + secrets.token_hex(4) + ".rules"
-        atomic_text(self.backup_dir / token, self.path.read_text(encoding="utf-8") if self.path.exists() else "")
+        current = self.source()
+        atomic_text(self.backup_dir / token, current.read_text(encoding="utf-8") if current.exists() else "")
         return token
 
     def backups(self):
@@ -208,8 +285,11 @@ class RuleStore:
                 sorted(self.backup_dir.glob("dashboard-*.rules"), reverse=True)]
 
     def change(self, payload):
+        if not self.editable:
+            raise ValueError("rule_edit_disabled")
         with self.lock:
-            text = self.path.read_text(encoding="utf-8") if self.path.exists() else ""
+            current = self.source()
+            text = current.read_text(encoding="utf-8") if current.exists() else ""
             lines = text.splitlines()
             action = payload.get("action")
             if action == "restore":
@@ -246,8 +326,14 @@ class RuleStore:
                     raise ValueError("invalid_rule_action")
                 text = "\n".join(lines) + "\n"
             backup = self.backup()
-            atomic_text(self.path, text)
-            return {"ok": True, "backup": backup, "activation": "local"}
+            if self.apply_dir is None:
+                atomic_text(self.path, text)
+                return {"ok": True, "backup": backup, "activation": "local"}
+            atomic_text(self.pending_path, text)
+            # In-place write so the systemd .path unit (PathModified) fires.
+            with (self.apply_dir / "request").open("w", encoding="utf-8") as stream:
+                stream.write(datetime.now(timezone.utc).isoformat() + "\n")
+            return {"ok": True, "backup": backup, "activation": "pending"}
 
 
 def threshold_config(path, payload=None):

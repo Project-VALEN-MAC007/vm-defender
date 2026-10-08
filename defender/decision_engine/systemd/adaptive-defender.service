@@ -1,13 +1,13 @@
 [Unit]
-Description=MIMIC Defender Decision Engine
+Description=TRAP Defender Decision Engine
 After=suricata.service
 Requires=suricata.service
 
 [Service]
 Type=simple
 User=root
-Group=mimic-dashboard
-WorkingDirectory=/opt/mimic
+Group=trap-dashboard
+WorkingDirectory=/opt/trap
 ExecStart=/usr/bin/python3 -m defender.decision_engine.adaptive_defender.cli --config /etc/adaptive-defender/live.json
 Restart=on-failure
 RestartSec=2s

@@ -80,7 +80,7 @@ python3 -m defender.rabbit_hole cowrie-bundle --config config/rabbit-hole.json -
 
 ### Dashboard
 
-เพิ่มใน `config/mimic.json`:
+เพิ่มใน `config/trap.json`:
 
 ```json
 "paths": {

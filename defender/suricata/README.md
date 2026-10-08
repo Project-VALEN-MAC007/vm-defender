@@ -1,4 +1,4 @@
-# กฎ Suricata เริ่มต้นของ MIMIC
+# กฎ Suricata เริ่มต้นของ TRAP
 
 ใช้กฎสำเร็จรูป ET Open 13 กฎรวมใน `rules/et-open-selected.rules` เพียงไฟล์เดียว
 ตัดกฎเขียนเองเดิมและไฟล์ `local.rules` ออกจากชุดเริ่มต้นแล้ว
@@ -14,7 +14,7 @@
 
 ```bash
 sudo install -d /etc/suricata/rules
-sudo install -m 0644 /opt/mimic/defender/suricata/rules/et-open-selected.rules /etc/suricata/rules/et-open-selected.rules
+sudo install -m 0644 /opt/trap/defender/suricata/rules/et-open-selected.rules /etc/suricata/rules/et-open-selected.rules
 ```
 
 รวมส่วนนี้ใน `/etc/suricata/suricata.yaml` แทนรายการกฎเก่า:
@@ -28,7 +28,7 @@ rule-files:
 sudo suricata -T -c /etc/suricata/suricata.yaml
 ```
 
-นำ `mimic.rules`, `local.rules` และ `suricata.rules` ที่โหลด ET Open ทั้งชุด
+นำ `trap.rules`, `local.rules` และ `suricata.rules` ที่โหลด ET Open ทั้งชุด
 ออกจาก rule-files สำหรับโหมดคัดเลือกนี้ เพื่อไม่ให้กฎเดิมยังทำงานหรือ SID ซ้ำ
 จากนั้นทดสอบ replay และ reload ตาม `docs/root-operations.md`
 การแก้ repository ไม่เปลี่ยนไฟล์บน VM โดยอัตโนมัติ

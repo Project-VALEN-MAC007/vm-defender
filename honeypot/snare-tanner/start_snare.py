@@ -12,7 +12,7 @@ if page == 'demo':
     if not (folder / 'meta.json').exists():
         meta = {}
         for url, body in {
-            '/index.html': '<!doctype html><html><head><title>MIMIC demo</title></head><body><h1>Web honeypot demo</h1><p>Clone your lab website to replace this page.</p><form action="/search" method="get"><input name="q"><button>Search</button></form></body></html>',
+            '/index.html': '<!doctype html><html><head><title>TRAP demo</title></head><body><h1>Web honeypot demo</h1><p>Clone your lab website to replace this page.</p><form action="/search" method="get"><input name="q"><button>Search</button></form></body></html>',
             '/status_404': '<!doctype html><html><head><title>Not found</title></head><body><h1>404 Not Found</h1></body></html>',
         }.items():
             name = hashlib.md5(url.encode()).hexdigest()

@@ -6,8 +6,8 @@
     "maximum_rows": 5000
   },
   "security": {
-    "users_file": "/var/lib/mimic/dashboard-users/users.json",
-    "audit_log": "/var/log/mimic/dashboard-security.jsonl",
+    "users_file": "/var/lib/trap/dashboard-users/users.json",
+    "audit_log": "/var/log/trap/dashboard-security.jsonl",
     "session_ttl_seconds": 3600,
     "secure_cookie": false,
     "login_max_attempts": 5,
@@ -15,12 +15,18 @@
   },
   "paths": {
     "decisions": "/var/log/adaptive-defender/decisions.jsonl",
-    "status": "/var/lib/mimic/status.json",
+    "status": "/var/lib/trap/status.json",
     "eve_paths": [
       "/var/log/suricata/eve.json"
     ],
-    "rabbit_hole_config": "/etc/mimic/rabbit-hole.json",
-    "rabbit_hole_logs": ["/var/log/mimic/rabbit-hole-web.jsonl"]
+    "rabbit_hole_config": "/var/lib/trap/rabbit-hole.json",
+    "rabbit_hole_logs": [
+      "/var/log/trap/honeypot/rabbit-hole-web.jsonl"
+    ],
+    "honeypot_paths": [
+      "/var/log/trap/honeypot/cowrie.json",
+      "/var/log/trap/honeypot/tanner-events.jsonl"
+    ]
   },
   "network": {
     "management_interface": "CHANGE_ME",
@@ -32,8 +38,9 @@
   "rules": {
     "active_rules": "/etc/suricata/rules/et-open-selected.rules",
     "baseline": "tests/fixtures/baseline.json",
-    "registry": "/var/lib/mimic/rules/registry.jsonl",
-    "backup_dir": "/var/lib/mimic/backups/rules",
+    "registry": "/var/lib/trap/rules/registry.jsonl",
+    "backup_dir": "/var/lib/trap/backups/rules",
+    "apply_dir": "/var/lib/trap/rules",
     "suricata_config": "/etc/suricata/suricata.yaml",
     "allow_deploy": false
   }

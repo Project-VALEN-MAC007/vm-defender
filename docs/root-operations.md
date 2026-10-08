@@ -6,13 +6,13 @@
 ## 1. เก็บสถานะก่อนเปลี่ยน
 
 ```bash
-sudo install -d -m 0700 /root/mimic-backup
-sudo cp -a /etc/netplan /root/mimic-backup/netplan
+sudo install -d -m 0700 /root/trap-backup
+sudo cp -a /etc/netplan /root/trap-backup/netplan
 sudo cp -a /etc/NetworkManager/system-connections \
-  /root/mimic-backup/system-connections
-sudo nft list ruleset | sudo tee /root/mimic-backup/nftables.before.nft
+  /root/trap-backup/system-connections
+sudo nft list ruleset | sudo tee /root/trap-backup/nftables.before.nft
 sudo sysctl net.ipv4.ip_forward | \
-  sudo tee /root/mimic-backup/ip-forward.before.txt
+  sudo tee /root/trap-backup/ip-forward.before.txt
 ip -br link
 ip -br addr
 ip route
@@ -21,8 +21,8 @@ ip route
 ตรวจว่าไฟล์สำรองมีข้อมูล:
 
 ```bash
-sudo test -s /root/mimic-backup/nftables.before.nft
-sudo ls -la /root/mimic-backup
+sudo test -s /root/trap-backup/nftables.before.nft
+sudo ls -la /root/trap-backup
 ```
 
 ## 2. ตั้ง timed rollback
@@ -31,15 +31,15 @@ sudo ls -la /root/mimic-backup
 
 ```bash
 sudo systemd-run \
-  --unit mimic-network-rollback \
+  --unit trap-network-rollback \
   --on-active=3m \
-  /bin/sh -c 'cp -a /root/mimic-backup/netplan/. /etc/netplan/; netplan apply; nft -f /root/mimic-backup/nftables.before.nft'
+  /bin/sh -c 'cp -a /root/trap-backup/netplan/. /etc/netplan/; netplan apply; nft -f /root/trap-backup/nftables.before.nft'
 ```
 
 ยกเลิก timer เฉพาะเมื่อ console, management route และ service สำคัญยังทำงาน:
 
 ```bash
-sudo systemctl stop mimic-network-rollback.timer
+sudo systemctl stop trap-network-rollback.timer
 ```
 
 ## 3. เปิดใช้ Suricata config
@@ -60,7 +60,7 @@ sudo test -s /var/log/suricata/eve.json
 ## 4. เปิดใช้ Nginx
 
 ```bash
-sudo cp -a /etc/nginx /root/mimic-backup/nginx
+sudo cp -a /etc/nginx /root/trap-backup/nginx
 sudo install -d -m 0750 /etc/adaptive-defender/tls
 sudo install -d -m 0755 /etc/nginx/maps
 sudo sh -c 'printf "%s\n" "# generated atomically; do not edit" "default real;" > /etc/nginx/maps/redirect_map.conf'
@@ -71,7 +71,7 @@ sudo systemctl reload nginx
 หาก reload แล้ว health check ล้มเหลว:
 
 ```bash
-sudo cp -a /root/mimic-backup/nginx/. /etc/nginx/
+sudo cp -a /root/trap-backup/nginx/. /etc/nginx/
 sudo nginx -t
 sudo systemctl reload nginx
 ```
@@ -81,14 +81,14 @@ sudo systemctl reload nginx
 สร้าง staging file ที่แทน token ครบแล้ว จากนั้นตรวจโดยยังไม่เปลี่ยนระบบ:
 
 ```bash
-rg '__[A-Z0-9_]+__|PARTIAL RENDER' /tmp/mimic.nft
-sudo nft --check --file /tmp/mimic.nft
+rg '__[A-Z0-9_]+__|PARTIAL RENDER' /tmp/trap.nft
+sudo nft --check --file /tmp/trap.nft
 ```
 
 คำสั่ง `rg` ต้องไม่พบ token และ `nft --check` ต้องคืน exit code 0 จึง apply:
 
 ```bash
-sudo nft --file /tmp/mimic.nft
+sudo nft --file /tmp/trap.nft
 sudo nft list table inet adaptive_defender
 ```
 
@@ -97,11 +97,11 @@ sudo nft list table inet adaptive_defender
 รันจาก local console:
 
 ```bash
-sudo cp -a /root/mimic-backup/netplan/. /etc/netplan/
+sudo cp -a /root/trap-backup/netplan/. /etc/netplan/
 sudo netplan generate
 sudo netplan apply
 sudo nft flush table inet adaptive_defender 2>/dev/null || true
-sudo nft -f /root/mimic-backup/nftables.before.nft
+sudo nft -f /root/trap-backup/nftables.before.nft
 sudo sysctl -w net.ipv4.ip_forward=0
 ```
 

@@ -1,0 +1,14 @@
+[Unit]
+Description=TRAP: install Rabbit Hole decoy files into Cowrie
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/trap
+# Adjust the two Cowrie paths and the restart command to the Cowrie install on this host.
+ExecStart=/usr/bin/python3 -m defender.rabbit_hole cowrie-install \
+  --config /var/lib/trap/rabbit-hole.json \
+  --fs-pickle /var/lib/trap/cowrie-fs/fs.pickle \
+  --honeyfs /var/lib/trap/cowrie-fs/honeyfs \
+  --state-dir /var/lib/trap/cowrie \
+  --restart-cmd "docker restart cowrie"

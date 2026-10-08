@@ -5,4 +5,4 @@ COPY constraints.txt /build/constraints.txt
 RUN pip install --no-cache-dir 'setuptools<81' wheel && pip install --no-cache-dir -c /build/constraints.txt -r /src/tanner/requirements.txt && pip install --no-deps /src/tanner
 RUN mkdir -p /tmp/tanner/emulators /var/log/tanner
 WORKDIR /opt/tanner
-CMD ["tanner", "--config", "/etc/mimic/tanner.yaml"]
+CMD ["tanner", "--config", "/etc/trap/tanner.yaml"]

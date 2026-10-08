@@ -167,3 +167,23 @@ class DashboardScopeTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TannerAdapterTests(unittest.TestCase):
+    def test_tanner_event_becomes_session_event(self):
+        from defender.dashboard.scope import honeypot_transform, sessions_from_events
+        line = {"method": "POST", "path": "/wp-login.php", "uuid": "snare-1", "status": 200,
+                "peer": {"ip": "192.0.2.50", "port": 51515},
+                "headers": {"User-Agent": "sqlmap/1.7", "X-Forwarded-Port": "443"},
+                "post_data": {"log": "admin"},
+                "response_msg": {"version": "0.6", "response": {"message": {
+                    "detection": {"name": "sqli", "order": 2}, "sess_uuid": "abc123"}}},
+                "timestamp": "2026-10-08T07:00:00.000001"}
+        later = {**line, "path": "/admin", "timestamp": "2026-10-08T07:02:30.000000"}
+        events = [honeypot_transform(row, "tanner-events.jsonl") for row in (line, later)]
+        first = events[0]
+        self.assertEqual((first["source_ip"], first["src_port"], first["dest_port"]), ("192.0.2.50", 51515, 443))
+        self.assertEqual((first["session_id"], first["profile"], first["attack_type"]), ("abc123", "snare", "sqli"))
+        self.assertEqual(first["payload"], {"log": "admin"})
+        sessions = sessions_from_events(events)
+        self.assertEqual(len(sessions), 1)

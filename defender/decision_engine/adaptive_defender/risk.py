@@ -69,7 +69,7 @@ class RiskEngine:
             if event.protocol == "ssh":
                 action, profile = "redirect_ssh", "cowrie"
             elif event.protocol == "telnet":
-                action, profile = "redirect_telnet", "telnet"
+                action, profile = "redirect_telnet", "cowrie"  # Cowrie Telnet, same honeypot as SSH
             else:
                 action = "redirect_web"
                 profile = self.web_profile

@@ -1,0 +1,10 @@
+[Unit]
+Description=TRAP: keep Cowrie decoys in step with the Dashboard (every minute)
+
+[Timer]
+OnBootSec=1min
+OnUnitActiveSec=1min
+Unit=trap-cowrie-sync.service
+
+[Install]
+WantedBy=timers.target

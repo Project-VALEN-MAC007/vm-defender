@@ -406,3 +406,53 @@ class DashboardRabbitHoleTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class CowrieInstallTests(unittest.TestCase):
+    def setUp(self):
+        import pickle
+        self.tmp = tempfile.TemporaryDirectory()
+        self.root = Path(self.tmp.name)
+        (self.root / "cfg").mkdir(); self.config = load(write_config(self.root / "cfg"))
+        # Minimal Cowrie filesystem: / -> home, etc
+        fs = ["/", 1, 0, 0, 4096, 0o40755, 0, [
+            ["home", 1, 0, 0, 4096, 0o40755, 0, [], None, None],
+            ["etc", 1, 0, 0, 4096, 0o40755, 0, [["passwd", 2, 0, 0, 10, 0o100644, 0, [], None, None]], None, None],
+        ], None, None]
+        self.pickle_path = self.root / "fs.pickle"
+        self.pickle_path.write_bytes(pickle.dumps(fs))
+        self.honeyfs = self.root / "honeyfs"
+        self.state = self.root / "state"
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def tree(self):
+        import pickle
+        return pickle.loads(self.pickle_path.read_bytes())
+
+    def test_install_adds_decoys_to_pickle_and_honeyfs(self):
+        from defender.rabbit_hole.cowrie_install import install, _lookup
+        from defender.rabbit_hole.shell import render_files
+        result = install(self.config, self.pickle_path, self.honeyfs, self.state)
+        self.assertTrue(result["changed"])
+        files = {p: v for p, v in render_files(self.config).items() if v[0] == "file"}
+        self.assertTrue(files)
+        tree = self.tree()
+        for path, (_, content) in files.items():
+            node = _lookup(tree, path)
+            self.assertIsNotNone(node, path)
+            self.assertEqual(node[4], len(content.encode("utf-8")))
+            self.assertEqual((self.honeyfs / path.lstrip("/")).read_text(encoding="utf-8"), content)
+        self.assertIsNotNone(_lookup(tree, "/etc/passwd"))
+        self.assertTrue(list(self.state.glob("fs.pickle.*.bak")))
+
+    def test_second_run_is_a_no_op_and_disable_removes_decoys(self):
+        from defender.rabbit_hole.cowrie_install import install, _lookup
+        install(self.config, self.pickle_path, self.honeyfs, self.state)
+        self.assertFalse(install(self.config, self.pickle_path, self.honeyfs, self.state)["changed"])
+        (self.root / "cfg2").mkdir(); disabled = load(write_config(self.root / "cfg2", enabled=False))
+        install(disabled, self.pickle_path, self.honeyfs, self.state)
+        manifest = json.loads((self.state / "cowrie-manifest.json").read_text())
+        self.assertEqual(manifest["files"], [])
+        self.assertIsNotNone(_lookup(self.tree(), "/etc/passwd"))

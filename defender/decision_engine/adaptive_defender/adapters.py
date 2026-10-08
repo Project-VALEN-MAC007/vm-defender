@@ -66,9 +66,13 @@ class NftSetAdapter:
         self.family, self.table, self.dry_run = family, table, dry_run
 
     def command(self, set_name: str, address: str, timeout_seconds: int) -> list[str]:
-        ipaddress.ip_address(address)
+        version = ipaddress.ip_address(address).version
         if set_name not in {"ssh_redirect", "telnet_redirect", "temporary_block"}:
             raise ValueError("unsupported nft set")
+        if version == 6:
+            if set_name != "temporary_block":
+                raise ValueError("ipv6 address cannot be redirected to the IPv4 honeypot")
+            set_name = "temporary_block6"
         if not 1 <= timeout_seconds <= 86400:
             raise ValueError("timeout out of bounds")
         return ["nft", "add", "element", self.family, self.table, set_name,

@@ -24,10 +24,10 @@ SSH/Telnet หรือบล็อก source IP ชั่วคราว
 ## ขั้นตอนเตรียมไฟล์ก่อนนำไปใช้
 
 ```bash
-cp defender/nftables/ssh-redirect.nft.template /tmp/mimic.nft
-$EDITOR /tmp/mimic.nft
-rg '__[A-Z0-9_]+__|PARTIAL RENDER' /tmp/mimic.nft
-sudo nft --check --file /tmp/mimic.nft
+cp defender/nftables/ssh-redirect.nft.template /tmp/trap.nft
+$EDITOR /tmp/trap.nft
+rg '__[A-Z0-9_]+__|PARTIAL RENDER' /tmp/trap.nft
+sudo nft --check --file /tmp/trap.nft
 ```
 
 คำสั่ง `rg` ต้องไม่พบข้อความ และ syntax check ต้องผ่านก่อน apply
@@ -37,7 +37,7 @@ sudo nft --check --file /tmp/mimic.nft
 ต้องสำรอง ruleset และตั้ง timed rollback ตาม `docs/root-operations.md` ก่อน
 
 ```bash
-sudo nft --file /tmp/mimic.nft
+sudo nft --file /tmp/trap.nft
 sudo nft list table inet adaptive_defender
 ```
 
@@ -67,7 +67,7 @@ sudo conntrack -L
 
 ```bash
 sudo nft flush table inet adaptive_defender 2>/dev/null || true
-sudo nft -f /root/mimic-backup/nftables.before.nft
+sudo nft -f /root/trap-backup/nftables.before.nft
 ```
 
 ห้ามใช้ `nft flush ruleset` เพราะจะลบกฎของระบบอื่นด้วย
