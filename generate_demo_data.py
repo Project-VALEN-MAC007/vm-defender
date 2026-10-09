@@ -10,22 +10,23 @@ import random
 
 
 ROOT = Path(__file__).resolve().parent
+# One demo scenario per default ET Open rule, so the demo only shows traffic the
+# real system detects: HTTP/HTTPS, SSH, Telnet and scanning.
+# (protocol, port, signature, category, severity, url, action, profile, sid)
 SCENARIOS = [
-    ("http", 80, "SQL injection attempt", "Web Application Attack", 1, "/products?id=1%27", "redirect_web", "snare"),
-    ("http", 80, "Cross-site scripting attempt", "Web Application Attack", 2, "/search?q=%3Cscript%3E", "redirect_web", "snare"),
-    ("http", 80, "Directory traversal attempt", "Web Application Attack", 1, "/../../etc/passwd", "redirect_web", "snare"),
-    ("http", 80, "WordPress login brute force", "Attempted Administrator Privilege Gain", 2, "/wp-login.php", "redirect_web", "wordpress"),
-    ("http", 80, "phpMyAdmin discovery", "Web Application Attack", 2, "/phpmyadmin/", "redirect_web", "phpmyadmin"),
-    ("http", 80, "Automated sensitive file discovery", "Web Application Attack", 2, "/.env", "redirect_web", "snare"),
-    ("ssh", 22, "SSH authentication brute force", "Attempted Administrator Privilege Gain", 1, "", "redirect_ssh", "cowrie"),
-    ("ssh", 22, "SSH service enumeration", "Detection of a Network Scan", 3, "", "monitor", "none"),
-    ("telnet", 23, "Telnet credential guessing", "Attempted Administrator Privilege Gain", 1, "", "redirect_telnet", "cowrie"),
-    ("tls", 443, "Suspicious TLS client fingerprint", "Potentially Bad Traffic", 2, "", "monitor", "none"),
-    ("dns", 53, "High-volume DNS queries", "Potentially Bad Traffic", 2, "", "monitor", "none"),
-    ("tcp", 445, "TCP port scan", "Detection of a Network Scan", 2, "", "monitor", "none"),
-    ("http", 80, "Unusual HTTP user agent", "Misc activity", 3, "/", "allow", "none"),
-    ("udp", 161, "UDP service discovery", "Detection of a Network Scan", 3, "", "monitor", "none"),
-    ("icmp", 0, "ICMP host discovery", "Detection of a Network Scan", 3, "", "allow", "none"),
+    ("http", 80, "ET WEB_SERVER Possible SQL Injection Attempt UNION SELECT in HTTP URI", "Web Application Attack", 1, "/products?id=1+UNION+SELECT+1,2", "redirect_web", "snare", 2006446),
+    ("http", 80, "ET WEB_SERVER Possible SQL Injection UNION SELECT in HTTP Request Body", "Attempted Administrator Privilege Gain", 1, "/login", "redirect_web", "snare", 2053468),
+    ("http", 80, "ET SCAN Sqlmap SQL Injection Scan", "Attempted Information Leak", 2, "/products?id=1", "redirect_web", "snare", 2008538),
+    ("http", 80, "ET SCAN Nikto Web App Scan in Progress", "Web Application Attack", 1, "/admin/", "redirect_web", "snare", 2002677),
+    ("http", 80, "ET SCAN Nmap Scripting Engine User-Agent Detected (Nmap NSE)", "Web Application Attack", 1, "/", "redirect_web", "snare", 2009359),
+    ("http", 80, "ET SCAN NETWORK Incoming Masscan detected", "Detection of a Network Scan", 3, "/", "monitor", "none", 2017616),
+    ("http", 80, "ET INFO Request to Hidden Environment File - Inbound", "Misc activity", 3, "/.env", "monitor", "none", 2031502),
+    ("http", 80, "ET WEB_SERVER /etc/passwd Detected in URI", "Attempted Information Leak", 2, "/../../etc/passwd", "redirect_web", "snare", 2049400),
+    ("http", 80, "GPL WEB_SERVER .htpasswd access", "Web Application Attack", 1, "/.htpasswd", "redirect_web", "snare", 2101071),
+    ("ssh", 22, "ET SCAN Potential SSH Scan", "Attempted Information Leak", 2, "", "monitor", "none", 2001219),
+    ("ssh", 22, "ET SCAN LibSSH Based Frequent SSH Connections Likely BruteForce Attack", "Attempted Administrator Privilege Gain", 1, "", "redirect_ssh", "cowrie", 2006546),
+    ("telnet", 23, "GPL TELNET Bad Login", "Potentially Bad Traffic", 2, "", "redirect_telnet", "cowrie", 2101251),
+    ("telnet", 23, "GPL TELNET TELNET login failed", "Potentially Bad Traffic", 2, "", "redirect_telnet", "cowrie", 2100492),
 ]
 
 
@@ -81,18 +82,18 @@ def generate(alert_count: int, decision_count: int, seed: int) -> dict:
         start = {1: 0, 7: 1, 30: 7, 45: 30}[bucket]
         stamp = now - timedelta(seconds=rng.uniform(start * 86400, bucket * 86400))
         scenario_id = rng.randrange(len(SCENARIOS))
-        protocol, port, label, category, severity, url, action, profile = SCENARIOS[scenario_id]
+        protocol, port, label, category, severity, url, action, profile, sid = SCENARIOS[scenario_id]
         source = rng.choice(sources[:60] if rng.random() < .65 else sources)
         event = {
             "timestamp": stamp.isoformat(), "event_type": "alert", "flow_id": 9000000 + index,
             "src_ip": source, "src_port": rng.randint(1024, 65535), "dest_ip": "192.0.2.254",
-            "dest_port": port, "proto": {"dns": "UDP", "udp": "UDP", "icmp": "ICMP"}.get(protocol, "TCP"),
+            "dest_port": port, "proto": "TCP",
             "app_proto": protocol, "demo": True,
-            "alert": {"signature_id": 9900000 + scenario_id, "signature": "DEMO: " + label,
+            "alert": {"signature_id": sid, "signature": "DEMO: " + label,
                       "category": category, "severity": severity, "action": "allowed"}}
         if protocol == "http":
             event["http"] = {"hostname": "trap-demo.example", "url": url,
-                             "http_method": "POST" if "login" in url else "GET",
+                             "http_method": "POST" if url == "/login" else "GET",
                              "http_user_agent": rng.choice(["DEMO Security Scanner", "Mozilla/5.0 (DEMO)", "DEMO curl/8.0"])}
         records.append((stamp, event, action, profile))
     records.sort(key=lambda entry: entry[0])

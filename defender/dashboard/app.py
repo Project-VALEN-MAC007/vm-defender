@@ -772,8 +772,9 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
             payload = self._read_json()
             try:
                 password = payload.get("password")
-                if password == "":
-                    password = None
+                if not password:
+                    # The admin always sets the first password; it is never generated.
+                    raise ValueError("invalid_password")
                 account, password = runtime.users.create_user(
                     str(payload.get("username", "")), str(payload.get("name", "")), password)
             except ValueError as exc:

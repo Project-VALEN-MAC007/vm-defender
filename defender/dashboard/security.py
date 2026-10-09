@@ -40,6 +40,34 @@ def match_totp(secret: str, code: str, last_counter: int = -1) -> int | None:
     return None
 
 
+PASSWORD_SPECIALS = "!@#$%^&*()-_=+[]{};:,.<>/?~"
+
+
+def password_problem(password) -> str | None:
+    """Password policy for every password a person chooses: 12-128 characters with
+    lowercase, uppercase and a special character. Returns None when it passes."""
+    if not isinstance(password, str) or not 12 <= len(password) <= 128:
+        return "length"
+    if not re.search(r"[a-z]", password):
+        return "lowercase"
+    if not re.search(r"[A-Z]", password):
+        return "uppercase"
+    if not any(not ch.isalnum() and not ch.isspace() for ch in password):
+        return "special"
+    return None
+
+
+def generate_password(length: int = 20) -> str:
+    """Random password that always satisfies password_problem()."""
+    rng = secrets.SystemRandom()
+    pools = ["abcdefghijkmnopqrstuvwxyz", "ABCDEFGHJKLMNPQRSTUVWXYZ", "23456789", "!@#%^*-_=+?"]
+    chars = [rng.choice(pool) for pool in pools]
+    everything = "".join(pools)
+    chars += [rng.choice(everything) for _ in range(length - len(chars))]
+    rng.shuffle(chars)
+    return "".join(chars)
+
+
 def hash_password(password: str, iterations: int = PBKDF2_ITERATIONS) -> str:
     if len(password) < 12:
         raise ValueError("password must contain at least 12 characters")
@@ -201,13 +229,13 @@ class UserStore:
             raise ValueError("invalid_username")
         if not name or len(name) > 100 or any(ord(c) < 32 for c in name):
             raise ValueError("invalid_name")
-        if password is not None and (not isinstance(password, str) or not 12 <= len(password) <= 128):
+        if password is not None and password_problem(password):
             raise ValueError("invalid_password")
         with self._lock:
             users = self.load()
             if username in users:
                 raise ValueError("username_exists")
-            issued_password = secrets.token_urlsafe(24) if password is None else None
+            issued_password = generate_password() if password is None else None
             account = {"username": username, "name": name, "role": "user",
                        "password_hash": hash_password(password if password is not None else issued_password),
                        "disabled": False}
@@ -231,7 +259,7 @@ class UserStore:
             account = users.get(username)
             if not account or account["role"] != "user":
                 raise ValueError("user_not_found")
-            password = secrets.token_urlsafe(24)
+            password = generate_password()
             account["password_hash"] = hash_password(password)
             self._save(users)
             return password
@@ -244,6 +272,8 @@ class UserStore:
                 raise ValueError("invalid_current_password")
             if current == new:
                 raise ValueError("password_unchanged")
+            if password_problem(new):
+                raise ValueError("weak_password")
             account["password_hash"] = hash_password(new)
             account["must_change_password"] = False
             self._save(users)
