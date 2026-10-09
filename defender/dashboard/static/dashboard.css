@@ -666,3 +666,7 @@ dialog code { color: var(--accent); word-break: break-all; }
 .logo-mark { width: 44px; height: 44px; background: none; clip-path: none; display: block; flex: none; }
 .brand-colon { color: #ff3e8e; margin: 0 1px; }
 .login-logo { display: block; width: 88px; height: 88px; border-radius: 22px; margin: 0 0 18px; box-shadow: 0 10px 40px rgba(200, 255, 60, .18); }
+
+/* จัดการบัญชี: การ์ดฟอร์ม (สร้าง User / บัญชีของฉัน) อยู่กลางพื้นที่ */
+.account-form-panel { width: 100%; max-width: 640px; margin-inline: auto; }
+.account-form-panel > p { text-align: center; }

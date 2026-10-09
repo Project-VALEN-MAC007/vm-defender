@@ -6,7 +6,7 @@ import json
 import os
 from pathlib import Path
 
-from .security import ALLOWED_ROLES, hash_password
+from .security import ALLOWED_ROLES, hash_password, password_problem
 
 
 def upsert_user(path: Path, username: str, name: str, role: str, password: str) -> None:
@@ -47,6 +47,8 @@ def main() -> int:
     password = os.environ.get(args.password_env, "") if args.password_env else getpass.getpass("Password: ")
     if not password:
         parser.error("password is required")
+    if password_problem(password):
+        parser.error("password needs 12-128 characters with lowercase, uppercase and a special character")
     upsert_user(args.file, args.username, args.name or args.username, args.role, password)
     print(f"updated {args.username} in {args.file}")
     return 0

@@ -216,11 +216,11 @@ class DashboardApiSecurityTests(unittest.TestCase):
     def test_admin_creates_user_and_password_is_shown_once(self):
         cookie, csrf = self.login("admin", "Admin-password-123")
         headers = {"Cookie": cookie, "X-CSRF-Token": csrf}
+        password = "Analyst-password-123"
         status, _, payload = self.request("POST", "/api/users", {
-            "username": "analyst01", "name": "Security Analyst"}, headers)
+            "username": "analyst01", "name": "Security Analyst", "password": password}, headers)
         self.assertEqual(status, 201)
-        password = payload["temporary_password"]
-        self.assertGreaterEqual(len(password), 12)
+        self.assertNotIn("temporary_password", payload)
         self.assertEqual(payload["user"]["role"], "user")
         new_cookie, _ = self.login("analyst01", password)
         self.assertTrue(new_cookie)
@@ -229,7 +229,7 @@ class DashboardApiSecurityTests(unittest.TestCase):
         self.assertNotIn("password_hash", json.dumps(listed))
         self.assertNotIn(password, json.dumps(listed))
         status, _, _ = self.request("POST", "/api/users", {
-            "username": "analyst01", "name": "Again"}, headers)
+            "username": "analyst01", "name": "Again", "password": password}, headers)
         self.assertEqual(status, 409)
 
     def test_user_cannot_manage_users_or_create_admin(self):
@@ -240,7 +240,7 @@ class DashboardApiSecurityTests(unittest.TestCase):
             "username": "another", "name": "Another", "role": "master_admin"}, headers)[0], 403)
         admin_cookie, admin_csrf = self.login("admin", "Admin-password-123")
         status, _, payload = self.request("POST", "/api/users", {
-            "username": "another", "name": "Another", "role": "master_admin"},
+            "username": "another", "name": "Another", "role": "master_admin", "password": "Another-password-123"},
             {"Cookie": admin_cookie, "X-CSRF-Token": admin_csrf})
         self.assertEqual(status, 201)
         self.assertEqual(payload["user"]["role"], "user")
@@ -288,7 +288,39 @@ class DashboardApiSecurityTests(unittest.TestCase):
             "username": "analyst03", "name": "Analyst Three", "password": "short"}, headers)
         self.assertEqual(status, 400)
         self.assertEqual(payload["error"], "invalid_password")
+        status, _, payload = self.request("POST", "/api/users", {
+            "username": "analyst04", "name": "No Password"}, headers)
+        self.assertEqual((status, payload["error"]), (400, "invalid_password"))
 
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class PasswordPolicyTests(unittest.TestCase):
+    def test_policy_requires_case_and_special(self):
+        from defender.dashboard.security import generate_password, password_problem
+        self.assertIsNone(password_problem("Strong-pass-123"))
+        self.assertEqual(password_problem("Short-1a"), "length")
+        self.assertEqual(password_problem("ALL-UPPER-CASE-1"), "lowercase")
+        self.assertEqual(password_problem("all-lower-case-1"), "uppercase")
+        self.assertEqual(password_problem("NoSpecialChars123"), "special")
+        for _ in range(50):
+            self.assertIsNone(password_problem(generate_password()))
+
+    def test_store_rejects_weak_chosen_passwords(self):
+        import tempfile
+        from pathlib import Path
+        from defender.dashboard.security import UserStore
+        from defender.dashboard.manage_users import upsert_user
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "users.json"
+            upsert_user(path, "admin", "Admin", "master_admin", "Admin-password-123")
+            store = UserStore(path)
+            with self.assertRaises(ValueError):
+                store.create_user("weak01", "Weak", "nouppercase-123")
+            account, issued = store.create_user("auto01", "Auto")
+            self.assertIsNotNone(issued)
+            with self.assertRaises(ValueError) as caught:
+                store.change_password("admin", "Admin-password-123", "nospecialchars123A")
+            self.assertEqual(str(caught.exception), "weak_password")
