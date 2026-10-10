@@ -1,7 +1,7 @@
-# การตั้งค่า nftables สำหรับเปลี่ยนเส้นทางและบล็อก
+# การตั้งค่า nftables สำหรับเปลี่ยนเส้นทาง
 
 nftables รับคำสั่งจาก Decision Engine ผ่าน set ที่มี timeout เพื่อเปลี่ยนเส้นทาง
-SSH/Telnet หรือบล็อก source IP ชั่วคราว
+SSH/Telnet
 
 ## ชุดข้อมูลที่ระบบใช้
 
@@ -9,7 +9,6 @@ SSH/Telnet หรือบล็อก source IP ชั่วคราว
 |---|---|
 | `ssh_redirect` | เปลี่ยน SSH ไปยัง endpoint ที่กำหนด |
 | `telnet_redirect` | เปลี่ยน Telnet ไปยัง endpoint ที่กำหนด |
-| `temporary_block` | ทิ้ง packet จาก source IP ชั่วคราว |
 
 ทุก set ต้องใช้ `flags timeout` และมีอายุไม่เกินค่าที่กำหนดใน config
 

@@ -45,3 +45,12 @@ SHA-256 ของแต่ละกฎใน `et-open-manifest.json` และ l
 การสแกนเว็บ การโจมตี SQL Injection การเข้าถึงไฟล์สำคัญ การเชื่อมต่อ SSH
 ที่ผิดปกติ และการเข้าสู่ระบบ Telnet ที่ไม่สำเร็จ เพื่อส่งข้อมูลให้ Decision Engine
 ประเมินความเสี่ยงและเลือกเส้นทางตามเกณฑ์ที่กำหนด
+
+## การปรับกฎ 2006546 (TRAP)
+
+กฎต้นฉบับ rev 9 ใช้ `content:"SSH-"; content:"libssh"; within:20;` บน stream ดิบ
+ซึ่งไม่เกิด alert บน Suricata 7.0.3 แม้ pcap (`ssh-retest.pcap`) จะมี banner
+`SSH-2.0-libssh_0.10.6` ครบ 6 ครั้ง TRAP จึงเปลี่ยนเป็น `ssh.software; content:"libssh"; nocase;`
+ซึ่งตรวจชื่อซอฟต์แวร์ client ที่ parser SSH แยกไว้แล้ว คง SID, msg, threshold
+(5 ครั้ง/30 วินาที by_src) และ classtype เดิม เปลี่ยนเป็น rev 10 และติด metadata
+`trap_adapted ssh_software_buffer` รายละเอียดใน `et-open-manifest.json`

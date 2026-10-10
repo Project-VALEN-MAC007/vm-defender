@@ -9,9 +9,12 @@
   "expiry_seconds": 1800,
   "thresholds": {
     "monitor": 15,
-    "redirect": 40,
-    "temporary_block": 80
+    "redirect": 40
   },
+  "thresholds_path": "/var/lib/trap/engine/thresholds.json",
+  "scan_only_signatures": [
+    2017616
+  ],
   "nft_family": "inet",
   "nft_table": "adaptive_defender",
   "bind_host": "127.0.0.1",

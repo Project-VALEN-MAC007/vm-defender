@@ -19,7 +19,7 @@ class NginxMapAdapter:
             raise ValueError("apply mode requires an nginx config validator")
 
     def render(self, entries: dict[str, str]) -> str:
-        allowed = {"real", "wordpress", "phpmyadmin", "snare"}
+        allowed = {"real", "wordpress", "phpmyadmin", "snare", "rabbithole"}
         lines = ["# generated atomically; do not edit", "default real;"]
         for address, profile in sorted(entries.items()):
             ipaddress.ip_address(address)
@@ -67,12 +67,10 @@ class NftSetAdapter:
 
     def command(self, set_name: str, address: str, timeout_seconds: int) -> list[str]:
         version = ipaddress.ip_address(address).version
-        if set_name not in {"ssh_redirect", "telnet_redirect", "temporary_block"}:
+        if set_name not in {"ssh_redirect", "telnet_redirect"}:
             raise ValueError("unsupported nft set")
         if version == 6:
-            if set_name != "temporary_block":
-                raise ValueError("ipv6 address cannot be redirected to the IPv4 honeypot")
-            set_name = "temporary_block6"
+            raise ValueError("ipv6 address cannot be redirected to the IPv4 honeypot")
         if not 1 <= timeout_seconds <= 86400:
             raise ValueError("timeout out of bounds")
         return ["nft", "add", "element", self.family, self.table, set_name,

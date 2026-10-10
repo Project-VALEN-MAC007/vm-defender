@@ -25,7 +25,9 @@
       "sid": 2006546,
       "upstream_file": "rules/emerging-scan.rules",
       "msg": "ET SCAN LibSSH Based Frequent SSH Connections Likely BruteForce Attack",
-      "rule_sha256": "852950f3925fc244655e72f618f91b59763229c3cd52b481283410518df98afd"
+      "rule_sha256": "852950f3925fc244655e72f618f91b59763229c3cd52b481283410518df98afd",
+      "trap_modification": "Raw content:\"SSH-\"/\"libssh\" on the stream never matched on Suricata 7.0.3 (libssh banners in ssh-retest.pcap produced no alert). The client banner is now matched with the ssh.software sticky buffer; threshold, classtype and SID are unchanged; rev 9 -> 10.",
+      "local_rule_sha256": "ce6214578e5240a962ef15777b72710af56e331a0619562d09780d7e5e2c0136"
     },
     {
       "sid": 2008538,

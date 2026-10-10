@@ -23,7 +23,7 @@ class DashboardScopeTests(unittest.TestCase):
         self.fixture.thread.join()
         root = self.fixture.paths["users"].parent
         self.engine = root / "engine.json"
-        self.engine.write_text(json.dumps({"thresholds": {"monitor": 15, "redirect": 40, "temporary_block": 80}}))
+        self.engine.write_text(json.dumps({"thresholds": {"monitor": 15, "redirect": 40}}))
         self.honeypot = root / "honeypot.jsonl"
         self.settings = replace(self.fixture.settings, demo_mode=True, require_totp=False,
                                 engine_config_path=self.engine, honeypot_paths=(self.honeypot,))

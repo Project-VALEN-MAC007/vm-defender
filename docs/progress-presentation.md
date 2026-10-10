@@ -7,7 +7,7 @@
 
 TRAP Defender รับ alert จาก Suricata แล้วประเมินความเสี่ยงราย source IP
 เพื่อเลือกการตอบสนองที่เหมาะสม ตั้งแต่เฝ้าระวัง เปลี่ยนเส้นทางไปยังบริการลวง
-จนถึงบล็อกชั่วคราว โดยบันทึกเหตุผลและอายุของทุก decision เพื่อให้ตรวจสอบย้อนหลังได้
+โดยบันทึกเหตุผลและอายุของทุก decision เพื่อให้ตรวจสอบย้อนหลังได้
 
 ## 2. ลำดับการทำงาน
 
@@ -21,7 +21,6 @@ Decision Engine
    |-- redirect_web ------> Nginx map
    |-- redirect_ssh ------> nftables set
    |-- redirect_telnet ---> nftables set
-   `-- temporary_block ---> nftables set
    |
 Dashboard และ audit logs
 ```
@@ -103,7 +102,7 @@ Production preflight จะหยุดการติดตั้งหาก:
 2. ใส่ชื่อ interface ที่ยืนยันแล้วใน production config
 3. รัน readiness และ syntax checks
 4. ทดสอบ Suricata alert ไปจนถึงการเปลี่ยน redirect map
-5. ทดสอบ nftables สำหรับ SSH, Telnet และ temporary block
+5. ทดสอบ nftables สำหรับ SSH และ Telnet
 6. ทดสอบ reboot และ rollback
 
 ## 7. ข้อสรุป

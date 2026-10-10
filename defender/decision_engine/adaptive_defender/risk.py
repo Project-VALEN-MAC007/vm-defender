@@ -18,10 +18,13 @@ class SourceState:
 
 class RiskEngine:
     def __init__(self, thresholds: dict[str, float], decay_per_minute: float, expiry_seconds: int,
-                 clock: Callable[[], datetime] | None = None, web_profile: str = "wordpress"):
+                 clock: Callable[[], datetime] | None = None, web_profile: str = "wordpress",
+                 scan_only_signatures: frozenset[int] | set[int] = frozenset({2017616})):
         if web_profile not in {"wordpress", "phpmyadmin", "snare", "rabbithole"}:
             raise ValueError("unsupported web_profile")
         self.web_profile = web_profile
+        # Network scans are detected and alerted only, whatever the thresholds.
+        self.scan_only_signatures = frozenset(scan_only_signatures)
         self.thresholds = thresholds
         self.decay_per_minute = decay_per_minute
         self.expiry_seconds = expiry_seconds
@@ -63,9 +66,7 @@ class RiskEngine:
         state.score = min(100.0, state.score + severity_points + protocol_points)
         state.updated = now
         self.states[event.source_ip] = state
-        if state.score >= self.thresholds["temporary_block"]:
-            action, profile = "temporary_block", "none"
-        elif state.score >= self.thresholds["redirect"]:
+        if state.score >= self.thresholds["redirect"]:
             if event.protocol == "ssh":
                 action, profile = "redirect_ssh", "cowrie"
             elif event.protocol == "telnet":
@@ -77,6 +78,10 @@ class RiskEngine:
             action, profile = "monitor", "real"
         else:
             action, profile = "allow", "real"
+        if action.startswith("redirect_") and (
+                event.signature_id in self.scan_only_signatures or event.protocol == "scan"):
+            action, profile = "monitor", "real"
+            reasons.append("scan_only_policy:monitor")
         expiry = now + timedelta(seconds=self.expiry_seconds)
         return Decision(
             event_id=event.event_id, source_ip=event.source_ip, protocol=event.protocol,

@@ -27,7 +27,7 @@ class SnareProfileTests(unittest.TestCase):
 
     def test_snare_redirect_and_remote_shell_profiles(self):
         for protocol, profile in [('http', 'snare'), ('ssh', 'cowrie'), ('telnet', 'cowrie')]:
-            engine = RiskEngine({'monitor': 15, 'redirect': 40, 'temporary_block': 80},
+            engine = RiskEngine({'monitor': 15, 'redirect': 40},
                                 1, 1800, web_profile='snare')
             decision = engine.decide(Event.from_eve(raw_event(protocol=protocol)))
             self.assertEqual(decision.profile, profile)
