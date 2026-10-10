@@ -213,3 +213,18 @@ Dashboard อนุญาตให้ validate rule แต่ production templat
 - Nginx, Suricata และ nftables ผ่าน syntax check
 - มี backup และทดสอบ rollback แล้ว
 - ไม่มี `CHANGE_ME`, `__TOKEN__` หรือ default credential ในไฟล์ที่ใช้งาน
+
+## ติดตั้ง helper ให้ Dashboard มีผลจริง (กฎ + threshold)
+
+หลัง sync source ไป `/opt/trap` แล้ว ให้รันบน Defender:
+
+```bash
+sudo sh /opt/trap/deploy/install-dashboard-helpers.sh --update-rules
+```
+
+สคริปต์จะ (1) ติดตั้งและเปิด `trap-apply-rules.path` เพื่อให้กฎที่อนุมัติใน Dashboard
+ผ่าน `suricata -T` แล้วติดตั้ง/reload จริง (ถ้าไม่ผ่านจะคืนไฟล์เดิม) (2) ตั้ง
+`rules.apply_dir` ใน `/etc/trap/trap.json` (3) ตั้ง `thresholds_path` และ
+`scan_only_signatures` ใน engine config แล้วสร้าง `/var/lib/trap/engine/thresholds.json`
+ที่ Dashboard เขียนได้ (4) `--update-rules` ติดตั้งไฟล์กฎของ repo ผ่าน helper เดียวกัน
+ไฟล์ config เดิมถูกสำรองเป็น `*.bak.<เวลา>` ก่อนแก้ รันซ้ำได้

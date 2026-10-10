@@ -208,8 +208,7 @@ def report_csv(report):
         writer.writerow([report["window"], "summary", name, report.get(name, 0), ""])
     for name in ("decision_protocols", "decision_severities", "destinations", "actions"):
         for key, count in report[name].items():
-            if key != "blocked":
-                writer.writerow([report["window"], name, key, count, ""])
+            writer.writerow([report["window"], name, key, count, ""])
     for item in report.get("honeypot_dwell", []):
         writer.writerow([report["window"], "honeypot_dwell", item["profile"], item["sessions"], item["average_seconds"]])
     rabbit = report.get("rabbit_hole") or {}
@@ -337,18 +336,39 @@ class RuleStore:
 
 
 def threshold_config(path, payload=None):
+    """Read or change the Decision Engine thresholds.
+
+    When the engine config names a ``thresholds_path`` the Dashboard reads and
+    writes only that file (under /var/lib/trap, writable by the Dashboard
+    service); the engine config in /etc stays read-only. Without it the engine
+    config itself is edited (local lab / demo).
+    """
     if not path or not path.is_file():
         raise ValueError("engine_config_missing")
     config = json.loads(path.read_text(encoding="utf-8"))
+    target = None
+    if config.get("thresholds_path"):
+        target = Path(config["thresholds_path"])
+        if not target.is_absolute():
+            target = (path.parent / target).resolve()
+    current = config["thresholds"]
+    if target is not None and target.is_file():
+        stored = json.loads(target.read_text(encoding="utf-8"))
+        if isinstance(stored, dict) and isinstance(stored.get("thresholds"), dict):
+            current = stored["thresholds"]
     if payload is not None:
-        values = config["thresholds"].copy()
+        values = {}
         for name in ("monitor", "redirect"):
             value = payload.get(name)
             if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
                 raise ValueError("invalid_threshold")
             values[name] = float(value)
-        if not 0 <= values["monitor"] < values["redirect"] < values.get("temporary_block", 101):
+        if not 0 <= values["monitor"] < values["redirect"] <= 100:
             raise ValueError("thresholds_must_increase")
-        config["thresholds"] = values
-        atomic_text(path, json.dumps(config, indent=2) + "\n")
-    return {key: config["thresholds"][key] for key in ("monitor", "redirect")}
+        if target is not None:
+            atomic_text(target, json.dumps({"thresholds": values}, indent=2) + "\n")
+        else:
+            config["thresholds"] = values
+            atomic_text(path, json.dumps(config, indent=2) + "\n")
+        current = values
+    return {key: current[key] for key in ("monitor", "redirect")}

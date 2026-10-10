@@ -174,8 +174,7 @@ def runtime_metrics(alerts: list[dict], decisions: list[dict]) -> dict:
             "redirect_latency_ms": sum(redirect_latency) / len(redirect_latency) if redirect_latency else None,
             "total_alerts": len(alerts),
             "high_severity_alerts": sum(1 for row in alerts if int(row.get("severity") or 0) == 1),
-            "total_decisions": len(decisions), "redirects": redirects,
-            "temporary_blocks": sum(1 for row in decisions if row.get("action") == "temporary_block")}
+            "total_decisions": len(decisions), "redirects": redirects}
 
 
 def _event_time(row: dict) -> datetime | None:
@@ -221,8 +220,7 @@ def analytics(alerts: list[dict], decisions: list[dict], window: str = "24h",
     destinations = {"real": sum(count for action, count in actions.items()
                                  if action in {"allow", "monitor"}),
                     "honeypot": sum(count for action, count in actions.items()
-                                    if action.startswith("redirect")),
-                    "blocked": sum(count for action, count in actions.items() if "block" in action)}
+                                    if action.startswith("redirect"))}
     result = {"window": window, "scope": "bounded_runtime_snapshot", "total_alerts": len(alerts),
             "unique_source_ips": len({row.get("src_ip") for row in alerts if row.get("src_ip")}),
             "high_severity_alerts": sum(str(row.get("severity")) == "1" for row in alerts),

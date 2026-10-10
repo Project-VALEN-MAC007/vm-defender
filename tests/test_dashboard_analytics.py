@@ -19,17 +19,17 @@ class DashboardAnalyticsTests(unittest.TestCase):
         decisions = [
             {"start_time": "2026-09-30T11:00:00Z", "action": "redirect_web"},
             {"start_time": "2026-09-30T10:00:00Z", "action": "allow"},
-            {"start_time": "2026-09-28T10:00:00Z", "action": "temporary_block"},
+            {"start_time": "2026-09-28T10:00:00Z", "action": "redirect_ssh"},
         ]
         day = analytics(alerts, decisions, "24h", now)
         self.assertEqual((day["total_alerts"], day["unique_source_ips"],
                           day["high_severity_alerts"]), (2, 1, 1))
-        self.assertEqual(day["destinations"], {"real": 1, "honeypot": 1, "blocked": 0})
+        self.assertEqual(day["destinations"], {"real": 1, "honeypot": 1})
         self.assertEqual(len(day["trend"]), 25)
         self.assertEqual(sum(item["count"] for item in day["trend"]), 2)
         week = analytics(alerts, decisions, "7d", now)
         self.assertEqual(week["total_alerts"], 3)
-        self.assertEqual(week["destinations"]["blocked"], 1)
+        self.assertEqual(week["destinations"]["honeypot"], 2)
         self.assertFalse(week["honeypot_telemetry_available"])
 
     def test_rejects_unsupported_window(self):

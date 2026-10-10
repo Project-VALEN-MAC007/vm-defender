@@ -4,6 +4,7 @@ import json
 import copy
 from datetime import datetime, timezone
 import os
+import sys
 from pathlib import Path
 
 from .adapters import NftSetAdapter, NginxMapAdapter
@@ -28,7 +29,8 @@ class DecisionEngine:
         self.settings = settings
         self.reader = EveReader(settings.eve_path, settings.checkpoint_path)
         self.risk = RiskEngine(settings.thresholds, settings.decay_per_minute, settings.expiry_seconds,
-                               web_profile=settings.web_profile)
+                               web_profile=settings.web_profile,
+                               scan_only_signatures=settings.scan_only_signatures)
         self.nft = NftSetAdapter(settings.nft_family, settings.nft_table, settings.dry_run)
         self.nginx = NginxMapAdapter(settings.nginx_map_path, settings.dry_run, None if settings.dry_run else _nginx_validate, None if settings.dry_run else _nginx_reload)
         self.web_state_path = settings.nginx_map_path.with_suffix(settings.nginx_map_path.suffix + ".state.json")
@@ -118,26 +120,34 @@ class DecisionEngine:
         address_v6 = ":" in decision.source_ip
         action = decision.action
         if address_v6 and action in {"redirect_ssh", "redirect_telnet"}:
-            # Cowrie is reached over IPv4 NAT; an IPv6 client cannot be translated
-            # to it, so keep the real service safe by blocking for the same period.
-            payload["action"] = action = "temporary_block"
-            payload["profile"] = "none"
-            payload["reason"] = (payload.get("reason") or "") + ";ipv6_shell_redirect_unsupported:block"
+            # IPv4 DNAT cannot reach Cowrie for an IPv6 client; monitor instead.
+            payload["action"] = action = "monitor"
+            payload["profile"] = "real"
+            payload["reason"] = (payload.get("reason") or "") + ";ipv6_shell_redirect_unsupported:monitor"
         if action == "redirect_web":
             payload["adapter_result"] = self._apply_web_redirect(decision)
         elif action == "redirect_ssh":
             payload["adapter_command"] = self._retry(lambda: self.nft.add("ssh_redirect", decision.source_ip, self.settings.expiry_seconds))
         elif action == "redirect_telnet":
             payload["adapter_command"] = self._retry(lambda: self.nft.add("telnet_redirect", decision.source_ip, self.settings.expiry_seconds))
-        elif action == "temporary_block":
-            payload["adapter_command"] = self._retry(lambda: self.nft.add("temporary_block", decision.source_ip, self.settings.expiry_seconds))
         payload["dry_run"] = self.settings.dry_run
         return payload
 
     def run_once(self) -> list[dict]:
         if self.settings.config_path:
             # Reload only thresholds; preserve accumulated risk and adapter state.
-            self.risk.thresholds = load_settings(self.settings.config_path).thresholds
+            # A bad edit must not stop redirects: keep the last good thresholds.
+            try:
+                self.risk.thresholds = load_settings(self.settings.config_path).thresholds
+            except (OSError, ValueError, TypeError) as exc:
+                if getattr(self, "_threshold_error", None) != str(exc):
+                    self._threshold_error = str(exc)
+                    # journald via stderr; decisions.jsonl stays decisions only.
+                    print(json.dumps({"event": "threshold_reload_failed",
+                                      "detail": f"{type(exc).__name__}: {exc}",
+                                      "kept": dict(self.risk.thresholds)}), file=sys.stderr, flush=True)
+            else:
+                self._threshold_error = None
         decisions: list[dict] = []
         self.reconcile_web_redirects()
         for pending in self.reader.pending_records():

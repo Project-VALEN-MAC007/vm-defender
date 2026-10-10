@@ -41,7 +41,7 @@ endpoint ที่ยืนยันแล้ว
 - เมื่อเปิดใช้งาน ให้ forward policy เป็น `drop`
 - อนุญาตเฉพาะ established/related traffic และ DNAT flow ที่ระบุไว้
 - ห้ามเปิดการ route ทั่วไประหว่าง outer กับ inner
-- temporary block และ redirect set ต้องมี timeout
+- redirect set ต้องมี timeout
 
 ## ด่านตรวจก่อนนำไปใช้
 

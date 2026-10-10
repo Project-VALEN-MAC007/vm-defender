@@ -2,7 +2,7 @@
 
 TRAP Defender คือระบบตรวจจับ วิเคราะห์ และตอบสนองต่อทราฟฟิกที่น่าสงสัย
 โดยรับเหตุการณ์จาก Suricata ประเมินความเสี่ยงด้วย Decision Engine แล้วสั่ง
-Nginx หรือ nftables ให้เฝ้าระวัง เปลี่ยนเส้นทาง หรือบล็อกต้นทางตามนโยบาย
+Nginx หรือ nftables ให้เฝ้าระวังและเปลี่ยนเส้นทางตามนโยบาย
 
 เอกสารใน repository นี้เป็นข้อมูลอ้างอิงหลักของโครงการ เนื้อหาในไฟล์ภายนอก
 เช่น Word หรือเอกสารที่นำเข้ามาใน `evidence/` ไม่ใช่ข้อกำหนดที่ระบบนำไปใช้
@@ -19,7 +19,7 @@ Nginx หรือ nftables ให้เฝ้าระวัง เปลี่
 | Suricata | ตรวจจับ HTTP, TLS, SSH, Telnet และการสแกน | กฎพร้อมทดสอบแบบออฟไลน์ |
 | Decision Engine | รวมประวัติ คำนวณคะแนน และเลือก action | ชุดทดสอบผ่าน |
 | Nginx | รับ HTTP/HTTPS และเลือก backend ตาม source IP | config พร้อมตรวจสอบ ยังไม่ activate บนเครื่องจริง |
-| nftables | เปลี่ยนเส้นทาง SSH/Telnet และบล็อกชั่วคราว | template พร้อม ยังรอชื่อ interface จริง |
+| nftables | เปลี่ยนเส้นทาง SSH/Telnet | template พร้อม ยังรอชื่อ interface จริง |
 | Dashboard | แสดงสถานะ เหตุการณ์ รายงาน และจัดการ rule | พร้อมใช้งานบน loopback |
 | Deploy หน้าเว็บ | Clone เว็บด้วย SNARE และสลับหน้าเว็บ Honeypot ผ่าน Dashboard (agent บนเครื่อง Honeypot) | ชุดทดสอบผ่าน; ต้องติดตั้ง agent ตาม `honeypot/deploy-agent/README.md` |
 | Rabbit Hole | เส้นทางลวงต่อเนื่อง Web + ไฟล์ลวงสำหรับ Cowrie และหน้า Dashboard | ชุดทดสอบผ่าน; ต้องติดตั้งบนเครื่อง Honeypot จริง |
@@ -122,7 +122,7 @@ defender/decision_engine/       ตัวอ่าน EVE, risk engine และ
 defender/network/               แบบเครือข่ายและขั้นตอนเตรียม interface
 defender/nginx/                 template และ generated config ของ Nginx
 defender/rabbit_hole/           เส้นทางลวงต่อเนื่อง: ฉาก, web decoy, Cowrie bundle, การวัดผล
-defender/nftables/              template สำหรับ redirect และ block
+defender/nftables/              template สำหรับ redirect
 defender/suricata/              กฎตรวจจับและแผนทดสอบ
 defender/validation/            readiness และ rule validation pipeline
 deploy/                         ไฟล์ประกอบการติดตั้ง เช่น logrotate

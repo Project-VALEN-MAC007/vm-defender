@@ -37,9 +37,24 @@ class ReaderTests(unittest.TestCase):
 
 
 class RiskTests(unittest.TestCase):
+    def test_maximum_risk_keeps_redirecting_each_protocol(self):
+        now = datetime(2026, 8, 4, 20, tzinfo=timezone.utc)
+        for protocol, port in (("http", 80), ("ssh", 22), ("telnet", 23)):
+            with self.subTest(protocol=protocol):
+                engine = RiskEngine({"monitor": 15, "redirect": 40}, 1, 1800, lambda: now)
+                for flow_id in range(1, 8):
+                    decision = engine.decide(Event.from_eve(raw_event(
+                        flow_id=flow_id, protocol=protocol, dest_port=port)))
+                self.assertEqual(decision.risk_score, 100)
+                self.assertEqual(decision.action, "redirect_web" if protocol == "http" else "redirect_" + protocol)
+
+    def test_rabbit_hole_profile_renders(self):
+        rendered = NginxMapAdapter(Path("unused")).render({"192.0.2.20": "rabbithole"})
+        self.assertIn("192.0.2.20 rabbithole;", rendered)
+
     def test_dedup_and_cross_protocol_history(self):
         now = datetime(2026, 8, 4, 20, tzinfo=timezone.utc)
-        engine = RiskEngine({"monitor":15,"redirect":40,"temporary_block":80}, 1, 1800, lambda: now)
+        engine = RiskEngine({"monitor":15,"redirect":40}, 1, 1800, lambda: now)
         scan = Event.from_eve(raw_event(protocol="http", sid=2009359, severity=3))
         self.assertIsNotNone(engine.decide(scan))
         self.assertIsNone(engine.decide(scan))
@@ -49,7 +64,7 @@ class RiskTests(unittest.TestCase):
 
     def test_decay(self):
         times = [datetime(2026, 8, 4, 20, tzinfo=timezone.utc)]
-        engine = RiskEngine({"monitor":15,"redirect":40,"temporary_block":80}, 10, 1800, lambda: times[0])
+        engine = RiskEngine({"monitor":15,"redirect":40}, 10, 1800, lambda: times[0])
         engine.decide(Event.from_eve(raw_event()))
         before = engine.states["192.0.2.20"].score
         times[0] += timedelta(minutes=2)
@@ -58,7 +73,7 @@ class RiskTests(unittest.TestCase):
 
     def test_telnet_redirect_from_metadata_and_port(self):
         now = datetime(2026, 8, 4, 20, tzinfo=timezone.utc)
-        engine = RiskEngine({"monitor":15,"redirect":40,"temporary_block":80}, 1, 1800, lambda: now)
+        engine = RiskEngine({"monitor":15,"redirect":40}, 1, 1800, lambda: now)
         event_raw = raw_event(protocol="tcp", sid=2101251, severity=1, dest_port=50000)
         event_raw.update(src_ip="192.0.2.10", src_port=23, dest_ip="192.0.2.20")
         event = Event.from_eve(event_raw)
@@ -118,7 +133,7 @@ class AdapterAndConfigTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory)/"bad.json"
             path.write_text(json.dumps({"eve_path":"e","checkpoint_path":"c","audit_path":"a",
-                "nginx_map_path":"m","thresholds":{"monitor":15,"redirect":40,"temporary_block":80},
+                "nginx_map_path":"m","thresholds":{"monitor":15,"redirect":40},
                 "bind_host":"0.0.0.0"}))
             with self.assertRaises(ValueError):
                 load_settings(path)
@@ -129,7 +144,7 @@ class EngineIntegrationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             settings = Settings(root/"eve", root/"checkpoint", root/"audit", root/"map", False, 1, 1800,
-                                {"monitor":15,"redirect":40,"temporary_block":80})
+                                {"monitor":15,"redirect":40})
             engine = DecisionEngine(settings)
             self.assertFalse(engine.nginx.dry_run)
 
@@ -138,7 +153,7 @@ class EngineIntegrationTests(unittest.TestCase):
             root = Path(directory); eve = root/"eve.json"
             eve.write_text(json.dumps(raw_event()) + "\n")
             settings = Settings(eve, root/"checkpoint", root/"audit", root/"map", True, 1, 1800,
-                                {"monitor":15,"redirect":40,"temporary_block":80})
+                                {"monitor":15,"redirect":40})
             self.assertEqual(len(DecisionEngine(settings).run_once()), 1)
             self.assertEqual(len(DecisionEngine(settings).run_once()), 0)
 
@@ -149,7 +164,7 @@ class EngineIntegrationTests(unittest.TestCase):
             record.update(src_ip="192.0.2.10", src_port=23, dest_ip="192.0.2.20")
             eve.write_text(json.dumps(record) + "\n")
             settings = Settings(eve, root/"checkpoint", root/"audit", root/"map", True, 1, 1800,
-                                {"monitor":15,"redirect":40,"temporary_block":80})
+                                {"monitor":15,"redirect":40})
             decisions = DecisionEngine(settings).run_once()
             self.assertEqual(decisions[0]["action"], "redirect_telnet")
             self.assertIn("telnet_redirect", decisions[0]["adapter_command"])
@@ -159,7 +174,7 @@ class EngineIntegrationTests(unittest.TestCase):
             root = Path(directory); eve = root/"eve.json"; checkpoint = root/"checkpoint"
             eve.write_text(json.dumps(raw_event(protocol="http", severity=1)) + "\n")
             settings = Settings(eve, checkpoint, root/"audit", root/"map", True, 1, 1800,
-                                {"monitor":15,"redirect":40,"temporary_block":80})
+                                {"monitor":15,"redirect":40})
             engine = DecisionEngine(settings)
             engine.reconcile_web_redirects()
             engine.nginx.update = lambda entries: (_ for _ in ()).throw(RuntimeError("reload failed"))
@@ -174,7 +189,7 @@ class EngineIntegrationTests(unittest.TestCase):
             root = Path(directory); eve = root/"eve.json"; map_path = root/"redirect.map"
             eve.write_text(json.dumps(raw_event(protocol="http", severity=1)) + "\n")
             settings = Settings(eve, root/"checkpoint", root/"audit", map_path, False, 1, 1800,
-                                {"monitor":15,"redirect":40,"temporary_block":80})
+                                {"monitor":15,"redirect":40})
             engine = DecisionEngine(settings)
             rendered = []
             engine.nginx.update = lambda entries: rendered.append(dict(entries)) or "ok"
@@ -194,7 +209,7 @@ if __name__ == "__main__": unittest.main()
 class EngineResilienceTests(unittest.TestCase):
     def settings(self, root, eve, dry_run=True):
         return Settings(eve, root/"checkpoint", root/"audit", root/"map", dry_run, 1, 1800,
-                        {"monitor": 15, "redirect": 40, "temporary_block": 80})
+                        {"monitor": 15, "redirect": 40})
 
     def test_unreadable_alert_is_skipped_not_stuck(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -227,18 +242,20 @@ class EngineResilienceTests(unittest.TestCase):
             self.assertEqual([d["source_ip"] for d in result], ["192.0.2.9"])
             self.assertIn('"reason": "adapter_failed"', (root/"audit").read_text())
 
-    def test_ipv6_shell_attacker_is_blocked_not_redirected(self):
+    def test_ipv6_shell_attacker_is_monitored(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory); eve = root/"eve.json"
             eve.write_text(json.dumps(raw_event(source="2001:db8::5", protocol="ssh", dest_port=22, severity=1)) + "\n"
                            + json.dumps(raw_event(flow_id=2, source="2001:db8::5", protocol="ssh", dest_port=22, severity=1)) + "\n")
             decisions = DecisionEngine(self.settings(root, eve)).run_once()
             last = decisions[-1]
-            self.assertEqual(last["action"], "temporary_block")
-            self.assertIn("temporary_block6", last["adapter_command"])
+            self.assertEqual(last["action"], "monitor")
+            self.assertNotIn("adapter_command", last)
+            self.assertIn("ipv6_shell_redirect_unsupported:monitor", last["reason"])
 
     def test_nft_rejects_ipv6_redirect_sets(self):
         adapter = NftSetAdapter("inet", "adaptive_defender", True)
         with self.assertRaises(ValueError):
             adapter.add("ssh_redirect", "2001:db8::5", 60)
-        self.assertIn("temporary_block6", adapter.add("temporary_block", "2001:db8::5", 60))
+        with self.assertRaises(ValueError):
+            adapter.add("unsupported_set", "192.0.2.5", 60)
