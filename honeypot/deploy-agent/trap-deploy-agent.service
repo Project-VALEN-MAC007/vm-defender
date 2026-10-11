@@ -1,5 +1,5 @@
 [Unit]
-Description=TRAP deploy agent (SNARE clone and deploy)
+Description=TRAP deploy agent (receive SNARE pages from the Defender and deploy)
 After=network-online.target docker.service
 Wants=network-online.target
 
@@ -7,8 +7,8 @@ Wants=network-online.target
 User=trapdeploy
 Group=trapdeploy
 SupplementaryGroups=docker
-WorkingDirectory=/opt/vm-defender
-ExecStart=/usr/bin/python3 /opt/vm-defender/run_deploy_agent.py --config /etc/trap/deploy-agent.json
+WorkingDirectory=/opt/trap
+ExecStart=/usr/bin/python3 /opt/trap/run_deploy_agent.py --config /etc/trap/deploy-agent.json
 Restart=on-failure
 NoNewPrivileges=yes
 PrivateTmp=yes

@@ -1,0 +1,17 @@
+{"detail": "Container cowrie  Creating\n Container cowrie  Created\n Container cowrie  Starting\n Container cowrie  Started", "event": "replaced", "ok": true, "reason": "container_missing", "service": "cowrie", "time": "2026-10-10T13:33:54.207020+00:00"}
+{"detail": "Container cowrie  Recreate\n Container cowrie  Recreated\n Container cowrie  Starting\n Container cowrie  Started", "event": "replaced", "ok": true, "reason": "container_exited", "service": "cowrie", "time": "2026-10-10T13:34:11.654368+00:00"}
+{"detail": "Container cowrie  Recreate\n Container cowrie  Recreated\n Container cowrie  Starting\n Container cowrie  Started", "event": "replaced", "ok": true, "reason": "container_paused", "service": "cowrie", "time": "2026-10-10T13:34:43.761468+00:00"}
+{"consecutive": 1, "event": "unhealthy", "reason": "process_stopped:21439", "replace_at": 3, "service": "cowrie", "time": "2026-10-10T13:35:09.957624+00:00"}
+{"consecutive": 2, "event": "unhealthy", "reason": "process_stopped:21439", "replace_at": 3, "service": "cowrie", "time": "2026-10-10T13:35:38.069573+00:00"}
+{"detail": "Container cowrie  Recreate\n Container cowrie  Recreated\n Container cowrie  Starting\n Container cowrie  Started", "event": "replaced", "ok": true, "reason": "process_stopped:21439", "service": "cowrie", "time": "2026-10-10T13:36:23.862763+00:00"}
+{"consecutive": 1, "event": "unhealthy", "reason": "not_listening:2222,2223", "replace_at": 3, "service": "cowrie", "time": "2026-10-10T13:36:24.104433+00:00"}
+{"event": "recovered", "reason": "listening", "service": "cowrie", "time": "2026-10-10T13:37:21.296278+00:00"}
+{"consecutive": 1, "event": "unhealthy", "reason": "not_listening:8084", "replace_at": 3, "service": "web-honeypot", "time": "2026-10-10T13:37:21.742399+00:00"}
+{"detail": "Container web-honeypot  Creating\n Container web-honeypot  Created\n Container web-honeypot  Starting\n Container web-honeypot  Started", "event": "replaced", "ok": true, "reason": "container_missing", "service": "web-honeypot", "time": "2026-10-10T13:38:13.770269+00:00"}
+{"detail": "Container web-honeypot  Recreate\n Container web-honeypot  Recreated\n Container web-honeypot  Starting\n Container web-honeypot  Started", "event": "replaced", "ok": true, "reason": "container_exited", "service": "web-honeypot", "time": "2026-10-10T13:38:35.446688+00:00"}
+{"detail": "Container web-honeypot  Recreate\n Container web-honeypot  Recreated\n Container web-honeypot  Starting\n Container web-honeypot  Started", "event": "replaced", "ok": true, "reason": "container_paused", "service": "web-honeypot", "time": "2026-10-10T13:39:06.498379+00:00"}
+{"consecutive": 1, "event": "unhealthy", "reason": "process_stopped:31878", "replace_at": 3, "service": "web-honeypot", "time": "2026-10-10T13:39:14.799108+00:00"}
+{"consecutive": 2, "event": "unhealthy", "reason": "process_stopped:31878", "replace_at": 3, "service": "web-honeypot", "time": "2026-10-10T13:39:35.214374+00:00"}
+{"detail": "Container web-honeypot  Recreate\n Container web-honeypot  Recreated\n Container web-honeypot  Starting\n Container web-honeypot  Started", "event": "replaced", "ok": true, "reason": "process_stopped:31878", "service": "web-honeypot", "time": "2026-10-10T13:40:32.007284+00:00"}
+{"consecutive": 1, "event": "unhealthy", "reason": "not_listening:8084", "replace_at": 3, "service": "web-honeypot", "time": "2026-10-10T13:40:32.409167+00:00"}
+{"event": "recovered", "reason": "listening", "service": "web-honeypot", "time": "2026-10-10T13:40:52.990171+00:00"}

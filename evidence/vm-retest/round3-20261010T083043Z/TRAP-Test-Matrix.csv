@@ -1,0 +1,276 @@
+﻿Test,Source IP,Case start UTC,Commands/API,Expected,Actual,Initial status,Initial error,Final status after log correlation,Evidence
+Immediate-HTTPS-1,192.168.56.130,2026-10-10T08:33:18.586162+00:00,"ip netns exec trap-attacker curl --interface 192.168.56.130 -skS -i --max-time 5 http://192.168.56.10/.htpasswd
+ip netns exec trap-attacker curl --interface 192.168.56.130 -skS -i --max-time 5 'https://192.168.56.10/?round3=immediate-1'
+systemctl start trap-log-sync
+systemctl start trap-log-sync
+",หลังเห็นdecisionยิงทันทีไม่sleep; readytrue; HTTP200; Nginxnon-real/upstreamHoneypot; Honeypotlog,"ready=True, 0.183s; HTTP200; profile=rabbithole; upstream=10.10.10.2:8084; worker PID=15028; Honeypot request_id=7b5c0b3ec196fcd9343eaf315bf6f37f",PASS,,PASS,cases-with-final-alerts.json + final-verification.json → Immediate-HTTPS-1; raw/
+Immediate-HTTPS-2,192.168.56.131,2026-10-10T08:33:20.192439+00:00,"ip netns exec trap-attacker curl --interface 192.168.56.131 -skS -i --max-time 5 http://192.168.56.10/.htpasswd
+ip netns exec trap-attacker curl --interface 192.168.56.131 -skS -i --max-time 5 'https://192.168.56.10/?round3=immediate-2'
+systemctl start trap-log-sync
+systemctl start trap-log-sync
+",หลังเห็นdecisionยิงทันทีไม่sleep; readytrue; HTTP200; Nginxnon-real/upstreamHoneypot; Honeypotlog,"ready=True, 0.169s; HTTP200; profile=rabbithole; upstream=10.10.10.2:8084; worker PID=15065; Honeypot request_id=0d478a129ac5c277b1347078d0fc231c",PASS,,PASS,cases-with-final-alerts.json + final-verification.json → Immediate-HTTPS-2; raw/
+Immediate-HTTPS-3,192.168.56.132,2026-10-10T08:33:21.942696+00:00,"ip netns exec trap-attacker curl --interface 192.168.56.132 -skS -i --max-time 5 http://192.168.56.10/.htpasswd
+ip netns exec trap-attacker curl --interface 192.168.56.132 -skS -i --max-time 5 'https://192.168.56.10/?round3=immediate-3'
+systemctl start trap-log-sync
+systemctl start trap-log-sync
+",หลังเห็นdecisionยิงทันทีไม่sleep; readytrue; HTTP200; Nginxnon-real/upstreamHoneypot; Honeypotlog,"ready=True, 0.167s; HTTP200; profile=rabbithole; upstream=10.10.10.2:8084; worker PID=15102; Honeypot request_id=a4246f123dfed19c1169ac50460d812e",FAIL,AssertionError: Immediate request absent from Honeypot log,PASS,cases-with-final-alerts.json + final-verification.json → Immediate-HTTPS-3; raw/
+Immediate-HTTPS-4,192.168.56.133,2026-10-10T08:33:22.447588+00:00,"ip netns exec trap-attacker curl --interface 192.168.56.133 -skS -i --max-time 5 http://192.168.56.10/.htpasswd
+ip netns exec trap-attacker curl --interface 192.168.56.133 -skS -i --max-time 5 'https://192.168.56.10/?round3=immediate-4'
+systemctl start trap-log-sync
+systemctl start trap-log-sync
+",หลังเห็นdecisionยิงทันทีไม่sleep; readytrue; HTTP200; Nginxnon-real/upstreamHoneypot; Honeypotlog,"ready=True, 0.162s; HTTP200; profile=rabbithole; upstream=10.10.10.2:8084; worker PID=15113; Honeypot request_id=626c67207d11ddb25556113c3202ef49",FAIL,AssertionError: Immediate request absent from Honeypot log,PASS,cases-with-final-alerts.json + final-verification.json → Immediate-HTTPS-4; raw/
+Immediate-HTTPS-5,192.168.56.134,2026-10-10T08:33:23.099065+00:00,"ip netns exec trap-attacker curl --interface 192.168.56.134 -skS -i --max-time 5 http://192.168.56.10/.htpasswd
+ip netns exec trap-attacker curl --interface 192.168.56.134 -skS -i --max-time 5 'https://192.168.56.10/?round3=immediate-5'
+systemctl start trap-log-sync
+systemctl start trap-log-sync
+",หลังเห็นdecisionยิงทันทีไม่sleep; readytrue; HTTP200; Nginxnon-real/upstreamHoneypot; Honeypotlog,"ready=True, 0.182s; HTTP200; profile=rabbithole; upstream=10.10.10.2:8084; worker PID=15124; Honeypot request_id=7a0b3653b02e123f6b6d134f811c02b8",FAIL,AssertionError: Immediate request absent from Honeypot log,PASS,cases-with-final-alerts.json + final-verification.json → Immediate-HTTPS-5; raw/
+Immediate-HTTPS-6,192.168.56.135,2026-10-10T08:33:23.723772+00:00,"ip netns exec trap-attacker curl --interface 192.168.56.135 -skS -i --max-time 5 http://192.168.56.10/.htpasswd
+ip netns exec trap-attacker curl --interface 192.168.56.135 -skS -i --max-time 5 'https://192.168.56.10/?round3=immediate-6'
+systemctl start trap-log-sync
+systemctl start trap-log-sync
+",หลังเห็นdecisionยิงทันทีไม่sleep; readytrue; HTTP200; Nginxnon-real/upstreamHoneypot; Honeypotlog,"ready=True, 0.174s; HTTP200; profile=rabbithole; upstream=10.10.10.2:8084; worker PID=15135; Honeypot request_id=f62db417374d0bc6bb851feeb2523842",PASS,,PASS,cases-with-final-alerts.json + final-verification.json → Immediate-HTTPS-6; raw/
+Immediate-HTTPS-7,192.168.56.136,2026-10-10T08:33:25.696501+00:00,"ip netns exec trap-attacker curl --interface 192.168.56.136 -skS -i --max-time 5 http://192.168.56.10/.htpasswd
+ip netns exec trap-attacker curl --interface 192.168.56.136 -skS -i --max-time 5 'https://192.168.56.10/?round3=immediate-7'
+systemctl start trap-log-sync
+systemctl start trap-log-sync
+",หลังเห็นdecisionยิงทันทีไม่sleep; readytrue; HTTP200; Nginxnon-real/upstreamHoneypot; Honeypotlog,"ready=True, 0.176s; HTTP200; profile=rabbithole; upstream=10.10.10.2:8084; worker PID=15173; Honeypot request_id=5b89198abd890da5575351baf4b3976a",PASS,,PASS,cases-with-final-alerts.json + final-verification.json → Immediate-HTTPS-7; raw/
+Immediate-HTTPS-8,192.168.56.137,2026-10-10T08:33:27.322149+00:00,"ip netns exec trap-attacker curl --interface 192.168.56.137 -skS -i --max-time 5 http://192.168.56.10/.htpasswd
+ip netns exec trap-attacker curl --interface 192.168.56.137 -skS -i --max-time 5 'https://192.168.56.10/?round3=immediate-8'
+systemctl start trap-log-sync
+systemctl start trap-log-sync
+",หลังเห็นdecisionยิงทันทีไม่sleep; readytrue; HTTP200; Nginxnon-real/upstreamHoneypot; Honeypotlog,"ready=True, 0.18s; HTTP200; profile=rabbithole; upstream=10.10.10.2:8084; worker PID=15210; Honeypot request_id=a33376ed2f590d45aa8b751ca62aba82",PASS,,PASS,cases-with-final-alerts.json + final-verification.json → Immediate-HTTPS-8; raw/
+Immediate-HTTPS-9,192.168.56.138,2026-10-10T08:33:28.572149+00:00,"ip netns exec trap-attacker curl --interface 192.168.56.138 -skS -i --max-time 5 http://192.168.56.10/.htpasswd
+ip netns exec trap-attacker curl --interface 192.168.56.138 -skS -i --max-time 5 'https://192.168.56.10/?round3=immediate-9'
+systemctl start trap-log-sync
+systemctl start trap-log-sync
+",หลังเห็นdecisionยิงทันทีไม่sleep; readytrue; HTTP200; Nginxnon-real/upstreamHoneypot; Honeypotlog,"ready=True, 0.177s; HTTP200; profile=rabbithole; upstream=10.10.10.2:8084; worker PID=15232; Honeypot request_id=c51064688bc963d24c0ad0ac34196a3a",FAIL,AssertionError: Immediate request absent from Honeypot log,PASS,cases-with-final-alerts.json + final-verification.json → Immediate-HTTPS-9; raw/
+Immediate-HTTPS-10,192.168.56.139,2026-10-10T08:33:29.280962+00:00,"ip netns exec trap-attacker curl --interface 192.168.56.139 -skS -i --max-time 5 http://192.168.56.10/.htpasswd
+ip netns exec trap-attacker curl --interface 192.168.56.139 -skS -i --max-time 5 'https://192.168.56.10/?round3=immediate-10'
+systemctl start trap-log-sync
+systemctl start trap-log-sync
+",หลังเห็นdecisionยิงทันทีไม่sleep; readytrue; HTTP200; Nginxnon-real/upstreamHoneypot; Honeypotlog,"ready=True, 0.18s; HTTP200; profile=rabbithole; upstream=10.10.10.2:8084; worker PID=15244; Honeypot request_id=6f25a55074fcde28105df4d0e501b265",FAIL,AssertionError: Immediate request absent from Honeypot log,PASS,cases-with-final-alerts.json + final-verification.json → Immediate-HTTPS-10; raw/
+Immediate-HTTP-1,192.168.56.140,2026-10-10T08:33:29.856664+00:00,"ip netns exec trap-attacker curl --interface 192.168.56.140 -skS -i --max-time 5 http://192.168.56.10/.htpasswd
+ip netns exec trap-attacker curl --interface 192.168.56.140 -skS -i --max-time 5 'http://192.168.56.10/?round3=immediate-11'
+systemctl start trap-log-sync
+systemctl start trap-log-sync
+",หลังเห็นdecisionยิงทันทีไม่sleep; readytrue; HTTP200; Nginxnon-real/upstreamHoneypot; Honeypotlog,"ready=True, 0.178s; HTTP200; profile=rabbithole; upstream=10.10.10.2:8084; worker PID=15254; Honeypot request_id=fecca7f1e0dde2edfc5baffe7152e73c",FAIL,AssertionError: Immediate request absent from Honeypot log,PASS,cases-with-final-alerts.json + final-verification.json → Immediate-HTTP-1; raw/
+Immediate-HTTP-2,192.168.56.141,2026-10-10T08:33:30.445385+00:00,"ip netns exec trap-attacker curl --interface 192.168.56.141 -skS -i --max-time 5 http://192.168.56.10/.htpasswd
+ip netns exec trap-attacker curl --interface 192.168.56.141 -skS -i --max-time 5 'http://192.168.56.10/?round3=immediate-12'
+systemctl start trap-log-sync
+systemctl start trap-log-sync
+",หลังเห็นdecisionยิงทันทีไม่sleep; readytrue; HTTP200; Nginxnon-real/upstreamHoneypot; Honeypotlog,"ready=True, 0.172s; HTTP200; profile=rabbithole; upstream=10.10.10.2:8084; worker PID=15266; Honeypot request_id=16bb925bf0cc23b95b6b299842fe731c",FAIL,AssertionError: Immediate request absent from Honeypot log,PASS,cases-with-final-alerts.json + final-verification.json → Immediate-HTTP-2; raw/
+Immediate-HTTP-3,192.168.56.142,2026-10-10T08:33:31.036097+00:00,"ip netns exec trap-attacker curl --interface 192.168.56.142 -skS -i --max-time 5 http://192.168.56.10/.htpasswd
+ip netns exec trap-attacker curl --interface 192.168.56.142 -skS -i --max-time 5 'http://192.168.56.10/?round3=immediate-13'
+systemctl start trap-log-sync
+systemctl start trap-log-sync
+",หลังเห็นdecisionยิงทันทีไม่sleep; readytrue; HTTP200; Nginxnon-real/upstreamHoneypot; Honeypotlog,"ready=True, 0.18s; HTTP200; profile=rabbithole; upstream=10.10.10.2:8084; worker PID=15276; Honeypot request_id=18a608e772fa06a85626f32fa54299a2",FAIL,AssertionError: Immediate request absent from Honeypot log,PASS,cases-with-final-alerts.json + final-verification.json → Immediate-HTTP-3; raw/
+Immediate-HTTP-4,192.168.56.143,2026-10-10T08:33:31.659892+00:00,"ip netns exec trap-attacker curl --interface 192.168.56.143 -skS -i --max-time 5 http://192.168.56.10/.htpasswd
+ip netns exec trap-attacker curl --interface 192.168.56.143 -skS -i --max-time 5 'http://192.168.56.10/?round3=immediate-14'
+systemctl start trap-log-sync
+systemctl start trap-log-sync
+",หลังเห็นdecisionยิงทันทีไม่sleep; readytrue; HTTP200; Nginxnon-real/upstreamHoneypot; Honeypotlog,"ready=True, 0.164s; HTTP200; profile=rabbithole; upstream=10.10.10.2:8084; worker PID=15288; Honeypot request_id=82f06a366f70e97c96600475b39775ef",FAIL,AssertionError: Immediate request absent from Honeypot log,PASS,cases-with-final-alerts.json + final-verification.json → Immediate-HTTP-4; raw/
+Immediate-HTTP-5,192.168.56.144,2026-10-10T08:33:32.229667+00:00,"ip netns exec trap-attacker curl --interface 192.168.56.144 -skS -i --max-time 5 http://192.168.56.10/.htpasswd
+ip netns exec trap-attacker curl --interface 192.168.56.144 -skS -i --max-time 5 'http://192.168.56.10/?round3=immediate-15'
+systemctl start trap-log-sync
+systemctl start trap-log-sync
+",หลังเห็นdecisionยิงทันทีไม่sleep; readytrue; HTTP200; Nginxnon-real/upstreamHoneypot; Honeypotlog,"ready=True, 0.186s; HTTP200; profile=rabbithole; upstream=10.10.10.2:8084; worker PID=15298; Honeypot request_id=fbfe1bc8a6536134f09ad0bb584c0265",FAIL,AssertionError: Immediate request absent from Honeypot log,PASS,cases-with-final-alerts.json + final-verification.json → Immediate-HTTP-5; raw/
+Immediate-HTTP-6,192.168.56.145,2026-10-10T08:33:32.903830+00:00,"ip netns exec trap-attacker curl --interface 192.168.56.145 -skS -i --max-time 5 http://192.168.56.10/.htpasswd
+ip netns exec trap-attacker curl --interface 192.168.56.145 -skS -i --max-time 5 'http://192.168.56.10/?round3=immediate-16'
+systemctl start trap-log-sync
+systemctl start trap-log-sync
+",หลังเห็นdecisionยิงทันทีไม่sleep; readytrue; HTTP200; Nginxnon-real/upstreamHoneypot; Honeypotlog,"ready=True, 0.186s; HTTP200; profile=rabbithole; upstream=10.10.10.2:8084; worker PID=15309; Honeypot request_id=8b65ea515bb3e43e70fc5d65b1d515f7",FAIL,AssertionError: Immediate request absent from Honeypot log,PASS,cases-with-final-alerts.json + final-verification.json → Immediate-HTTP-6; raw/
+Immediate-HTTP-7,192.168.56.146,2026-10-10T08:33:33.483896+00:00,"ip netns exec trap-attacker curl --interface 192.168.56.146 -skS -i --max-time 5 http://192.168.56.10/.htpasswd
+ip netns exec trap-attacker curl --interface 192.168.56.146 -skS -i --max-time 5 'http://192.168.56.10/?round3=immediate-17'
+systemctl start trap-log-sync
+systemctl start trap-log-sync
+",หลังเห็นdecisionยิงทันทีไม่sleep; readytrue; HTTP200; Nginxnon-real/upstreamHoneypot; Honeypotlog,"ready=True, 0.166s; HTTP200; profile=rabbithole; upstream=10.10.10.2:8084; worker PID=15322; Honeypot request_id=0fef3bcf75d9478ed132ce14b7d6de79",FAIL,AssertionError: Immediate request absent from Honeypot log,PASS,cases-with-final-alerts.json + final-verification.json → Immediate-HTTP-7; raw/
+Immediate-HTTP-8,192.168.56.147,2026-10-10T08:33:34.121167+00:00,"ip netns exec trap-attacker curl --interface 192.168.56.147 -skS -i --max-time 5 http://192.168.56.10/.htpasswd
+ip netns exec trap-attacker curl --interface 192.168.56.147 -skS -i --max-time 5 'http://192.168.56.10/?round3=immediate-18'
+systemctl start trap-log-sync
+systemctl start trap-log-sync
+",หลังเห็นdecisionยิงทันทีไม่sleep; readytrue; HTTP200; Nginxnon-real/upstreamHoneypot; Honeypotlog,"ready=True, 0.163s; HTTP200; profile=rabbithole; upstream=10.10.10.2:8084; worker PID=15332; Honeypot request_id=a0668c6002f1c920aa04679f3bb318f1",PASS,,PASS,cases-with-final-alerts.json + final-verification.json → Immediate-HTTP-8; raw/
+Immediate-HTTP-9,192.168.56.148,2026-10-10T08:33:35.928505+00:00,"ip netns exec trap-attacker curl --interface 192.168.56.148 -skS -i --max-time 5 http://192.168.56.10/.htpasswd
+ip netns exec trap-attacker curl --interface 192.168.56.148 -skS -i --max-time 5 'http://192.168.56.10/?round3=immediate-19'
+systemctl start trap-log-sync
+systemctl start trap-log-sync
+",หลังเห็นdecisionยิงทันทีไม่sleep; readytrue; HTTP200; Nginxnon-real/upstreamHoneypot; Honeypotlog,"ready=True, 0.171s; HTTP200; profile=rabbithole; upstream=10.10.10.2:8084; worker PID=15369; Honeypot request_id=00a1fbdf0f3edc8e66db7b9bf7af5341",PASS,,PASS,cases-with-final-alerts.json + final-verification.json → Immediate-HTTP-9; raw/
+Immediate-HTTP-10,192.168.56.149,2026-10-10T08:33:37.679048+00:00,"ip netns exec trap-attacker curl --interface 192.168.56.149 -skS -i --max-time 5 http://192.168.56.10/.htpasswd
+ip netns exec trap-attacker curl --interface 192.168.56.149 -skS -i --max-time 5 'http://192.168.56.10/?round3=immediate-20'
+systemctl start trap-log-sync
+systemctl start trap-log-sync
+",หลังเห็นdecisionยิงทันทีไม่sleep; readytrue; HTTP200; Nginxnon-real/upstreamHoneypot; Honeypotlog,"ready=True, 0.18s; HTTP200; profile=rabbithole; upstream=10.10.10.2:8084; worker PID=15405; Honeypot request_id=09012b086ad87ad2cf823765f8543323",PASS,,PASS,cases-with-final-alerts.json + final-verification.json → Immediate-HTTP-10; raw/
+Readiness-timeout-and-engine-continues,"192.168.56.150,192.168.56.151,192.168.56.152",2026-10-10T08:33:38.765163+00:00,"systemd-run --unit=trap-round3-resume-nginx --on-active=15s /bin/kill -CONT 4236
+ip netns exec trap-attacker curl --interface 192.168.56.150 -skS -i --max-time 5 http://192.168.56.10/.htpasswd
+ip netns exec trap-attacker curl --interface 192.168.56.151 -skS -i --max-time 5 http://192.168.56.10/.htpasswd
+systemctl stop trap-round3-resume-nginx.timer
+ip netns exec trap-attacker curl --interface 192.168.56.152 -skS -i --max-time 5 http://192.168.56.10/.htpasswd
+systemctl start trap-log-sync
+",decisionยังเขียนพร้อมreadyfalse; engineทำงานต่อ; recoveryreadytrue,nginx_ready=false 5.009s และ5.003s; engineเขียนสองdecisionsต่อกัน; resumeแล้วready=true0.176s,PASS,,PASS,cases-with-final-alerts.json + final-verification.json → Readiness-timeout-and-engine-continues; raw/
+ET-sqlmap-UA,192.168.56.160,2026-10-10T08:33:50.436211+00:00,"ip netns exec trap-attacker curl --interface 192.168.56.160 -skS -i --max-time 5 -A sqlmap/1.x 'http://192.168.56.10/?id=1'
+systemctl start trap-log-sync
+",พบSIDของเคสและdecisionตรงpolicy; Masscanmonitorทุกครั้ง,SID2008538 redirect_web risk50.0,PASS,,PASS,cases-with-final-alerts.json + final-verification.json → ET-sqlmap-UA; raw/
+ET-Nikto-UA-threshold,192.168.56.161,2026-10-10T08:33:51.799677+00:00,"ip netns exec trap-attacker curl --interface 192.168.56.161 -skS -i --max-time 5 -A 'Mozilla/5.00 (Nikto/2.1.5)' http://192.168.56.10/
+ip netns exec trap-attacker curl --interface 192.168.56.161 -skS -i --max-time 5 -A 'Mozilla/5.00 (Nikto/2.1.5)' http://192.168.56.10/
+ip netns exec trap-attacker curl --interface 192.168.56.161 -skS -i --max-time 5 -A 'Mozilla/5.00 (Nikto/2.1.5)' http://192.168.56.10/
+ip netns exec trap-attacker curl --interface 192.168.56.161 -skS -i --max-time 5 -A 'Mozilla/5.00 (Nikto/2.1.5)' http://192.168.56.10/
+ip netns exec trap-attacker curl --interface 192.168.56.161 -skS -i --max-time 5 -A 'Mozilla/5.00 (Nikto/2.1.5)' http://192.168.56.10/
+ip netns exec trap-attacker curl --interface 192.168.56.161 -skS -i --max-time 5 -A 'Mozilla/5.00 (Nikto/2.1.5)' http://192.168.56.10/
+systemctl start trap-log-sync
+",พบSIDของเคสและdecisionตรงpolicy; Masscanmonitorทุกครั้ง,SID2002677 redirect_web risk60.0,PASS,,PASS,cases-with-final-alerts.json + final-verification.json → ET-Nikto-UA-threshold; raw/
+ET-Nmap-NSE-UA,192.168.56.162,2026-10-10T08:33:53.556768+00:00,"ip netns exec trap-attacker curl --interface 192.168.56.162 -skS -i --max-time 5 -A 'Mozilla/5.0 (compatible; Nmap NSE)' http://192.168.56.10/
+systemctl start trap-log-sync
+",พบSIDของเคสและdecisionตรงpolicy; Masscanmonitorทุกครั้ง,SID2009359 redirect_web risk60.0,PASS,,PASS,cases-with-final-alerts.json + final-verification.json → ET-Nmap-NSE-UA; raw/
+ET-Masscan-UA,192.168.56.163,2026-10-10T08:33:55.148750+00:00,"ip netns exec trap-attacker curl --interface 192.168.56.163 -skS -i --max-time 5 -A masscan/1.3 http://192.168.56.10/
+ip netns exec trap-attacker curl --interface 192.168.56.163 -skS -i --max-time 5 -A masscan/1.3 http://192.168.56.10/
+ip netns exec trap-attacker curl --interface 192.168.56.163 -skS -i --max-time 5 -A masscan/1.3 http://192.168.56.10/
+systemctl start trap-log-sync
+",พบSIDของเคสและdecisionตรงpolicy; Masscanmonitorทุกครั้ง,SID2017616 monitor risk37.0; SID2017616 monitor risk74.0; SID2017616 monitor risk100.0,PASS,,PASS,cases-with-final-alerts.json + final-verification.json → ET-Masscan-UA; raw/
+ET-UNION-URI,192.168.56.164,2026-10-10T08:33:56.650989+00:00,"ip netns exec trap-attacker curl --interface 192.168.56.164 -skS -i --max-time 5 'http://192.168.56.10/?id=1%20UNION%20SELECT%201,2,3%3B'
+systemctl start trap-log-sync
+",พบSIDของเคสและdecisionตรงpolicy; Masscanmonitorทุกครั้ง,SID2006446 redirect_web risk40.0,PASS,,PASS,cases-with-final-alerts.json + final-verification.json → ET-UNION-URI; raw/
+ET-UNION-body,192.168.56.165,2026-10-10T08:33:57.645093+00:00,"ip netns exec trap-attacker curl --interface 192.168.56.165 -skS -i --max-time 5 -d 'q=1 UNION SELECT user,pass FROM users' http://192.168.56.10/
+systemctl start trap-log-sync
+",พบSIDของเคสและdecisionตรงpolicy; Masscanmonitorทุกครั้ง,SID2053468 redirect_web risk40.0,PASS,,PASS,cases-with-final-alerts.json + final-verification.json → ET-UNION-body; raw/
+ET-passwd-URI,192.168.56.166,2026-10-10T08:33:58.724109+00:00,"ip netns exec trap-attacker curl --interface 192.168.56.166 -skS -i --max-time 5 'http://192.168.56.10/?file=../../etc/passwd'
+systemctl start trap-log-sync
+",พบSIDของเคสและdecisionตรงpolicy; Masscanmonitorทุกครั้ง,SID2049400 monitor risk30.0,PASS,,PASS,cases-with-final-alerts.json + final-verification.json → ET-passwd-URI; raw/
+ET-env,192.168.56.167,2026-10-10T08:34:00.069863+00:00,"ip netns exec trap-attacker curl --interface 192.168.56.167 -skS -i --max-time 5 http://192.168.56.10/.env
+systemctl start trap-log-sync
+",พบSIDของเคสและdecisionตรงpolicy; Masscanmonitorทุกครั้ง,SID2031502 monitor risk17.0,PASS,,PASS,cases-with-final-alerts.json + final-verification.json → ET-env; raw/
+ET-htpasswd,192.168.56.168,2026-10-10T08:34:01.299854+00:00,"ip netns exec trap-attacker curl --interface 192.168.56.168 -skS -i --max-time 5 http://192.168.56.10/.htpasswd
+systemctl start trap-log-sync
+",พบSIDของเคสและdecisionตรงpolicy; Masscanmonitorทุกครั้ง,SID2101071 redirect_web risk40.0,PASS,,PASS,cases-with-final-alerts.json + final-verification.json → ET-htpasswd; raw/
+ET-SSH-scan,192.168.56.169,2026-10-10T08:34:02.864377+00:00,"ip netns exec trap-attacker python3 -c 'import socket,time
+for i in range(6):
+ s=socket.socket();s.settimeout(3);s.bind(('""'""'192.168.56.169'""'""',0));s.connect(('""'""'192.168.56.10'""'""',22));s.recv(256);s.close();time.sleep(.2)'
+systemctl start trap-log-sync
+",พบSIDของเคสและdecisionตรงpolicy; Masscanmonitorทุกครั้ง,SID2001219 monitor risk35.0,PASS,,PASS,cases-with-final-alerts.json + final-verification.json → ET-SSH-scan; raw/
+ET-LibSSH-Hydra,192.168.56.170,2026-10-10T08:34:05.076038+00:00,"ip netns exec trap-attacker ip route replace 192.168.56.0/24 dev trap-in src 192.168.56.170
+ip netns exec trap-attacker hydra -l root -P /var/lib/trap/lab-wordlist.txt -t 6 -W 1 -V ssh://192.168.56.10
+ip netns exec trap-attacker ip route replace 192.168.56.0/24 dev trap-in src 192.168.56.30
+systemctl start trap-log-sync
+",พบSIDของเคสและdecisionตรงpolicy; Masscanmonitorทุกครั้ง,SID2001219 monitor risk35.0; SID2006546 redirect_ssh risk80.0,PASS,,PASS,cases-with-final-alerts.json + final-verification.json → ET-LibSSH-Hydra; raw/
+ET-Telnet-incorrect,192.168.56.171,2026-10-10T08:34:14.172853+00:00,"ip netns exec trap-attacker python3 -c 'import socket,telnetlib
+s=socket.socket();s.bind(('""'""'192.168.56.171'""'""',0));s.settimeout(4);s.connect(('""'""'192.168.56.10'""'""',23))
+t=telnetlib.Telnet();t.sock=s
+print(t.read_until(b'""'""'login: '""'""',3));t.write(b'""'""'invalid\r\n'""'""');print(t.read_until(b'""'""'Password: '""'""',3));t.write(b'""'""'wrong-lab-password\r\n'""'""');print(t.read_until(b'""'""'Login '""'""',3));print(t.read_some());t.close()
+'
+systemctl start trap-log-sync
+",พบSIDของเคสและdecisionตรงpolicy; Masscanmonitorทุกครั้ง,SID2101251 monitor risk35.0,PASS,,PASS,cases-with-final-alerts.json + final-verification.json → ET-Telnet-incorrect; raw/
+ET-Telnet-failed,192.168.56.172,2026-10-10T08:34:16.329970+00:00,"ip netns exec trap-attacker python3 -c 'import socket,telnetlib
+s=socket.socket();s.bind(('""'""'192.168.56.172'""'""',0));s.settimeout(4);s.connect(('""'""'192.168.56.10'""'""',23))
+t=telnetlib.Telnet();t.sock=s
+print(t.read_until(b'""'""'login: '""'""',3));t.write(b'""'""'failcase\r\n'""'""');print(t.read_until(b'""'""'Password: '""'""',3));t.write(b'""'""'wrong-lab-password\r\n'""'""');print(t.read_until(b'""'""'Login '""'""',3));print(t.read_some());t.close()
+'
+systemctl start trap-log-sync
+",พบSIDของเคสและdecisionตรงpolicy; Masscanmonitorทุกครั้ง,SID2100492 monitor risk35.0,PASS,,PASS,cases-with-final-alerts.json + final-verification.json → ET-Telnet-failed; raw/
+Regression-HTTP,192.168.56.180,2026-10-10T08:34:17.819852+00:00,"ip netns exec trap-attacker curl --interface 192.168.56.180 -skS -i --max-time 5 -A sqlmap/1.x 'http://192.168.56.10/?id=1'
+ip netns exec trap-attacker curl --interface 192.168.56.180 -skS -i --max-time 5 'http://192.168.56.10/?regression=http'
+systemctl start trap-log-sync
+systemctl start trap-log-sync
+",พฤติกรรมregression/APIตามเคสและคำสั่งในหลักฐาน,HTTP200; redirect_web; WebHoneypot source/queryตรงกัน,PASS,,PASS,cases-with-final-alerts.json + final-verification.json → Regression-HTTP; raw/
+Regression-HTTPS,192.168.56.181,2026-10-10T08:34:19.835357+00:00,"ip netns exec trap-attacker curl --interface 192.168.56.181 -skS -i --max-time 5 -A sqlmap/1.x 'http://192.168.56.10/?id=1'
+ip netns exec trap-attacker curl --interface 192.168.56.181 -skS -i --max-time 5 'https://192.168.56.10/?regression=https'
+systemctl start trap-log-sync
+systemctl start trap-log-sync
+",พฤติกรรมregression/APIตามเคสและคำสั่งในหลักฐาน,HTTPS200; Nginx10.10.10.2:8084; WebHoneypot source/queryตรงกัน (ยืนยันจากfinalrawlog),FAIL,AssertionError: No correlated web request in Honeypot VM log,PASS,cases-with-final-alerts.json + final-verification.json → Regression-HTTPS; raw/
+Regression-SSH,192.168.56.182,2026-10-10T08:34:20.718860+00:00,"ip netns exec trap-attacker python3 -c 'import socket,time
+for i in range(6):
+ s=socket.socket();s.settimeout(3);s.bind(('""'""'192.168.56.182'""'""',0));s.connect(('""'""'192.168.56.10'""'""',22));s.recv(256);s.close();time.sleep(.25)'
+ip netns exec trap-attacker python3 -c 'import socket,paramiko,time,json
+s=socket.socket();s.bind(('""'""'192.168.56.182'""'""',0));s.settimeout(5);s.connect(('""'""'192.168.56.10'""'""',22))
+c=paramiko.SSHClient();c.set_missing_host_key_policy(paramiko.AutoAddPolicy());c.connect('""'""'192.168.56.10'""'""',username='""'""'sysadmin'""'""',password='""'""'[REDACTED]'""'""',sock=s,look_for_keys=False,allow_agent=False,timeout=5)
+ch=c.invoke_shell()
+for cmd in ['""'""'whoami'""'""','""'""'ls'""'""','""'""'uname -a'""'""']:
+ ch.send(cmd+'""'""'\n'""'""');time.sleep(1);out='""'""''""'""'
+ while ch.recv_ready():out+=ch.recv(65535).decode(errors='""'""'replace'""'""')
+ print(json.dumps({'""'""'command'""'""':cmd,'""'""'output'""'""':out}),flush=True)
+ch.send('""'""'exit\n'""'""');time.sleep(.3);c.close()
+'
+systemctl start trap-log-sync
+systemctl start trap-log-sync
+POST /api/thresholds {""monitor"": 5, ""redirect"": 30} → 200
+POST /api/thresholds {""monitor"": 15, ""redirect"": 40} → 200",พฤติกรรมregression/APIตามเคสและคำสั่งในหลักฐาน,redirect_ssh; nftDNAT; Cowrieบันทึกwhoami/ls/uname -a,PASS,,PASS,cases-with-final-alerts.json + final-verification.json → Regression-SSH; raw/
+Regression-Telnet,192.168.56.183,2026-10-10T08:34:28.641690+00:00,"ip netns exec trap-attacker python3 -c 'import socket,telnetlib,time,json
+orig=socket.create_connection
+socket.create_connection=lambda address,timeout=None,source_address=None:orig(address,timeout,('""'""'192.168.56.183'""'""',0))
+for i in range(2):
+ t=telnetlib.Telnet('""'""'192.168.56.10'""'""',23,timeout=5)
+ a=t.read_until(b'""'""'login: '""'""',3);t.write(b'""'""'invalid\r\n'""'""');b=t.read_until(b'""'""'Password: '""'""',3);t.write(b'""'""'wrong-lab-password\r\n'""'""');c=t.read_until(b'""'""'incorrect'""'""',4)
+ print(json.dumps({'""'""'attempt'""'""':i,'""'""'banner'""'""':a.decode(errors='""'""'replace'""'""'),'""'""'reply'""'""':c.decode(errors='""'""'replace'""'""')}));t.close();time.sleep(2)
+'
+systemctl start trap-log-sync
+systemctl start trap-log-sync
+POST /api/thresholds {""monitor"": 5, ""redirect"": 20} → 200
+POST /api/thresholds {""monitor"": 15, ""redirect"": 40} → 200",พฤติกรรมregression/APIตามเคสและคำสั่งในหลักฐาน,redirect_telnet; nftDNAT; Cowrielogin.failedจากsourceIPใหม่,PASS,,PASS,cases-with-final-alerts.json + final-verification.json → Regression-Telnet; raw/
+Rabbit-Hole-Web,192.168.56.184,2026-10-10T08:34:35.324099+00:00,"ip netns exec trap-attacker curl --interface 192.168.56.184 -skS -i --max-time 5 http://192.168.56.10/.htpasswd
+ip netns exec trap-attacker curl --interface 192.168.56.184 -skS -i --max-time 5 -A TRAP-Round3-Rabbit -b /var/lib/trap/retests/round3-20261010T083043Z/rabbit-cookies.txt -c /var/lib/trap/retests/round3-20261010T083043Z/rabbit-cookies.txt http://192.168.56.10/robots.txt
+ip netns exec trap-attacker curl --interface 192.168.56.184 -skS -i --max-time 5 -A TRAP-Round3-Rabbit -b /var/lib/trap/retests/round3-20261010T083043Z/rabbit-cookies.txt -c /var/lib/trap/retests/round3-20261010T083043Z/rabbit-cookies.txt http://192.168.56.10/backup/
+ip netns exec trap-attacker curl --interface 192.168.56.184 -skS -i --max-time 5 -A TRAP-Round3-Rabbit -b /var/lib/trap/retests/round3-20261010T083043Z/rabbit-cookies.txt -c /var/lib/trap/retests/round3-20261010T083043Z/rabbit-cookies.txt http://192.168.56.10/backup/config.json
+ip netns exec trap-attacker curl --interface 192.168.56.184 -skS -i --max-time 5 -A TRAP-Round3-Rabbit -b /var/lib/trap/retests/round3-20261010T083043Z/rabbit-cookies.txt -c /var/lib/trap/retests/round3-20261010T083043Z/rabbit-cookies.txt http://192.168.56.10/api/v1/
+ip netns exec trap-attacker curl --interface 192.168.56.184 -skS -i --max-time 5 -A TRAP-Round3-Rabbit -b /var/lib/trap/retests/round3-20261010T083043Z/rabbit-cookies.txt -c /var/lib/trap/retests/round3-20261010T083043Z/rabbit-cookies.txt -H 'X-API-Key: sk_live_[REDACTED]' https://192.168.56.10/api/v1/users
+systemctl start trap-log-sync
+",พฤติกรรมregression/APIตามเคสและคำสั่งในหลักฐาน,/robots.txt→/backup/→config.json→API; ใช้keyเรียก/api/v1/users HTTPS200,PASS,,PASS,cases-with-final-alerts.json + final-verification.json → Rabbit-Hole-Web; raw/
+Rabbit-Hole-SSH,192.168.56.185,2026-10-10T08:34:36.843044+00:00,"ip netns exec trap-attacker python3 -c 'import socket,time
+for i in range(6):
+ s=socket.socket();s.settimeout(3);s.bind(('""'""'192.168.56.185'""'""',0));s.connect(('""'""'192.168.56.10'""'""',22));s.recv(256);s.close();time.sleep(.2)'
+ip netns exec trap-attacker python3 -c 'import socket,paramiko,time,json
+s=socket.socket();s.bind(('""'""'192.168.56.185'""'""',0));s.settimeout(5);s.connect(('""'""'192.168.56.10'""'""',22))
+c=paramiko.SSHClient();c.set_missing_host_key_policy(paramiko.AutoAddPolicy());c.connect('""'""'192.168.56.10'""'""',username='""'""'sysadmin'""'""',password='""'""'[REDACTED]'""'""',sock=s,look_for_keys=False,allow_agent=False)
+ch=c.invoke_shell()
+for cmd in ['""'""'cat notes.txt'""'""','""'""'ls /opt/backup/'""'""','""'""'cat /opt/backup/backup.conf'""'""']:
+ ch.send(cmd+'""'""'\n'""'""');time.sleep(.7);out='""'""''""'""'
+ while ch.recv_ready():out+=ch.recv(65535).decode(errors='""'""'replace'""'""')
+ print(json.dumps({'""'""'command'""'""':cmd,'""'""'output'""'""':out}))
+c.close()
+'
+systemctl start trap-log-sync
+POST /api/thresholds {""monitor"": 5, ""redirect"": 30} → 200
+POST /api/thresholds {""monitor"": 15, ""redirect"": 40} → 200",พฤติกรรมregression/APIตามเคสและคำสั่งในหลักฐาน,Cowrie notes.txtชี้/opt/backup/backup.conf; อ่านไฟล์ลวงDB_HOSTได้; command logsมีจริง,PASS,,PASS,cases-with-final-alerts.json + final-verification.json → Rabbit-Hole-SSH; raw/
+Dashboard-Threshold-TOTP-User-Master,192.168.56.186,2026-10-10T08:34:42.797630+00:00,"ip netns exec trap-attacker curl --interface 192.168.56.186 -skS -i --max-time 5 http://192.168.56.10/.env
+ip netns exec trap-attacker curl --interface 192.168.56.186 -skS -i --max-time 5 http://192.168.56.10/.htpasswd
+systemctl start trap-log-sync
+POST /api/thresholds {""monitor"": 5, ""redirect"": 90} → 200
+POST /api/thresholds {""monitor"": 5, ""redirect"": 10} → 200
+POST /api/thresholds {""monitor"": 5, ""redirect"": 90} → 403
+POST /api/thresholds {""monitor"": 15, ""redirect"": 40} → 200",พฤติกรรมregression/APIตามเคสและคำสั่งในหลักฐาน,POST200; monitor17เมื่อ5/90 → redirect_web56.99เมื่อ5/10; User403; /etcSHA256เดิม; คืน15/40,PASS,,PASS,cases-with-final-alerts.json + final-verification.json → Dashboard-Threshold-TOTP-User-Master; raw/
+Dashboard-Rule-approve-applied-restore,"192.168.56.187,192.168.56.188",2026-10-10T08:34:46.410945+00:00,"ip netns exec trap-attacker curl --interface 192.168.56.187 -skS -i --max-time 5 http://192.168.56.10/trap-retest-probe
+ip netns exec trap-attacker curl --interface 192.168.56.188 -skS -i --max-time 5 http://192.168.56.10/trap-retest-probe
+systemctl start trap-log-sync
+POST /api/candidates/save {""rule_id"": ""trap-retest-round3-20261010T083043Z"", ""version"": ""1.0.0"", ""status"": ""candidate"", ""evidence"": ""Real VM retest round3-20261010T083043Z"", ""confidence"": 0.9, ""reviewer"": ""lab-reviewer"", ""expected_sid"": 9900001, ""rule"": ""alert http $EXTERNAL_NET any -> $HOME_NET any (msg:\""AH generated repeat path\""; flow:established,to_server; http.uri; content:\""/trap-retest-probe\""; classtype:web-application-attack; metadata:severity high, project adaptive_honeypot; threshold:type limit, track by_src, count 1, seconds 60; sid:9900001; rev:1;)"", ""max_false_positive_rate"": 0.05, ""minimum_malicious_detections"": 1, ""max_validation_ms_per_event"": 10.0} → 200
+POST /api/candidates/approve {""rule_id"": ""trap-retest-round3-20261010T083043Z""} → 200
+POST /api/rules/change {""action"": ""restore"", ""backup"": ""dashboard-20261010T083446-150ed92a.rules""} → 200",พฤติกรรมregression/APIตามเคสและคำสั่งในหลักฐาน,approve200→applied; SID9900001 activeและalert; restoreappliedแล้วSIDหาย; IPใหม่ยิงURIไม่เกิดSID,PASS,,PASS,cases-with-final-alerts.json + final-verification.json → Dashboard-Rule-approve-applied-restore; raw/
+Dashboard-Invalid-rule-rejected,,2026-10-10T08:34:51.470096+00:00,"systemctl start trap-log-sync
+POST /api/rules/change {""action"": ""add"", ""rule"": ""alert http any any -> any any (msg:\""TRAP invalid syntax\""; trap_unknown_keyword:1; classtype:web-application-attack; sid:9900002; rev:1;)""} → 200
+POST /api/rules/change {""action"": ""restore"", ""backup"": ""dashboard-20261010T083451-c1ea524c.rules""} → 200",พฤติกรรมregression/APIตามเคสและคำสั่งในหลักฐาน,helperfailedที่syntax_test; activeSHA256ไม่เปลี่ยน; restoreapplied,PASS,,PASS,cases-with-final-alerts.json + final-verification.json → Dashboard-Invalid-rule-rejected; raw/
+Reboot-services-and-threshold-persistence,,2026-10-10T08:37:10.307342+00:00,"systemctl is-active suricata nginx adaptive-defender trap-dashboard trap-apply-rules.path trap-log-sync.timer
+systemctl start trap-log-sync
+",bootใหม่;บริการ6ตัวขึ้นเอง;thresholdpersist,boot ID เปลี่ยน; 6 services activeเอง; thresholdsก่อน/หลังSHA256เท่ากัน,PASS,,PASS,cases-with-final-alerts.json + final-verification.json → Reboot-services-and-threshold-persistence; raw/
+Post-reboot-HTTP,192.168.56.189,2026-10-10T08:37:11.217973+00:00,"ip netns exec trap-attacker curl --interface 192.168.56.189 -skS -i --max-time 5 -A sqlmap/1.x 'http://192.168.56.10/?id=1'
+ip netns exec trap-attacker curl --interface 192.168.56.189 -skS -i --max-time 5 'http://192.168.56.10/?regression=http'
+systemctl start trap-log-sync
+systemctl start trap-log-sync
+",redirectข้ามVMหลังrebootด้วยIPใหม่และHoneypotlog,HTTP200; redirect_web; WebHoneypot source/queryตรงกัน,PASS,,PASS,cases-with-final-alerts.json + final-verification.json → Post-reboot-HTTP; raw/
+Post-reboot-SSH,192.168.56.190,2026-10-10T08:37:12.962511+00:00,"ip netns exec trap-attacker python3 -c 'import socket,time
+for i in range(6):
+ s=socket.socket();s.settimeout(3);s.bind(('""'""'192.168.56.190'""'""',0));s.connect(('""'""'192.168.56.10'""'""',22));s.recv(256);s.close();time.sleep(.25)'
+ip netns exec trap-attacker python3 -c 'import socket,paramiko,time,json
+s=socket.socket();s.bind(('""'""'192.168.56.190'""'""',0));s.settimeout(5);s.connect(('""'""'192.168.56.10'""'""',22))
+c=paramiko.SSHClient();c.set_missing_host_key_policy(paramiko.AutoAddPolicy());c.connect('""'""'192.168.56.10'""'""',username='""'""'sysadmin'""'""',password='""'""'[REDACTED]'""'""',sock=s,look_for_keys=False,allow_agent=False,timeout=5)
+ch=c.invoke_shell()
+for cmd in ['""'""'whoami'""'""','""'""'ls'""'""','""'""'uname -a'""'""']:
+ ch.send(cmd+'""'""'\n'""'""');time.sleep(1);out='""'""''""'""'
+ while ch.recv_ready():out+=ch.recv(65535).decode(errors='""'""'replace'""'""')
+ print(json.dumps({'""'""'command'""'""':cmd,'""'""'output'""'""':out}),flush=True)
+ch.send('""'""'exit\n'""'""');time.sleep(.3);c.close()
+'
+systemctl start trap-log-sync
+systemctl start trap-log-sync
+POST /api/thresholds {""monitor"": 5, ""redirect"": 30} → 200
+POST /api/thresholds {""monitor"": 15, ""redirect"": 40} → 200",redirectข้ามVMหลังrebootด้วยIPใหม่และHoneypotlog,redirect_ssh; nftDNAT; Cowrieบันทึกwhoami/ls/uname -a,PASS,,PASS,cases-with-final-alerts.json + final-verification.json → Post-reboot-SSH; raw/
+Dashboard-TOTP-negative-and-role-enforcement,,2026-10-10T08:37:20.955176+00:00,"systemctl start trap-log-sync
+POST /api/login null → 200
+POST /api/login/totp null → 401
+GET /api/rules.json null → 403
+POST /api/thresholds {""monitor"": 5, ""redirect"": 10} → 403
+GET /api/rules.json null → 200",พฤติกรรมregression/APIตามเคสและคำสั่งในหลักฐาน,invalidTOTP401; Userrules403/threshold403; Masterrules200,PASS,,PASS,cases-with-final-alerts.json + final-verification.json → Dashboard-TOTP-negative-and-role-enforcement; raw/

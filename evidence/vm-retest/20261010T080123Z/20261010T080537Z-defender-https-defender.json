@@ -1,0 +1,8 @@
+{
+  "utc": "20261010T080537Z",
+  "vm": "defender",
+  "command": "grep \"192.168.56.107\" /var/log/nginx/adaptive_access.json; systemctl status trap-log-sync --no-pager | tail -n 12",
+  "exit_code": 0,
+  "stdout": "{\"timestamp\":\"2026-10-10T15:05:13+07:00\",\"source_ip\":\"192.168.56.107\",\"forwarded_for\":\"192.168.56.107\",\"protocol\":\"http\",\"profile\":\"real\",\"status\":200,\"request\":\"GET /?id=1 HTTP/1.1\",\"upstream\":\"127.0.0.1:8080\"}\n{\"timestamp\":\"2026-10-10T15:05:14+07:00\",\"source_ip\":\"192.168.56.107\",\"forwarded_for\":\"192.168.56.107\",\"protocol\":\"https\",\"profile\":\"real\",\"status\":200,\"request\":\"GET /?regression=https HTTP/1.1\",\"upstream\":\"127.0.0.1:8080\"}\n     Active: activating (start) since Sat 2026-10-10 15:05:34 +07; 367ms ago\nTriggeredBy: ● trap-log-sync.timer\n   Main PID: 12750 (trap-log-sync)\n      Tasks: 2 (limit: 2258)\n     Memory: 1.5M (peak: 1.8M)\n        CPU: 142ms\n     CGroup: /system.slice/trap-log-sync.service\n             ├─12750 /bin/bash /usr/local/sbin/trap-log-sync\n             └─12752 ssh -i /var/lib/trap/log-sync/key -o BatchMode=yes -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=/var/lib/trap/log-sync/known_hosts cowrie@10.10.10.2\n\nOct 10 15:05:34 project-defender systemd[1]: Starting trap-log-sync.service - Fetch actual Cowrie and Web Honeypot logs over restricted SSH...\nOct 10 15:05:34 project-defender trap-log-sync[12752]: Pseudo-terminal will not be allocated because stdin is not a terminal.\n",
+  "stderr": ""
+}

@@ -1,0 +1,19 @@
+[Unit]
+Description=TRAP lab isolation rules (nft table inet trap_isolation)
+Documentation=file:///opt/trap/deploy/isolation/README.md
+DefaultDependencies=no
+Wants=network-pre.target
+Before=network-pre.target docker.service shutdown.target
+Conflicts=shutdown.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+# /etc/trap/isolation.nft is a copy of honeypot.nft, web.nft or defender.nft.
+ExecStartPre=/usr/sbin/nft --check --file /etc/trap/isolation.nft
+ExecStart=/usr/sbin/nft --file /etc/trap/isolation.nft
+ExecReload=/usr/sbin/nft --file /etc/trap/isolation.nft
+ExecStop=/usr/sbin/nft delete table inet trap_isolation
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,49 @@
+{
+  "project_root": "/opt/trap",
+  "dashboard": {
+    "host": "127.0.0.1",
+    "port": 9090,
+    "maximum_rows": 50000
+  },
+  "security": {
+    "users_file": "/var/lib/trap/dashboard-users/users.json",
+    "audit_log": "/var/log/trap/dashboard-security.jsonl",
+    "session_ttl_seconds": 3600,
+    "secure_cookie": false,
+    "login_max_attempts": 5,
+    "login_window_seconds": 300,
+    "require_totp": true
+  },
+  "paths": {
+    "decisions": "/var/log/adaptive-defender/decisions.jsonl",
+    "status": "/var/lib/trap/status.json",
+    "eve_paths": [
+      "/var/log/suricata/eve.json"
+    ],
+    "rabbit_hole_config": "/var/lib/trap/rabbit-hole.json",
+    "rabbit_hole_logs": [
+      "/var/log/trap/honeypot/rabbit-hole-web.jsonl"
+    ],
+    "honeypot_paths": [
+      "/var/log/trap/honeypot/cowrie.json"
+    ],
+    "engine_config": "/etc/adaptive-defender/live.json",
+    "dashboard_state": "/var/lib/trap/dashboard-state.json"
+  },
+  "network": {
+    "management_interface": "enp0s3",
+    "outer_interface": "trap-out",
+    "outer_ip": "192.168.56.10",
+    "inner_interface": "enp0s8",
+    "inner_ip": "10.10.10.1"
+  },
+  "rules": {
+    "active_rules": "/etc/suricata/rules/et-open-selected.rules",
+    "baseline": "tests/fixtures/baseline.json",
+    "registry": "/var/lib/trap/rules/registry.jsonl",
+    "backup_dir": "/var/lib/trap/backups/rules",
+    "apply_dir": "/var/lib/trap/rules",
+    "suricata_config": "/etc/suricata/suricata.yaml",
+    "allow_deploy": false
+  }
+}

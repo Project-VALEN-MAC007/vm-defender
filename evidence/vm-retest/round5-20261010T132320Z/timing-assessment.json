@@ -1,0 +1,14 @@
+{
+  "name": "Timing-web-honeypot-remove",
+  "start_time": "2026-10-10T13:37:26.432227+00:00",
+  "end_time": "2026-10-10T13:38:22.296119+00:00",
+  "source_case": "Recovery-web-honeypot-remove",
+  "status": "FAIL",
+  "derived_assertion": true,
+  "no_additional_traffic": true,
+  "target_seconds_approx": 20,
+  "observed_listening_seconds": 51.760647672999994,
+  "observed_functional_seconds": 53.16960924299997,
+  "recovery_itself": "PASS",
+  "root_cause": "Not proven; no attribution to RAM or Docker internals"
+}

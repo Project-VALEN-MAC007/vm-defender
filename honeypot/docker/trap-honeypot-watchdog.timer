@@ -1,0 +1,11 @@
+[Unit]
+Description=TRAP: check honeypot containers every 20 seconds
+
+[Timer]
+OnBootSec=30s
+OnUnitActiveSec=20s
+AccuracySec=1s
+Unit=trap-honeypot-watchdog.service
+
+[Install]
+WantedBy=timers.target

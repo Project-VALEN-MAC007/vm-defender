@@ -1,0 +1,1949 @@
+{
+  "test_start": "2026-10-10T08:30:43+00:00",
+  "case_count": 47,
+  "final_pass": 47,
+  "final_fail": 0,
+  "initial_fail_count": 13,
+  "immediate_pass": 20,
+  "readiness_seconds": {
+    "count": 20,
+    "min": 0.162,
+    "median": 0.1765,
+    "max": 0.186
+  },
+  "et_pass": 13,
+  "cases": [
+    {
+      "name": "Immediate-HTTPS-1",
+      "initial_status": "PASS",
+      "initial_error": null,
+      "final_status": "PASS",
+      "proof": {
+        "decisions": [
+          {
+            "action": "redirect_web",
+            "adapter_result": "# generated atomically; do not edit\ndefault real;\n192.168.56.130 rabbithole;\n",
+            "dry_run": false,
+            "event_id": "7328b9e8f40be6bb33fad644d2167afdd9fc60afe5cd6551aac7aa99a42f569a",
+            "expiry": "2026-10-10T08:35:18.631742+00:00",
+            "nginx_ready": true,
+            "nginx_ready_seconds": 0.183,
+            "profile": "rabbithole",
+            "protocol": "http",
+            "reason": "severity=1:+35;protocol=http:+5",
+            "risk_score": 40.0,
+            "severity": 1,
+            "signature_id": 2101071,
+            "source_ip": "192.168.56.130",
+            "start_time": "2026-10-10T08:33:18.631742+00:00"
+          }
+        ],
+        "nginx": [
+          {
+            "timestamp": "2026-10-10T15:33:18+07:00",
+            "msec": "1791621198.866",
+            "worker_pid": "15028",
+            "source_ip": "192.168.56.130",
+            "forwarded_for": "192.168.56.130",
+            "protocol": "https",
+            "profile": "rabbithole",
+            "status": 200,
+            "request": "GET /?round3=immediate-1 HTTP/1.1",
+            "upstream": "10.10.10.2:8084"
+          }
+        ],
+        "honeypot": [
+          {
+            "action": "open_page",
+            "bytes": 322,
+            "clue_from": null,
+            "depth": null,
+            "dest_ip": "10.10.10.2",
+            "dest_port": 443,
+            "event": "rabbit_hole.web",
+            "followed_clue": false,
+            "headers": {
+              "accept": "*/*",
+              "connection": "close",
+              "host": "192.168.56.10",
+              "user-agent": "curl/8.5.0"
+            },
+            "kind": null,
+            "limit_reached": false,
+            "link": "ip_ua",
+            "linked_session": null,
+            "method": "GET",
+            "node_id": null,
+            "path": "/",
+            "payload": "",
+            "payload_truncated": false,
+            "profile": "rabbithole",
+            "protocol": "https",
+            "query": "round3=immediate-1",
+            "rabbit_hole_enabled": true,
+            "referer": null,
+            "request_id": "7b5c0b3ec196fcd9343eaf315bf6f37f",
+            "resource_id": null,
+            "scenario": null,
+            "session_id": "1bc2a5e7f033a1293506c93431e6897e",
+            "source_ip": "192.168.56.130",
+            "source_port": 36286,
+            "status": 200,
+            "timestamp": "2026-10-10T08:33:18.853244+00:00",
+            "user_agent": "curl/8.5.0"
+          }
+        ]
+      },
+      "basis": "Original request correlated with final raw logs; no traffic replay"
+    },
+    {
+      "name": "Immediate-HTTPS-2",
+      "initial_status": "PASS",
+      "initial_error": null,
+      "final_status": "PASS",
+      "proof": {
+        "decisions": [
+          {
+            "action": "redirect_web",
+            "adapter_result": "# generated atomically; do not edit\ndefault real;\n192.168.56.130 rabbithole;\n192.168.56.131 rabbithole;\n",
+            "dry_run": false,
+            "event_id": "fe7642135a25bd7d7762cce0c257e2b80b3b1c879451619833acf606ea301220",
+            "expiry": "2026-10-10T08:35:20.384117+00:00",
+            "nginx_ready": true,
+            "nginx_ready_seconds": 0.169,
+            "profile": "rabbithole",
+            "protocol": "http",
+            "reason": "severity=1:+35;protocol=http:+5",
+            "risk_score": 40.0,
+            "severity": 1,
+            "signature_id": 2101071,
+            "source_ip": "192.168.56.131",
+            "start_time": "2026-10-10T08:33:20.384117+00:00"
+          }
+        ],
+        "nginx": [
+          {
+            "timestamp": "2026-10-10T15:33:20+07:00",
+            "msec": "1791621200.606",
+            "worker_pid": "15065",
+            "source_ip": "192.168.56.131",
+            "forwarded_for": "192.168.56.131",
+            "protocol": "https",
+            "profile": "rabbithole",
+            "status": 200,
+            "request": "GET /?round3=immediate-2 HTTP/1.1",
+            "upstream": "10.10.10.2:8084"
+          }
+        ],
+        "honeypot": [
+          {
+            "action": "open_page",
+            "bytes": 322,
+            "clue_from": null,
+            "depth": null,
+            "dest_ip": "10.10.10.2",
+            "dest_port": 443,
+            "event": "rabbit_hole.web",
+            "followed_clue": false,
+            "headers": {
+              "accept": "*/*",
+              "connection": "close",
+              "host": "192.168.56.10",
+              "user-agent": "curl/8.5.0"
+            },
+            "kind": null,
+            "limit_reached": false,
+            "link": "ip_ua",
+            "linked_session": null,
+            "method": "GET",
+            "node_id": null,
+            "path": "/",
+            "payload": "",
+            "payload_truncated": false,
+            "profile": "rabbithole",
+            "protocol": "https",
+            "query": "round3=immediate-2",
+            "rabbit_hole_enabled": true,
+            "referer": null,
+            "request_id": "0d478a129ac5c277b1347078d0fc231c",
+            "resource_id": null,
+            "scenario": null,
+            "session_id": "595754215624b696098036a9d383c763",
+            "source_ip": "192.168.56.131",
+            "source_port": 42888,
+            "status": 200,
+            "timestamp": "2026-10-10T08:33:20.593535+00:00",
+            "user_agent": "curl/8.5.0"
+          }
+        ]
+      },
+      "basis": "Original request correlated with final raw logs; no traffic replay"
+    },
+    {
+      "name": "Immediate-HTTPS-3",
+      "initial_status": "FAIL",
+      "initial_error": "AssertionError: Immediate request absent from Honeypot log",
+      "final_status": "PASS",
+      "proof": {
+        "decisions": [
+          {
+            "action": "redirect_web",
+            "adapter_result": "# generated atomically; do not edit\ndefault real;\n192.168.56.130 rabbithole;\n192.168.56.131 rabbithole;\n192.168.56.132 rabbithole;\n",
+            "dry_run": false,
+            "event_id": "a00d919d71e600d6a9b80a2cf04e3338f91c1bb64f05477b80f072a308a0ece2",
+            "expiry": "2026-10-10T08:35:21.990779+00:00",
+            "nginx_ready": true,
+            "nginx_ready_seconds": 0.167,
+            "profile": "rabbithole",
+            "protocol": "http",
+            "reason": "severity=1:+35;protocol=http:+5",
+            "risk_score": 40.0,
+            "severity": 1,
+            "signature_id": 2101071,
+            "source_ip": "192.168.56.132",
+            "start_time": "2026-10-10T08:33:21.990779+00:00"
+          }
+        ],
+        "nginx": [
+          {
+            "timestamp": "2026-10-10T15:33:22+07:00",
+            "msec": "1791621202.220",
+            "worker_pid": "15102",
+            "source_ip": "192.168.56.132",
+            "forwarded_for": "192.168.56.132",
+            "protocol": "https",
+            "profile": "rabbithole",
+            "status": 200,
+            "request": "GET /?round3=immediate-3 HTTP/1.1",
+            "upstream": "10.10.10.2:8084"
+          }
+        ],
+        "honeypot": [
+          {
+            "action": "open_page",
+            "bytes": 322,
+            "clue_from": null,
+            "depth": null,
+            "dest_ip": "10.10.10.2",
+            "dest_port": 443,
+            "event": "rabbit_hole.web",
+            "followed_clue": false,
+            "headers": {
+              "accept": "*/*",
+              "connection": "close",
+              "host": "192.168.56.10",
+              "user-agent": "curl/8.5.0"
+            },
+            "kind": null,
+            "limit_reached": false,
+            "link": "ip_ua",
+            "linked_session": null,
+            "method": "GET",
+            "node_id": null,
+            "path": "/",
+            "payload": "",
+            "payload_truncated": false,
+            "profile": "rabbithole",
+            "protocol": "https",
+            "query": "round3=immediate-3",
+            "rabbit_hole_enabled": true,
+            "referer": null,
+            "request_id": "a4246f123dfed19c1169ac50460d812e",
+            "resource_id": null,
+            "scenario": null,
+            "session_id": "caed023785fc0a0b54ba534d981755f8",
+            "source_ip": "192.168.56.132",
+            "source_port": 56588,
+            "status": 200,
+            "timestamp": "2026-10-10T08:33:22.206983+00:00",
+            "user_agent": "curl/8.5.0"
+          }
+        ]
+      },
+      "basis": "Original request correlated with final raw logs; no traffic replay"
+    },
+    {
+      "name": "Immediate-HTTPS-4",
+      "initial_status": "FAIL",
+      "initial_error": "AssertionError: Immediate request absent from Honeypot log",
+      "final_status": "PASS",
+      "proof": {
+        "decisions": [
+          {
+            "action": "redirect_web",
+            "adapter_result": "# generated atomically; do not edit\ndefault real;\n192.168.56.130 rabbithole;\n192.168.56.131 rabbithole;\n192.168.56.132 rabbithole;\n192.168.56.133 rabbithole;\n",
+            "dry_run": false,
+            "event_id": "d5b11f71b3378df7d0e77c0c246fca1fc7bce9c674913590fba4483e4f880f78",
+            "expiry": "2026-10-10T08:35:22.642614+00:00",
+            "nginx_ready": true,
+            "nginx_ready_seconds": 0.162,
+            "profile": "rabbithole",
+            "protocol": "http",
+            "reason": "severity=1:+35;protocol=http:+5",
+            "risk_score": 40.0,
+            "severity": 1,
+            "signature_id": 2101071,
+            "source_ip": "192.168.56.133",
+            "start_time": "2026-10-10T08:33:22.642614+00:00"
+          }
+        ],
+        "nginx": [
+          {
+            "timestamp": "2026-10-10T15:33:22+07:00",
+            "msec": "1791621202.862",
+            "worker_pid": "15113",
+            "source_ip": "192.168.56.133",
+            "forwarded_for": "192.168.56.133",
+            "protocol": "https",
+            "profile": "rabbithole",
+            "status": 200,
+            "request": "GET /?round3=immediate-4 HTTP/1.1",
+            "upstream": "10.10.10.2:8084"
+          }
+        ],
+        "honeypot": [
+          {
+            "action": "open_page",
+            "bytes": 322,
+            "clue_from": null,
+            "depth": null,
+            "dest_ip": "10.10.10.2",
+            "dest_port": 443,
+            "event": "rabbit_hole.web",
+            "followed_clue": false,
+            "headers": {
+              "accept": "*/*",
+              "connection": "close",
+              "host": "192.168.56.10",
+              "user-agent": "curl/8.5.0"
+            },
+            "kind": null,
+            "limit_reached": false,
+            "link": "ip_ua",
+            "linked_session": null,
+            "method": "GET",
+            "node_id": null,
+            "path": "/",
+            "payload": "",
+            "payload_truncated": false,
+            "profile": "rabbithole",
+            "protocol": "https",
+            "query": "round3=immediate-4",
+            "rabbit_hole_enabled": true,
+            "referer": null,
+            "request_id": "626c67207d11ddb25556113c3202ef49",
+            "resource_id": null,
+            "scenario": null,
+            "session_id": "25d8e6bdb799b9f960cb35382f445e90",
+            "source_ip": "192.168.56.133",
+            "source_port": 51920,
+            "status": 200,
+            "timestamp": "2026-10-10T08:33:22.849421+00:00",
+            "user_agent": "curl/8.5.0"
+          }
+        ]
+      },
+      "basis": "Original request correlated with final raw logs; no traffic replay"
+    },
+    {
+      "name": "Immediate-HTTPS-5",
+      "initial_status": "FAIL",
+      "initial_error": "AssertionError: Immediate request absent from Honeypot log",
+      "final_status": "PASS",
+      "proof": {
+        "decisions": [
+          {
+            "action": "redirect_web",
+            "adapter_result": "# generated atomically; do not edit\ndefault real;\n192.168.56.130 rabbithole;\n192.168.56.131 rabbithole;\n192.168.56.132 rabbithole;\n192.168.56.133 rabbithole;\n192.168.56.134 rabbithole;\n",
+            "dry_run": false,
+            "event_id": "7bb6658ccb1f531e0105e6b14297c33588ad93121b2081c12618939d881b974d",
+            "expiry": "2026-10-10T08:35:23.237484+00:00",
+            "nginx_ready": true,
+            "nginx_ready_seconds": 0.182,
+            "profile": "rabbithole",
+            "protocol": "http",
+            "reason": "severity=1:+35;protocol=http:+5",
+            "risk_score": 40.0,
+            "severity": 1,
+            "signature_id": 2101071,
+            "source_ip": "192.168.56.134",
+            "start_time": "2026-10-10T08:33:23.237484+00:00"
+          }
+        ],
+        "nginx": [
+          {
+            "timestamp": "2026-10-10T15:33:23+07:00",
+            "msec": "1791621203.475",
+            "worker_pid": "15124",
+            "source_ip": "192.168.56.134",
+            "forwarded_for": "192.168.56.134",
+            "protocol": "https",
+            "profile": "rabbithole",
+            "status": 200,
+            "request": "GET /?round3=immediate-5 HTTP/1.1",
+            "upstream": "10.10.10.2:8084"
+          }
+        ],
+        "honeypot": [
+          {
+            "action": "open_page",
+            "bytes": 322,
+            "clue_from": null,
+            "depth": null,
+            "dest_ip": "10.10.10.2",
+            "dest_port": 443,
+            "event": "rabbit_hole.web",
+            "followed_clue": false,
+            "headers": {
+              "accept": "*/*",
+              "connection": "close",
+              "host": "192.168.56.10",
+              "user-agent": "curl/8.5.0"
+            },
+            "kind": null,
+            "limit_reached": false,
+            "link": "ip_ua",
+            "linked_session": null,
+            "method": "GET",
+            "node_id": null,
+            "path": "/",
+            "payload": "",
+            "payload_truncated": false,
+            "profile": "rabbithole",
+            "protocol": "https",
+            "query": "round3=immediate-5",
+            "rabbit_hole_enabled": true,
+            "referer": null,
+            "request_id": "7a0b3653b02e123f6b6d134f811c02b8",
+            "resource_id": null,
+            "scenario": null,
+            "session_id": "b3d1678cd93e18a200e063af7e4fd5de",
+            "source_ip": "192.168.56.134",
+            "source_port": 53468,
+            "status": 200,
+            "timestamp": "2026-10-10T08:33:23.461035+00:00",
+            "user_agent": "curl/8.5.0"
+          }
+        ]
+      },
+      "basis": "Original request correlated with final raw logs; no traffic replay"
+    },
+    {
+      "name": "Immediate-HTTPS-6",
+      "initial_status": "PASS",
+      "initial_error": null,
+      "final_status": "PASS",
+      "proof": {
+        "decisions": [
+          {
+            "action": "redirect_web",
+            "adapter_result": "# generated atomically; do not edit\ndefault real;\n192.168.56.130 rabbithole;\n192.168.56.131 rabbithole;\n192.168.56.132 rabbithole;\n192.168.56.133 rabbithole;\n192.168.56.134 rabbithole;\n192.168.56.135 rabbithole;\n",
+            "dry_run": false,
+            "event_id": "c8331d8292f1681ee6f66b7e1247a02e3c08ed870f5368d4e8bb0090de4ae169",
+            "expiry": "2026-10-10T08:35:23.917455+00:00",
+            "nginx_ready": true,
+            "nginx_ready_seconds": 0.174,
+            "profile": "rabbithole",
+            "protocol": "http",
+            "reason": "severity=1:+35;protocol=http:+5",
+            "risk_score": 40.0,
+            "severity": 1,
+            "signature_id": 2101071,
+            "source_ip": "192.168.56.135",
+            "start_time": "2026-10-10T08:33:23.917455+00:00"
+          }
+        ],
+        "nginx": [
+          {
+            "timestamp": "2026-10-10T15:33:24+07:00",
+            "msec": "1791621204.155",
+            "worker_pid": "15135",
+            "source_ip": "192.168.56.135",
+            "forwarded_for": "192.168.56.135",
+            "protocol": "https",
+            "profile": "rabbithole",
+            "status": 200,
+            "request": "GET /?round3=immediate-6 HTTP/1.1",
+            "upstream": "10.10.10.2:8084"
+          }
+        ],
+        "honeypot": [
+          {
+            "action": "open_page",
+            "bytes": 322,
+            "clue_from": null,
+            "depth": null,
+            "dest_ip": "10.10.10.2",
+            "dest_port": 443,
+            "event": "rabbit_hole.web",
+            "followed_clue": false,
+            "headers": {
+              "accept": "*/*",
+              "connection": "close",
+              "host": "192.168.56.10",
+              "user-agent": "curl/8.5.0"
+            },
+            "kind": null,
+            "limit_reached": false,
+            "link": "ip_ua",
+            "linked_session": null,
+            "method": "GET",
+            "node_id": null,
+            "path": "/",
+            "payload": "",
+            "payload_truncated": false,
+            "profile": "rabbithole",
+            "protocol": "https",
+            "query": "round3=immediate-6",
+            "rabbit_hole_enabled": true,
+            "referer": null,
+            "request_id": "f62db417374d0bc6bb851feeb2523842",
+            "resource_id": null,
+            "scenario": null,
+            "session_id": "a263ca0de21aac65b8b0f50c0b7678fa",
+            "source_ip": "192.168.56.135",
+            "source_port": 38646,
+            "status": 200,
+            "timestamp": "2026-10-10T08:33:24.142344+00:00",
+            "user_agent": "curl/8.5.0"
+          }
+        ]
+      },
+      "basis": "Original request correlated with final raw logs; no traffic replay"
+    },
+    {
+      "name": "Immediate-HTTPS-7",
+      "initial_status": "PASS",
+      "initial_error": null,
+      "final_status": "PASS",
+      "proof": {
+        "decisions": [
+          {
+            "action": "redirect_web",
+            "adapter_result": "# generated atomically; do not edit\ndefault real;\n192.168.56.130 rabbithole;\n192.168.56.131 rabbithole;\n192.168.56.132 rabbithole;\n192.168.56.133 rabbithole;\n192.168.56.134 rabbithole;\n192.168.56.135 rabbithole;\n192.168.56.136 rabbithole;\n",
+            "dry_run": false,
+            "event_id": "92c1eacd1d6e84c357201e644f5f463965585bc6c178c7dfadac9f1a6ed179b0",
+            "expiry": "2026-10-10T08:35:25.742043+00:00",
+            "nginx_ready": true,
+            "nginx_ready_seconds": 0.176,
+            "profile": "rabbithole",
+            "protocol": "http",
+            "reason": "severity=1:+35;protocol=http:+5",
+            "risk_score": 40.0,
+            "severity": 1,
+            "signature_id": 2101071,
+            "source_ip": "192.168.56.136",
+            "start_time": "2026-10-10T08:33:25.742043+00:00"
+          }
+        ],
+        "nginx": [
+          {
+            "timestamp": "2026-10-10T15:33:26+07:00",
+            "msec": "1791621206.005",
+            "worker_pid": "15173",
+            "source_ip": "192.168.56.136",
+            "forwarded_for": "192.168.56.136",
+            "protocol": "https",
+            "profile": "rabbithole",
+            "status": 200,
+            "request": "GET /?round3=immediate-7 HTTP/1.1",
+            "upstream": "10.10.10.2:8084"
+          }
+        ],
+        "honeypot": [
+          {
+            "action": "open_page",
+            "bytes": 322,
+            "clue_from": null,
+            "depth": null,
+            "dest_ip": "10.10.10.2",
+            "dest_port": 443,
+            "event": "rabbit_hole.web",
+            "followed_clue": false,
+            "headers": {
+              "accept": "*/*",
+              "connection": "close",
+              "host": "192.168.56.10",
+              "user-agent": "curl/8.5.0"
+            },
+            "kind": null,
+            "limit_reached": false,
+            "link": "ip_ua",
+            "linked_session": null,
+            "method": "GET",
+            "node_id": null,
+            "path": "/",
+            "payload": "",
+            "payload_truncated": false,
+            "profile": "rabbithole",
+            "protocol": "https",
+            "query": "round3=immediate-7",
+            "rabbit_hole_enabled": true,
+            "referer": null,
+            "request_id": "5b89198abd890da5575351baf4b3976a",
+            "resource_id": null,
+            "scenario": null,
+            "session_id": "e60adc568e0d6955efa1b84f01dc1ed2",
+            "source_ip": "192.168.56.136",
+            "source_port": 36760,
+            "status": 200,
+            "timestamp": "2026-10-10T08:33:25.991294+00:00",
+            "user_agent": "curl/8.5.0"
+          }
+        ]
+      },
+      "basis": "Original request correlated with final raw logs; no traffic replay"
+    },
+    {
+      "name": "Immediate-HTTPS-8",
+      "initial_status": "PASS",
+      "initial_error": null,
+      "final_status": "PASS",
+      "proof": {
+        "decisions": [
+          {
+            "action": "redirect_web",
+            "adapter_result": "# generated atomically; do not edit\ndefault real;\n192.168.56.130 rabbithole;\n192.168.56.131 rabbithole;\n192.168.56.132 rabbithole;\n192.168.56.133 rabbithole;\n192.168.56.134 rabbithole;\n192.168.56.135 rabbithole;\n192.168.56.136 rabbithole;\n192.168.56.137 rabbithole;\n",
+            "dry_run": false,
+            "event_id": "ffcf20e3a87245767b86c0eeaef9b48ded9885107531322b5e7400d255bcdd51",
+            "expiry": "2026-10-10T08:35:27.517658+00:00",
+            "nginx_ready": true,
+            "nginx_ready_seconds": 0.18,
+            "profile": "rabbithole",
+            "protocol": "http",
+            "reason": "severity=1:+35;protocol=http:+5",
+            "risk_score": 40.0,
+            "severity": 1,
+            "signature_id": 2101071,
+            "source_ip": "192.168.56.137",
+            "start_time": "2026-10-10T08:33:27.517658+00:00"
+          }
+        ],
+        "nginx": [
+          {
+            "timestamp": "2026-10-10T15:33:27+07:00",
+            "msec": "1791621207.753",
+            "worker_pid": "15210",
+            "source_ip": "192.168.56.137",
+            "forwarded_for": "192.168.56.137",
+            "protocol": "https",
+            "profile": "rabbithole",
+            "status": 200,
+            "request": "GET /?round3=immediate-8 HTTP/1.1",
+            "upstream": "10.10.10.2:8084"
+          }
+        ],
+        "honeypot": [
+          {
+            "action": "open_page",
+            "bytes": 322,
+            "clue_from": null,
+            "depth": null,
+            "dest_ip": "10.10.10.2",
+            "dest_port": 443,
+            "event": "rabbit_hole.web",
+            "followed_clue": false,
+            "headers": {
+              "accept": "*/*",
+              "connection": "close",
+              "host": "192.168.56.10",
+              "user-agent": "curl/8.5.0"
+            },
+            "kind": null,
+            "limit_reached": false,
+            "link": "ip_ua",
+            "linked_session": null,
+            "method": "GET",
+            "node_id": null,
+            "path": "/",
+            "payload": "",
+            "payload_truncated": false,
+            "profile": "rabbithole",
+            "protocol": "https",
+            "query": "round3=immediate-8",
+            "rabbit_hole_enabled": true,
+            "referer": null,
+            "request_id": "a33376ed2f590d45aa8b751ca62aba82",
+            "resource_id": null,
+            "scenario": null,
+            "session_id": "f372376915f3e34cb1219bc4a73416a1",
+            "source_ip": "192.168.56.137",
+            "source_port": 42606,
+            "status": 200,
+            "timestamp": "2026-10-10T08:33:27.739534+00:00",
+            "user_agent": "curl/8.5.0"
+          }
+        ]
+      },
+      "basis": "Original request correlated with final raw logs; no traffic replay"
+    },
+    {
+      "name": "Immediate-HTTPS-9",
+      "initial_status": "FAIL",
+      "initial_error": "AssertionError: Immediate request absent from Honeypot log",
+      "final_status": "PASS",
+      "proof": {
+        "decisions": [
+          {
+            "action": "redirect_web",
+            "adapter_result": "# generated atomically; do not edit\ndefault real;\n192.168.56.130 rabbithole;\n192.168.56.131 rabbithole;\n192.168.56.132 rabbithole;\n192.168.56.133 rabbithole;\n192.168.56.134 rabbithole;\n192.168.56.135 rabbithole;\n192.168.56.136 rabbithole;\n192.168.56.137 rabbithole;\n192.168.56.138 rabbithole;\n",
+            "dry_run": false,
+            "event_id": "0fa1761da2533996b3d5d707e4472a4dc83715b95b7c91992907adf560995eac",
+            "expiry": "2026-10-10T08:35:28.752990+00:00",
+            "nginx_ready": true,
+            "nginx_ready_seconds": 0.177,
+            "profile": "rabbithole",
+            "protocol": "http",
+            "reason": "severity=1:+35;protocol=http:+5",
+            "risk_score": 40.0,
+            "severity": 1,
+            "signature_id": 2101071,
+            "source_ip": "192.168.56.138",
+            "start_time": "2026-10-10T08:33:28.752990+00:00"
+          }
+        ],
+        "nginx": [
+          {
+            "timestamp": "2026-10-10T15:33:28+07:00",
+            "msec": "1791621208.993",
+            "worker_pid": "15232",
+            "source_ip": "192.168.56.138",
+            "forwarded_for": "192.168.56.138",
+            "protocol": "https",
+            "profile": "rabbithole",
+            "status": 200,
+            "request": "GET /?round3=immediate-9 HTTP/1.1",
+            "upstream": "10.10.10.2:8084"
+          }
+        ],
+        "honeypot": [
+          {
+            "action": "open_page",
+            "bytes": 322,
+            "clue_from": null,
+            "depth": null,
+            "dest_ip": "10.10.10.2",
+            "dest_port": 443,
+            "event": "rabbit_hole.web",
+            "followed_clue": false,
+            "headers": {
+              "accept": "*/*",
+              "connection": "close",
+              "host": "192.168.56.10",
+              "user-agent": "curl/8.5.0"
+            },
+            "kind": null,
+            "limit_reached": false,
+            "link": "ip_ua",
+            "linked_session": null,
+            "method": "GET",
+            "node_id": null,
+            "path": "/",
+            "payload": "",
+            "payload_truncated": false,
+            "profile": "rabbithole",
+            "protocol": "https",
+            "query": "round3=immediate-9",
+            "rabbit_hole_enabled": true,
+            "referer": null,
+            "request_id": "c51064688bc963d24c0ad0ac34196a3a",
+            "resource_id": null,
+            "scenario": null,
+            "session_id": "ce3ac0ee09ceba179524c102530c63ee",
+            "source_ip": "192.168.56.138",
+            "source_port": 53428,
+            "status": 200,
+            "timestamp": "2026-10-10T08:33:28.979700+00:00",
+            "user_agent": "curl/8.5.0"
+          }
+        ]
+      },
+      "basis": "Original request correlated with final raw logs; no traffic replay"
+    },
+    {
+      "name": "Immediate-HTTPS-10",
+      "initial_status": "FAIL",
+      "initial_error": "AssertionError: Immediate request absent from Honeypot log",
+      "final_status": "PASS",
+      "proof": {
+        "decisions": [
+          {
+            "action": "redirect_web",
+            "adapter_result": "# generated atomically; do not edit\ndefault real;\n192.168.56.130 rabbithole;\n192.168.56.131 rabbithole;\n192.168.56.132 rabbithole;\n192.168.56.133 rabbithole;\n192.168.56.134 rabbithole;\n192.168.56.135 rabbithole;\n192.168.56.136 rabbithole;\n192.168.56.137 rabbithole;\n192.168.56.138 rabbithole;\n192.168.56.139 rabbithole;\n",
+            "dry_run": false,
+            "event_id": "bd5f66e9bdb1c8e6ef9faef71cdf9fa315da2cf8602943a97ba541b6dc46b8d9",
+            "expiry": "2026-10-10T08:35:29.362483+00:00",
+            "nginx_ready": true,
+            "nginx_ready_seconds": 0.18,
+            "profile": "rabbithole",
+            "protocol": "http",
+            "reason": "severity=1:+35;protocol=http:+5",
+            "risk_score": 40.0,
+            "severity": 1,
+            "signature_id": 2101071,
+            "source_ip": "192.168.56.139",
+            "start_time": "2026-10-10T08:33:29.362483+00:00"
+          }
+        ],
+        "nginx": [
+          {
+            "timestamp": "2026-10-10T15:33:29+07:00",
+            "msec": "1791621209.608",
+            "worker_pid": "15244",
+            "source_ip": "192.168.56.139",
+            "forwarded_for": "192.168.56.139",
+            "protocol": "https",
+            "profile": "rabbithole",
+            "status": 200,
+            "request": "GET /?round3=immediate-10 HTTP/1.1",
+            "upstream": "10.10.10.2:8084"
+          }
+        ],
+        "honeypot": [
+          {
+            "action": "open_page",
+            "bytes": 322,
+            "clue_from": null,
+            "depth": null,
+            "dest_ip": "10.10.10.2",
+            "dest_port": 443,
+            "event": "rabbit_hole.web",
+            "followed_clue": false,
+            "headers": {
+              "accept": "*/*",
+              "connection": "close",
+              "host": "192.168.56.10",
+              "user-agent": "curl/8.5.0"
+            },
+            "kind": null,
+            "limit_reached": false,
+            "link": "ip_ua",
+            "linked_session": null,
+            "method": "GET",
+            "node_id": null,
+            "path": "/",
+            "payload": "",
+            "payload_truncated": false,
+            "profile": "rabbithole",
+            "protocol": "https",
+            "query": "round3=immediate-10",
+            "rabbit_hole_enabled": true,
+            "referer": null,
+            "request_id": "6f25a55074fcde28105df4d0e501b265",
+            "resource_id": null,
+            "scenario": null,
+            "session_id": "a59610eb0d9d3473e28cef3e645ee7ff",
+            "source_ip": "192.168.56.139",
+            "source_port": 34576,
+            "status": 200,
+            "timestamp": "2026-10-10T08:33:29.593839+00:00",
+            "user_agent": "curl/8.5.0"
+          }
+        ]
+      },
+      "basis": "Original request correlated with final raw logs; no traffic replay"
+    },
+    {
+      "name": "Immediate-HTTP-1",
+      "initial_status": "FAIL",
+      "initial_error": "AssertionError: Immediate request absent from Honeypot log",
+      "final_status": "PASS",
+      "proof": {
+        "decisions": [
+          {
+            "action": "redirect_web",
+            "adapter_result": "# generated atomically; do not edit\ndefault real;\n192.168.56.130 rabbithole;\n192.168.56.131 rabbithole;\n192.168.56.132 rabbithole;\n192.168.56.133 rabbithole;\n192.168.56.134 rabbithole;\n192.168.56.135 rabbithole;\n192.168.56.136 rabbithole;\n192.168.56.137 rabbithole;\n192.168.56.138 rabbithole;\n192.168.56.139 rabbithole;\n192.168.56.140 rabbithole;\n",
+            "dry_run": false,
+            "event_id": "6c4f362f1445043f81048a6b27fe493e7c9a326afb89e287226b0467f9511f73",
+            "expiry": "2026-10-10T08:35:29.977322+00:00",
+            "nginx_ready": true,
+            "nginx_ready_seconds": 0.178,
+            "profile": "rabbithole",
+            "protocol": "http",
+            "reason": "severity=1:+35;protocol=http:+5",
+            "risk_score": 40.0,
+            "severity": 1,
+            "signature_id": 2101071,
+            "source_ip": "192.168.56.140",
+            "start_time": "2026-10-10T08:33:29.977322+00:00"
+          }
+        ],
+        "nginx": [
+          {
+            "timestamp": "2026-10-10T15:33:30+07:00",
+            "msec": "1791621210.209",
+            "worker_pid": "15254",
+            "source_ip": "192.168.56.140",
+            "forwarded_for": "192.168.56.140",
+            "protocol": "http",
+            "profile": "rabbithole",
+            "status": 200,
+            "request": "GET /?round3=immediate-11 HTTP/1.1",
+            "upstream": "10.10.10.2:8084"
+          }
+        ],
+        "honeypot": [
+          {
+            "action": "open_page",
+            "bytes": 322,
+            "clue_from": null,
+            "depth": null,
+            "dest_ip": "10.10.10.2",
+            "dest_port": 80,
+            "event": "rabbit_hole.web",
+            "followed_clue": false,
+            "headers": {
+              "accept": "*/*",
+              "connection": "close",
+              "host": "192.168.56.10",
+              "user-agent": "curl/8.5.0"
+            },
+            "kind": null,
+            "limit_reached": false,
+            "link": "ip_ua",
+            "linked_session": null,
+            "method": "GET",
+            "node_id": null,
+            "path": "/",
+            "payload": "",
+            "payload_truncated": false,
+            "profile": "rabbithole",
+            "protocol": "http",
+            "query": "round3=immediate-11",
+            "rabbit_hole_enabled": true,
+            "referer": null,
+            "request_id": "fecca7f1e0dde2edfc5baffe7152e73c",
+            "resource_id": null,
+            "scenario": null,
+            "session_id": "67babdd59496b0417c7749e2ab05d125",
+            "source_ip": "192.168.56.140",
+            "source_port": 60148,
+            "status": 200,
+            "timestamp": "2026-10-10T08:33:30.195709+00:00",
+            "user_agent": "curl/8.5.0"
+          }
+        ]
+      },
+      "basis": "Original request correlated with final raw logs; no traffic replay"
+    },
+    {
+      "name": "Immediate-HTTP-2",
+      "initial_status": "FAIL",
+      "initial_error": "AssertionError: Immediate request absent from Honeypot log",
+      "final_status": "PASS",
+      "proof": {
+        "decisions": [
+          {
+            "action": "redirect_web",
+            "adapter_result": "# generated atomically; do not edit\ndefault real;\n192.168.56.130 rabbithole;\n192.168.56.131 rabbithole;\n192.168.56.132 rabbithole;\n192.168.56.133 rabbithole;\n192.168.56.134 rabbithole;\n192.168.56.135 rabbithole;\n192.168.56.136 rabbithole;\n192.168.56.137 rabbithole;\n192.168.56.138 rabbithole;\n192.168.56.139 rabbithole;\n192.168.56.140 rabbithole;\n192.168.56.141 rabbithole;\n",
+            "dry_run": false,
+            "event_id": "1c00037b6735fa0c8863be5a20893a7039838f3b9259815b3ddea8a6e29a2fbd",
+            "expiry": "2026-10-10T08:35:30.587507+00:00",
+            "nginx_ready": true,
+            "nginx_ready_seconds": 0.172,
+            "profile": "rabbithole",
+            "protocol": "http",
+            "reason": "severity=1:+35;protocol=http:+5",
+            "risk_score": 40.0,
+            "severity": 1,
+            "signature_id": 2101071,
+            "source_ip": "192.168.56.141",
+            "start_time": "2026-10-10T08:33:30.587507+00:00"
+          }
+        ],
+        "nginx": [
+          {
+            "timestamp": "2026-10-10T15:33:30+07:00",
+            "msec": "1791621210.812",
+            "worker_pid": "15266",
+            "source_ip": "192.168.56.141",
+            "forwarded_for": "192.168.56.141",
+            "protocol": "http",
+            "profile": "rabbithole",
+            "status": 200,
+            "request": "GET /?round3=immediate-12 HTTP/1.1",
+            "upstream": "10.10.10.2:8084"
+          }
+        ],
+        "honeypot": [
+          {
+            "action": "open_page",
+            "bytes": 322,
+            "clue_from": null,
+            "depth": null,
+            "dest_ip": "10.10.10.2",
+            "dest_port": 80,
+            "event": "rabbit_hole.web",
+            "followed_clue": false,
+            "headers": {
+              "accept": "*/*",
+              "connection": "close",
+              "host": "192.168.56.10",
+              "user-agent": "curl/8.5.0"
+            },
+            "kind": null,
+            "limit_reached": false,
+            "link": "ip_ua",
+            "linked_session": null,
+            "method": "GET",
+            "node_id": null,
+            "path": "/",
+            "payload": "",
+            "payload_truncated": false,
+            "profile": "rabbithole",
+            "protocol": "http",
+            "query": "round3=immediate-12",
+            "rabbit_hole_enabled": true,
+            "referer": null,
+            "request_id": "16bb925bf0cc23b95b6b299842fe731c",
+            "resource_id": null,
+            "scenario": null,
+            "session_id": "e99837945d85d6a17a38ac08d35e2144",
+            "source_ip": "192.168.56.141",
+            "source_port": 36980,
+            "status": 200,
+            "timestamp": "2026-10-10T08:33:30.799473+00:00",
+            "user_agent": "curl/8.5.0"
+          }
+        ]
+      },
+      "basis": "Original request correlated with final raw logs; no traffic replay"
+    },
+    {
+      "name": "Immediate-HTTP-3",
+      "initial_status": "FAIL",
+      "initial_error": "AssertionError: Immediate request absent from Honeypot log",
+      "final_status": "PASS",
+      "proof": {
+        "decisions": [
+          {
+            "action": "redirect_web",
+            "adapter_result": "# generated atomically; do not edit\ndefault real;\n192.168.56.130 rabbithole;\n192.168.56.131 rabbithole;\n192.168.56.132 rabbithole;\n192.168.56.133 rabbithole;\n192.168.56.134 rabbithole;\n192.168.56.135 rabbithole;\n192.168.56.136 rabbithole;\n192.168.56.137 rabbithole;\n192.168.56.138 rabbithole;\n192.168.56.139 rabbithole;\n192.168.56.140 rabbithole;\n192.168.56.141 rabbithole;\n192.168.56.142 rabbithole;\n",
+            "dry_run": false,
+            "event_id": "a4e4b18444390d00b31c53d1140787ab3e1e3aab44dab70b9b48b345f3b2355e",
+            "expiry": "2026-10-10T08:35:31.191477+00:00",
+            "nginx_ready": true,
+            "nginx_ready_seconds": 0.18,
+            "profile": "rabbithole",
+            "protocol": "http",
+            "reason": "severity=1:+35;protocol=http:+5",
+            "risk_score": 40.0,
+            "severity": 1,
+            "signature_id": 2101071,
+            "source_ip": "192.168.56.142",
+            "start_time": "2026-10-10T08:33:31.191477+00:00"
+          }
+        ],
+        "nginx": [
+          {
+            "timestamp": "2026-10-10T15:33:31+07:00",
+            "msec": "1791621211.426",
+            "worker_pid": "15276",
+            "source_ip": "192.168.56.142",
+            "forwarded_for": "192.168.56.142",
+            "protocol": "http",
+            "profile": "rabbithole",
+            "status": 200,
+            "request": "GET /?round3=immediate-13 HTTP/1.1",
+            "upstream": "10.10.10.2:8084"
+          }
+        ],
+        "honeypot": [
+          {
+            "action": "open_page",
+            "bytes": 322,
+            "clue_from": null,
+            "depth": null,
+            "dest_ip": "10.10.10.2",
+            "dest_port": 80,
+            "event": "rabbit_hole.web",
+            "followed_clue": false,
+            "headers": {
+              "accept": "*/*",
+              "connection": "close",
+              "host": "192.168.56.10",
+              "user-agent": "curl/8.5.0"
+            },
+            "kind": null,
+            "limit_reached": false,
+            "link": "ip_ua",
+            "linked_session": null,
+            "method": "GET",
+            "node_id": null,
+            "path": "/",
+            "payload": "",
+            "payload_truncated": false,
+            "profile": "rabbithole",
+            "protocol": "http",
+            "query": "round3=immediate-13",
+            "rabbit_hole_enabled": true,
+            "referer": null,
+            "request_id": "18a608e772fa06a85626f32fa54299a2",
+            "resource_id": null,
+            "scenario": null,
+            "session_id": "f392b142acb5a83284d44f5acd07cb1c",
+            "source_ip": "192.168.56.142",
+            "source_port": 49218,
+            "status": 200,
+            "timestamp": "2026-10-10T08:33:31.412709+00:00",
+            "user_agent": "curl/8.5.0"
+          }
+        ]
+      },
+      "basis": "Original request correlated with final raw logs; no traffic replay"
+    },
+    {
+      "name": "Immediate-HTTP-4",
+      "initial_status": "FAIL",
+      "initial_error": "AssertionError: Immediate request absent from Honeypot log",
+      "final_status": "PASS",
+      "proof": {
+        "decisions": [
+          {
+            "action": "redirect_web",
+            "adapter_result": "# generated atomically; do not edit\ndefault real;\n192.168.56.130 rabbithole;\n192.168.56.131 rabbithole;\n192.168.56.132 rabbithole;\n192.168.56.133 rabbithole;\n192.168.56.134 rabbithole;\n192.168.56.135 rabbithole;\n192.168.56.136 rabbithole;\n192.168.56.137 rabbithole;\n192.168.56.138 rabbithole;\n192.168.56.139 rabbithole;\n192.168.56.140 rabbithole;\n192.168.56.141 rabbithole;\n192.168.56.142 rabbithole;\n192.168.56.143 rabbithole;\n",
+            "dry_run": false,
+            "event_id": "49c45b5618f24cb71681ba875f408ab8c49cc9140558ae9c1d1db3170b15ebf2",
+            "expiry": "2026-10-10T08:35:31.802928+00:00",
+            "nginx_ready": true,
+            "nginx_ready_seconds": 0.164,
+            "profile": "rabbithole",
+            "protocol": "http",
+            "reason": "severity=1:+35;protocol=http:+5",
+            "risk_score": 40.0,
+            "severity": 1,
+            "signature_id": 2101071,
+            "source_ip": "192.168.56.143",
+            "start_time": "2026-10-10T08:33:31.802928+00:00"
+          }
+        ],
+        "nginx": [
+          {
+            "timestamp": "2026-10-10T15:33:32+07:00",
+            "msec": "1791621212.021",
+            "worker_pid": "15288",
+            "source_ip": "192.168.56.143",
+            "forwarded_for": "192.168.56.143",
+            "protocol": "http",
+            "profile": "rabbithole",
+            "status": 200,
+            "request": "GET /?round3=immediate-14 HTTP/1.1",
+            "upstream": "10.10.10.2:8084"
+          }
+        ],
+        "honeypot": [
+          {
+            "action": "open_page",
+            "bytes": 322,
+            "clue_from": null,
+            "depth": null,
+            "dest_ip": "10.10.10.2",
+            "dest_port": 80,
+            "event": "rabbit_hole.web",
+            "followed_clue": false,
+            "headers": {
+              "accept": "*/*",
+              "connection": "close",
+              "host": "192.168.56.10",
+              "user-agent": "curl/8.5.0"
+            },
+            "kind": null,
+            "limit_reached": false,
+            "link": "ip_ua",
+            "linked_session": null,
+            "method": "GET",
+            "node_id": null,
+            "path": "/",
+            "payload": "",
+            "payload_truncated": false,
+            "profile": "rabbithole",
+            "protocol": "http",
+            "query": "round3=immediate-14",
+            "rabbit_hole_enabled": true,
+            "referer": null,
+            "request_id": "82f06a366f70e97c96600475b39775ef",
+            "resource_id": null,
+            "scenario": null,
+            "session_id": "d7eb1f1493563eabcf0f698e45478e28",
+            "source_ip": "192.168.56.143",
+            "source_port": 53768,
+            "status": 200,
+            "timestamp": "2026-10-10T08:33:32.007949+00:00",
+            "user_agent": "curl/8.5.0"
+          }
+        ]
+      },
+      "basis": "Original request correlated with final raw logs; no traffic replay"
+    },
+    {
+      "name": "Immediate-HTTP-5",
+      "initial_status": "FAIL",
+      "initial_error": "AssertionError: Immediate request absent from Honeypot log",
+      "final_status": "PASS",
+      "proof": {
+        "decisions": [
+          {
+            "action": "redirect_web",
+            "adapter_result": "# generated atomically; do not edit\ndefault real;\n192.168.56.130 rabbithole;\n192.168.56.131 rabbithole;\n192.168.56.132 rabbithole;\n192.168.56.133 rabbithole;\n192.168.56.134 rabbithole;\n192.168.56.135 rabbithole;\n192.168.56.136 rabbithole;\n192.168.56.137 rabbithole;\n192.168.56.138 rabbithole;\n192.168.56.139 rabbithole;\n192.168.56.140 rabbithole;\n192.168.56.141 rabbithole;\n192.168.56.142 rabbithole;\n192.168.56.143 rabbithole;\n192.168.56.144 rabbithole;\n",
+            "dry_run": false,
+            "event_id": "a4cce94791052fe7f561d44074ea61c39ce57988422ccf46ef424e5605625de0",
+            "expiry": "2026-10-10T08:35:32.429330+00:00",
+            "nginx_ready": true,
+            "nginx_ready_seconds": 0.186,
+            "profile": "rabbithole",
+            "protocol": "http",
+            "reason": "severity=1:+35;protocol=http:+5",
+            "risk_score": 40.0,
+            "severity": 1,
+            "signature_id": 2101071,
+            "source_ip": "192.168.56.144",
+            "start_time": "2026-10-10T08:33:32.429330+00:00"
+          }
+        ],
+        "nginx": [
+          {
+            "timestamp": "2026-10-10T15:33:32+07:00",
+            "msec": "1791621212.664",
+            "worker_pid": "15298",
+            "source_ip": "192.168.56.144",
+            "forwarded_for": "192.168.56.144",
+            "protocol": "http",
+            "profile": "rabbithole",
+            "status": 200,
+            "request": "GET /?round3=immediate-15 HTTP/1.1",
+            "upstream": "10.10.10.2:8084"
+          }
+        ],
+        "honeypot": [
+          {
+            "action": "open_page",
+            "bytes": 322,
+            "clue_from": null,
+            "depth": null,
+            "dest_ip": "10.10.10.2",
+            "dest_port": 80,
+            "event": "rabbit_hole.web",
+            "followed_clue": false,
+            "headers": {
+              "accept": "*/*",
+              "connection": "close",
+              "host": "192.168.56.10",
+              "user-agent": "curl/8.5.0"
+            },
+            "kind": null,
+            "limit_reached": false,
+            "link": "ip_ua",
+            "linked_session": null,
+            "method": "GET",
+            "node_id": null,
+            "path": "/",
+            "payload": "",
+            "payload_truncated": false,
+            "profile": "rabbithole",
+            "protocol": "http",
+            "query": "round3=immediate-15",
+            "rabbit_hole_enabled": true,
+            "referer": null,
+            "request_id": "fbfe1bc8a6536134f09ad0bb584c0265",
+            "resource_id": null,
+            "scenario": null,
+            "session_id": "8cc52a1d87d6ede8fcfe077d4c75486f",
+            "source_ip": "192.168.56.144",
+            "source_port": 45172,
+            "status": 200,
+            "timestamp": "2026-10-10T08:33:32.649787+00:00",
+            "user_agent": "curl/8.5.0"
+          }
+        ]
+      },
+      "basis": "Original request correlated with final raw logs; no traffic replay"
+    },
+    {
+      "name": "Immediate-HTTP-6",
+      "initial_status": "FAIL",
+      "initial_error": "AssertionError: Immediate request absent from Honeypot log",
+      "final_status": "PASS",
+      "proof": {
+        "decisions": [
+          {
+            "action": "redirect_web",
+            "adapter_result": "# generated atomically; do not edit\ndefault real;\n192.168.56.130 rabbithole;\n192.168.56.131 rabbithole;\n192.168.56.132 rabbithole;\n192.168.56.133 rabbithole;\n192.168.56.134 rabbithole;\n192.168.56.135 rabbithole;\n192.168.56.136 rabbithole;\n192.168.56.137 rabbithole;\n192.168.56.138 rabbithole;\n192.168.56.139 rabbithole;\n192.168.56.140 rabbithole;\n192.168.56.141 rabbithole;\n192.168.56.142 rabbithole;\n192.168.56.143 rabbithole;\n192.168.56.144 rabbithole;\n192.168.56.145 rabbithole;\n",
+            "dry_run": false,
+            "event_id": "d57354d3eb51caa519430af396b71b3314503cb1d86290ced4468a38cffb2448",
+            "expiry": "2026-10-10T08:35:33.046614+00:00",
+            "nginx_ready": true,
+            "nginx_ready_seconds": 0.186,
+            "profile": "rabbithole",
+            "protocol": "http",
+            "reason": "severity=1:+35;protocol=http:+5",
+            "risk_score": 40.0,
+            "severity": 1,
+            "signature_id": 2101071,
+            "source_ip": "192.168.56.145",
+            "start_time": "2026-10-10T08:33:33.046614+00:00"
+          }
+        ],
+        "nginx": [
+          {
+            "timestamp": "2026-10-10T15:33:33+07:00",
+            "msec": "1791621213.280",
+            "worker_pid": "15309",
+            "source_ip": "192.168.56.145",
+            "forwarded_for": "192.168.56.145",
+            "protocol": "http",
+            "profile": "rabbithole",
+            "status": 200,
+            "request": "GET /?round3=immediate-16 HTTP/1.1",
+            "upstream": "10.10.10.2:8084"
+          }
+        ],
+        "honeypot": [
+          {
+            "action": "open_page",
+            "bytes": 322,
+            "clue_from": null,
+            "depth": null,
+            "dest_ip": "10.10.10.2",
+            "dest_port": 80,
+            "event": "rabbit_hole.web",
+            "followed_clue": false,
+            "headers": {
+              "accept": "*/*",
+              "connection": "close",
+              "host": "192.168.56.10",
+              "user-agent": "curl/8.5.0"
+            },
+            "kind": null,
+            "limit_reached": false,
+            "link": "ip_ua",
+            "linked_session": null,
+            "method": "GET",
+            "node_id": null,
+            "path": "/",
+            "payload": "",
+            "payload_truncated": false,
+            "profile": "rabbithole",
+            "protocol": "http",
+            "query": "round3=immediate-16",
+            "rabbit_hole_enabled": true,
+            "referer": null,
+            "request_id": "8b65ea515bb3e43e70fc5d65b1d515f7",
+            "resource_id": null,
+            "scenario": null,
+            "session_id": "aec39f682f91353f911d88236ece62f7",
+            "source_ip": "192.168.56.145",
+            "source_port": 59002,
+            "status": 200,
+            "timestamp": "2026-10-10T08:33:33.265949+00:00",
+            "user_agent": "curl/8.5.0"
+          }
+        ]
+      },
+      "basis": "Original request correlated with final raw logs; no traffic replay"
+    },
+    {
+      "name": "Immediate-HTTP-7",
+      "initial_status": "FAIL",
+      "initial_error": "AssertionError: Immediate request absent from Honeypot log",
+      "final_status": "PASS",
+      "proof": {
+        "decisions": [
+          {
+            "action": "redirect_web",
+            "adapter_result": "# generated atomically; do not edit\ndefault real;\n192.168.56.130 rabbithole;\n192.168.56.131 rabbithole;\n192.168.56.132 rabbithole;\n192.168.56.133 rabbithole;\n192.168.56.134 rabbithole;\n192.168.56.135 rabbithole;\n192.168.56.136 rabbithole;\n192.168.56.137 rabbithole;\n192.168.56.138 rabbithole;\n192.168.56.139 rabbithole;\n192.168.56.140 rabbithole;\n192.168.56.141 rabbithole;\n192.168.56.142 rabbithole;\n192.168.56.143 rabbithole;\n192.168.56.144 rabbithole;\n192.168.56.145 rabbithole;\n192.168.56.146 rabbithole;\n",
+            "dry_run": false,
+            "event_id": "9ca32aec70e24f1a27817cb98c77ddba2d6f7eb1858d169dee5179e137bc2916",
+            "expiry": "2026-10-10T08:35:33.690117+00:00",
+            "nginx_ready": true,
+            "nginx_ready_seconds": 0.166,
+            "profile": "rabbithole",
+            "protocol": "http",
+            "reason": "severity=1:+35;protocol=http:+5",
+            "risk_score": 40.0,
+            "severity": 1,
+            "signature_id": 2101071,
+            "source_ip": "192.168.56.146",
+            "start_time": "2026-10-10T08:33:33.690117+00:00"
+          }
+        ],
+        "nginx": [
+          {
+            "timestamp": "2026-10-10T15:33:33+07:00",
+            "msec": "1791621213.906",
+            "worker_pid": "15322",
+            "source_ip": "192.168.56.146",
+            "forwarded_for": "192.168.56.146",
+            "protocol": "http",
+            "profile": "rabbithole",
+            "status": 200,
+            "request": "GET /?round3=immediate-17 HTTP/1.1",
+            "upstream": "10.10.10.2:8084"
+          }
+        ],
+        "honeypot": [
+          {
+            "action": "open_page",
+            "bytes": 322,
+            "clue_from": null,
+            "depth": null,
+            "dest_ip": "10.10.10.2",
+            "dest_port": 80,
+            "event": "rabbit_hole.web",
+            "followed_clue": false,
+            "headers": {
+              "accept": "*/*",
+              "connection": "close",
+              "host": "192.168.56.10",
+              "user-agent": "curl/8.5.0"
+            },
+            "kind": null,
+            "limit_reached": false,
+            "link": "ip_ua",
+            "linked_session": null,
+            "method": "GET",
+            "node_id": null,
+            "path": "/",
+            "payload": "",
+            "payload_truncated": false,
+            "profile": "rabbithole",
+            "protocol": "http",
+            "query": "round3=immediate-17",
+            "rabbit_hole_enabled": true,
+            "referer": null,
+            "request_id": "0fef3bcf75d9478ed132ce14b7d6de79",
+            "resource_id": null,
+            "scenario": null,
+            "session_id": "6181b52c22461dab410a1b58697084fc",
+            "source_ip": "192.168.56.146",
+            "source_port": 40670,
+            "status": 200,
+            "timestamp": "2026-10-10T08:33:33.891809+00:00",
+            "user_agent": "curl/8.5.0"
+          }
+        ]
+      },
+      "basis": "Original request correlated with final raw logs; no traffic replay"
+    },
+    {
+      "name": "Immediate-HTTP-8",
+      "initial_status": "PASS",
+      "initial_error": null,
+      "final_status": "PASS",
+      "proof": {
+        "decisions": [
+          {
+            "action": "redirect_web",
+            "adapter_result": "# generated atomically; do not edit\ndefault real;\n192.168.56.130 rabbithole;\n192.168.56.131 rabbithole;\n192.168.56.132 rabbithole;\n192.168.56.133 rabbithole;\n192.168.56.134 rabbithole;\n192.168.56.135 rabbithole;\n192.168.56.136 rabbithole;\n192.168.56.137 rabbithole;\n192.168.56.138 rabbithole;\n192.168.56.139 rabbithole;\n192.168.56.140 rabbithole;\n192.168.56.141 rabbithole;\n192.168.56.142 rabbithole;\n192.168.56.143 rabbithole;\n192.168.56.144 rabbithole;\n192.168.56.145 rabbithole;\n192.168.56.146 rabbithole;\n192.168.56.147 rabbithole;\n",
+            "dry_run": false,
+            "event_id": "ddfc31f465fb746077318fc0c8b3a06cce9fa1be63bac2d575051f5954561f11",
+            "expiry": "2026-10-10T08:35:34.323461+00:00",
+            "nginx_ready": true,
+            "nginx_ready_seconds": 0.163,
+            "profile": "rabbithole",
+            "protocol": "http",
+            "reason": "severity=1:+35;protocol=http:+5",
+            "risk_score": 40.0,
+            "severity": 1,
+            "signature_id": 2101071,
+            "source_ip": "192.168.56.147",
+            "start_time": "2026-10-10T08:33:34.323461+00:00"
+          }
+        ],
+        "nginx": [
+          {
+            "timestamp": "2026-10-10T15:33:34+07:00",
+            "msec": "1791621214.542",
+            "worker_pid": "15332",
+            "source_ip": "192.168.56.147",
+            "forwarded_for": "192.168.56.147",
+            "protocol": "http",
+            "profile": "rabbithole",
+            "status": 200,
+            "request": "GET /?round3=immediate-18 HTTP/1.1",
+            "upstream": "10.10.10.2:8084"
+          }
+        ],
+        "honeypot": [
+          {
+            "action": "open_page",
+            "bytes": 322,
+            "clue_from": null,
+            "depth": null,
+            "dest_ip": "10.10.10.2",
+            "dest_port": 80,
+            "event": "rabbit_hole.web",
+            "followed_clue": false,
+            "headers": {
+              "accept": "*/*",
+              "connection": "close",
+              "host": "192.168.56.10",
+              "user-agent": "curl/8.5.0"
+            },
+            "kind": null,
+            "limit_reached": false,
+            "link": "ip_ua",
+            "linked_session": null,
+            "method": "GET",
+            "node_id": null,
+            "path": "/",
+            "payload": "",
+            "payload_truncated": false,
+            "profile": "rabbithole",
+            "protocol": "http",
+            "query": "round3=immediate-18",
+            "rabbit_hole_enabled": true,
+            "referer": null,
+            "request_id": "a0668c6002f1c920aa04679f3bb318f1",
+            "resource_id": null,
+            "scenario": null,
+            "session_id": "719fe8e7ea9ae7be62ff99d043cae224",
+            "source_ip": "192.168.56.147",
+            "source_port": 52402,
+            "status": 200,
+            "timestamp": "2026-10-10T08:33:34.529295+00:00",
+            "user_agent": "curl/8.5.0"
+          }
+        ]
+      },
+      "basis": "Original request correlated with final raw logs; no traffic replay"
+    },
+    {
+      "name": "Immediate-HTTP-9",
+      "initial_status": "PASS",
+      "initial_error": null,
+      "final_status": "PASS",
+      "proof": {
+        "decisions": [
+          {
+            "action": "redirect_web",
+            "adapter_result": "# generated atomically; do not edit\ndefault real;\n192.168.56.130 rabbithole;\n192.168.56.131 rabbithole;\n192.168.56.132 rabbithole;\n192.168.56.133 rabbithole;\n192.168.56.134 rabbithole;\n192.168.56.135 rabbithole;\n192.168.56.136 rabbithole;\n192.168.56.137 rabbithole;\n192.168.56.138 rabbithole;\n192.168.56.139 rabbithole;\n192.168.56.140 rabbithole;\n192.168.56.141 rabbithole;\n192.168.56.142 rabbithole;\n192.168.56.143 rabbithole;\n192.168.56.144 rabbithole;\n192.168.56.145 rabbithole;\n192.168.56.146 rabbithole;\n192.168.56.147 rabbithole;\n192.168.56.148 rabbithole;\n",
+            "dry_run": false,
+            "event_id": "aa8950dc48a2795252a043a2676f1c2d9d5def6a524a557aee3cfa0fa3e60706",
+            "expiry": "2026-10-10T08:35:36.128465+00:00",
+            "nginx_ready": true,
+            "nginx_ready_seconds": 0.171,
+            "profile": "rabbithole",
+            "protocol": "http",
+            "reason": "severity=1:+35;protocol=http:+5",
+            "risk_score": 40.0,
+            "severity": 1,
+            "signature_id": 2101071,
+            "source_ip": "192.168.56.148",
+            "start_time": "2026-10-10T08:33:36.128465+00:00"
+          }
+        ],
+        "nginx": [
+          {
+            "timestamp": "2026-10-10T15:33:36+07:00",
+            "msec": "1791621216.348",
+            "worker_pid": "15369",
+            "source_ip": "192.168.56.148",
+            "forwarded_for": "192.168.56.148",
+            "protocol": "http",
+            "profile": "rabbithole",
+            "status": 200,
+            "request": "GET /?round3=immediate-19 HTTP/1.1",
+            "upstream": "10.10.10.2:8084"
+          }
+        ],
+        "honeypot": [
+          {
+            "action": "open_page",
+            "bytes": 322,
+            "clue_from": null,
+            "depth": null,
+            "dest_ip": "10.10.10.2",
+            "dest_port": 80,
+            "event": "rabbit_hole.web",
+            "followed_clue": false,
+            "headers": {
+              "accept": "*/*",
+              "connection": "close",
+              "host": "192.168.56.10",
+              "user-agent": "curl/8.5.0"
+            },
+            "kind": null,
+            "limit_reached": false,
+            "link": "ip_ua",
+            "linked_session": null,
+            "method": "GET",
+            "node_id": null,
+            "path": "/",
+            "payload": "",
+            "payload_truncated": false,
+            "profile": "rabbithole",
+            "protocol": "http",
+            "query": "round3=immediate-19",
+            "rabbit_hole_enabled": true,
+            "referer": null,
+            "request_id": "00a1fbdf0f3edc8e66db7b9bf7af5341",
+            "resource_id": null,
+            "scenario": null,
+            "session_id": "2664eceec2bec5910261b535067dacd0",
+            "source_ip": "192.168.56.148",
+            "source_port": 55174,
+            "status": 200,
+            "timestamp": "2026-10-10T08:33:36.335606+00:00",
+            "user_agent": "curl/8.5.0"
+          }
+        ]
+      },
+      "basis": "Original request correlated with final raw logs; no traffic replay"
+    },
+    {
+      "name": "Immediate-HTTP-10",
+      "initial_status": "PASS",
+      "initial_error": null,
+      "final_status": "PASS",
+      "proof": {
+        "decisions": [
+          {
+            "action": "redirect_web",
+            "adapter_result": "# generated atomically; do not edit\ndefault real;\n192.168.56.130 rabbithole;\n192.168.56.131 rabbithole;\n192.168.56.132 rabbithole;\n192.168.56.133 rabbithole;\n192.168.56.134 rabbithole;\n192.168.56.135 rabbithole;\n192.168.56.136 rabbithole;\n192.168.56.137 rabbithole;\n192.168.56.138 rabbithole;\n192.168.56.139 rabbithole;\n192.168.56.140 rabbithole;\n192.168.56.141 rabbithole;\n192.168.56.142 rabbithole;\n192.168.56.143 rabbithole;\n192.168.56.144 rabbithole;\n192.168.56.145 rabbithole;\n192.168.56.146 rabbithole;\n192.168.56.147 rabbithole;\n192.168.56.148 rabbithole;\n192.168.56.149 rabbithole;\n",
+            "dry_run": false,
+            "event_id": "4b4bc1b20680b04c73378b91ab4b97d0fb9cc975f70f8616393d6ce4d355e33f",
+            "expiry": "2026-10-10T08:35:37.744725+00:00",
+            "nginx_ready": true,
+            "nginx_ready_seconds": 0.18,
+            "profile": "rabbithole",
+            "protocol": "http",
+            "reason": "severity=1:+35;protocol=http:+5",
+            "risk_score": 40.0,
+            "severity": 1,
+            "signature_id": 2101071,
+            "source_ip": "192.168.56.149",
+            "start_time": "2026-10-10T08:33:37.744725+00:00"
+          }
+        ],
+        "nginx": [
+          {
+            "timestamp": "2026-10-10T15:33:37+07:00",
+            "msec": "1791621217.972",
+            "worker_pid": "15405",
+            "source_ip": "192.168.56.149",
+            "forwarded_for": "192.168.56.149",
+            "protocol": "http",
+            "profile": "rabbithole",
+            "status": 200,
+            "request": "GET /?round3=immediate-20 HTTP/1.1",
+            "upstream": "10.10.10.2:8084"
+          }
+        ],
+        "honeypot": [
+          {
+            "action": "open_page",
+            "bytes": 322,
+            "clue_from": null,
+            "depth": null,
+            "dest_ip": "10.10.10.2",
+            "dest_port": 80,
+            "event": "rabbit_hole.web",
+            "followed_clue": false,
+            "headers": {
+              "accept": "*/*",
+              "connection": "close",
+              "host": "192.168.56.10",
+              "user-agent": "curl/8.5.0"
+            },
+            "kind": null,
+            "limit_reached": false,
+            "link": "ip_ua",
+            "linked_session": null,
+            "method": "GET",
+            "node_id": null,
+            "path": "/",
+            "payload": "",
+            "payload_truncated": false,
+            "profile": "rabbithole",
+            "protocol": "http",
+            "query": "round3=immediate-20",
+            "rabbit_hole_enabled": true,
+            "referer": null,
+            "request_id": "09012b086ad87ad2cf823765f8543323",
+            "resource_id": null,
+            "scenario": null,
+            "session_id": "8f9164708701d10d3bef797d2af4bd9c",
+            "source_ip": "192.168.56.149",
+            "source_port": 52132,
+            "status": 200,
+            "timestamp": "2026-10-10T08:33:37.958952+00:00",
+            "user_agent": "curl/8.5.0"
+          }
+        ]
+      },
+      "basis": "Original request correlated with final raw logs; no traffic replay"
+    },
+    {
+      "name": "Readiness-timeout-and-engine-continues",
+      "initial_status": "PASS",
+      "initial_error": null,
+      "final_status": "PASS",
+      "proof": {},
+      "basis": "Original case assertions and evidence"
+    },
+    {
+      "name": "ET-sqlmap-UA",
+      "initial_status": "PASS",
+      "initial_error": null,
+      "final_status": "PASS",
+      "proof": {},
+      "basis": "Original case assertions and evidence"
+    },
+    {
+      "name": "ET-Nikto-UA-threshold",
+      "initial_status": "PASS",
+      "initial_error": null,
+      "final_status": "PASS",
+      "proof": {},
+      "basis": "Original case assertions and evidence"
+    },
+    {
+      "name": "ET-Nmap-NSE-UA",
+      "initial_status": "PASS",
+      "initial_error": null,
+      "final_status": "PASS",
+      "proof": {},
+      "basis": "Original case assertions and evidence"
+    },
+    {
+      "name": "ET-Masscan-UA",
+      "initial_status": "PASS",
+      "initial_error": null,
+      "final_status": "PASS",
+      "proof": {},
+      "basis": "Original case assertions and evidence"
+    },
+    {
+      "name": "ET-UNION-URI",
+      "initial_status": "PASS",
+      "initial_error": null,
+      "final_status": "PASS",
+      "proof": {},
+      "basis": "Original case assertions and evidence"
+    },
+    {
+      "name": "ET-UNION-body",
+      "initial_status": "PASS",
+      "initial_error": null,
+      "final_status": "PASS",
+      "proof": {},
+      "basis": "Original case assertions and evidence"
+    },
+    {
+      "name": "ET-passwd-URI",
+      "initial_status": "PASS",
+      "initial_error": null,
+      "final_status": "PASS",
+      "proof": {},
+      "basis": "Original case assertions and evidence"
+    },
+    {
+      "name": "ET-env",
+      "initial_status": "PASS",
+      "initial_error": null,
+      "final_status": "PASS",
+      "proof": {},
+      "basis": "Original case assertions and evidence"
+    },
+    {
+      "name": "ET-htpasswd",
+      "initial_status": "PASS",
+      "initial_error": null,
+      "final_status": "PASS",
+      "proof": {},
+      "basis": "Original case assertions and evidence"
+    },
+    {
+      "name": "ET-SSH-scan",
+      "initial_status": "PASS",
+      "initial_error": null,
+      "final_status": "PASS",
+      "proof": {},
+      "basis": "Original case assertions and evidence"
+    },
+    {
+      "name": "ET-LibSSH-Hydra",
+      "initial_status": "PASS",
+      "initial_error": null,
+      "final_status": "PASS",
+      "proof": {},
+      "basis": "Original case assertions and evidence"
+    },
+    {
+      "name": "ET-Telnet-incorrect",
+      "initial_status": "PASS",
+      "initial_error": null,
+      "final_status": "PASS",
+      "proof": {},
+      "basis": "Original case assertions and evidence"
+    },
+    {
+      "name": "ET-Telnet-failed",
+      "initial_status": "PASS",
+      "initial_error": null,
+      "final_status": "PASS",
+      "proof": {},
+      "basis": "Original case assertions and evidence"
+    },
+    {
+      "name": "Regression-HTTP",
+      "initial_status": "PASS",
+      "initial_error": null,
+      "final_status": "PASS",
+      "proof": {},
+      "basis": "Original case assertions and evidence"
+    },
+    {
+      "name": "Regression-HTTPS",
+      "initial_status": "FAIL",
+      "initial_error": "AssertionError: No correlated web request in Honeypot VM log",
+      "final_status": "PASS",
+      "proof": {
+        "nginx": [
+          {
+            "timestamp": "2026-10-10T15:34:20+07:00",
+            "msec": "1791621260.519",
+            "worker_pid": "15816",
+            "source_ip": "192.168.56.181",
+            "forwarded_for": "192.168.56.181",
+            "protocol": "https",
+            "profile": "rabbithole",
+            "status": 200,
+            "request": "GET /?regression=https HTTP/1.1",
+            "upstream": "10.10.10.2:8084"
+          }
+        ],
+        "honeypot": [
+          {
+            "action": "open_page",
+            "bytes": 322,
+            "clue_from": null,
+            "depth": null,
+            "dest_ip": "10.10.10.2",
+            "dest_port": 443,
+            "event": "rabbit_hole.web",
+            "followed_clue": false,
+            "headers": {
+              "accept": "*/*",
+              "connection": "close",
+              "host": "192.168.56.10",
+              "user-agent": "curl/8.5.0"
+            },
+            "kind": null,
+            "limit_reached": false,
+            "link": "ip_ua",
+            "linked_session": null,
+            "method": "GET",
+            "node_id": null,
+            "path": "/",
+            "payload": "",
+            "payload_truncated": false,
+            "profile": "rabbithole",
+            "protocol": "https",
+            "query": "regression=https",
+            "rabbit_hole_enabled": true,
+            "referer": null,
+            "request_id": "1a75d86557cb2a19156e48e01c04535d",
+            "resource_id": null,
+            "scenario": null,
+            "session_id": "6da13dfce96a823e0ff0cbd31ef09a1f",
+            "source_ip": "192.168.56.181",
+            "source_port": 45332,
+            "status": 200,
+            "timestamp": "2026-10-10T08:34:20.505667+00:00",
+            "user_agent": "curl/8.5.0"
+          }
+        ]
+      },
+      "basis": "Original request correlated with final raw logs; no traffic replay"
+    },
+    {
+      "name": "Regression-SSH",
+      "initial_status": "PASS",
+      "initial_error": null,
+      "final_status": "PASS",
+      "proof": {},
+      "basis": "Original case assertions and evidence"
+    },
+    {
+      "name": "Regression-Telnet",
+      "initial_status": "PASS",
+      "initial_error": null,
+      "final_status": "PASS",
+      "proof": {},
+      "basis": "Original case assertions and evidence"
+    },
+    {
+      "name": "Rabbit-Hole-Web",
+      "initial_status": "PASS",
+      "initial_error": null,
+      "final_status": "PASS",
+      "proof": {},
+      "basis": "Original case assertions and evidence"
+    },
+    {
+      "name": "Rabbit-Hole-SSH",
+      "initial_status": "PASS",
+      "initial_error": null,
+      "final_status": "PASS",
+      "proof": {},
+      "basis": "Original case assertions and evidence"
+    },
+    {
+      "name": "Dashboard-Threshold-TOTP-User-Master",
+      "initial_status": "PASS",
+      "initial_error": null,
+      "final_status": "PASS",
+      "proof": {},
+      "basis": "Original case assertions and evidence"
+    },
+    {
+      "name": "Dashboard-Rule-approve-applied-restore",
+      "initial_status": "PASS",
+      "initial_error": null,
+      "final_status": "PASS",
+      "proof": {},
+      "basis": "Original case assertions and evidence"
+    },
+    {
+      "name": "Dashboard-Invalid-rule-rejected",
+      "initial_status": "PASS",
+      "initial_error": null,
+      "final_status": "PASS",
+      "proof": {},
+      "basis": "Original case assertions and evidence"
+    },
+    {
+      "name": "Reboot-services-and-threshold-persistence",
+      "initial_status": "PASS",
+      "initial_error": null,
+      "final_status": "PASS",
+      "proof": {},
+      "basis": "Original case assertions and evidence"
+    },
+    {
+      "name": "Post-reboot-HTTP",
+      "initial_status": "PASS",
+      "initial_error": null,
+      "final_status": "PASS",
+      "proof": {},
+      "basis": "Original case assertions and evidence"
+    },
+    {
+      "name": "Post-reboot-SSH",
+      "initial_status": "PASS",
+      "initial_error": null,
+      "final_status": "PASS",
+      "proof": {},
+      "basis": "Original case assertions and evidence"
+    },
+    {
+      "name": "Dashboard-TOTP-negative-and-role-enforcement",
+      "initial_status": "PASS",
+      "initial_error": null,
+      "final_status": "PASS",
+      "proof": {},
+      "basis": "Original case assertions and evidence"
+    }
+  ]
+}

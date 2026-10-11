@@ -1,0 +1,14 @@
+== state directories
+== back up configs (*.bak.20261010T080226Z)
+== Dashboard config: rules.apply_dir
+== engine config: thresholds_path, scan_only_signatures; seed thresholds file
+== rule apply units
+Created symlink /etc/systemd/system/multi-user.target.wants/trap-apply-rules.path → /etc/systemd/system/trap-apply-rules.path.
+== install repo rules through the helper
+{"state": "applied", "sha256": "049a99cf7e216ef541d33159708c0108816c4c71d46e14555889bb8effbd5b8a", "backup": "/etc/suricata/rules/et-open-selected.rules.20261010T080228Z.bak"}
+== restart engine and Dashboard
+active
+active
+active
+active
+done. backups: /etc/trap/trap.json.bak.20261010T080226Z /etc/adaptive-defender/live.json.bak.20261010T080226Z

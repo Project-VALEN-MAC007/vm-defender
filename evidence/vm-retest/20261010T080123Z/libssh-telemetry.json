@@ -1,0 +1,140 @@
+[
+  {
+    "timestamp": "2026-10-10T15:04:47.130872+0700",
+    "flow_id": 2189935357632122,
+    "in_iface": "trap-out",
+    "event_type": "ssh",
+    "src_ip": "192.168.56.101",
+    "src_port": 59865,
+    "dest_ip": "192.168.56.10",
+    "dest_port": 22,
+    "proto": "TCP",
+    "pkt_src": "wire/pcap",
+    "tx_id": 0,
+    "ssh": {
+      "client": {
+        "proto_version": "2.0",
+        "software_version": "libssh_0.10.6"
+      },
+      "server": {
+        "proto_version": "2.0",
+        "software_version": "OpenSSH_9.6p1"
+      }
+    }
+  },
+  {
+    "timestamp": "2026-10-10T15:04:47.462489+0700",
+    "flow_id": 2201673727205996,
+    "in_iface": "trap-out",
+    "event_type": "ssh",
+    "src_ip": "192.168.56.101",
+    "src_port": 44729,
+    "dest_ip": "192.168.56.10",
+    "dest_port": 22,
+    "proto": "TCP",
+    "pkt_src": "wire/pcap",
+    "tx_id": 0,
+    "ssh": {
+      "client": {
+        "proto_version": "2.0",
+        "software_version": "libssh_0.10.6"
+      },
+      "server": {
+        "proto_version": "2.0",
+        "software_version": "OpenSSH_9.6p1"
+      }
+    }
+  },
+  {
+    "timestamp": "2026-10-10T15:04:47.790362+0700",
+    "flow_id": 2207148522791523,
+    "in_iface": "trap-out",
+    "event_type": "ssh",
+    "src_ip": "192.168.56.101",
+    "src_port": 34369,
+    "dest_ip": "192.168.56.10",
+    "dest_port": 22,
+    "proto": "TCP",
+    "pkt_src": "wire/pcap",
+    "tx_id": 0,
+    "ssh": {
+      "client": {
+        "proto_version": "2.0",
+        "software_version": "libssh_0.10.6"
+      },
+      "server": {
+        "proto_version": "2.0",
+        "software_version": "OpenSSH_9.6p1"
+      }
+    }
+  },
+  {
+    "timestamp": "2026-10-10T15:04:48.115854+0700",
+    "flow_id": 149111333126760,
+    "in_iface": "trap-out",
+    "event_type": "ssh",
+    "src_ip": "192.168.56.101",
+    "src_port": 47311,
+    "dest_ip": "192.168.56.10",
+    "dest_port": 22,
+    "proto": "TCP",
+    "pkt_src": "wire/pcap",
+    "tx_id": 0,
+    "ssh": {
+      "client": {
+        "proto_version": "2.0",
+        "software_version": "libssh_0.10.6"
+      },
+      "server": {
+        "proto_version": "2.0",
+        "software_version": "OpenSSH_9.6p1"
+      }
+    }
+  },
+  {
+    "timestamp": "2026-10-10T15:04:48.449279+0700",
+    "flow_id": 161698209840077,
+    "in_iface": "trap-out",
+    "event_type": "ssh",
+    "src_ip": "192.168.56.101",
+    "src_port": 44111,
+    "dest_ip": "192.168.56.10",
+    "dest_port": 22,
+    "proto": "TCP",
+    "pkt_src": "wire/pcap",
+    "tx_id": 0,
+    "ssh": {
+      "client": {
+        "proto_version": "2.0",
+        "software_version": "libssh_0.10.6"
+      },
+      "server": {
+        "proto_version": "2.0",
+        "software_version": "OpenSSH_9.6p1"
+      }
+    }
+  },
+  {
+    "timestamp": "2026-10-10T15:04:48.775954+0700",
+    "flow_id": 186980382886115,
+    "in_iface": "trap-out",
+    "event_type": "ssh",
+    "src_ip": "192.168.56.101",
+    "src_port": 38427,
+    "dest_ip": "192.168.56.10",
+    "dest_port": 22,
+    "proto": "TCP",
+    "pkt_src": "wire/pcap",
+    "tx_id": 0,
+    "ssh": {
+      "client": {
+        "proto_version": "2.0",
+        "software_version": "libssh_0.10.6"
+      },
+      "server": {
+        "proto_version": "2.0",
+        "software_version": "OpenSSH_9.2p1"
+      }
+    }
+  }
+]

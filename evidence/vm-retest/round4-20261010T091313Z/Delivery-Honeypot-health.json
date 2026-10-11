@@ -1,0 +1,8 @@
+{
+  "utc": "20261010T131629Z",
+  "vm": "honeypot",
+  "command": "date -u; systemctl is-active cowrie trap-rabbit-hole trap-honeypot-network",
+  "exit_code": 0,
+  "stdout": "Sat Oct 10 13:13:22 UTC 2026\nactive\nactive\nactive\n",
+  "stderr": ""
+}

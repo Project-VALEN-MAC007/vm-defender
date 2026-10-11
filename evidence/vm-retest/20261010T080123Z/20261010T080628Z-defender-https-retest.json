@@ -1,0 +1,8 @@
+{
+  "utc": "20261010T080628Z",
+  "vm": "defender",
+  "command": "python3 /tmp/retest_https.py",
+  "exit_code": 0,
+  "stdout": "Regression-HTTPS-retest PASS \n",
+  "stderr": ""
+}

@@ -1,0 +1,8 @@
+{
+  "utc": "20261010T083549Z",
+  "vm": "defender",
+  "command": "D=$(cat /var/lib/trap/current-retest-dir); systemctl start trap-log-sync; cp \"$D/cases.json\" \"$D/cases-initial-checks.json\"; sha256sum /var/lib/trap/engine/thresholds.json; systemd-run --unit=trap-round3-reboot --on-active=3s /usr/sbin/reboot",
+  "exit_code": 0,
+  "stdout": "18bf07a6c12ebf97060dca983195df4462eef554a11a2200d3bd97db13b2c4b1  /var/lib/trap/engine/thresholds.json\n",
+  "stderr": "Running timer as unit: trap-round3-reboot.timer\nWill run service as unit: trap-round3-reboot.service\n"
+}

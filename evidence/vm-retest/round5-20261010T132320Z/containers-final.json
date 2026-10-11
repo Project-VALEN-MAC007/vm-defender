@@ -1,0 +1,633 @@
+[
+  {
+    "Id": "319e0eec7e4de889c97066ba5e90bf4af61742c47370c049992b2df2307986f9",
+    "Created": "2026-10-10T13:36:12.221063073Z",
+    "Path": "/cowrie/cowrie-env/bin/python3",
+    "Args": [
+      "/cowrie/cowrie-env/bin/twistd",
+      "-n",
+      "--umask=0022",
+      "--pidfile=",
+      "--logger",
+      "cowrie.python.logfile.stdoutLogger",
+      "cowrie"
+    ],
+    "State": {
+      "Status": "running",
+      "Running": true,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 1606,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-10-10T13:41:25.717213253Z",
+      "FinishedAt": "2026-10-10T13:41:06.232738824Z"
+    },
+    "Image": "sha256:710f1e4601a663ac8591f58a42b44e4cd3b7ea170c7e6cdb9e54c430a30cd459",
+    "ResolvConfPath": "/var/lib/docker/containers/319e0eec7e4de889c97066ba5e90bf4af61742c47370c049992b2df2307986f9/resolv.conf",
+    "HostnamePath": "/var/lib/docker/containers/319e0eec7e4de889c97066ba5e90bf4af61742c47370c049992b2df2307986f9/hostname",
+    "HostsPath": "/var/lib/docker/containers/319e0eec7e4de889c97066ba5e90bf4af61742c47370c049992b2df2307986f9/hosts",
+    "LogPath": "/var/lib/docker/containers/319e0eec7e4de889c97066ba5e90bf4af61742c47370c049992b2df2307986f9/319e0eec7e4de889c97066ba5e90bf4af61742c47370c049992b2df2307986f9-json.log",
+    "Name": "/cowrie",
+    "RestartCount": 0,
+    "Driver": "overlayfs",
+    "Platform": "linux",
+    "MountLabel": "",
+    "ProcessLabel": "",
+    "AppArmorProfile": "docker-default",
+    "ExecIDs": null,
+    "HostConfig": {
+      "Binds": [
+        "/etc/trap/cowrie/userdb.txt:/cowrie/cowrie-git/etc/userdb.txt:ro",
+        "/var/lib/trap/cowrie-fs:/cowrie/trapfs:ro",
+        "/var/log/cowrie:/cowrie/cowrie-git/var/log/cowrie:rw",
+        "trap-honeypot_cowrie-var:/cowrie/cowrie-git/var/lib/cowrie:rw",
+        "/etc/trap/cowrie/cowrie.cfg:/cowrie/cowrie-git/etc/cowrie.cfg:ro"
+      ],
+      "ContainerIDFile": "",
+      "LogConfig": {
+        "Type": "json-file",
+        "Config": {
+          "max-file": "3",
+          "max-size": "10m"
+        }
+      },
+      "NetworkMode": "trap-honeypot_default",
+      "PortBindings": {
+        "2222/tcp": [
+          {
+            "HostIp": "10.10.10.2",
+            "HostPort": "2222"
+          }
+        ],
+        "2223/tcp": [
+          {
+            "HostIp": "10.10.10.2",
+            "HostPort": "2223"
+          }
+        ]
+      },
+      "RestartPolicy": {
+        "Name": "unless-stopped",
+        "MaximumRetryCount": 0
+      },
+      "AutoRemove": false,
+      "VolumeDriver": "",
+      "VolumesFrom": null,
+      "ConsoleSize": [
+        0,
+        0
+      ],
+      "CapAdd": null,
+      "CapDrop": [
+        "ALL"
+      ],
+      "CgroupnsMode": "private",
+      "Dns": [],
+      "DnsOptions": [],
+      "DnsSearch": [],
+      "ExtraHosts": [],
+      "GroupAdd": null,
+      "IpcMode": "private",
+      "Cgroup": "",
+      "Links": null,
+      "OomScoreAdj": 0,
+      "PidMode": "",
+      "Privileged": false,
+      "PublishAllPorts": false,
+      "ReadonlyRootfs": false,
+      "SecurityOpt": [
+        "no-new-privileges:true"
+      ],
+      "UTSMode": "",
+      "UsernsMode": "",
+      "ShmSize": 67108864,
+      "Runtime": "runc",
+      "Isolation": "",
+      "CpuShares": 0,
+      "Memory": 0,
+      "NanoCpus": 0,
+      "CgroupParent": "",
+      "BlkioWeight": 0,
+      "BlkioWeightDevice": null,
+      "BlkioDeviceReadBps": null,
+      "BlkioDeviceWriteBps": null,
+      "BlkioDeviceReadIOps": null,
+      "BlkioDeviceWriteIOps": null,
+      "CpuPeriod": 0,
+      "CpuQuota": 0,
+      "CpuRealtimePeriod": 0,
+      "CpuRealtimeRuntime": 0,
+      "CpusetCpus": "",
+      "CpusetMems": "",
+      "Devices": null,
+      "DeviceCgroupRules": null,
+      "DeviceRequests": null,
+      "MemoryReservation": 0,
+      "MemorySwap": 0,
+      "MemorySwappiness": null,
+      "OomKillDisable": null,
+      "PidsLimit": null,
+      "Ulimits": null,
+      "CpuCount": 0,
+      "CpuPercent": 0,
+      "IOMaximumIOps": 0,
+      "IOMaximumBandwidth": 0,
+      "Mounts": [
+        {
+          "Type": "volume",
+          "Source": "2ea4502644361c1597d9357905f3e84167bcf3bb72ef3ac5d11395342bc81983",
+          "Target": "/cowrie/cowrie-git/var"
+        },
+        {
+          "Type": "volume",
+          "Source": "5d01f084e5ae9b5259ac00d5377ff04cfeaa41bb0ab8bce152bd0cc9b387d18f",
+          "Target": "/cowrie/cowrie-git/etc"
+        }
+      ],
+      "MaskedPaths": [
+        "/proc/acpi",
+        "/proc/asound",
+        "/proc/interrupts",
+        "/proc/kcore",
+        "/proc/keys",
+        "/proc/latency_stats",
+        "/proc/sched_debug",
+        "/proc/scsi",
+        "/proc/timer_list",
+        "/proc/timer_stats",
+        "/sys/devices/virtual/powercap",
+        "/sys/firmware"
+      ],
+      "ReadonlyPaths": [
+        "/proc/bus",
+        "/proc/fs",
+        "/proc/irq",
+        "/proc/sys",
+        "/proc/sysrq-trigger"
+      ]
+    },
+    "Storage": {
+      "RootFS": {
+        "Snapshot": {
+          "Name": "overlayfs"
+        }
+      }
+    },
+    "Mounts": [
+      {
+        "Type": "bind",
+        "Source": "/etc/trap/cowrie/cowrie.cfg",
+        "Destination": "/cowrie/cowrie-git/etc/cowrie.cfg",
+        "Mode": "ro",
+        "RW": false,
+        "Propagation": "rprivate"
+      },
+      {
+        "Type": "bind",
+        "Source": "/etc/trap/cowrie/userdb.txt",
+        "Destination": "/cowrie/cowrie-git/etc/userdb.txt",
+        "Mode": "ro",
+        "RW": false,
+        "Propagation": "rprivate"
+      },
+      {
+        "Type": "volume",
+        "Name": "2ea4502644361c1597d9357905f3e84167bcf3bb72ef3ac5d11395342bc81983",
+        "Source": "/var/lib/docker/volumes/2ea4502644361c1597d9357905f3e84167bcf3bb72ef3ac5d11395342bc81983/_data",
+        "Destination": "/cowrie/cowrie-git/var",
+        "Driver": "local",
+        "Mode": "z",
+        "RW": true,
+        "Propagation": ""
+      },
+      {
+        "Type": "volume",
+        "Name": "trap-honeypot_cowrie-var",
+        "Source": "/var/lib/docker/volumes/trap-honeypot_cowrie-var/_data",
+        "Destination": "/cowrie/cowrie-git/var/lib/cowrie",
+        "Driver": "local",
+        "Mode": "rw",
+        "RW": true,
+        "Propagation": ""
+      },
+      {
+        "Type": "bind",
+        "Source": "/var/log/cowrie",
+        "Destination": "/cowrie/cowrie-git/var/log/cowrie",
+        "Mode": "rw",
+        "RW": true,
+        "Propagation": "rprivate"
+      },
+      {
+        "Type": "bind",
+        "Source": "/var/lib/trap/cowrie-fs",
+        "Destination": "/cowrie/trapfs",
+        "Mode": "ro",
+        "RW": false,
+        "Propagation": "rprivate"
+      },
+      {
+        "Type": "volume",
+        "Name": "5d01f084e5ae9b5259ac00d5377ff04cfeaa41bb0ab8bce152bd0cc9b387d18f",
+        "Source": "/var/lib/docker/volumes/5d01f084e5ae9b5259ac00d5377ff04cfeaa41bb0ab8bce152bd0cc9b387d18f/_data",
+        "Destination": "/cowrie/cowrie-git/etc",
+        "Driver": "local",
+        "Mode": "z",
+        "RW": true,
+        "Propagation": ""
+      }
+    ],
+    "Config": {
+      "Hostname": "319e0eec7e4d",
+      "Domainname": "",
+      "User": "999:999",
+      "AttachStdin": false,
+      "AttachStdout": true,
+      "AttachStderr": true,
+      "ExposedPorts": {
+        "2222/tcp": {},
+        "2223/tcp": {}
+      },
+      "Tty": false,
+      "OpenStdin": false,
+      "StdinOnce": false,
+      "Env": [
+        "TZ=UTC",
+        "PATH=/cowrie/cowrie-env/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt",
+        "LANG=C.UTF-8",
+        "COWRIE_GROUP=cowrie",
+        "COWRIE_USER=cowrie",
+        "COWRIE_HOME=/cowrie",
+        "PYTHONPATH=/cowrie/cowrie-git/src",
+        "PYTHONUNBUFFERED=1"
+      ],
+      "Cmd": [
+        "/cowrie/cowrie-env/bin/twistd",
+        "-n",
+        "--umask=0022",
+        "--pidfile=",
+        "--logger",
+        "cowrie.python.logfile.stdoutLogger",
+        "cowrie"
+      ],
+      "Image": "cowrie/cowrie@sha256:710f1e4601a663ac8591f58a42b44e4cd3b7ea170c7e6cdb9e54c430a30cd459",
+      "Volumes": {
+        "/cowrie/cowrie-git/etc": {},
+        "/cowrie/cowrie-git/var": {}
+      },
+      "WorkingDir": "/cowrie/cowrie-git",
+      "Entrypoint": [
+        "/cowrie/cowrie-env/bin/python3"
+      ],
+      "Labels": {
+        "com.docker.compose.config-hash": "f77bc30beb2af9e2e7a73024507bdfdae603d44dddc0c70872251228d7534e32",
+        "com.docker.compose.container-number": "1",
+        "com.docker.compose.depends_on": "",
+        "com.docker.compose.image": "sha256:710f1e4601a663ac8591f58a42b44e4cd3b7ea170c7e6cdb9e54c430a30cd459",
+        "com.docker.compose.oneoff": "False",
+        "com.docker.compose.project": "trap-honeypot",
+        "com.docker.compose.project.config_files": "/opt/trap/honeypot/docker/compose.yaml",
+        "com.docker.compose.project.working_dir": "/opt/trap/honeypot/docker",
+        "com.docker.compose.replace": "cowrie",
+        "com.docker.compose.service": "cowrie",
+        "com.docker.compose.version": "2.40.3",
+        "org.opencontainers.image.authors": "Michel Oosterhof <michel@oosterhof.net>",
+        "org.opencontainers.image.base.name": "gcr.io/distroless/python3-debian13",
+        "org.opencontainers.image.created": "2026-10-05T03:57:32.850Z",
+        "org.opencontainers.image.description": "Cowrie SSH/Telnet Honeypot https://docs.cowrie.org/",
+        "org.opencontainers.image.documentation": "https://docs.cowrie.org",
+        "org.opencontainers.image.licenses": "NOASSERTION",
+        "org.opencontainers.image.revision": "c17c9b73d6af0972334ea1e90b20d974cb24eeca",
+        "org.opencontainers.image.source": "https://github.com/cowrie/cowrie",
+        "org.opencontainers.image.title": "cowrie",
+        "org.opencontainers.image.url": "https://github.com/cowrie/cowrie",
+        "org.opencontainers.image.vendor": "Cowrie",
+        "org.opencontainers.image.version": "v3.1.1"
+      },
+      "StopSignal": "SIGTERM"
+    },
+    "NetworkSettings": {
+      "SandboxID": "8291accfda1d1a5ec582ff9be7f0ce7708a5c2cb8863e301b17c196348e6cc02",
+      "SandboxKey": "/var/run/docker/netns/8291accfda1d",
+      "Ports": {
+        "2222/tcp": [
+          {
+            "HostIp": "10.10.10.2",
+            "HostPort": "2222"
+          }
+        ],
+        "2223/tcp": [
+          {
+            "HostIp": "10.10.10.2",
+            "HostPort": "2223"
+          }
+        ]
+      },
+      "Networks": {
+        "trap-honeypot_default": {
+          "IPAMConfig": null,
+          "Links": null,
+          "Aliases": [
+            "cowrie",
+            "cowrie"
+          ],
+          "DriverOpts": null,
+          "GwPriority": 0,
+          "NetworkID": "a7cb40903a974f897a4997867a0b71461ca521ef80b2bf882f8328b43131cb79",
+          "EndpointID": "659f50b78462cf4c95e5d545f866213d975a953b8d7f366d0a1bfde383e10ef9",
+          "Gateway": "172.18.0.1",
+          "IPAddress": "172.18.0.3",
+          "MacAddress": "12:58:b7:fc:0c:9e",
+          "IPPrefixLen": 16,
+          "IPv6Gateway": "",
+          "GlobalIPv6Address": "",
+          "GlobalIPv6PrefixLen": 0,
+          "DNSNames": [
+            "cowrie",
+            "319e0eec7e4d"
+          ]
+        }
+      }
+    },
+    "ImageManifestDescriptor": {
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "digest": "sha256:3cfd66bb0ef10ffb03ad8a4209b191560f41041f64b6b879665969288e17ab3d",
+      "size": 10366,
+      "platform": {
+        "architecture": "amd64",
+        "os": "linux"
+      }
+    }
+  },
+  {
+    "Id": "ebb63bcc1fc0d1d0cf27d6c25f249ae7519fa846167e0a48e4e7d3b0c949ecb2",
+    "Created": "2026-10-10T13:40:20.133893159Z",
+    "Path": "python3",
+    "Args": [
+      "/opt/trap/run_rabbit_hole.py",
+      "--config",
+      "/var/lib/trap/rabbit-hole.json"
+    ],
+    "State": {
+      "Status": "running",
+      "Running": true,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 1561,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-10-10T13:41:25.544482336Z",
+      "FinishedAt": "2026-10-10T13:41:15.791310033Z"
+    },
+    "Image": "sha256:fd6d7993d6d0103551955a84cd342dfd41d8a2851765f6b828adbc743a21aa97",
+    "ResolvConfPath": "/var/lib/docker/containers/ebb63bcc1fc0d1d0cf27d6c25f249ae7519fa846167e0a48e4e7d3b0c949ecb2/resolv.conf",
+    "HostnamePath": "/var/lib/docker/containers/ebb63bcc1fc0d1d0cf27d6c25f249ae7519fa846167e0a48e4e7d3b0c949ecb2/hostname",
+    "HostsPath": "/var/lib/docker/containers/ebb63bcc1fc0d1d0cf27d6c25f249ae7519fa846167e0a48e4e7d3b0c949ecb2/hosts",
+    "LogPath": "/var/lib/docker/containers/ebb63bcc1fc0d1d0cf27d6c25f249ae7519fa846167e0a48e4e7d3b0c949ecb2/ebb63bcc1fc0d1d0cf27d6c25f249ae7519fa846167e0a48e4e7d3b0c949ecb2-json.log",
+    "Name": "/web-honeypot",
+    "RestartCount": 0,
+    "Driver": "overlayfs",
+    "Platform": "linux",
+    "MountLabel": "",
+    "ProcessLabel": "",
+    "AppArmorProfile": "docker-default",
+    "ExecIDs": null,
+    "HostConfig": {
+      "Binds": [
+        "/var/lib/trap:/var/lib/trap:ro",
+        "/var/log/trap:/var/log/trap:rw"
+      ],
+      "ContainerIDFile": "",
+      "LogConfig": {
+        "Type": "json-file",
+        "Config": {
+          "max-file": "3",
+          "max-size": "10m"
+        }
+      },
+      "NetworkMode": "trap-honeypot_default",
+      "PortBindings": {
+        "8084/tcp": [
+          {
+            "HostIp": "10.10.10.2",
+            "HostPort": "8084"
+          }
+        ]
+      },
+      "RestartPolicy": {
+        "Name": "unless-stopped",
+        "MaximumRetryCount": 0
+      },
+      "AutoRemove": false,
+      "VolumeDriver": "",
+      "VolumesFrom": null,
+      "ConsoleSize": [
+        0,
+        0
+      ],
+      "CapAdd": null,
+      "CapDrop": [
+        "ALL"
+      ],
+      "CgroupnsMode": "private",
+      "Dns": [],
+      "DnsOptions": [],
+      "DnsSearch": [],
+      "ExtraHosts": [],
+      "GroupAdd": null,
+      "IpcMode": "private",
+      "Cgroup": "",
+      "Links": null,
+      "OomScoreAdj": 0,
+      "PidMode": "",
+      "Privileged": false,
+      "PublishAllPorts": false,
+      "ReadonlyRootfs": true,
+      "SecurityOpt": [
+        "no-new-privileges:true"
+      ],
+      "Tmpfs": {
+        "/tmp": ""
+      },
+      "UTSMode": "",
+      "UsernsMode": "",
+      "ShmSize": 67108864,
+      "Runtime": "runc",
+      "Isolation": "",
+      "CpuShares": 0,
+      "Memory": 0,
+      "NanoCpus": 0,
+      "CgroupParent": "",
+      "BlkioWeight": 0,
+      "BlkioWeightDevice": null,
+      "BlkioDeviceReadBps": null,
+      "BlkioDeviceWriteBps": null,
+      "BlkioDeviceReadIOps": null,
+      "BlkioDeviceWriteIOps": null,
+      "CpuPeriod": 0,
+      "CpuQuota": 0,
+      "CpuRealtimePeriod": 0,
+      "CpuRealtimeRuntime": 0,
+      "CpusetCpus": "",
+      "CpusetMems": "",
+      "Devices": null,
+      "DeviceCgroupRules": null,
+      "DeviceRequests": null,
+      "MemoryReservation": 0,
+      "MemorySwap": 0,
+      "MemorySwappiness": null,
+      "OomKillDisable": null,
+      "PidsLimit": null,
+      "Ulimits": null,
+      "CpuCount": 0,
+      "CpuPercent": 0,
+      "IOMaximumIOps": 0,
+      "IOMaximumBandwidth": 0,
+      "MaskedPaths": [
+        "/proc/acpi",
+        "/proc/asound",
+        "/proc/interrupts",
+        "/proc/kcore",
+        "/proc/keys",
+        "/proc/latency_stats",
+        "/proc/sched_debug",
+        "/proc/scsi",
+        "/proc/timer_list",
+        "/proc/timer_stats",
+        "/sys/devices/virtual/powercap",
+        "/sys/firmware"
+      ],
+      "ReadonlyPaths": [
+        "/proc/bus",
+        "/proc/fs",
+        "/proc/irq",
+        "/proc/sys",
+        "/proc/sysrq-trigger"
+      ]
+    },
+    "Storage": {
+      "RootFS": {
+        "Snapshot": {
+          "Name": "overlayfs"
+        }
+      }
+    },
+    "Mounts": [
+      {
+        "Type": "bind",
+        "Source": "/var/lib/trap",
+        "Destination": "/var/lib/trap",
+        "Mode": "ro",
+        "RW": false,
+        "Propagation": "rprivate"
+      },
+      {
+        "Type": "bind",
+        "Source": "/var/log/trap",
+        "Destination": "/var/log/trap",
+        "Mode": "rw",
+        "RW": true,
+        "Propagation": "rprivate"
+      }
+    ],
+    "Config": {
+      "Hostname": "ebb63bcc1fc0",
+      "Domainname": "",
+      "User": "997:988",
+      "AttachStdin": false,
+      "AttachStdout": true,
+      "AttachStderr": true,
+      "ExposedPorts": {
+        "8084/tcp": {}
+      },
+      "Tty": false,
+      "OpenStdin": false,
+      "StdinOnce": false,
+      "Env": [
+        "PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "LANG=C.UTF-8",
+        "GPG_KEY=7169605F62C751356D054A26A821E680E5FA6305",
+        "PYTHON_VERSION=3.12.15",
+        "PYTHON_SHA256=c2c4321961fab0fb999d66e0cecf521c2ab3994c7992873ea99e306c1094fd5a",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "PYTHONUNBUFFERED=1"
+      ],
+      "Cmd": [
+        "--config",
+        "/var/lib/trap/rabbit-hole.json"
+      ],
+      "Image": "trap/web-honeypot:local",
+      "Volumes": null,
+      "WorkingDir": "/opt/trap",
+      "Entrypoint": [
+        "python3",
+        "/opt/trap/run_rabbit_hole.py"
+      ],
+      "Labels": {
+        "com.docker.compose.config-hash": "4c8d1fc0453c2be6e15a0c60fda0c3618cc0c1aa41f679e4253278f1ca8a2ad0",
+        "com.docker.compose.container-number": "1",
+        "com.docker.compose.depends_on": "",
+        "com.docker.compose.image": "sha256:fd6d7993d6d0103551955a84cd342dfd41d8a2851765f6b828adbc743a21aa97",
+        "com.docker.compose.oneoff": "False",
+        "com.docker.compose.project": "trap-honeypot",
+        "com.docker.compose.project.config_files": "/opt/trap/honeypot/docker/compose.yaml",
+        "com.docker.compose.project.working_dir": "/opt/trap/honeypot/docker",
+        "com.docker.compose.replace": "web-honeypot",
+        "com.docker.compose.service": "web-honeypot",
+        "com.docker.compose.version": "2.40.3"
+      }
+    },
+    "NetworkSettings": {
+      "SandboxID": "02e0390f88f3a2e7c7519385fc77d70c4d011df774d98770194b6b9c36b0536d",
+      "SandboxKey": "/var/run/docker/netns/02e0390f88f3",
+      "Ports": {
+        "8084/tcp": [
+          {
+            "HostIp": "10.10.10.2",
+            "HostPort": "8084"
+          }
+        ]
+      },
+      "Networks": {
+        "trap-honeypot_default": {
+          "IPAMConfig": null,
+          "Links": null,
+          "Aliases": [
+            "web-honeypot",
+            "web-honeypot"
+          ],
+          "DriverOpts": null,
+          "GwPriority": 0,
+          "NetworkID": "a7cb40903a974f897a4997867a0b71461ca521ef80b2bf882f8328b43131cb79",
+          "EndpointID": "294708dd2e989176cd72c6ac321a3d8e760eab7a1cebfdc4a61b3ae748bf61d7",
+          "Gateway": "172.18.0.1",
+          "IPAddress": "172.18.0.2",
+          "MacAddress": "c6:29:db:61:85:88",
+          "IPPrefixLen": 16,
+          "IPv6Gateway": "",
+          "GlobalIPv6Address": "",
+          "GlobalIPv6PrefixLen": 0,
+          "DNSNames": [
+            "web-honeypot",
+            "ebb63bcc1fc0"
+          ]
+        }
+      }
+    },
+    "ImageManifestDescriptor": {
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "digest": "sha256:f5d3b5025cabebcd06d6664a0bca2a3193a549b9f57ecb0c2612a00ed40b11f8",
+      "size": 1998,
+      "platform": {
+        "architecture": "amd64",
+        "os": "linux"
+      }
+    }
+  }
+]

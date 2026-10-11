@@ -1,0 +1,8 @@
+{
+  "utc": "20261010T080741Z",
+  "vm": "honeypot",
+  "command": "systemctl is-active cowrie trap-rabbit-hole; sha256sum /opt/cowrie/var/log/cowrie/cowrie.json /var/log/trap/rabbit-hole-web.jsonl; ip route get 192.168.56.108",
+  "exit_code": 0,
+  "stdout": "active\nactive\n148162144b744abe7479bf02aa0eb460e637d680a321d4809a6f79f08f6c24e2  /opt/cowrie/var/log/cowrie/cowrie.json\n338d79044ce2884cfc2983f3ded3dc3d3ad4b14c0380fac5c9bfa75f419550db  /var/log/trap/rabbit-hole-web.jsonl\n192.168.56.108 via 10.10.10.1 dev enp0s8 src 10.10.10.2 uid 0 \n    cache \n",
+  "stderr": ""
+}

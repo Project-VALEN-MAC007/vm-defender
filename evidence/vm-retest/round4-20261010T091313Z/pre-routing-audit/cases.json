@@ -1,0 +1,1072 @@
+[
+  {
+    "name": "Normal-Web-HTTP",
+    "start_time": "2026-10-10T09:22:20.404260+00:00",
+    "source_ips": [
+      "192.168.56.200"
+    ],
+    "status": "FAIL",
+    "error": "AssertionError: Normal page not 200: /",
+    "detail": {
+      "traceback": "Traceback (most recent call last):\n  File \"<string>\", line 73, in run_case\n  File \"/tmp/round4-tests.py\", line 49, in <lambda>\n    ip='192.168.56.'+str(n);run_case('Normal-Web-'+('HTTPS' if tls else 'HTTP'),[ip],lambda ip=ip,tls=tls:normal_web(ip,tls))\n                                                                                                          ^^^^^^^^^^^^^^^^^^\n  File \"/tmp/round4-tests.py\", line 41, in normal_web\n    check('HTTP/1.1 200' in get(path)['stdout'],'Normal page not 200: '+path)\n  File \"<string>\", line 70, in check\nAssertionError: Normal page not 200: /\n"
+    },
+    "commands": [
+      {
+        "time": "2026-10-10T09:22:20.424325+00:00",
+        "command": "ip netns exec trap-attacker curl --interface 192.168.56.200 -skS -i --max-time 5 -b /var/lib/trap/round4-20261010T091313Z/normal-192.168.56.200.cookies -c /var/lib/trap/round4-20261010T091313Z/normal-192.168.56.200.cookies http://192.168.56.10/",
+        "exit_code": 0,
+        "stdout": "HTTP/1.1 502 Bad Gateway\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 09:22:20 GMT\nContent-Type: text/html\nContent-Length: 166\nConnection: keep-alive\n\n<html>\n<head><title>502 Bad Gateway</title></head>\n<body>\n<center><h1>502 Bad Gateway</h1></center>\n<hr><center>nginx/1.24.0 (Ubuntu)</center>\n</body>\n</html>\n",
+        "stderr": ""
+      },
+      {
+        "time": "2026-10-10T09:22:20.948012+00:00",
+        "command": "systemctl start trap-log-sync",
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    ],
+    "api": [],
+    "alerts": [],
+    "decisions": [],
+    "cowrie": [],
+    "web": []
+  },
+  {
+    "name": "Normal-Web-HTTPS",
+    "start_time": "2026-10-10T09:22:21.829318+00:00",
+    "source_ips": [
+      "192.168.56.201"
+    ],
+    "status": "FAIL",
+    "error": "AssertionError: Normal page not 200: /",
+    "detail": {
+      "traceback": "Traceback (most recent call last):\n  File \"<string>\", line 73, in run_case\n  File \"/tmp/round4-tests.py\", line 49, in <lambda>\n    ip='192.168.56.'+str(n);run_case('Normal-Web-'+('HTTPS' if tls else 'HTTP'),[ip],lambda ip=ip,tls=tls:normal_web(ip,tls))\n                                                                                                          ^^^^^^^^^^^^^^^^^^\n  File \"/tmp/round4-tests.py\", line 41, in normal_web\n    check('HTTP/1.1 200' in get(path)['stdout'],'Normal page not 200: '+path)\n  File \"<string>\", line 70, in check\nAssertionError: Normal page not 200: /\n"
+    },
+    "commands": [
+      {
+        "time": "2026-10-10T09:22:21.857606+00:00",
+        "command": "ip netns exec trap-attacker curl --interface 192.168.56.201 -skS -i --max-time 5 -b /var/lib/trap/round4-20261010T091313Z/normal-192.168.56.201.cookies -c /var/lib/trap/round4-20261010T091313Z/normal-192.168.56.201.cookies https://192.168.56.10/",
+        "exit_code": 0,
+        "stdout": "HTTP/1.1 503 Service Temporarily Unavailable\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 09:22:21 GMT\nContent-Type: application/json\nContent-Length: 49\nConnection: keep-alive\nCache-Control: no-store\n\n{\"status\":\"backend_unavailable\",\"profile\":\"real\"}",
+        "stderr": ""
+      },
+      {
+        "time": "2026-10-10T09:22:22.417740+00:00",
+        "command": "systemctl start trap-log-sync",
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    ],
+    "api": [],
+    "alerts": [],
+    "decisions": [],
+    "cowrie": [],
+    "web": []
+  },
+  {
+    "name": "Normal-SSH",
+    "start_time": "2026-10-10T09:22:23.322511+00:00",
+    "source_ips": [
+      "192.168.56.202"
+    ],
+    "status": "PASS",
+    "error": null,
+    "detail": {
+      "ssh": {
+        "exit_code": 0,
+        "stdout": "project-web\nwebadmin\n/home/webadmin\nuid=1001(webadmin) gid=1001(webadmin) groups=1001(webadmin)\n\n",
+        "stderr": "Exception ignored in: <function BufferedFile.__del__ at 0x7f902add7ce0>\nTraceback (most recent call last):\n  File \"/usr/lib/python3/dist-packages/paramiko/file.py\", line 66, in __del__\n  File \"/usr/lib/python3/dist-packages/paramiko/channel.py\", line 1392, in close\n  File \"/usr/lib/python3/dist-packages/paramiko/channel.py\", line 991, in shutdown_write\n  File \"/usr/lib/python3/dist-packages/paramiko/channel.py\", line 967, in shutdown\n  File \"/usr/lib/python3/dist-packages/paramiko/transport.py\", line 1931, in _send_user_message\nAttributeError: 'NoneType' object has no attribute 'time'\n"
+      },
+      "origin": {
+        "auth": "Oct 10 16:13:14 project-web-server sshd[2531]: Accepted password for kali from 10.0.2.2 port 32718 ssh2\nOct 10 16:13:14 project-web-server sshd[2531]: pam_unix(sshd:session): session opened for user kali(uid=1000) by kali(uid=0)\nOct 10 16:13:16 project-web-server sshd[2093]: Received signal 15; terminating.\nOct 10 16:13:16 project-web-server systemd[1]: Stopping ssh.service - OpenBSD Secure Shell server...\nOct 10 16:13:16 project-web-server systemd[1]: ssh.service: Deactivated successfully.\nOct 10 16:13:16 project-web-server systemd[1]: Stopped ssh.service - OpenBSD Secure Shell server.\n-- Boot 4f61a3e265fa47619717563c7762f0ea --\nOct 10 16:13:52 project-web-server systemd[1]: Starting ssh.service - OpenBSD Secure Shell server...\nOct 10 16:13:53 project-web-server sshd[812]: Server listening on 0.0.0.0 port 22.\nOct 10 16:13:53 project-web-server sshd[812]: Server listening on :: port 22.\nOct 10 16:13:53 project-web-server systemd[1]: Started ssh.service - OpenBSD Secure Shell server.\nOct 10 16:14:06 project-web-server sshd[950]: Accepted password for kali from 10.0.2.2 port 28041 ssh2\nOct 10 16:14:06 project-web-server sshd[950]: pam_unix(sshd:session): session opened for user kali(uid=1000) by kali(uid=0)\nOct 10 16:14:07 project-web-server sshd[950]: pam_unix(sshd:session): session closed for user kali\nOct 10 16:14:09 project-web-server sshd[1058]: Accepted password for kali from 10.0.2.2 port 28043 ssh2\nOct 10 16:14:09 project-web-server sshd[1058]: pam_unix(sshd:session): session opened for user kali(uid=1000) by kali(uid=0)\nOct 10 16:14:10 project-web-server sshd[1058]: pam_unix(sshd:session): session closed for user kali\nOct 10 16:14:11 project-web-server sshd[1108]: Accepted password for kali from 10.0.2.2 port 28044 ssh2\nOct 10 16:14:11 project-web-server sshd[1108]: pam_unix(sshd:session): session opened for user kali(uid=1000) by kali(uid=0)\nOct 10 16:14:50 project-web-server sshd[1437]: Accepted password for kali from 10.0.2.2 port 28065 ssh2\nOct 10 16:14:50 project-web-server sshd[1437]: pam_unix(sshd:session): session opened for user kali(uid=1000) by kali(uid=0)\nOct 10 16:15:20 project-web-server systemd[1]: Starting inetutils-inetd.service - GNU Network Utilities internet superserver...\nOct 10 16:15:20 project-web-server systemd[1]: inetutils-inetd.service: Skipped due to 'exec-condition'.\nOct 10 16:15:20 project-web-server systemd[1]: Condition check resulted in inetutils-inetd.service - GNU Network Utilities internet superserver being skipped.\nOct 10 16:15:20 project-web-server systemd[1]: Starting inetutils-inetd.service - GNU Network Utilities internet superserver...\nOct 10 16:15:20 project-web-server systemd[1]: inetutils-inetd.service: Skipped due to 'exec-condition'.\nOct 10 16:15:20 project-web-server systemd[1]: Condition check resulted in inetutils-inetd.service - GNU Network Utilities internet superserver being skipped.\nOct 10 16:15:29 project-web-server systemd[1]: Starting inetutils-inetd.service - GNU Network Utilities internet superserver...\nOct 10 16:15:29 project-web-server systemd[1]: inetutils-inetd.service: Skipped due to 'exec-condition'.\nOct 10 16:15:29 project-web-server systemd[1]: Condition check resulted in inetutils-inetd.service - GNU Network Utilities internet superserver being skipped.\nOct 10 16:15:31 project-web systemd[1]: Starting inetutils-inetd.service - GNU Network Utilities internet superserver...\nOct 10 16:15:31 project-web systemd[1]: Started inetutils-inetd.service - GNU Network Utilities internet superserver.\nOct 10 16:15:46 project-web sshd[2744]: Accepted password for kali from 10.0.2.2 port 14754 ssh2\nOct 10 16:15:46 project-web sshd[2744]: pam_unix(sshd:session): session opened for user kali(uid=1000) by kali(uid=0)\nOct 10 16:15:46 project-web sshd[2744]: pam_unix(sshd:session): session closed for user kali\nOct 10 16:17:49 project-web sshd[2852]: Accepted password for kali from 10.0.2.2 port 10809 ssh2\nOct 10 16:17:49 project-web sshd[2852]: pam_unix(sshd:session): session opened for user kali(uid=1000) by kali(uid=0)\nOct 10 16:17:50 project-web sshd[2852]: pam_unix(sshd:session): session closed for user kali\nOct 10 16:18:48 project-web sshd[3113]: Accepted password for kali from 10.0.2.2 port 55128 ssh2\nOct 10 16:18:48 project-web sshd[3113]: pam_unix(sshd:session): session opened for user kali(uid=1000) by kali(uid=0)\nOct 10 16:18:49 project-web sshd[3113]: pam_unix(sshd:session): session closed for user kali\nOct 10 16:19:23 project-web sshd[3372]: Accepted password for kali from 10.0.2.2 port 62727 ssh2\nOct 10 16:19:23 project-web sshd[3372]: pam_unix(sshd:session): session opened for user kali(uid=1000) by kali(uid=0)\nOct 10 16:19:23 project-web sshd[3372]: pam_unix(sshd:session): session closed for user kali\nOct 10 16:19:59 project-web sshd[3881]: Accepted password for kali from 10.0.2.2 port 1542 ssh2\nOct 10 16:19:59 project-web sshd[3881]: pam_unix(sshd:session): session opened for user kali(uid=1000) by kali(uid=0)\nOct 10 16:20:00 project-web sshd[3881]: pam_unix(sshd:session): session closed for user kali\nOct 10 16:20:16 project-web sshd[4099]: Accepted password for kali from 10.0.2.2 port 1545 ssh2\nOct 10 16:20:16 project-web sshd[4099]: pam_unix(sshd:session): session opened for user kali(uid=1000) by kali(uid=0)\nOct 10 16:20:36 project-web sshd[4323]: Accepted password for kali from 10.0.2.2 port 1549 ssh2\nOct 10 16:20:36 project-web sshd[4323]: pam_unix(sshd:session): session opened for user kali(uid=1000) by kali(uid=0)\nOct 10 16:20:37 project-web sshd[4323]: pam_unix(sshd:session): session closed for user kali\nOct 10 16:20:59 project-web sshd[4603]: Accepted password for kali from 10.0.2.2 port 1556 ssh2\nOct 10 16:20:59 project-web sshd[4603]: pam_unix(sshd:session): session opened for user kali(uid=1000) by kali(uid=0)\nOct 10 16:21:25 project-web sshd[5190]: Accepted password for kali from 10.0.2.2 port 27816 ssh2\nOct 10 16:21:25 project-web sshd[5190]: pam_unix(sshd:session): session opened for user kali(uid=1000) by kali(uid=0)\nOct 10 16:21:57 project-web sshd[5626]: Accepted password for kali from 10.0.2.2 port 27842 ssh2\nOct 10 16:21:57 project-web sshd[5626]: pam_unix(sshd:session): session opened for user kali(uid=1000) by kali(uid=0)\nOct 10 16:22:11 project-web sshd[5753]: Accepted password for kali from 10.0.2.2 port 27844 ssh2\nOct 10 16:22:11 project-web sshd[5753]: pam_unix(sshd:session): session opened for user kali(uid=1000) by kali(uid=0)\nOct 10 16:22:15 project-web sshd[5871]: Connection closed by 10.10.10.1 port 50252\nOct 10 16:22:18 project-web sshd[5873]: Accepted password for kali from 10.10.10.1 port 41270 ssh2\nOct 10 16:22:19 project-web sshd[5873]: pam_unix(sshd:session): session opened for user kali(uid=1000) by kali(uid=0)\nOct 10 16:22:19 project-web sshd[5873]: pam_unix(sshd:session): session closed for user kali\nOct 10 16:22:23 project-web sshd[5923]: Accepted password for webadmin from 192.168.56.202 port 36715 ssh2\nOct 10 16:22:23 project-web sshd[5923]: pam_unix(sshd:session): session opened for user webadmin(uid=1001) by webadmin(uid=0)\nOct 10 16:22:24 project-web sshd[5923]: pam_unix(sshd:session): session closed for user webadmin\nOct 10 16:22:26 project-web sshd[6008]: Accepted password for kali from 10.10.10.1 port 41286 ssh2\nOct 10 16:22:26 project-web sshd[6008]: pam_unix(sshd:session): session opened for user kali(uid=1000) by kali(uid=0)\n\nwtmp begins Sat Oct 10 15:58:34 2026\n",
+        "web": "web-1  | AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 172.18.0.3. Set the 'ServerName' directive globally to suppress this message\nweb-1  | AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 172.18.0.3. Set the 'ServerName' directive globally to suppress this message\nweb-1  | [Sat Oct 10 09:21:49.874132 2026] [mpm_prefork:notice] [pid 1:tid 1] AH00163: Apache/2.4.68 (Debian) PHP/8.3.35 configured -- resuming normal operations\nweb-1  | [Sat Oct 10 09:21:49.874880 2026] [core:notice] [pid 1:tid 1] AH00094: Command line: 'apache2 -D FOREGROUND'\nweb-1  | 10.10.10.3 - - [10/Oct/2026:09:21:50 +0000] \"GET / HTTP/1.1\" 200 71180 \"-\" \"curl/8.5.0\"\nweb-1  | 127.0.0.1 - - [10/Oct/2026:09:21:54 +0000] \"GET / HTTP/1.1\" 200 71108 \"-\" \"curl/8.14.1\"\nweb-1  | [Sat Oct 10 09:22:12.488602 2026] [mpm_prefork:notice] [pid 1:tid 1] AH00171: Graceful restart requested, doing restart\nweb-1  | AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 172.18.0.3. Set the 'ServerName' directive globally to suppress this message\nweb-1  | [Sat Oct 10 09:22:12.574240 2026] [mpm_prefork:notice] [pid 1:tid 1] AH00163: Apache/2.4.68 (Debian) PHP/8.3.35 configured -- resuming normal operations\nweb-1  | [Sat Oct 10 09:22:12.575015 2026] [core:notice] [pid 1:tid 1] AH00094: Command line: 'apache2 -D FOREGROUND'\nweb-1  | 10.10.10.1 - - [10/Oct/2026:09:22:13 +0000] \"GET / HTTP/1.1\" 200 71180 \"-\" \"curl/8.5.0\"\nweb-1  | 172.18.0.1 - - [10/Oct/2026:09:22:14 +0000] \"POST /wp-cron.php?doing_wp_cron=1791624134.3002169132232666015625 HTTP/1.1\" 200 285 \"-\" \"WordPress/7.1.3; http://10.10.10.3:8080\"\nweb-1  | 127.0.0.1 - - [10/Oct/2026:09:22:25 +0000] \"GET / HTTP/1.1\" 200 71108 \"-\" \"curl/8.14.1\"\n"
+      }
+    },
+    "commands": [
+      {
+        "time": "2026-10-10T09:22:25.823345+00:00",
+        "command": "systemctl restart trap-log-sync",
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "time": "2026-10-10T09:22:27.851317+00:00",
+        "command": "systemctl start trap-log-sync",
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    ],
+    "api": [],
+    "alerts": [],
+    "decisions": [],
+    "cowrie": [],
+    "web": []
+  },
+  {
+    "name": "Normal-Telnet",
+    "start_time": "2026-10-10T09:22:28.645295+00:00",
+    "source_ips": [
+      "192.168.56.203"
+    ],
+    "status": "FAIL",
+    "error": "AssertionError: Real Telnet login failed",
+    "detail": {
+      "traceback": "Traceback (most recent call last):\n  File \"<string>\", line 73, in run_case\n  File \"/tmp/round4-tests.py\", line 72, in normal_telnet\n    ip='192.168.56.203';r=telnet(ip,True);check(r['exit_code']==0 and 'project-web' in r['stdout'] and 'webadmin' in r['stdout'],'Real Telnet login failed');no_alert(ip);o=origin(ip);check(ip in o['auth'],'Real telnet last/auth absent');return {'telnet':r,'origin':o}\n                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<string>\", line 70, in check\nAssertionError: Real Telnet login failed\n"
+    },
+    "commands": [
+      {
+        "time": "2026-10-10T09:22:29.424425+00:00",
+        "command": "systemctl start trap-log-sync",
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    ],
+    "api": [],
+    "alerts": [],
+    "decisions": [],
+    "cowrie": [],
+    "web": []
+  },
+  {
+    "name": "Transition-HTTP-production-to-Honeypot",
+    "start_time": "2026-10-10T09:22:30.247228+00:00",
+    "source_ips": [
+      "192.168.56.204"
+    ],
+    "status": "FAIL",
+    "error": "AssertionError: Before threshold not production",
+    "detail": {
+      "traceback": "Traceback (most recent call last):\n  File \"<string>\", line 73, in run_case\n  File \"/tmp/round4-tests.py\", line 75, in transition_web\n    ip='192.168.56.204';before=curl(ip,'/trap-static.txt');check('TRAP production static asset' in before['stdout'],'Before threshold not production')\n                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<string>\", line 70, in check\nAssertionError: Before threshold not production\n"
+    },
+    "commands": [
+      {
+        "time": "2026-10-10T09:22:30.264102+00:00",
+        "command": "ip netns exec trap-attacker curl --interface 192.168.56.204 -skS -i --max-time 5 http://192.168.56.10/trap-static.txt",
+        "exit_code": 0,
+        "stdout": "HTTP/1.1 502 Bad Gateway\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 09:22:30 GMT\nContent-Type: text/html\nContent-Length: 166\nConnection: keep-alive\n\n<html>\n<head><title>502 Bad Gateway</title></head>\n<body>\n<center><h1>502 Bad Gateway</h1></center>\n<hr><center>nginx/1.24.0 (Ubuntu)</center>\n</body>\n</html>\n",
+        "stderr": ""
+      },
+      {
+        "time": "2026-10-10T09:22:30.279921+00:00",
+        "command": "systemctl start trap-log-sync",
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "Job for trap-log-sync.service failed.\nSee \"systemctl status trap-log-sync.service\" and \"journalctl -xeu trap-log-sync.service\" for details.\n"
+      }
+    ],
+    "api": [],
+    "alerts": [],
+    "decisions": [],
+    "cowrie": [],
+    "web": []
+  },
+  {
+    "name": "Transition-SSH-production-to-Cowrie",
+    "start_time": "2026-10-10T09:22:30.534183+00:00",
+    "source_ips": [
+      "192.168.56.205"
+    ],
+    "status": "PASS",
+    "error": null,
+    "detail": {
+      "before": {
+        "exit_code": 0,
+        "stdout": "project-web\nwebadmin\n/home/webadmin\nuid=1001(webadmin) gid=1001(webadmin) groups=1001(webadmin)\n\n",
+        "stderr": "Exception ignored in: <function BufferedFile.__del__ at 0x76892dba7ce0>\nTraceback (most recent call last):\n  File \"/usr/lib/python3/dist-packages/paramiko/file.py\", line 66, in __del__\n  File \"/usr/lib/python3/dist-packages/paramiko/channel.py\", line 1392, in close\n  File \"/usr/lib/python3/dist-packages/paramiko/channel.py\", line 991, in shutdown_write\n  File \"/usr/lib/python3/dist-packages/paramiko/channel.py\", line 967, in shutdown\n  File \"/usr/lib/python3/dist-packages/paramiko/transport.py\", line 1931, in _send_user_message\nAttributeError: 'NoneType' object has no attribute 'time'\n"
+      },
+      "after": {
+        "time": "2026-10-10T09:22:35.494663+00:00",
+        "command": "ip netns exec trap-attacker python3 -c 'import socket,paramiko,time,json\ns=socket.socket();s.bind(('\"'\"'192.168.56.205'\"'\"',0));s.settimeout(5);s.connect(('\"'\"'192.168.56.10'\"'\"',22));c=paramiko.SSHClient();c.set_missing_host_key_policy(paramiko.AutoAddPolicy());c.connect('\"'\"'192.168.56.10'\"'\"',username='\"'\"'sysadmin'\"'\"',password='\"'\"'[REDACTED]'\"'\"',sock=s,look_for_keys=False,allow_agent=False);ch=c.invoke_shell()\nfor cmd in ['\"'\"'whoami'\"'\"', '\"'\"'ls'\"'\"', '\"'\"'uname -a'\"'\"']:\n ch.send(cmd+'\"'\"'\\n'\"'\"');time.sleep(.7);out='\"'\"''\"'\"'\n while ch.recv_ready():out+=ch.recv(65535).decode(errors='\"'\"'replace'\"'\"')\n print(json.dumps({'\"'\"'command'\"'\"':cmd,'\"'\"'output'\"'\"':out}))\nc.close()\n'",
+        "exit_code": 0,
+        "stdout": "{\"command\": \"whoami\", \"output\": \"\\r\\nThe programs included with the Debian GNU/Linux system are free software;\\r\\nthe exact distribution terms for each program are described in the\\r\\nindividual files in /usr/share/doc/*/copyright.\\r\\n\\r\\nDebian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent\\r\\npermitted by applicable law.\\r\\n\\u001b[4hsysadmin@trap-backup-01:~$ whoami\\r\\n\\u001b[4lsysadmin\\r\\n\\u001b[4hsysadmin@trap-backup-01:~$ \"}\n{\"command\": \"ls\", \"output\": \"ls\\r\\n\\u001b[4lnotes.txt \\r\\n\\u001b[4hsysadmin@trap-backup-01:~$ \"}\n{\"command\": \"uname -a\", \"output\": \"uname -a\\r\\n\\u001b[4lLinux trap-backup-01 6.1.0-21-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.1.90-1 (2024-05-03) x86_64 GNU/Linux\\r\\n\\u001b[4hsysadmin@trap-backup-01:~$ \"}\n",
+        "stderr": ""
+      },
+      "origin": {
+        "auth": "Oct 10 16:13:14 project-web-server sshd[2531]: Accepted password for kali from 10.0.2.2 port 32718 ssh2\nOct 10 16:13:14 project-web-server sshd[2531]: pam_unix(sshd:session): session opened for user kali(uid=1000) by kali(uid=0)\nOct 10 16:13:16 project-web-server sshd[2093]: Received signal 15; terminating.\nOct 10 16:13:16 project-web-server systemd[1]: Stopping ssh.service - OpenBSD Secure Shell server...\nOct 10 16:13:16 project-web-server systemd[1]: ssh.service: Deactivated successfully.\nOct 10 16:13:16 project-web-server systemd[1]: Stopped ssh.service - OpenBSD Secure Shell server.\n-- Boot 4f61a3e265fa47619717563c7762f0ea --\nOct 10 16:13:52 project-web-server systemd[1]: Starting ssh.service - OpenBSD Secure Shell server...\nOct 10 16:13:53 project-web-server sshd[812]: Server listening on 0.0.0.0 port 22.\nOct 10 16:13:53 project-web-server sshd[812]: Server listening on :: port 22.\nOct 10 16:13:53 project-web-server systemd[1]: Started ssh.service - OpenBSD Secure Shell server.\nOct 10 16:14:06 project-web-server sshd[950]: Accepted password for kali from 10.0.2.2 port 28041 ssh2\nOct 10 16:14:06 project-web-server sshd[950]: pam_unix(sshd:session): session opened for user kali(uid=1000) by kali(uid=0)\nOct 10 16:14:07 project-web-server sshd[950]: pam_unix(sshd:session): session closed for user kali\nOct 10 16:14:09 project-web-server sshd[1058]: Accepted password for kali from 10.0.2.2 port 28043 ssh2\nOct 10 16:14:09 project-web-server sshd[1058]: pam_unix(sshd:session): session opened for user kali(uid=1000) by kali(uid=0)\nOct 10 16:14:10 project-web-server sshd[1058]: pam_unix(sshd:session): session closed for user kali\nOct 10 16:14:11 project-web-server sshd[1108]: Accepted password for kali from 10.0.2.2 port 28044 ssh2\nOct 10 16:14:11 project-web-server sshd[1108]: pam_unix(sshd:session): session opened for user kali(uid=1000) by kali(uid=0)\nOct 10 16:14:50 project-web-server sshd[1437]: Accepted password for kali from 10.0.2.2 port 28065 ssh2\nOct 10 16:14:50 project-web-server sshd[1437]: pam_unix(sshd:session): session opened for user kali(uid=1000) by kali(uid=0)\nOct 10 16:15:20 project-web-server systemd[1]: Starting inetutils-inetd.service - GNU Network Utilities internet superserver...\nOct 10 16:15:20 project-web-server systemd[1]: inetutils-inetd.service: Skipped due to 'exec-condition'.\nOct 10 16:15:20 project-web-server systemd[1]: Condition check resulted in inetutils-inetd.service - GNU Network Utilities internet superserver being skipped.\nOct 10 16:15:20 project-web-server systemd[1]: Starting inetutils-inetd.service - GNU Network Utilities internet superserver...\nOct 10 16:15:20 project-web-server systemd[1]: inetutils-inetd.service: Skipped due to 'exec-condition'.\nOct 10 16:15:20 project-web-server systemd[1]: Condition check resulted in inetutils-inetd.service - GNU Network Utilities internet superserver being skipped.\nOct 10 16:15:29 project-web-server systemd[1]: Starting inetutils-inetd.service - GNU Network Utilities internet superserver...\nOct 10 16:15:29 project-web-server systemd[1]: inetutils-inetd.service: Skipped due to 'exec-condition'.\nOct 10 16:15:29 project-web-server systemd[1]: Condition check resulted in inetutils-inetd.service - GNU Network Utilities internet superserver being skipped.\nOct 10 16:15:31 project-web systemd[1]: Starting inetutils-inetd.service - GNU Network Utilities internet superserver...\nOct 10 16:15:31 project-web systemd[1]: Started inetutils-inetd.service - GNU Network Utilities internet superserver.\nOct 10 16:15:46 project-web sshd[2744]: Accepted password for kali from 10.0.2.2 port 14754 ssh2\nOct 10 16:15:46 project-web sshd[2744]: pam_unix(sshd:session): session opened for user kali(uid=1000) by kali(uid=0)\nOct 10 16:15:46 project-web sshd[2744]: pam_unix(sshd:session): session closed for user kali\nOct 10 16:17:49 project-web sshd[2852]: Accepted password for kali from 10.0.2.2 port 10809 ssh2\nOct 10 16:17:49 project-web sshd[2852]: pam_unix(sshd:session): session opened for user kali(uid=1000) by kali(uid=0)\nOct 10 16:17:50 project-web sshd[2852]: pam_unix(sshd:session): session closed for user kali\nOct 10 16:18:48 project-web sshd[3113]: Accepted password for kali from 10.0.2.2 port 55128 ssh2\nOct 10 16:18:48 project-web sshd[3113]: pam_unix(sshd:session): session opened for user kali(uid=1000) by kali(uid=0)\nOct 10 16:18:49 project-web sshd[3113]: pam_unix(sshd:session): session closed for user kali\nOct 10 16:19:23 project-web sshd[3372]: Accepted password for kali from 10.0.2.2 port 62727 ssh2\nOct 10 16:19:23 project-web sshd[3372]: pam_unix(sshd:session): session opened for user kali(uid=1000) by kali(uid=0)\nOct 10 16:19:23 project-web sshd[3372]: pam_unix(sshd:session): session closed for user kali\nOct 10 16:19:59 project-web sshd[3881]: Accepted password for kali from 10.0.2.2 port 1542 ssh2\nOct 10 16:19:59 project-web sshd[3881]: pam_unix(sshd:session): session opened for user kali(uid=1000) by kali(uid=0)\nOct 10 16:20:00 project-web sshd[3881]: pam_unix(sshd:session): session closed for user kali\nOct 10 16:20:16 project-web sshd[4099]: Accepted password for kali from 10.0.2.2 port 1545 ssh2\nOct 10 16:20:16 project-web sshd[4099]: pam_unix(sshd:session): session opened for user kali(uid=1000) by kali(uid=0)\nOct 10 16:20:36 project-web sshd[4323]: Accepted password for kali from 10.0.2.2 port 1549 ssh2\nOct 10 16:20:36 project-web sshd[4323]: pam_unix(sshd:session): session opened for user kali(uid=1000) by kali(uid=0)\nOct 10 16:20:37 project-web sshd[4323]: pam_unix(sshd:session): session closed for user kali\nOct 10 16:20:59 project-web sshd[4603]: Accepted password for kali from 10.0.2.2 port 1556 ssh2\nOct 10 16:20:59 project-web sshd[4603]: pam_unix(sshd:session): session opened for user kali(uid=1000) by kali(uid=0)\nOct 10 16:21:25 project-web sshd[5190]: Accepted password for kali from 10.0.2.2 port 27816 ssh2\nOct 10 16:21:25 project-web sshd[5190]: pam_unix(sshd:session): session opened for user kali(uid=1000) by kali(uid=0)\nOct 10 16:21:57 project-web sshd[5626]: Accepted password for kali from 10.0.2.2 port 27842 ssh2\nOct 10 16:21:57 project-web sshd[5626]: pam_unix(sshd:session): session opened for user kali(uid=1000) by kali(uid=0)\nOct 10 16:22:11 project-web sshd[5753]: Accepted password for kali from 10.0.2.2 port 27844 ssh2\nOct 10 16:22:11 project-web sshd[5753]: pam_unix(sshd:session): session opened for user kali(uid=1000) by kali(uid=0)\nOct 10 16:22:15 project-web sshd[5871]: Connection closed by 10.10.10.1 port 50252\nOct 10 16:22:18 project-web sshd[5873]: Accepted password for kali from 10.10.10.1 port 41270 ssh2\nOct 10 16:22:19 project-web sshd[5873]: pam_unix(sshd:session): session opened for user kali(uid=1000) by kali(uid=0)\nOct 10 16:22:19 project-web sshd[5873]: pam_unix(sshd:session): session closed for user kali\nOct 10 16:22:23 project-web sshd[5923]: Accepted password for webadmin from 192.168.56.202 port 36715 ssh2\nOct 10 16:22:23 project-web sshd[5923]: pam_unix(sshd:session): session opened for user webadmin(uid=1001) by webadmin(uid=0)\nOct 10 16:22:24 project-web sshd[5923]: pam_unix(sshd:session): session closed for user webadmin\nOct 10 16:22:26 project-web sshd[6008]: Accepted password for kali from 10.10.10.1 port 41286 ssh2\nOct 10 16:22:26 project-web sshd[6008]: pam_unix(sshd:session): session opened for user kali(uid=1000) by kali(uid=0)\nOct 10 16:22:26 project-web sshd[6008]: pam_unix(sshd:session): session closed for user kali\nOct 10 16:22:26 project-web sshd[6061]: Accepted password for kali from 10.10.10.1 port 53686 ssh2\nOct 10 16:22:26 project-web sshd[6061]: pam_unix(sshd:session): session opened for user kali(uid=1000) by kali(uid=0)\nOct 10 16:22:27 project-web sshd[6061]: pam_unix(sshd:session): session closed for user kali\nOct 10 16:22:30 project-web sshd[6152]: Accepted password for webadmin from 192.168.56.205 port 40881 ssh2\nOct 10 16:22:30 project-web sshd[6152]: pam_unix(sshd:session): session opened for user webadmin(uid=1001) by webadmin(uid=0)\nOct 10 16:22:31 project-web sshd[6152]: pam_unix(sshd:session): session closed for user webadmin\nOct 10 16:22:31 project-web sshd[6203]: Connection closed by 192.168.56.205 port 42763\nOct 10 16:22:31 project-web sshd[6204]: Connection closed by 192.168.56.205 port 51991\nOct 10 16:22:32 project-web sshd[6205]: Connection closed by 192.168.56.205 port 57595\nOct 10 16:22:32 project-web sshd[6206]: Connection closed by 192.168.56.205 port 52187\nOct 10 16:22:36 project-web sshd[6207]: Accepted password for kali from 10.10.10.1 port 53702 ssh2\nOct 10 16:22:36 project-web sshd[6207]: pam_unix(sshd:session): session opened for user kali(uid=1000) by kali(uid=0)\n\nwtmp begins Sat Oct 10 15:58:34 2026\n",
+        "web": "web-1  | AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 172.18.0.3. Set the 'ServerName' directive globally to suppress this message\nweb-1  | AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 172.18.0.3. Set the 'ServerName' directive globally to suppress this message\nweb-1  | [Sat Oct 10 09:21:49.874132 2026] [mpm_prefork:notice] [pid 1:tid 1] AH00163: Apache/2.4.68 (Debian) PHP/8.3.35 configured -- resuming normal operations\nweb-1  | [Sat Oct 10 09:21:49.874880 2026] [core:notice] [pid 1:tid 1] AH00094: Command line: 'apache2 -D FOREGROUND'\nweb-1  | 10.10.10.3 - - [10/Oct/2026:09:21:50 +0000] \"GET / HTTP/1.1\" 200 71180 \"-\" \"curl/8.5.0\"\nweb-1  | 127.0.0.1 - - [10/Oct/2026:09:21:54 +0000] \"GET / HTTP/1.1\" 200 71108 \"-\" \"curl/8.14.1\"\nweb-1  | [Sat Oct 10 09:22:12.488602 2026] [mpm_prefork:notice] [pid 1:tid 1] AH00171: Graceful restart requested, doing restart\nweb-1  | AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 172.18.0.3. Set the 'ServerName' directive globally to suppress this message\nweb-1  | [Sat Oct 10 09:22:12.574240 2026] [mpm_prefork:notice] [pid 1:tid 1] AH00163: Apache/2.4.68 (Debian) PHP/8.3.35 configured -- resuming normal operations\nweb-1  | [Sat Oct 10 09:22:12.575015 2026] [core:notice] [pid 1:tid 1] AH00094: Command line: 'apache2 -D FOREGROUND'\nweb-1  | 10.10.10.1 - - [10/Oct/2026:09:22:13 +0000] \"GET / HTTP/1.1\" 200 71180 \"-\" \"curl/8.5.0\"\nweb-1  | 172.18.0.1 - - [10/Oct/2026:09:22:14 +0000] \"POST /wp-cron.php?doing_wp_cron=1791624134.3002169132232666015625 HTTP/1.1\" 200 285 \"-\" \"WordPress/7.1.3; http://10.10.10.3:8080\"\nweb-1  | 127.0.0.1 - - [10/Oct/2026:09:22:25 +0000] \"GET / HTTP/1.1\" 200 71108 \"-\" \"curl/8.14.1\"\n"
+      }
+    },
+    "commands": [
+      {
+        "time": "2026-10-10T09:22:33.002614+00:00",
+        "command": "ip netns exec trap-attacker python3 -c 'import socket,time\nfor i in range(6):\n s=socket.socket();s.settimeout(4);s.bind(('\"'\"'192.168.56.205'\"'\"',0));s.connect(('\"'\"'192.168.56.10'\"'\"',22));s.recv(256);s.close();time.sleep(.2)'",
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "time": "2026-10-10T09:22:35.494663+00:00",
+        "command": "ip netns exec trap-attacker python3 -c 'import socket,paramiko,time,json\ns=socket.socket();s.bind(('\"'\"'192.168.56.205'\"'\"',0));s.settimeout(5);s.connect(('\"'\"'192.168.56.10'\"'\"',22));c=paramiko.SSHClient();c.set_missing_host_key_policy(paramiko.AutoAddPolicy());c.connect('\"'\"'192.168.56.10'\"'\"',username='\"'\"'sysadmin'\"'\"',password='\"'\"'[REDACTED]'\"'\"',sock=s,look_for_keys=False,allow_agent=False);ch=c.invoke_shell()\nfor cmd in ['\"'\"'whoami'\"'\"', '\"'\"'ls'\"'\"', '\"'\"'uname -a'\"'\"']:\n ch.send(cmd+'\"'\"'\\n'\"'\"');time.sleep(.7);out='\"'\"''\"'\"'\n while ch.recv_ready():out+=ch.recv(65535).decode(errors='\"'\"'replace'\"'\"')\n print(json.dumps({'\"'\"'command'\"'\"':cmd,'\"'\"'output'\"'\"':out}))\nc.close()\n'",
+        "exit_code": 0,
+        "stdout": "{\"command\": \"whoami\", \"output\": \"\\r\\nThe programs included with the Debian GNU/Linux system are free software;\\r\\nthe exact distribution terms for each program are described in the\\r\\nindividual files in /usr/share/doc/*/copyright.\\r\\n\\r\\nDebian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent\\r\\npermitted by applicable law.\\r\\n\\u001b[4hsysadmin@trap-backup-01:~$ whoami\\r\\n\\u001b[4lsysadmin\\r\\n\\u001b[4hsysadmin@trap-backup-01:~$ \"}\n{\"command\": \"ls\", \"output\": \"ls\\r\\n\\u001b[4lnotes.txt \\r\\n\\u001b[4hsysadmin@trap-backup-01:~$ \"}\n{\"command\": \"uname -a\", \"output\": \"uname -a\\r\\n\\u001b[4lLinux trap-backup-01 6.1.0-21-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.1.90-1 (2024-05-03) x86_64 GNU/Linux\\r\\n\\u001b[4hsysadmin@trap-backup-01:~$ \"}\n",
+        "stderr": ""
+      },
+      {
+        "time": "2026-10-10T09:22:36.061681+00:00",
+        "command": "systemctl restart trap-log-sync",
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "time": "2026-10-10T09:22:38.405493+00:00",
+        "command": "systemctl start trap-log-sync",
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    ],
+    "api": [
+      {
+        "time": "2026-10-10T09:22:31.095448+00:00",
+        "path": "/api/thresholds",
+        "method": "POST",
+        "status": 200,
+        "request": {
+          "monitor": 5,
+          "redirect": 30
+        },
+        "response": {
+          "monitor": 5.0,
+          "redirect": 30.0
+        }
+      },
+      {
+        "time": "2026-10-10T09:22:37.261977+00:00",
+        "path": "/api/thresholds",
+        "method": "POST",
+        "status": 200,
+        "request": {
+          "monitor": 15,
+          "redirect": 40
+        },
+        "response": {
+          "monitor": 15.0,
+          "redirect": 40.0
+        }
+      }
+    ],
+    "alerts": [
+      {
+        "timestamp": "2026-10-10T16:22:32.372579+0700",
+        "flow_id": 192842323943551,
+        "in_iface": "trap-out",
+        "event_type": "alert",
+        "src_ip": "192.168.56.205",
+        "src_port": 52187,
+        "dest_ip": "192.168.56.10",
+        "dest_port": 22,
+        "proto": "TCP",
+        "pkt_src": "wire/pcap",
+        "alert": {
+          "action": "allowed",
+          "gid": 1,
+          "signature_id": 2001219,
+          "rev": 20,
+          "signature": "ET SCAN Potential SSH Scan",
+          "category": "Attempted Information Leak",
+          "severity": 2,
+          "metadata": {
+            "confidence": [
+              "Medium"
+            ],
+            "created_at": [
+              "2010_07_30"
+            ],
+            "signature_severity": [
+              "Informational"
+            ],
+            "updated_at": [
+              "2019_07_26"
+            ]
+          }
+        },
+        "direction": "to_server",
+        "flow": {
+          "pkts_toserver": 1,
+          "pkts_toclient": 0,
+          "bytes_toserver": 74,
+          "bytes_toclient": 0,
+          "start": "2026-10-10T16:22:32.372579+0700",
+          "src_ip": "192.168.56.205",
+          "dest_ip": "192.168.56.10",
+          "src_port": 52187,
+          "dest_port": 22
+        }
+      }
+    ],
+    "decisions": [
+      {
+        "action": "redirect_ssh",
+        "adapter_command": [
+          "nft",
+          "add",
+          "element",
+          "inet",
+          "adaptive_defender",
+          "ssh_redirect",
+          "{",
+          "192.168.56.205",
+          "timeout",
+          "120s",
+          "}"
+        ],
+        "dry_run": false,
+        "event_id": "678176fdcd065c91982527c867a6ee1948af030d148f964b72d28200b6b9fff6",
+        "expiry": "2026-10-10T09:24:32.461952+00:00",
+        "profile": "cowrie",
+        "protocol": "ssh",
+        "reason": "severity=2:+25;protocol=ssh:+10",
+        "risk_score": 35.0,
+        "severity": 2,
+        "signature_id": 2001219,
+        "source_ip": "192.168.56.205",
+        "start_time": "2026-10-10T09:22:32.461952+00:00"
+      }
+    ],
+    "cowrie": [
+      {
+        "session": "0e3da15259bc",
+        "protocol": "ssh",
+        "src_ip": "192.168.56.205",
+        "src_port": 50075,
+        "dst_ip": "10.10.10.2",
+        "dst_port": 2222,
+        "eventid": "cowrie.session.connect",
+        "sensor": "project-honeypot",
+        "uuid": "ad932f02-c47a-11f1-bf70-080027abc001",
+        "timestamp": "2026-10-10T09:22:32.566498Z",
+        "message": "New connection: 192.168.56.205:50075 (10.10.10.2:2222) [session: 0e3da15259bc]"
+      },
+      {
+        "session": "0e3da15259bc",
+        "protocol": "ssh",
+        "src_ip": "192.168.56.205",
+        "src_port": 50075,
+        "dst_ip": "10.10.10.2",
+        "dst_port": 2222,
+        "duration_ms": 3,
+        "eventid": "cowrie.session.closed",
+        "sensor": "project-honeypot",
+        "uuid": "ad932f02-c47a-11f1-bf70-080027abc001",
+        "timestamp": "2026-10-10T09:22:32.569750Z",
+        "message": "Connection lost after 3 milliseconds"
+      },
+      {
+        "session": "29e830e6cb72",
+        "protocol": "ssh",
+        "src_ip": "192.168.56.205",
+        "src_port": 49239,
+        "dst_ip": "10.10.10.2",
+        "dst_port": 2222,
+        "eventid": "cowrie.session.connect",
+        "sensor": "project-honeypot",
+        "uuid": "ad932f02-c47a-11f1-bf70-080027abc001",
+        "timestamp": "2026-10-10T09:22:32.770182Z",
+        "message": "New connection: 192.168.56.205:49239 (10.10.10.2:2222) [session: 29e830e6cb72]"
+      },
+      {
+        "session": "29e830e6cb72",
+        "protocol": "ssh",
+        "src_ip": "192.168.56.205",
+        "src_port": 49239,
+        "dst_ip": "10.10.10.2",
+        "dst_port": 2222,
+        "duration_ms": 1,
+        "eventid": "cowrie.session.closed",
+        "sensor": "project-honeypot",
+        "uuid": "ad932f02-c47a-11f1-bf70-080027abc001",
+        "timestamp": "2026-10-10T09:22:32.771837Z",
+        "message": "Connection lost after 1 milliseconds"
+      },
+      {
+        "session": "d7e5696740f2",
+        "protocol": "ssh",
+        "src_ip": "192.168.56.205",
+        "src_port": 52621,
+        "dst_ip": "10.10.10.2",
+        "dst_port": 2222,
+        "eventid": "cowrie.session.connect",
+        "sensor": "project-honeypot",
+        "uuid": "ad932f02-c47a-11f1-bf70-080027abc001",
+        "timestamp": "2026-10-10T09:22:33.120852Z",
+        "message": "New connection: 192.168.56.205:52621 (10.10.10.2:2222) [session: d7e5696740f2]"
+      },
+      {
+        "session": "d7e5696740f2",
+        "protocol": "ssh",
+        "src_ip": "192.168.56.205",
+        "src_port": 52621,
+        "dst_ip": "10.10.10.2",
+        "dst_port": 2222,
+        "version": "SSH-2.0-paramiko_2.12.0",
+        "eventid": "cowrie.client.version",
+        "sensor": "project-honeypot",
+        "uuid": "ad932f02-c47a-11f1-bf70-080027abc001",
+        "timestamp": "2026-10-10T09:22:33.121298Z",
+        "message": "Remote SSH version: SSH-2.0-paramiko_2.12.0"
+      },
+      {
+        "session": "d7e5696740f2",
+        "protocol": "ssh",
+        "src_ip": "192.168.56.205",
+        "src_port": 52621,
+        "dst_ip": "10.10.10.2",
+        "dst_port": 2222,
+        "hassh": "87e3d9ffee0540b0390f8a5b9c343c08",
+        "hasshAlgorithms": "curve25519-sha256@libssh.org,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group16-sha512,diffie-hellman-group-exchange-sha256,diffie-hellman-group14-sha256,diffie-hellman-group-exchange-sha1,diffie-hellman-group14-sha1,diffie-hellman-group1-sha1,ext-info-c,kex-strict-c-v00@openssh.com;aes128-ctr,aes192-ctr,aes256-ctr,aes128-cbc,aes192-cbc,aes256-cbc,3des-cbc;hmac-sha2-256,hmac-sha2-512,hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha1,hmac-md5,hmac-sha1-96,hmac-md5-96;none",
+        "kexAlgs": [
+          "curve25519-sha256@libssh.org",
+          "ecdh-sha2-nistp256",
+          "ecdh-sha2-nistp384",
+          "ecdh-sha2-nistp521",
+          "diffie-hellman-group16-sha512",
+          "diffie-hellman-group-exchange-sha256",
+          "diffie-hellman-group14-sha256",
+          "diffie-hellman-group-exchange-sha1",
+          "diffie-hellman-group14-sha1",
+          "diffie-hellman-group1-sha1",
+          "ext-info-c",
+          "kex-strict-c-v00@openssh.com"
+        ],
+        "keyAlgs": [
+          "ssh-ed25519",
+          "ecdsa-sha2-nistp256",
+          "ecdsa-sha2-nistp384",
+          "ecdsa-sha2-nistp521",
+          "rsa-sha2-512",
+          "rsa-sha2-256",
+          "ssh-rsa",
+          "ssh-dss",
+          "ssh-ed25519-cert-v01@openssh.com",
+          "ecdsa-sha2-nistp256-cert-v01@openssh.com",
+          "ecdsa-sha2-nistp384-cert-v01@openssh.com",
+          "ecdsa-sha2-nistp521-cert-v01@openssh.com",
+          "rsa-sha2-512-cert-v01@openssh.com",
+          "rsa-sha2-256-cert-v01@openssh.com",
+          "ssh-rsa-cert-v01@openssh.com",
+          "ssh-dss-cert-v01@openssh.com"
+        ],
+        "encCS": [
+          "aes128-ctr",
+          "aes192-ctr",
+          "aes256-ctr",
+          "aes128-cbc",
+          "aes192-cbc",
+          "aes256-cbc",
+          "3des-cbc"
+        ],
+        "macCS": [
+          "hmac-sha2-256",
+          "hmac-sha2-512",
+          "hmac-sha2-256-etm@openssh.com",
+          "hmac-sha2-512-etm@openssh.com",
+          "hmac-sha1",
+          "hmac-md5",
+          "hmac-sha1-96",
+          "hmac-md5-96"
+        ],
+        "compCS": [
+          "none"
+        ],
+        "langCS": [
+          ""
+        ],
+        "eventid": "cowrie.client.kex",
+        "sensor": "project-honeypot",
+        "uuid": "ad932f02-c47a-11f1-bf70-080027abc001",
+        "timestamp": "2026-10-10T09:22:33.124636Z",
+        "message": "SSH client hassh fingerprint: 87e3d9ffee0540b0390f8a5b9c343c08"
+      },
+      {
+        "session": "d7e5696740f2",
+        "protocol": "ssh",
+        "src_ip": "192.168.56.205",
+        "src_port": 52621,
+        "dst_ip": "10.10.10.2",
+        "dst_port": 2222,
+        "username": "sysadmin",
+        "password": "[REDACTED]",
+        "eventid": "cowrie.login.success",
+        "sensor": "project-honeypot",
+        "uuid": "ad932f02-c47a-11f1-bf70-080027abc001",
+        "timestamp": "2026-10-10T09:22:33.172979Z",
+        "message": "login attempt [sysadmin/[REDACTED]] succeeded"
+      },
+      {
+        "session": "d7e5696740f2",
+        "protocol": "ssh",
+        "src_ip": "192.168.56.205",
+        "src_port": 52621,
+        "dst_ip": "10.10.10.2",
+        "dst_port": 2222,
+        "width": 80,
+        "height": 24,
+        "eventid": "cowrie.client.size",
+        "sensor": "project-honeypot",
+        "uuid": "ad932f02-c47a-11f1-bf70-080027abc001",
+        "timestamp": "2026-10-10T09:22:33.331776Z",
+        "message": "Terminal Size: 80 24"
+      },
+      {
+        "session": "d7e5696740f2",
+        "protocol": "ssh",
+        "src_ip": "192.168.56.205",
+        "src_port": 52621,
+        "dst_ip": "10.10.10.2",
+        "dst_port": 2222,
+        "arch": "linux-x64-lsb",
+        "eventid": "cowrie.session.params",
+        "sensor": "project-honeypot",
+        "uuid": "ad932f02-c47a-11f1-bf70-080027abc001",
+        "timestamp": "2026-10-10T09:22:33.336921Z",
+        "message": ""
+      },
+      {
+        "session": "d7e5696740f2",
+        "protocol": "ssh",
+        "src_ip": "192.168.56.205",
+        "src_port": 52621,
+        "dst_ip": "10.10.10.2",
+        "dst_port": 2222,
+        "input": "whoami",
+        "eventid": "cowrie.command.input",
+        "sensor": "project-honeypot",
+        "uuid": "ad932f02-c47a-11f1-bf70-080027abc001",
+        "timestamp": "2026-10-10T09:22:33.341334Z",
+        "message": "CMD: whoami"
+      },
+      {
+        "session": "d7e5696740f2",
+        "protocol": "ssh",
+        "src_ip": "192.168.56.205",
+        "src_port": 52621,
+        "dst_ip": "10.10.10.2",
+        "dst_port": 2222,
+        "input": "ls",
+        "eventid": "cowrie.command.input",
+        "sensor": "project-honeypot",
+        "uuid": "ad932f02-c47a-11f1-bf70-080027abc001",
+        "timestamp": "2026-10-10T09:22:34.041931Z",
+        "message": "CMD: ls"
+      },
+      {
+        "session": "d7e5696740f2",
+        "protocol": "ssh",
+        "src_ip": "192.168.56.205",
+        "src_port": 52621,
+        "dst_ip": "10.10.10.2",
+        "dst_port": 2222,
+        "input": "uname -a",
+        "eventid": "cowrie.command.input",
+        "sensor": "project-honeypot",
+        "uuid": "ad932f02-c47a-11f1-bf70-080027abc001",
+        "timestamp": "2026-10-10T09:22:34.743528Z",
+        "message": "CMD: uname -a"
+      },
+      {
+        "session": "d7e5696740f2",
+        "protocol": "ssh",
+        "src_ip": "192.168.56.205",
+        "src_port": 52621,
+        "dst_ip": "10.10.10.2",
+        "dst_port": 2222,
+        "ttylog": "var/lib/cowrie/tty/f389e4d105a338bdd8b8f864f3c64123f4815fde46986f481dd61a2f09790979",
+        "size": 566,
+        "shasum": "f389e4d105a338bdd8b8f864f3c64123f4815fde46986f481dd61a2f09790979",
+        "duplicate": false,
+        "duration_ms": 2119,
+        "eventid": "cowrie.log.closed",
+        "sensor": "project-honeypot",
+        "uuid": "ad932f02-c47a-11f1-bf70-080027abc001",
+        "timestamp": "2026-10-10T09:22:35.455240Z",
+        "message": "Closing TTY Log: var/lib/cowrie/tty/f389e4d105a338bdd8b8f864f3c64123f4815fde46986f481dd61a2f09790979 after 2119 milliseconds"
+      },
+      {
+        "session": "d7e5696740f2",
+        "protocol": "ssh",
+        "src_ip": "192.168.56.205",
+        "src_port": 52621,
+        "dst_ip": "10.10.10.2",
+        "dst_port": 2222,
+        "duration_ms": 2335,
+        "eventid": "cowrie.session.closed",
+        "sensor": "project-honeypot",
+        "uuid": "ad932f02-c47a-11f1-bf70-080027abc001",
+        "timestamp": "2026-10-10T09:22:35.455897Z",
+        "message": "Connection lost after 2335 milliseconds"
+      }
+    ],
+    "web": []
+  },
+  {
+    "name": "ET-sqlmap",
+    "start_time": "2026-10-10T09:22:39.201416+00:00",
+    "source_ips": [
+      "192.168.56.206"
+    ],
+    "status": "PASS",
+    "error": null,
+    "detail": {
+      "sid": 2008538,
+      "decisions": [
+        {
+          "action": "redirect_web",
+          "adapter_result": "# generated atomically; do not edit\ndefault real;\n192.168.56.206 rabbithole;\n",
+          "dry_run": false,
+          "event_id": "4fa0bea7842b21732499dbca8baf5145f1398e6c313b1654c9e0d822ccbd759b",
+          "expiry": "2026-10-10T09:24:39.413358+00:00",
+          "nginx_ready": true,
+          "nginx_ready_seconds": 0.162,
+          "profile": "rabbithole",
+          "protocol": "http",
+          "reason": "severity=2:+25;protocol=http:+5;active_scan_history:+20",
+          "risk_score": 50.0,
+          "severity": 2,
+          "signature_id": 2008538,
+          "source_ip": "192.168.56.206",
+          "start_time": "2026-10-10T09:22:39.413358+00:00"
+        }
+      ],
+      "alerts": [
+        {
+          "timestamp": "2026-10-10T16:22:39.218287+0700",
+          "flow_id": 2051594294636829,
+          "in_iface": "trap-out",
+          "event_type": "alert",
+          "src_ip": "192.168.56.206",
+          "src_port": 54612,
+          "dest_ip": "192.168.56.10",
+          "dest_port": 80,
+          "proto": "TCP",
+          "pkt_src": "wire/pcap",
+          "tx_id": 0,
+          "alert": {
+            "action": "allowed",
+            "gid": 1,
+            "signature_id": 2008538,
+            "rev": 10,
+            "signature": "ET SCAN Sqlmap SQL Injection Scan",
+            "category": "Attempted Information Leak",
+            "severity": 2,
+            "metadata": {
+              "affected_product": [
+                "Web_Server_Applications"
+              ],
+              "attack_target": [
+                "Web_Server"
+              ],
+              "confidence": [
+                "Medium"
+              ],
+              "created_at": [
+                "2010_07_30"
+              ],
+              "deployment": [
+                "Datacenter"
+              ],
+              "mitre_tactic_id": [
+                "TA0001"
+              ],
+              "mitre_tactic_name": [
+                "Initial_Access"
+              ],
+              "mitre_technique_id": [
+                "T1190"
+              ],
+              "mitre_technique_name": [
+                "Exploit_Public_Facing_Application"
+              ],
+              "signature_severity": [
+                "Major"
+              ],
+              "tag": [
+                "SQL_Injection"
+              ],
+              "updated_at": [
+                "2024_04_13"
+              ]
+            }
+          },
+          "http": {
+            "hostname": "192.168.56.10",
+            "url": "/?id=1",
+            "http_user_agent": "sqlmap/1.x",
+            "http_content_type": "text/html",
+            "http_method": "GET",
+            "protocol": "HTTP/1.1",
+            "status": 502,
+            "length": 166
+          },
+          "app_proto": "http",
+          "direction": "to_server",
+          "flow": {
+            "pkts_toserver": 4,
+            "pkts_toclient": 3,
+            "bytes_toserver": 353,
+            "bytes_toclient": 538,
+            "start": "2026-10-10T16:22:39.215530+0700",
+            "src_ip": "192.168.56.206",
+            "dest_ip": "192.168.56.10",
+            "src_port": 54612,
+            "dest_port": 80
+          }
+        }
+      ]
+    },
+    "commands": [
+      {
+        "time": "2026-10-10T09:22:39.220152+00:00",
+        "command": "ip netns exec trap-attacker curl --interface 192.168.56.206 -skS -i --max-time 5 -A sqlmap/1.x 'http://192.168.56.10/?id=1'",
+        "exit_code": 0,
+        "stdout": "HTTP/1.1 502 Bad Gateway\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 09:22:39 GMT\nContent-Type: text/html\nContent-Length: 166\nConnection: keep-alive\n\n<html>\n<head><title>502 Bad Gateway</title></head>\n<body>\n<center><h1>502 Bad Gateway</h1></center>\n<hr><center>nginx/1.24.0 (Ubuntu)</center>\n</body>\n</html>\n",
+        "stderr": ""
+      },
+      {
+        "time": "2026-10-10T09:22:40.589968+00:00",
+        "command": "systemctl start trap-log-sync",
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    ],
+    "api": [],
+    "alerts": [
+      {
+        "timestamp": "2026-10-10T16:22:39.218287+0700",
+        "flow_id": 2051594294636829,
+        "in_iface": "trap-out",
+        "event_type": "alert",
+        "src_ip": "192.168.56.206",
+        "src_port": 54612,
+        "dest_ip": "192.168.56.10",
+        "dest_port": 80,
+        "proto": "TCP",
+        "pkt_src": "wire/pcap",
+        "tx_id": 0,
+        "alert": {
+          "action": "allowed",
+          "gid": 1,
+          "signature_id": 2008538,
+          "rev": 10,
+          "signature": "ET SCAN Sqlmap SQL Injection Scan",
+          "category": "Attempted Information Leak",
+          "severity": 2,
+          "metadata": {
+            "affected_product": [
+              "Web_Server_Applications"
+            ],
+            "attack_target": [
+              "Web_Server"
+            ],
+            "confidence": [
+              "Medium"
+            ],
+            "created_at": [
+              "2010_07_30"
+            ],
+            "deployment": [
+              "Datacenter"
+            ],
+            "mitre_tactic_id": [
+              "TA0001"
+            ],
+            "mitre_tactic_name": [
+              "Initial_Access"
+            ],
+            "mitre_technique_id": [
+              "T1190"
+            ],
+            "mitre_technique_name": [
+              "Exploit_Public_Facing_Application"
+            ],
+            "signature_severity": [
+              "Major"
+            ],
+            "tag": [
+              "SQL_Injection"
+            ],
+            "updated_at": [
+              "2024_04_13"
+            ]
+          }
+        },
+        "http": {
+          "hostname": "192.168.56.10",
+          "url": "/?id=1",
+          "http_user_agent": "sqlmap/1.x",
+          "http_content_type": "text/html",
+          "http_method": "GET",
+          "protocol": "HTTP/1.1",
+          "status": 502,
+          "length": 166
+        },
+        "app_proto": "http",
+        "direction": "to_server",
+        "flow": {
+          "pkts_toserver": 4,
+          "pkts_toclient": 3,
+          "bytes_toserver": 353,
+          "bytes_toclient": 538,
+          "start": "2026-10-10T16:22:39.215530+0700",
+          "src_ip": "192.168.56.206",
+          "dest_ip": "192.168.56.10",
+          "src_port": 54612,
+          "dest_port": 80
+        }
+      }
+    ],
+    "decisions": [
+      {
+        "action": "redirect_web",
+        "adapter_result": "# generated atomically; do not edit\ndefault real;\n192.168.56.206 rabbithole;\n",
+        "dry_run": false,
+        "event_id": "4fa0bea7842b21732499dbca8baf5145f1398e6c313b1654c9e0d822ccbd759b",
+        "expiry": "2026-10-10T09:24:39.413358+00:00",
+        "nginx_ready": true,
+        "nginx_ready_seconds": 0.162,
+        "profile": "rabbithole",
+        "protocol": "http",
+        "reason": "severity=2:+25;protocol=http:+5;active_scan_history:+20",
+        "risk_score": 50.0,
+        "severity": 2,
+        "signature_id": 2008538,
+        "source_ip": "192.168.56.206",
+        "start_time": "2026-10-10T09:22:39.413358+00:00"
+      }
+    ],
+    "cowrie": [],
+    "web": []
+  },
+  {
+    "name": "ET-Nikto",
+    "start_time": "2026-10-10T09:22:40.903964+00:00",
+    "source_ips": [
+      "192.168.56.207"
+    ],
+    "status": "PASS",
+    "error": null,
+    "detail": {
+      "sid": 2002677,
+      "decisions": [
+        {
+          "action": "redirect_web",
+          "adapter_result": "# generated atomically; do not edit\ndefault real;\n192.168.56.206 rabbithole;\n192.168.56.207 rabbithole;\n",
+          "dry_run": false,
+          "event_id": "cd077fc90ac5c9d887ffbdbb193d3ffb32d014f1b4f51e09c24cd11908efbcb4",
+          "expiry": "2026-10-10T09:24:41.012808+00:00",
+          "nginx_ready": true,
+          "nginx_ready_seconds": 0.172,
+          "profile": "rabbithole",
+          "protocol": "http",
+          "reason": "severity=1:+35;protocol=http:+5;active_scan_history:+20",
+          "risk_score": 60.0,
+          "severity": 1,
+          "signature_id": 2002677,
+          "source_ip": "192.168.56.207",
+          "start_time": "2026-10-10T09:22:41.012808+00:00"
+        }
+      ],
+      "alerts": [
+        {
+          "timestamp": "2026-10-10T16:22:41.002643+0700",
+          "flow_id": 284022160164747,
+          "in_iface": "trap-out",
+          "event_type": "alert",
+          "src_ip": "192.168.56.207",
+          "src_port": 60736,
+          "dest_ip": "192.168.56.10",
+          "dest_port": 80,
+          "proto": "TCP",
+          "pkt_src": "wire/pcap",
+          "tx_id": 0,
+          "alert": {
+            "action": "allowed",
+            "gid": 1,
+            "signature_id": 2002677,
+            "rev": 15,
+            "signature": "ET SCAN Nikto Web App Scan in Progress",
+            "category": "Web Application Attack",
+            "severity": 1,
+            "metadata": {
+              "confidence": [
+                "Medium"
+              ],
+              "created_at": [
+                "2010_07_30"
+              ],
+              "signature_severity": [
+                "Informational"
+              ],
+              "updated_at": [
+                "2024_03_06"
+              ]
+            }
+          },
+          "http": {
+            "hostname": "192.168.56.10",
+            "url": "/",
+            "http_user_agent": "Mozilla/5.00 (Nikto/2.1.5)",
+            "http_content_type": "text/html",
+            "http_method": "GET",
+            "protocol": "HTTP/1.1",
+            "status": 502,
+            "length": 166
+          },
+          "app_proto": "http",
+          "direction": "to_server",
+          "flow": {
+            "pkts_toserver": 4,
+            "pkts_toclient": 3,
+            "bytes_toserver": 364,
+            "bytes_toclient": 538,
+            "start": "2026-10-10T16:22:41.000593+0700",
+            "src_ip": "192.168.56.207",
+            "dest_ip": "192.168.56.10",
+            "src_port": 60736,
+            "dest_port": 80
+          }
+        }
+      ]
+    },
+    "commands": [
+      {
+        "time": "2026-10-10T09:22:40.925169+00:00",
+        "command": "ip netns exec trap-attacker curl --interface 192.168.56.207 -skS -i --max-time 5 -A 'Mozilla/5.00 (Nikto/2.1.5)' http://192.168.56.10/",
+        "exit_code": 0,
+        "stdout": "HTTP/1.1 502 Bad Gateway\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 09:22:40 GMT\nContent-Type: text/html\nContent-Length: 166\nConnection: keep-alive\n\n<html>\n<head><title>502 Bad Gateway</title></head>\n<body>\n<center><h1>502 Bad Gateway</h1></center>\n<hr><center>nginx/1.24.0 (Ubuntu)</center>\n</body>\n</html>\n",
+        "stderr": ""
+      },
+      {
+        "time": "2026-10-10T09:22:40.944696+00:00",
+        "command": "ip netns exec trap-attacker curl --interface 192.168.56.207 -skS -i --max-time 5 -A 'Mozilla/5.00 (Nikto/2.1.5)' http://192.168.56.10/",
+        "exit_code": 0,
+        "stdout": "HTTP/1.1 502 Bad Gateway\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 09:22:40 GMT\nContent-Type: text/html\nContent-Length: 166\nConnection: keep-alive\n\n<html>\n<head><title>502 Bad Gateway</title></head>\n<body>\n<center><h1>502 Bad Gateway</h1></center>\n<hr><center>nginx/1.24.0 (Ubuntu)</center>\n</body>\n</html>\n",
+        "stderr": ""
+      },
+      {
+        "time": "2026-10-10T09:22:40.964012+00:00",
+        "command": "ip netns exec trap-attacker curl --interface 192.168.56.207 -skS -i --max-time 5 -A 'Mozilla/5.00 (Nikto/2.1.5)' http://192.168.56.10/",
+        "exit_code": 0,
+        "stdout": "HTTP/1.1 502 Bad Gateway\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 09:22:40 GMT\nContent-Type: text/html\nContent-Length: 166\nConnection: keep-alive\n\n<html>\n<head><title>502 Bad Gateway</title></head>\n<body>\n<center><h1>502 Bad Gateway</h1></center>\n<hr><center>nginx/1.24.0 (Ubuntu)</center>\n</body>\n</html>\n",
+        "stderr": ""
+      },
+      {
+        "time": "2026-10-10T09:22:40.984040+00:00",
+        "command": "ip netns exec trap-attacker curl --interface 192.168.56.207 -skS -i --max-time 5 -A 'Mozilla/5.00 (Nikto/2.1.5)' http://192.168.56.10/",
+        "exit_code": 0,
+        "stdout": "HTTP/1.1 502 Bad Gateway\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 09:22:40 GMT\nContent-Type: text/html\nContent-Length: 166\nConnection: keep-alive\n\n<html>\n<head><title>502 Bad Gateway</title></head>\n<body>\n<center><h1>502 Bad Gateway</h1></center>\n<hr><center>nginx/1.24.0 (Ubuntu)</center>\n</body>\n</html>\n",
+        "stderr": ""
+      },
+      {
+        "time": "2026-10-10T09:22:41.005911+00:00",
+        "command": "ip netns exec trap-attacker curl --interface 192.168.56.207 -skS -i --max-time 5 -A 'Mozilla/5.00 (Nikto/2.1.5)' http://192.168.56.10/",
+        "exit_code": 0,
+        "stdout": "HTTP/1.1 502 Bad Gateway\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 09:22:41 GMT\nContent-Type: text/html\nContent-Length: 166\nConnection: keep-alive\n\n<html>\n<head><title>502 Bad Gateway</title></head>\n<body>\n<center><h1>502 Bad Gateway</h1></center>\n<hr><center>nginx/1.24.0 (Ubuntu)</center>\n</body>\n</html>\n",
+        "stderr": ""
+      },
+      {
+        "time": "2026-10-10T09:22:41.030555+00:00",
+        "command": "ip netns exec trap-attacker curl --interface 192.168.56.207 -skS -i --max-time 5 -A 'Mozilla/5.00 (Nikto/2.1.5)' http://192.168.56.10/",
+        "exit_code": 0,
+        "stdout": "HTTP/1.1 502 Bad Gateway\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 09:22:41 GMT\nContent-Type: text/html\nContent-Length: 166\nConnection: keep-alive\n\n<html>\n<head><title>502 Bad Gateway</title></head>\n<body>\n<center><h1>502 Bad Gateway</h1></center>\n<hr><center>nginx/1.24.0 (Ubuntu)</center>\n</body>\n</html>\n",
+        "stderr": ""
+      },
+      {
+        "time": "2026-10-10T09:22:41.630954+00:00",
+        "command": "systemctl start trap-log-sync",
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "Job for trap-log-sync.service failed.\nSee \"systemctl status trap-log-sync.service\" and \"journalctl -xeu trap-log-sync.service\" for details.\n"
+      }
+    ],
+    "api": [],
+    "alerts": [
+      {
+        "timestamp": "2026-10-10T16:22:41.002643+0700",
+        "flow_id": 284022160164747,
+        "in_iface": "trap-out",
+        "event_type": "alert",
+        "src_ip": "192.168.56.207",
+        "src_port": 60736,
+        "dest_ip": "192.168.56.10",
+        "dest_port": 80,
+        "proto": "TCP",
+        "pkt_src": "wire/pcap",
+        "tx_id": 0,
+        "alert": {
+          "action": "allowed",
+          "gid": 1,
+          "signature_id": 2002677,
+          "rev": 15,
+          "signature": "ET SCAN Nikto Web App Scan in Progress",
+          "category": "Web Application Attack",
+          "severity": 1,
+          "metadata": {
+            "confidence": [
+              "Medium"
+            ],
+            "created_at": [
+              "2010_07_30"
+            ],
+            "signature_severity": [
+              "Informational"
+            ],
+            "updated_at": [
+              "2024_03_06"
+            ]
+          }
+        },
+        "http": {
+          "hostname": "192.168.56.10",
+          "url": "/",
+          "http_user_agent": "Mozilla/5.00 (Nikto/2.1.5)",
+          "http_content_type": "text/html",
+          "http_method": "GET",
+          "protocol": "HTTP/1.1",
+          "status": 502,
+          "length": 166
+        },
+        "app_proto": "http",
+        "direction": "to_server",
+        "flow": {
+          "pkts_toserver": 4,
+          "pkts_toclient": 3,
+          "bytes_toserver": 364,
+          "bytes_toclient": 538,
+          "start": "2026-10-10T16:22:41.000593+0700",
+          "src_ip": "192.168.56.207",
+          "dest_ip": "192.168.56.10",
+          "src_port": 60736,
+          "dest_port": 80
+        }
+      }
+    ],
+    "decisions": [
+      {
+        "action": "redirect_web",
+        "adapter_result": "# generated atomically; do not edit\ndefault real;\n192.168.56.206 rabbithole;\n192.168.56.207 rabbithole;\n",
+        "dry_run": false,
+        "event_id": "cd077fc90ac5c9d887ffbdbb193d3ffb32d014f1b4f51e09c24cd11908efbcb4",
+        "expiry": "2026-10-10T09:24:41.012808+00:00",
+        "nginx_ready": true,
+        "nginx_ready_seconds": 0.172,
+        "profile": "rabbithole",
+        "protocol": "http",
+        "reason": "severity=1:+35;protocol=http:+5;active_scan_history:+20",
+        "risk_score": 60.0,
+        "severity": 1,
+        "signature_id": 2002677,
+        "source_ip": "192.168.56.207",
+        "start_time": "2026-10-10T09:22:41.012808+00:00"
+      }
+    ],
+    "cowrie": [],
+    "web": []
+  }
+]

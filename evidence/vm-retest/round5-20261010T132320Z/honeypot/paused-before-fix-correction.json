@@ -1,0 +1,6 @@
+{
+  "start_time": "2026-10-10T13:35:38.841110+00:00",
+  "status": "INVALID_OBSERVATION",
+  "ref": "paused-before-fix.json",
+  "correction": "Snapshot actually has Paused=false and process_stopped, taken during subsequent SIGSTOP case. It does not prove paused recovery failure. Preserve original snapshot, exclude its unsupported reason from conclusions. Explicit Paused guard is defensive; actual pause cases must prove recovery separately."
+}

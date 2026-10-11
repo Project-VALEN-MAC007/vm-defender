@@ -1,0 +1,6 @@
+{
+  "command": "systemctl is-active ssh docker inetutils-inetd; date -u",
+  "exit_code": 0,
+  "stdout": "active\nactive\nactive\nSat Oct 10 13:15:52 UTC 2026\n",
+  "stderr": ""
+}

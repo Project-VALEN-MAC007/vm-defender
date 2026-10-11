@@ -1,0 +1,23 @@
+[
+  {
+    "vm": "defender",
+    "utc": "2026-10-10T13:23:22.326499+00:00",
+    "exit_code": 0,
+    "stdout": "2026-10-10T13:23:24,539900973+00:00\n               Local time: Sat 2026-10-10 20:23:24 +07\n           Universal time: Sat 2026-10-10 13:23:24 UTC\n                 RTC time: Sat 2026-10-10 13:23:24\n                Time zone: Asia/Bangkok (+07, +0700)\nSystem clock synchronized: yes\n              NTP service: active\n          RTC in local TZ: no\n               total        used        free      shared  buff/cache   available\nMem:            1948         411        1446           1         238        1537\nSwap:              0           0           0\nactive\nb334c1e8-e998-48b2-806e-06a607be04ba\nActiveState=active\n",
+    "stderr": ""
+  },
+  {
+    "vm": "honeypot",
+    "utc": "2026-10-10T13:23:21.871150+00:00",
+    "exit_code": 0,
+    "stdout": "2026-10-10T13:23:24,084479504+00:00\n               Local time: Sat 2026-10-10 20:23:24 +07\n           Universal time: Sat 2026-10-10 13:23:24 UTC\n                 RTC time: Sat 2026-10-10 13:18:02\n                Time zone: Asia/Bangkok (+07, +0700)\nSystem clock synchronized: yes\n              NTP service: active\n          RTC in local TZ: no\n               total        used        free      shared  buff/cache   available\nMem:            1948         408        1412           1         276        1540\nSwap:              0           0           0\nactive\n1affb047-359e-4cc3-b376-748198e32a9d\nActiveState=active\n",
+    "stderr": ""
+  },
+  {
+    "vm": "web",
+    "utc": "2026-10-10T13:23:23.057823+00:00",
+    "exit_code": 0,
+    "stdout": "2026-10-10T13:23:25,227839207+00:00\n               Local time: Sat 2026-10-10 20:23:25 +07\n           Universal time: Sat 2026-10-10 13:23:25 UTC\n                 RTC time: Sat 2026-10-10 13:14:25\n                Time zone: Asia/Bangkok (+07, +0700)\nSystem clock synchronized: yes\n              NTP service: active\n          RTC in local TZ: no\n               total        used        free      shared  buff/cache   available\nMem:            1948         592         974          26         557        1355\nSwap:              0           0           0\nactive\n0ce28b8e-9c39-4508-a886-d353f33071b1\nActiveState=active\n",
+    "stderr": ""
+  }
+]

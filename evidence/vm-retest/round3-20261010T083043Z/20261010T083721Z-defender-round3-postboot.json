@@ -1,0 +1,8 @@
+{
+  "utc": "20261010T083721Z",
+  "vm": "defender",
+  "command": "python3 /tmp/postboot_round3.py",
+  "exit_code": 0,
+  "stdout": "Reboot-services-and-threshold-persistence PASS \nPost-reboot-HTTP PASS \nPost-reboot-SSH PASS \nDashboard-TOTP-negative-and-role-enforcement PASS \nPOST-BOOT complete\n",
+  "stderr": ""
+}

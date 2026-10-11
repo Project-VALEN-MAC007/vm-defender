@@ -1,0 +1,6 @@
+{
+  "command": "cat /opt/trap/production/docker-compose.override.yml /opt/trap/production/trap-access.conf",
+  "exit_code": 0,
+  "stdout": "services:\n  web:\n    environment:\n      WORDPRESS_CONFIG_EXTRA: 'if (!defined(''WP_DEBUG'')) { define(''WP_DEBUG'',\n        false); }\n\n        define(''DISALLOW_FILE_EDIT'', true);\n\n        // The Defender terminates TLS and forwards the client address.\n\n        if (isset($$_SERVER[''HTTP_X_FORWARDED_PROTO'']) && $$_SERVER[''HTTP_X_FORWARDED_PROTO'']\n        === ''https'') { $$_SERVER[''HTTPS''] = ''on''; }\n\n\n        if (isset($$_SERVER[''HTTP_HOST'']) && in_array($$_SERVER[''HTTP_HOST''],\n        [''192.168.56.10'', ''10.10.10.3:8080''], true)) { define(''WP_HOME'', (isset($$_SERVER[''HTTPS''])\n        && $$_SERVER[''HTTPS''] === ''on'' ? ''https'' : ''http'') . ''://'' . $$_SERVER[''HTTP_HOST'']);\n        define(''WP_SITEURL'', WP_HOME); }\n\n        '\n    volumes:\n    - ./trap-access.conf:/etc/apache2/conf-enabled/trap-access.conf:ro\nLogFormat \"client=%{X-Forwarded-For}i peer=%a timestamp=%{%Y-%m-%dT%H:%M:%S%z}t request=\\\"%r\\\" status=%>s\" trap_origin\nGlobalLog /proc/self/fd/1 trap_origin\n",
+  "stderr": ""
+}

@@ -1,0 +1,7 @@
+# Build context is the repo root; send only what the image copies.
+*
+!defender/__init__.py
+!defender/rabbit_hole/
+!run_rabbit_hole.py
+**/__pycache__
+**/*.pyc

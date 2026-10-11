@@ -1,0 +1,130 @@
+{
+  "Id": "sha256:710f1e4601a663ac8591f58a42b44e4cd3b7ea170c7e6cdb9e54c430a30cd459",
+  "RepoTags": [
+    "cowrie/cowrie:latest"
+  ],
+  "RepoDigests": [
+    "cowrie/cowrie@sha256:710f1e4601a663ac8591f58a42b44e4cd3b7ea170c7e6cdb9e54c430a30cd459"
+  ],
+  "Comment": "buildkit.dockerfile.v0",
+  "Created": "2026-10-03T06:54:56Z",
+  "Config": {
+    "User": "999:999",
+    "ExposedPorts": {
+      "2222/tcp": {},
+      "2223/tcp": {}
+    },
+    "Env": [
+      "PATH=/cowrie/cowrie-env/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+      "SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt",
+      "LANG=C.UTF-8",
+      "COWRIE_GROUP=cowrie",
+      "COWRIE_USER=cowrie",
+      "COWRIE_HOME=/cowrie",
+      "PYTHONPATH=/cowrie/cowrie-git/src",
+      "PYTHONUNBUFFERED=1"
+    ],
+    "Entrypoint": [
+      "/cowrie/cowrie-env/bin/python3"
+    ],
+    "Cmd": [
+      "/cowrie/cowrie-env/bin/twistd",
+      "-n",
+      "--umask=0022",
+      "--pidfile=",
+      "--logger",
+      "cowrie.python.logfile.stdoutLogger",
+      "cowrie"
+    ],
+    "Volumes": {
+      "/cowrie/cowrie-git/etc": {},
+      "/cowrie/cowrie-git/var": {}
+    },
+    "WorkingDir": "/cowrie/cowrie-git",
+    "Labels": {
+      "org.opencontainers.image.authors": "Michel Oosterhof <michel@oosterhof.net>",
+      "org.opencontainers.image.base.name": "gcr.io/distroless/python3-debian13",
+      "org.opencontainers.image.created": "2026-10-05T03:57:32.850Z",
+      "org.opencontainers.image.description": "Cowrie SSH/Telnet Honeypot https://docs.cowrie.org/",
+      "org.opencontainers.image.documentation": "https://docs.cowrie.org",
+      "org.opencontainers.image.licenses": "NOASSERTION",
+      "org.opencontainers.image.revision": "c17c9b73d6af0972334ea1e90b20d974cb24eeca",
+      "org.opencontainers.image.source": "https://github.com/cowrie/cowrie",
+      "org.opencontainers.image.title": "cowrie",
+      "org.opencontainers.image.url": "https://github.com/cowrie/cowrie",
+      "org.opencontainers.image.vendor": "Cowrie",
+      "org.opencontainers.image.version": "v3.1.1"
+    },
+    "StopSignal": "SIGTERM",
+    "ArgsEscaped": true
+  },
+  "Architecture": "amd64",
+  "Os": "linux",
+  "Size": 90205394,
+  "RootFS": {
+    "Type": "layers",
+    "Layers": [
+      "sha256:9486261b5a13f63ca6904b36721527ac8f19df53d300560138d69ae9b4c203de",
+      "sha256:621c35e751a51a9a9dc3e80aa0b7fe8be2a93402ea6ccd307d30852cd7776cda",
+      "sha256:763a77745f27b86cf26b97887b6842d83720e63b1c48848c0ba9ee54e351d63a",
+      "sha256:f0d0eff4c2312a7bd6e21797bdfea5eb35f60e76b555ce2b22794424af2cad36",
+      "sha256:275a30dd8ce958b21daa9ad962c6fbc09f98306ee2f486b65c9075dc257b1412",
+      "sha256:4d049f83d9cf21d1f5cc0e11deaf36df02790d0e60c1a3829538fb4b61685368",
+      "sha256:af5aa97ebe6ce1604747ec1e21af7136ded391bcabe4acef882e718a87c86bcc",
+      "sha256:6f1cdceb6a3146f0ccb986521156bef8a422cdbb0863396f7f751f575ba308f4",
+      "sha256:bd3cdfae1d3fdd83a2231d608969b38b82349777c2fff9a7c12d54f8ac5c9b38",
+      "sha256:4cde6b0bb6f50a5f255eef7b2a42162c661cf776b803225dcac9a659e396bb6b",
+      "sha256:ad51d0769d16ba578106a177987dfe3d2e02c1668c852b795b2f6b024068242a",
+      "sha256:187cfc6d1e3e8a40a5e64653bcd3239c140807dcf1c09e48021178705a5a6139",
+      "sha256:f2392a9484bf6b18f06beaf705b994e31dbb2716c99cf7d03c9c495cd107f364",
+      "sha256:8a3b315d45080ecb38e39d42d28e951303c67c2ce7482bcdbbc3b5424be19013",
+      "sha256:2cef49adb7d7902c61ecdd385036e3c7fb7c9f0ada96a41901797c77b7daedd7",
+      "sha256:c0e409312adc366898967307565f692bb33d43a439d3de48e27d14b742389725",
+      "sha256:e4ba966d7f0527dfe0fcb559e4e18d4da42c4e6beae924719255e0dedb554ed0",
+      "sha256:1f5d28bd51650f429293f7730ede274b81dc0744aa918bc887133c4ad610258c",
+      "sha256:6e18ad80f3d64a8cbbcd1ff2e8a0d5ce7282cf664e816b86183a59d30a618e8a",
+      "sha256:c16b2ec4b1493bad1b1de23d659c899e60abb166bda756d02792f0a03ba54a43",
+      "sha256:7db505d90756626f425c6c5468eca565c82f589b144ecaa4f411ad9bbf79e614",
+      "sha256:953871f68b73a0c29f9268de527a33d56fb21e904f9b3b9a52281ead677a015a",
+      "sha256:9fb03990eabad3816348a2d24f40afe26d5504a0913dc028e97e8fd00786d832",
+      "sha256:be66b59a3b6d8c1670e2ef33a37b38a51650ed0321f4955e9ec408dd5190db89",
+      "sha256:8e359ee8a1337af8419ee1a1ab86af339273d4c9456834f0e3caaba57a58c126",
+      "sha256:9df5d4d37d027186a9df4fb973b521e5ebff9b4d2fbdb7d1489fe64f9a2c3737",
+      "sha256:b6a57a357229275f8cba973b46db4d91dff2c73e8152adabe6d38a17e837e270",
+      "sha256:b6555ab12753ae89726ab79ac78a705dc0b988a03bdf8a14ba55f1d77e599075",
+      "sha256:7dd7550d1c93abfc0ff33b79075c89ecb7bea4754c532f51acc1b138cadfc86b",
+      "sha256:e4ba966d7f0527dfe0fcb559e4e18d4da42c4e6beae924719255e0dedb554ed0",
+      "sha256:86d4e089d3d090295aaf81089351f0009951fbc656c15a75de92ee48285fa2b2",
+      "sha256:6db791322bfcbc72dc54aa46d012ef46a2314819ec9cc28904e9091b4b94e63e",
+      "sha256:0d28ad84d594e9c94f8cbc39f9867c8e2dfb92f17caed9b9a8b01a929cb73faf",
+      "sha256:a1e17617f976687edf521b0017fa94656ed81bf5b3ce3323cdc1b62c8a332153",
+      "sha256:bf3e33f133bc77ab88b2a91423b83097549091a27db667d602c10a8787cba49d",
+      "sha256:27266f796b7127dfe59d0d2726a642ee3c5eaf8081a4b509784bf508db7d22e3",
+      "sha256:5a1ca664d31c99d0a37a2692a753fb2656019fba31e883f8cbf64003d179b131",
+      "sha256:4b8502fd44896fea596fa1c84ba8d68153accdd171e96a27b400d88758f058b1",
+      "sha256:c04028da6564e3159d0a924c6777e1c6d34d9e0bf2ab8d24e7ac916102c61dcb",
+      "sha256:9fe2832c95773b3cc5a7191824a2d12ab62d98948c10db65115fe856430064aa",
+      "sha256:647f7f2bf45564fda1f6378e23f2e0b5ee5d661c124c693d32c66e5bf92fea1f",
+      "sha256:8deadf3d96a9a05e2b8f4582986488088ba8a245a63e6e46942139d7e83ced23",
+      "sha256:26686f88cb7870c7fe6a46f6fdedcc51d8b0f8bb323237d4fb5b87a2c4354126",
+      "sha256:a3d1a16ebd2ab71abdf51624cba03638b9d18811628c367f45d2cf46083254b5",
+      "sha256:6252493727fd3d83c38fced0d1fd7a7fb958d65c347e5b55c8229bf0c83fe0e9",
+      "sha256:b6f0e27db8f759d17964bccc7e059e0af37ea7b5136d5e52320d8cff63283d78",
+      "sha256:e065e79de270fdaffae724703dffaa90700e699d7ab992db104bf0e289b9d0ef",
+      "sha256:a7d4ec0613ad38f849826ee174439d31894d60693d47b09005a6d48dcf30580a",
+      "sha256:15f42d6f4b1ede8f941c23cf749f641abfb722da2a05023615a7c7ceb78d0f5f",
+      "sha256:11c3f6765c19210333141c7bccde1be7b0470fc13d6ee2af36a7596a46480347",
+      "sha256:5344edd13cfacfa0ecb82f8438f25b2ddbf52f142bd5adedc47f0cf9c7280613",
+      "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+      "sha256:2a4886e1cd97326007b293699222ed400c8ba8907d48dfc24314dafd1cf3a7ec"
+    ]
+  },
+  "Metadata": {
+    "LastTagTime": "2026-10-10T13:26:46.887217348Z"
+  },
+  "Descriptor": {
+    "mediaType": "application/vnd.oci.image.index.v1+json",
+    "digest": "sha256:710f1e4601a663ac8591f58a42b44e4cd3b7ea170c7e6cdb9e54c430a30cd459",
+    "size": 1613
+  }
+}

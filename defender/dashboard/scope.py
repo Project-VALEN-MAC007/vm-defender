@@ -97,7 +97,10 @@ def sessions_from_events(events):
             continue
         item = groups.setdefault(key, {"profile": key[0], "session_id": key[1], "source_ip": key[2],
                                       "first_action": first, "last_action": last,
-                                      "decision_id": event.get("decision_id"), "actions": 0})
+                                      "decision_id": event.get("decision_id"), "actions": 0,
+                                      "protocol": None})
+        if not item["protocol"] and event.get("protocol"):
+            item["protocol"] = event.get("protocol")
         item["first_action"] = min(first, item["first_action"])
         item["last_action"] = max(last, item["last_action"])
         item["actions"] += int(event.get("actions", 1))

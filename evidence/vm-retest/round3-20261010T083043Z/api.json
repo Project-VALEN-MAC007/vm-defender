@@ -1,0 +1,1731 @@
+[
+  {
+    "time": "2026-10-10T08:33:17.430944+00:00",
+    "path": "/api/login",
+    "method": "POST",
+    "status": 200,
+    "response": {
+      "ok": true,
+      "totp_required": true
+    }
+  },
+  {
+    "time": "2026-10-10T08:33:17.693315+00:00",
+    "path": "/api/login/totp",
+    "method": "POST",
+    "status": 200,
+    "response": {
+      "ok": true,
+      "user": {
+        "username": "trapadmin",
+        "name": "trapadmin",
+        "role": "master_admin",
+        "totp_enabled": true,
+        "must_change_password": false
+      }
+    }
+  },
+  {
+    "time": "2026-10-10T08:33:17.967054+00:00",
+    "path": "/api/login",
+    "method": "POST",
+    "status": 200,
+    "response": {
+      "ok": true,
+      "totp_required": true
+    }
+  },
+  {
+    "time": "2026-10-10T08:33:17.978228+00:00",
+    "path": "/api/login/totp",
+    "method": "POST",
+    "status": 200,
+    "response": {
+      "ok": true,
+      "user": {
+        "username": "trapuser",
+        "name": "trapuser",
+        "role": "user",
+        "totp_enabled": true,
+        "must_change_password": false
+      }
+    }
+  },
+  {
+    "time": "2026-10-10T08:33:17.984994+00:00",
+    "path": "/api/thresholds",
+    "method": "POST",
+    "status": 200,
+    "request": {
+      "monitor": 15,
+      "redirect": 40
+    },
+    "response": {
+      "monitor": 15.0,
+      "redirect": 40.0
+    }
+  },
+  {
+    "time": "2026-10-10T08:34:20.731353+00:00",
+    "path": "/api/thresholds",
+    "method": "POST",
+    "status": 200,
+    "request": {
+      "monitor": 5,
+      "redirect": 30
+    },
+    "response": {
+      "monitor": 5.0,
+      "redirect": 30.0
+    }
+  },
+  {
+    "time": "2026-10-10T08:34:27.280501+00:00",
+    "path": "/api/thresholds",
+    "method": "POST",
+    "status": 200,
+    "request": {
+      "monitor": 15,
+      "redirect": 40
+    },
+    "response": {
+      "monitor": 15.0,
+      "redirect": 40.0
+    }
+  },
+  {
+    "time": "2026-10-10T08:34:28.657682+00:00",
+    "path": "/api/thresholds",
+    "method": "POST",
+    "status": 200,
+    "request": {
+      "monitor": 5,
+      "redirect": 20
+    },
+    "response": {
+      "monitor": 5.0,
+      "redirect": 20.0
+    }
+  },
+  {
+    "time": "2026-10-10T08:34:33.978622+00:00",
+    "path": "/api/thresholds",
+    "method": "POST",
+    "status": 200,
+    "request": {
+      "monitor": 15,
+      "redirect": 40
+    },
+    "response": {
+      "monitor": 15.0,
+      "redirect": 40.0
+    }
+  },
+  {
+    "time": "2026-10-10T08:34:36.859950+00:00",
+    "path": "/api/thresholds",
+    "method": "POST",
+    "status": 200,
+    "request": {
+      "monitor": 5,
+      "redirect": 30
+    },
+    "response": {
+      "monitor": 5.0,
+      "redirect": 30.0
+    }
+  },
+  {
+    "time": "2026-10-10T08:34:41.394033+00:00",
+    "path": "/api/thresholds",
+    "method": "POST",
+    "status": 200,
+    "request": {
+      "monitor": 15,
+      "redirect": 40
+    },
+    "response": {
+      "monitor": 15.0,
+      "redirect": 40.0
+    }
+  },
+  {
+    "time": "2026-10-10T08:34:42.802139+00:00",
+    "path": "/api/thresholds",
+    "method": "POST",
+    "status": 200,
+    "request": {
+      "monitor": 5,
+      "redirect": 90
+    },
+    "response": {
+      "monitor": 5.0,
+      "redirect": 90.0
+    }
+  },
+  {
+    "time": "2026-10-10T08:34:43.751570+00:00",
+    "path": "/api/thresholds",
+    "method": "POST",
+    "status": 200,
+    "request": {
+      "monitor": 5,
+      "redirect": 10
+    },
+    "response": {
+      "monitor": 5.0,
+      "redirect": 10.0
+    }
+  },
+  {
+    "time": "2026-10-10T08:34:44.998985+00:00",
+    "path": "/api/thresholds",
+    "method": "POST",
+    "status": 403,
+    "request": {
+      "monitor": 5,
+      "redirect": 90
+    },
+    "response": {
+      "error": "forbidden"
+    }
+  },
+  {
+    "time": "2026-10-10T08:34:45.017969+00:00",
+    "path": "/api/thresholds",
+    "method": "POST",
+    "status": 200,
+    "request": {
+      "monitor": 15,
+      "redirect": 40
+    },
+    "response": {
+      "monitor": 15.0,
+      "redirect": 40.0
+    }
+  },
+  {
+    "time": "2026-10-10T08:34:46.419039+00:00",
+    "path": "/api/candidates/save",
+    "method": "POST",
+    "status": 200,
+    "request": {
+      "rule_id": "trap-retest-round3-20261010T083043Z",
+      "version": "1.0.0",
+      "status": "candidate",
+      "evidence": "Real VM retest round3-20261010T083043Z",
+      "confidence": 0.9,
+      "reviewer": "lab-reviewer",
+      "expected_sid": 9900001,
+      "rule": "alert http $EXTERNAL_NET any -> $HOME_NET any (msg:\"AH generated repeat path\"; flow:established,to_server; http.uri; content:\"/trap-retest-probe\"; classtype:web-application-attack; metadata:severity high, project adaptive_honeypot; threshold:type limit, track by_src, count 1, seconds 60; sid:9900001; rev:1;)",
+      "max_false_positive_rate": 0.05,
+      "minimum_malicious_detections": 1,
+      "max_validation_ms_per_event": 10.0
+    },
+    "response": {
+      "ok": true,
+      "test_results": {
+        "rule_id": "trap-retest-round3-20261010T083043Z",
+        "version": "1.0.0",
+        "status": "approved",
+        "gates": [
+          {
+            "gate": 1,
+            "name": "syntax",
+            "status": "passed",
+            "sid": 9900001
+          },
+          {
+            "gate": 2,
+            "name": "duplicate_overlap",
+            "status": "passed"
+          },
+          {
+            "gate": 3,
+            "name": "baseline_regression",
+            "status": "passed",
+            "false_positive_rate": 0.0
+          },
+          {
+            "gate": 4,
+            "name": "malicious_replay",
+            "status": "passed",
+            "detected": 2
+          },
+          {
+            "gate": 5,
+            "name": "performance_false_positive",
+            "status": "passed",
+            "ms_per_event": 0.1605499999186577
+          }
+        ],
+        "deploy_performed": false
+      }
+    }
+  },
+  {
+    "time": "2026-10-10T08:34:46.443256+00:00",
+    "path": "/api/candidates/approve",
+    "method": "POST",
+    "status": 200,
+    "request": {
+      "rule_id": "trap-retest-round3-20261010T083043Z"
+    },
+    "response": {
+      "ok": true,
+      "backup": "dashboard-20261010T083446-150ed92a.rules",
+      "activation": "pending"
+    }
+  },
+  {
+    "time": "2026-10-10T08:34:47.536745+00:00",
+    "path": "/api/rules/change",
+    "method": "POST",
+    "status": 200,
+    "request": {
+      "action": "restore",
+      "backup": "dashboard-20261010T083446-150ed92a.rules"
+    },
+    "response": {
+      "ok": true,
+      "backup": "dashboard-20261010T083447-926a7349.rules",
+      "activation": "pending"
+    }
+  },
+  {
+    "time": "2026-10-10T08:34:51.486350+00:00",
+    "path": "/api/rules/change",
+    "method": "POST",
+    "status": 200,
+    "request": {
+      "action": "add",
+      "rule": "alert http any any -> any any (msg:\"TRAP invalid syntax\"; trap_unknown_keyword:1; classtype:web-application-attack; sid:9900002; rev:1;)"
+    },
+    "response": {
+      "ok": true,
+      "backup": "dashboard-20261010T083451-c1ea524c.rules",
+      "activation": "pending"
+    }
+  },
+  {
+    "time": "2026-10-10T08:34:51.825566+00:00",
+    "path": "/api/rules/change",
+    "method": "POST",
+    "status": 200,
+    "request": {
+      "action": "restore",
+      "backup": "dashboard-20261010T083451-c1ea524c.rules"
+    },
+    "response": {
+      "ok": true,
+      "backup": "dashboard-20261010T083451-94852357.rules",
+      "activation": "pending"
+    }
+  },
+  {
+    "time": "2026-10-10T08:34:53.258046+00:00",
+    "path": "/api/thresholds",
+    "method": "POST",
+    "status": 200,
+    "request": {
+      "monitor": 15,
+      "redirect": 40
+    },
+    "response": {
+      "monitor": 15.0,
+      "redirect": 40.0
+    }
+  },
+  {
+    "time": "2026-10-10T08:37:09.752373+00:00",
+    "path": "/api/login",
+    "method": "POST",
+    "status": 200,
+    "response": {
+      "ok": true,
+      "totp_required": true
+    }
+  },
+  {
+    "time": "2026-10-10T08:37:10.008868+00:00",
+    "path": "/api/login/totp",
+    "method": "POST",
+    "status": 200,
+    "response": {
+      "ok": true,
+      "user": {
+        "username": "trapadmin",
+        "name": "trapadmin",
+        "role": "master_admin",
+        "totp_enabled": true,
+        "must_change_password": false
+      }
+    }
+  },
+  {
+    "time": "2026-10-10T08:37:10.268558+00:00",
+    "path": "/api/login",
+    "method": "POST",
+    "status": 200,
+    "response": {
+      "ok": true,
+      "totp_required": true
+    }
+  },
+  {
+    "time": "2026-10-10T08:37:10.292012+00:00",
+    "path": "/api/login/totp",
+    "method": "POST",
+    "status": 200,
+    "response": {
+      "ok": true,
+      "user": {
+        "username": "trapuser",
+        "name": "trapuser",
+        "role": "user",
+        "totp_enabled": true,
+        "must_change_password": false
+      }
+    }
+  },
+  {
+    "time": "2026-10-10T08:37:12.967719+00:00",
+    "path": "/api/thresholds",
+    "method": "POST",
+    "status": 200,
+    "request": {
+      "monitor": 5,
+      "redirect": 30
+    },
+    "response": {
+      "monitor": 5.0,
+      "redirect": 30.0
+    }
+  },
+  {
+    "time": "2026-10-10T08:37:19.572580+00:00",
+    "path": "/api/thresholds",
+    "method": "POST",
+    "status": 200,
+    "request": {
+      "monitor": 15,
+      "redirect": 40
+    },
+    "response": {
+      "monitor": 15.0,
+      "redirect": 40.0
+    }
+  },
+  {
+    "time": "2026-10-10T08:37:21.215891+00:00",
+    "path": "/api/login",
+    "method": "POST",
+    "status": 200,
+    "response": {
+      "ok": true,
+      "totp_required": true
+    }
+  },
+  {
+    "time": "2026-10-10T08:37:21.231981+00:00",
+    "path": "/api/login/totp",
+    "method": "POST",
+    "status": 401,
+    "response": {
+      "ok": false,
+      "error": "invalid_login"
+    }
+  },
+  {
+    "time": "2026-10-10T08:37:21.249974+00:00",
+    "path": "/api/rules.json",
+    "method": "GET",
+    "status": 403,
+    "request": null,
+    "response": {
+      "error": "forbidden"
+    }
+  },
+  {
+    "time": "2026-10-10T08:37:21.265472+00:00",
+    "path": "/api/thresholds",
+    "method": "POST",
+    "status": 403,
+    "request": {
+      "monitor": 5,
+      "redirect": 10
+    },
+    "response": {
+      "error": "forbidden"
+    }
+  },
+  {
+    "time": "2026-10-10T08:37:21.283509+00:00",
+    "path": "/api/rules.json",
+    "method": "GET",
+    "status": 200,
+    "request": null,
+    "response": [
+      {
+        "line": 7,
+        "sid": 2001219,
+        "message": "ET SCAN Potential SSH Scan",
+        "classtype": "attempted-recon",
+        "severity": "low",
+        "enabled": true,
+        "rule": "alert tcp $EXTERNAL_NET any -> $HOME_NET 22 (msg:\"ET SCAN Potential SSH Scan\"; flow:to_server; flags:S,12; threshold: type both, track by_src, count 5, seconds 120; reference:url,en.wikipedia.org/wiki/Brute_force_attack; classtype:attempted-recon; sid:2001219; rev:20; metadata:created_at 2010_07_30, confidence Medium, signature_severity Informational, updated_at 2019_07_26;)"
+      },
+      {
+        "line": 10,
+        "sid": 2002677,
+        "message": "ET SCAN Nikto Web App Scan in Progress",
+        "classtype": "web-application-attack",
+        "severity": "low",
+        "enabled": true,
+        "rule": "alert http $EXTERNAL_NET any -> $HOME_NET any (msg:\"ET SCAN Nikto Web App Scan in Progress\"; flow:established,to_server; threshold: type both, count 5, seconds 60, track by_src; http.user_agent; content:\"(Nikto\"; reference:url,www.cirt.net/code/nikto.shtml; classtype:web-application-attack; sid:2002677; rev:15; metadata:created_at 2010_07_30, confidence Medium, signature_severity Informational, updated_at 2024_03_06;)"
+      },
+      {
+        "line": 13,
+        "sid": 2006446,
+        "message": "ET WEB_SERVER Possible SQL Injection Attempt UNION SELECT in HTTP URI",
+        "classtype": "web-application-attack",
+        "severity": "high",
+        "enabled": true,
+        "rule": "alert http $EXTERNAL_NET any -> $HOME_NET any (msg:\"ET WEB_SERVER Possible SQL Injection Attempt UNION SELECT in HTTP URI\"; flow:established,to_server; http.uri; content:\"UNION\"; fast_pattern; nocase; content:\"SELECT\"; nocase; within:100; pcre:\"/UNION.+SELECT.+(?:\\x3b|\\x253b)/i\"; reference:url,en.wikipedia.org/wiki/SQL_injection; classtype:web-application-attack; sid:2006446; rev:18; metadata:affected_product Web_Server_Applications, attack_target Web_Server, created_at 2010_07_30, deployment Datacenter, confidence Medium, signature_severity Major, tag SQL_Injection, updated_at 2024_11_28, mitre_tactic_id TA0001, mitre_tactic_name Initial_Access, mitre_technique_id T1190, mitre_technique_name Exploit_Public_Facing_Application;)"
+      },
+      {
+        "line": 16,
+        "sid": 2006546,
+        "message": "ET SCAN LibSSH Based Frequent SSH Connections Likely BruteForce Attack",
+        "classtype": "attempted-admin",
+        "severity": "low",
+        "enabled": true,
+        "rule": "alert ssh $EXTERNAL_NET any -> $HOME_NET 22 (msg:\"ET SCAN LibSSH Based Frequent SSH Connections Likely BruteForce Attack\"; flow:established,to_server; ssh.software; content:\"libssh\"; nocase; threshold: type both, count 5, seconds 30, track by_src; classtype:attempted-admin; sid:2006546; rev:10; metadata:created_at 2010_07_30, confidence Medium, signature_severity Informational, updated_at 2019_07_26, trap_adapted ssh_software_buffer;)"
+      },
+      {
+        "line": 19,
+        "sid": 2008538,
+        "message": "ET SCAN Sqlmap SQL Injection Scan",
+        "classtype": "attempted-recon",
+        "severity": "high",
+        "enabled": true,
+        "rule": "alert http $EXTERNAL_NET any -> $HTTP_SERVERS any (msg:\"ET SCAN Sqlmap SQL Injection Scan\"; flow:established,to_server; threshold: type limit, count 2, seconds 40, track by_src; http.user_agent; content:\"sqlmap\"; startswith; reference:url,sqlmap.sourceforge.net; classtype:attempted-recon; sid:2008538; rev:10; metadata:affected_product Web_Server_Applications, attack_target Web_Server, created_at 2010_07_30, deployment Datacenter, confidence Medium, signature_severity Major, tag SQL_Injection, updated_at 2024_04_13, mitre_tactic_id TA0001, mitre_tactic_name Initial_Access, mitre_technique_id T1190, mitre_technique_name Exploit_Public_Facing_Application;)"
+      },
+      {
+        "line": 22,
+        "sid": 2009359,
+        "message": "ET SCAN Nmap Scripting Engine User-Agent Detected (Nmap NSE)",
+        "classtype": "web-application-attack",
+        "severity": "low",
+        "enabled": true,
+        "rule": "alert http $EXTERNAL_NET any -> $HOME_NET any (msg:\"ET SCAN Nmap Scripting Engine User-Agent Detected (Nmap NSE)\"; flow:established,to_server; http.user_agent; content:\"Nmap NSE\"; classtype:web-application-attack; sid:2009359; rev:6; metadata:created_at 2010_07_30, confidence High, signature_severity Informational, updated_at 2024_03_06;)"
+      },
+      {
+        "line": 25,
+        "sid": 2017616,
+        "message": "ET SCAN NETWORK Incoming Masscan detected",
+        "classtype": "network-scan",
+        "severity": "low",
+        "enabled": true,
+        "rule": "alert http any any -> $HOME_NET any (msg:\"ET SCAN NETWORK Incoming Masscan detected\"; flow:established,to_server; http.user_agent; content:\"masscan/\"; startswith; reference:url,blog.erratasec.com/2013/10/that-dlink-bug-masscan.html; reference:url,blog.erratasec.com/2013/09/masscan-entire-internet-in-3-minutes.html; classtype:network-scan; sid:2017616; rev:7; metadata:created_at 2013_10_18, confidence Medium, signature_severity Informational, tag Description_Generated_By_Proofpoint_Nexus, updated_at 2024_04_12;)"
+      },
+      {
+        "line": 28,
+        "sid": 2031502,
+        "message": "ET INFO Request to Hidden Environment File - Inbound",
+        "classtype": "misc-activity",
+        "severity": "low",
+        "enabled": true,
+        "rule": "alert http any any -> $HOME_NET any (msg:\"ET INFO Request to Hidden Environment File - Inbound\"; flow:established,to_server; http.uri; content:\"/.env\"; endswith; classtype:misc-activity; sid:2031502; rev:3; metadata:attack_target Web_Server, created_at 2021_01_08, deployment Perimeter, deployment SSLDecrypt, confidence Low, signature_severity Informational, tag Description_Generated_By_Proofpoint_Nexus, updated_at 2023_04_28;)"
+      },
+      {
+        "line": 31,
+        "sid": 2049400,
+        "message": "ET WEB_SERVER /etc/passwd Detected in URI",
+        "classtype": "attempted-recon",
+        "severity": "low",
+        "enabled": true,
+        "rule": "alert http $EXTERNAL_NET any -> $HTTP_SERVERS any (msg:\"ET WEB_SERVER /etc/passwd Detected in URI\"; flow:established,to_server; http.uri; content:\"/etc/passwd\"; nocase; classtype:attempted-recon; sid:2049400; rev:1; metadata:affected_product Linux, attack_target Web_Server, created_at 2023_11_29, deployment Perimeter, deployment SSLDecrypt, performance_impact Low, confidence High, signature_severity Informational, updated_at 2023_11_29;)"
+      },
+      {
+        "line": 34,
+        "sid": 2053468,
+        "message": "ET WEB_SERVER Possible SQL Injection UNION SELECT in HTTP Request Body",
+        "classtype": "attempted-admin",
+        "severity": "high",
+        "enabled": true,
+        "rule": "alert http $EXTERNAL_NET any -> $HOME_NET any (msg:\"ET WEB_SERVER Possible SQL Injection UNION SELECT in HTTP Request Body\"; flow:established,to_server; http.request_body; content:\"UNION\"; fast_pattern; nocase; content:\"SELECT\"; nocase; distance:0; reference:url,owasp.org/www-community/attacks/SQL_Injection; classtype:attempted-admin; sid:2053468; rev:1; metadata:affected_product Web_Server_Applications, attack_target Web_Server, created_at 2024_06_11, deployment Perimeter, deployment SSLDecrypt, performance_impact Moderate, confidence Medium, signature_severity Major, tag SQL_Injection, updated_at 2024_06_11, mitre_tactic_id TA0001, mitre_tactic_name Initial_Access, mitre_technique_id T1190, mitre_technique_name Exploit_Public_Facing_Application;)"
+      },
+      {
+        "line": 37,
+        "sid": 2100492,
+        "message": "GPL TELNET TELNET login failed",
+        "classtype": "bad-unknown",
+        "severity": "unknown",
+        "enabled": true,
+        "rule": "alert tcp $TELNET_SERVERS 23 -> $EXTERNAL_NET any (msg:\"GPL TELNET TELNET login failed\"; flow:established,to_client; content:\"Login failed\"; nocase; classtype:bad-unknown; sid:2100492; rev:11; metadata:created_at 2010_09_23, signature_severity Unknown, tag Description_Generated_By_Proofpoint_Nexus, updated_at 2024_03_08;)"
+      },
+      {
+        "line": 40,
+        "sid": 2101071,
+        "message": "GPL WEB_SERVER .htpasswd access",
+        "classtype": "web-application-attack",
+        "severity": "unknown",
+        "enabled": true,
+        "rule": "alert http $EXTERNAL_NET any -> $HTTP_SERVERS any (msg:\"GPL WEB_SERVER .htpasswd access\"; flow:established,to_server; http.uri; content:\".htpasswd\"; nocase; classtype:web-application-attack; sid:2101071; rev:10; metadata:created_at 2010_09_23, signature_severity Unknown, updated_at 2024_05_21;)"
+      },
+      {
+        "line": 43,
+        "sid": 2101251,
+        "message": "GPL TELNET Bad Login",
+        "classtype": "bad-unknown",
+        "severity": "unknown",
+        "enabled": true,
+        "rule": "alert tcp $HOME_NET 23 -> $EXTERNAL_NET any (msg:\"GPL TELNET Bad Login\"; flow:established,to_client; content:\"Login incorrect\"; nocase; fast_pattern; classtype:bad-unknown; sid:2101251; rev:11; metadata:created_at 2010_09_23, signature_severity Unknown, tag Description_Generated_By_Proofpoint_Nexus, updated_at 2024_03_08;)"
+      }
+    ]
+  },
+  {
+    "time": "2026-10-10T08:37:22.047210+00:00",
+    "path": "/api/thresholds",
+    "method": "POST",
+    "status": 200,
+    "request": {
+      "monitor": 15,
+      "redirect": 40
+    },
+    "response": {
+      "monitor": 15.0,
+      "redirect": 40.0
+    }
+  },
+  {
+    "time": "2026-10-10T08:37:22.693460+00:00",
+    "path": "/api/status.json",
+    "method": "GET",
+    "status": 200,
+    "request": null,
+    "response": {
+      "suricata": "active",
+      "nginx": "active",
+      "decision_engine": "active"
+    }
+  },
+  {
+    "time": "2026-10-10T08:37:22.713891+00:00",
+    "path": "/api/thresholds.json",
+    "method": "GET",
+    "status": 200,
+    "request": null,
+    "response": {
+      "monitor": 15.0,
+      "redirect": 40.0
+    }
+  },
+  {
+    "time": "2026-10-10T08:37:22.730523+00:00",
+    "path": "/api/capabilities.json",
+    "method": "GET",
+    "status": 200,
+    "request": null,
+    "response": {
+      "rule_edit_available": true,
+      "rule_apply": {
+        "mode": "helper",
+        "pending": false,
+        "state": "applied",
+        "sha256": "049a99cf7e216ef541d33159708c0108816c4c71d46e14555889bb8effbd5b8a",
+        "backup": "/etc/suricata/rules/et-open-selected.rules.20261010T083452Z.bak",
+        "time": "2026-10-10T08:34:52.459838+00:00"
+      },
+      "default_password_change": true,
+      "flush_requires_totp": true
+    }
+  },
+  {
+    "time": "2026-10-10T08:37:22.848167+00:00",
+    "path": "/api/summary.json",
+    "method": "GET",
+    "status": 200,
+    "request": null,
+    "response": {
+      "total": 308,
+      "by_action": {
+        "redirect_ssh": 11,
+        "redirect_web": 253,
+        "monitor": 32,
+        "redirect_telnet": 10,
+        "temporary_block": 2
+      },
+      "by_protocol": {
+        "ssh": 19,
+        "http": 273,
+        "telnet": 16
+      },
+      "total_alerts": 308
+    }
+  },
+  {
+    "time": "2026-10-10T08:37:22.892870+00:00",
+    "path": "/api/analytics.json?window=all",
+    "method": "GET",
+    "status": 200,
+    "request": null,
+    "response": {
+      "window": "all",
+      "scope": "bounded_runtime_snapshot",
+      "total_alerts": 308,
+      "unique_source_ips": 71,
+      "high_severity_alerts": 50,
+      "total_decisions": 308,
+      "protocols": {
+        "TCP": 16,
+        "HTTP": 273,
+        "TELNET": 16,
+        "SSH": 3
+      },
+      "severities": {
+        "2": 240,
+        "1": 50,
+        "3": 18
+      },
+      "actions": {
+        "redirect_ssh": 11,
+        "redirect_web": 253,
+        "monitor": 32,
+        "redirect_telnet": 10,
+        "temporary_block": 2
+      },
+      "destinations": {
+        "real": 32,
+        "honeypot": 274
+      },
+      "trend": [
+        {
+          "time": "2026-10-10",
+          "count": 308
+        }
+      ],
+      "honeypot_telemetry_available": true,
+      "severity_rank": [
+        {
+          "source_ip": "192.168.56.30",
+          "count": 4
+        },
+        {
+          "source_ip": "192.168.56.39",
+          "count": 2
+        },
+        {
+          "source_ip": "192.168.56.36",
+          "count": 2
+        },
+        {
+          "source_ip": "192.168.56.35",
+          "count": 2
+        },
+        {
+          "source_ip": "192.168.56.33",
+          "count": 2
+        },
+        {
+          "source_ip": "192.168.56.187",
+          "count": 1
+        },
+        {
+          "source_ip": "192.168.56.186",
+          "count": 1
+        },
+        {
+          "source_ip": "192.168.56.184",
+          "count": 1
+        },
+        {
+          "source_ip": "192.168.56.170",
+          "count": 1
+        },
+        {
+          "source_ip": "192.168.56.168",
+          "count": 1
+        }
+      ],
+      "decision_protocols": {
+        "SSH": 19,
+        "HTTP": 273,
+        "TELNET": 16
+      },
+      "decision_severities": {
+        "2": 240,
+        "1": 50,
+        "3": 18
+      },
+      "honeypot_dwell": [
+        {
+          "profile": "cowrie",
+          "sessions": 12,
+          "average_seconds": 2.18
+        },
+        {
+          "profile": "rabbithole",
+          "sessions": 6,
+          "average_seconds": 1.4
+        }
+      ],
+      "honeypot_sessions": 18,
+      "rabbit_hole": {
+        "overall": {
+          "windows": 9,
+          "sessions": 8,
+          "sessions_followed": 5,
+          "follow_rate": 0.625,
+          "single_access": 2,
+          "average_resources": 2.8,
+          "average_depth": 2.3,
+          "max_depth": 4,
+          "average_duration_seconds": 2.1,
+          "median_duration_seconds": 2.0,
+          "max_duration_seconds": 4.1,
+          "average_connection_seconds": null
+        },
+        "by_protocol": {
+          "ssh": {
+            "windows": 3,
+            "sessions": 3,
+            "sessions_followed": 3,
+            "follow_rate": 1.0,
+            "single_access": 0,
+            "average_resources": 2.3,
+            "average_depth": 2.0,
+            "max_depth": 2,
+            "average_duration_seconds": 2.1,
+            "median_duration_seconds": 2.0,
+            "max_duration_seconds": 3.0,
+            "average_connection_seconds": null
+          },
+          "web": {
+            "windows": 6,
+            "sessions": 5,
+            "sessions_followed": 2,
+            "follow_rate": 0.4,
+            "single_access": 2,
+            "average_resources": 3.0,
+            "average_depth": 2.5,
+            "max_depth": 4,
+            "average_duration_seconds": 2.1,
+            "median_duration_seconds": 2.1,
+            "max_duration_seconds": 4.1,
+            "average_connection_seconds": null
+          }
+        },
+        "top_resources": [
+          {
+            "scenario": "web-backup-api",
+            "node_id": "robots",
+            "count": 4
+          },
+          {
+            "scenario": "web-backup-api",
+            "node_id": "backup-index",
+            "count": 4
+          },
+          {
+            "scenario": "linux-server",
+            "node_id": "notes",
+            "count": 3
+          },
+          {
+            "scenario": "linux-server",
+            "node_id": "backup-conf",
+            "count": 3
+          },
+          {
+            "scenario": "web-backup-api",
+            "node_id": "backup-config",
+            "count": 3
+          },
+          {
+            "scenario": "web-backup-api",
+            "node_id": "api-index",
+            "count": 3
+          },
+          {
+            "scenario": "web-backup-api",
+            "node_id": "api-users",
+            "count": 3
+          },
+          {
+            "scenario": "linux-server",
+            "node_id": "dumps-dir",
+            "count": 1
+          },
+          {
+            "scenario": "web-env-admin",
+            "node_id": "env",
+            "count": 1
+          }
+        ],
+        "depth_distribution": {
+          "1": 3,
+          "2": 3,
+          "4": 3
+        },
+        "end_reasons": {
+          "session_closed": 3,
+          "active": 1,
+          "idle_timeout": 5
+        },
+        "comparison": {
+          "static_sessions": 0,
+          "static_average_seconds": null,
+          "rabbit_average_seconds": 2.1,
+          "note": "เปรียบเทียบได้เมื่อใช้จุดเริ่มต้น ระยะเวลา และกลุ่มผู้ทดสอบเดียวกันเท่านั้น"
+        }
+      }
+    }
+  },
+  {
+    "time": "2026-10-10T08:37:22.914359+00:00",
+    "path": "/api/honeypot.json",
+    "method": "GET",
+    "status": 200,
+    "request": null,
+    "response": {
+      "items": [
+        {
+          "profile": "cowrie",
+          "session_id": "21ecb15d4dbe",
+          "source_ip": "192.168.56.190",
+          "first_action": "2026-10-10T08:37:15.429933+00:00",
+          "last_action": "2026-10-10T08:37:18.695936+00:00",
+          "decision_id": null,
+          "actions": 9,
+          "dwell_seconds": 3.266003
+        },
+        {
+          "profile": "cowrie",
+          "session_id": "ce7a746e1228",
+          "source_ip": "192.168.56.185",
+          "first_action": "2026-10-10T08:34:38.954072+00:00",
+          "last_action": "2026-10-10T08:34:41.372858+00:00",
+          "decision_id": null,
+          "actions": 8,
+          "dwell_seconds": 2.418786
+        },
+        {
+          "profile": "cowrie",
+          "session_id": "320300212d62",
+          "source_ip": "192.168.56.183",
+          "first_action": "2026-10-10T08:34:31.306853+00:00",
+          "last_action": "2026-10-10T08:34:31.350871+00:00",
+          "decision_id": null,
+          "actions": 3,
+          "dwell_seconds": 0.044018
+        },
+        {
+          "profile": "cowrie",
+          "session_id": "ed517210fdcc",
+          "source_ip": "192.168.56.182",
+          "first_action": "2026-10-10T08:34:23.128499+00:00",
+          "last_action": "2026-10-10T08:34:26.378736+00:00",
+          "decision_id": null,
+          "actions": 9,
+          "dwell_seconds": 3.250237
+        },
+        {
+          "profile": "cowrie",
+          "session_id": "490c41b2e973",
+          "source_ip": "192.168.56.109",
+          "first_action": "2026-10-10T08:05:29.318658+00:00",
+          "last_action": "2026-10-10T08:05:29.365151+00:00",
+          "decision_id": null,
+          "actions": 3,
+          "dwell_seconds": 0.046493
+        },
+        {
+          "profile": "cowrie",
+          "session_id": "9c6278d241c9",
+          "source_ip": "192.168.56.108",
+          "first_action": "2026-10-10T08:05:21.004578+00:00",
+          "last_action": "2026-10-10T08:05:24.389637+00:00",
+          "decision_id": null,
+          "actions": 9,
+          "dwell_seconds": 3.385059
+        },
+        {
+          "profile": "cowrie",
+          "session_id": "edcc9e70bc28",
+          "source_ip": "192.168.56.101",
+          "first_action": "2026-10-10T08:04:52.433947+00:00",
+          "last_action": "2026-10-10T08:04:52.433947+00:00",
+          "decision_id": null,
+          "actions": 1,
+          "dwell_seconds": 0.0
+        },
+        {
+          "profile": "cowrie",
+          "session_id": "f79ab1c2db43",
+          "source_ip": "192.168.56.46",
+          "first_action": "2026-10-10T07:37:50.069475+00:00",
+          "last_action": "2026-10-10T07:37:50.115905+00:00",
+          "decision_id": null,
+          "actions": 3,
+          "dwell_seconds": 0.04643
+        },
+        {
+          "profile": "cowrie",
+          "session_id": "bf13695c974a",
+          "source_ip": "192.168.56.45",
+          "first_action": "2026-10-10T07:37:39.535498+00:00",
+          "last_action": "2026-10-10T07:37:45.892611+00:00",
+          "decision_id": null,
+          "actions": 12,
+          "dwell_seconds": 6.357113
+        },
+        {
+          "profile": "cowrie",
+          "session_id": "b358306d56c6",
+          "source_ip": "192.168.56.56",
+          "first_action": "2026-10-10T07:28:37.125644+00:00",
+          "last_action": "2026-10-10T07:28:37.169716+00:00",
+          "decision_id": null,
+          "actions": 3,
+          "dwell_seconds": 0.044072
+        },
+        {
+          "profile": "cowrie",
+          "session_id": "6e28451f193b",
+          "source_ip": "192.168.56.55",
+          "first_action": "2026-10-10T07:28:26.958034+00:00",
+          "last_action": "2026-10-10T07:28:34.251109+00:00",
+          "decision_id": null,
+          "actions": 13,
+          "dwell_seconds": 7.293075
+        },
+        {
+          "profile": "cowrie",
+          "session_id": "db5cd08320ba",
+          "source_ip": "192.168.56.50",
+          "first_action": "2026-10-10T07:28:22.173251+00:00",
+          "last_action": "2026-10-10T07:28:22.222607+00:00",
+          "decision_id": null,
+          "actions": 2,
+          "dwell_seconds": 0.049356
+        },
+        {
+          "profile": "rabbithole",
+          "session_id": "dfa3d956fa48c509a14f",
+          "source_ip": "192.168.56.184",
+          "first_action": "2026-10-10T08:34:35.974957+00:00",
+          "last_action": "2026-10-10T08:34:36.088890+00:00",
+          "decision_id": null,
+          "actions": 5,
+          "dwell_seconds": 0.113933
+        },
+        {
+          "profile": "rabbithole",
+          "session_id": "11cce0fa50332ad24fb3",
+          "source_ip": "192.168.56.47",
+          "first_action": "2026-10-10T07:37:55.371528+00:00",
+          "last_action": "2026-10-10T07:37:59.497323+00:00",
+          "decision_id": null,
+          "actions": 5,
+          "dwell_seconds": 4.125795
+        },
+        {
+          "profile": "rabbithole",
+          "session_id": "422a7fd4c1abb5a9235a",
+          "source_ip": "192.168.56.30",
+          "first_action": "2026-10-10T07:36:35.220744+00:00",
+          "last_action": "2026-10-10T07:36:35.237141+00:00",
+          "decision_id": null,
+          "actions": 3,
+          "dwell_seconds": 0.016397
+        },
+        {
+          "profile": "rabbithole",
+          "session_id": "c19fbe1fd121d281f9aa",
+          "source_ip": "192.168.56.30",
+          "first_action": "2026-10-10T07:36:35.213420+00:00",
+          "last_action": "2026-10-10T07:36:35.213420+00:00",
+          "decision_id": null,
+          "actions": 1,
+          "dwell_seconds": 0.0
+        },
+        {
+          "profile": "rabbithole",
+          "session_id": "e3c17f14a71bb637ef78",
+          "source_ip": "192.168.56.48",
+          "first_action": "2026-10-10T07:24:02.342970+00:00",
+          "last_action": "2026-10-10T07:24:02.342970+00:00",
+          "decision_id": null,
+          "actions": 1,
+          "dwell_seconds": 0.0
+        },
+        {
+          "profile": "rabbithole",
+          "session_id": "82f9505e68d2e609f23e",
+          "source_ip": "192.168.56.47",
+          "first_action": "2026-10-10T07:23:52.941334+00:00",
+          "last_action": "2026-10-10T07:23:57.073565+00:00",
+          "decision_id": null,
+          "actions": 5,
+          "dwell_seconds": 4.132231
+        }
+      ]
+    }
+  },
+  {
+    "time": "2026-10-10T08:37:22.944385+00:00",
+    "path": "/api/rabbit-hole.json",
+    "method": "GET",
+    "status": 200,
+    "request": null,
+    "response": {
+      "window": "24h",
+      "enabled": true,
+      "summary": {
+        "overall": {
+          "windows": 9,
+          "sessions": 8,
+          "sessions_followed": 5,
+          "follow_rate": 0.625,
+          "single_access": 2,
+          "average_resources": 2.8,
+          "average_depth": 2.3,
+          "max_depth": 4,
+          "average_duration_seconds": 2.1,
+          "median_duration_seconds": 2.0,
+          "max_duration_seconds": 4.1,
+          "average_connection_seconds": null
+        },
+        "by_protocol": {
+          "ssh": {
+            "windows": 3,
+            "sessions": 3,
+            "sessions_followed": 3,
+            "follow_rate": 1.0,
+            "single_access": 0,
+            "average_resources": 2.3,
+            "average_depth": 2.0,
+            "max_depth": 2,
+            "average_duration_seconds": 2.1,
+            "median_duration_seconds": 2.0,
+            "max_duration_seconds": 3.0,
+            "average_connection_seconds": null
+          },
+          "web": {
+            "windows": 6,
+            "sessions": 5,
+            "sessions_followed": 2,
+            "follow_rate": 0.4,
+            "single_access": 2,
+            "average_resources": 3.0,
+            "average_depth": 2.5,
+            "max_depth": 4,
+            "average_duration_seconds": 2.1,
+            "median_duration_seconds": 2.1,
+            "max_duration_seconds": 4.1,
+            "average_connection_seconds": null
+          }
+        },
+        "top_resources": [
+          {
+            "scenario": "web-backup-api",
+            "node_id": "robots",
+            "count": 4
+          },
+          {
+            "scenario": "web-backup-api",
+            "node_id": "backup-index",
+            "count": 4
+          },
+          {
+            "scenario": "linux-server",
+            "node_id": "notes",
+            "count": 3
+          },
+          {
+            "scenario": "linux-server",
+            "node_id": "backup-conf",
+            "count": 3
+          },
+          {
+            "scenario": "web-backup-api",
+            "node_id": "backup-config",
+            "count": 3
+          },
+          {
+            "scenario": "web-backup-api",
+            "node_id": "api-index",
+            "count": 3
+          },
+          {
+            "scenario": "web-backup-api",
+            "node_id": "api-users",
+            "count": 3
+          },
+          {
+            "scenario": "linux-server",
+            "node_id": "dumps-dir",
+            "count": 1
+          },
+          {
+            "scenario": "web-env-admin",
+            "node_id": "env",
+            "count": 1
+          }
+        ],
+        "depth_distribution": {
+          "1": 3,
+          "2": 3,
+          "4": 3
+        },
+        "end_reasons": {
+          "session_closed": 3,
+          "active": 1,
+          "idle_timeout": 5
+        },
+        "comparison": {
+          "static_sessions": 0,
+          "static_average_seconds": null,
+          "rabbit_average_seconds": 2.1,
+          "note": "เปรียบเทียบได้เมื่อใช้จุดเริ่มต้น ระยะเวลา และกลุ่มผู้ทดสอบเดียวกันเท่านั้น"
+        }
+      },
+      "windows": [
+        {
+          "id": "425f3114635b12183686",
+          "family": "shell",
+          "protocol": "ssh",
+          "session_id": "ce7a746e1228",
+          "source_ip": "192.168.56.185",
+          "user_agent": null,
+          "start": "2026-10-10T08:34:39.250363+00:00",
+          "end": "2026-10-10T08:34:40.654155+00:00",
+          "duration_seconds": 1.4,
+          "single_access": false,
+          "events": 2,
+          "resources": 2,
+          "max_depth": 2,
+          "clues_followed": 1,
+          "followed": true,
+          "scenarios": [
+            "linux-server"
+          ],
+          "links": [
+            "cowrie_session"
+          ],
+          "denied_api_calls": 0,
+          "end_reason": "session_closed",
+          "connection_seconds": null
+        },
+        {
+          "id": "dfa3d956fa48c509a14f",
+          "family": "web",
+          "protocol": "http",
+          "session_id": "d44ca1deace3c2a2c70d4292b8352d47",
+          "source_ip": "192.168.56.184",
+          "user_agent": "TRAP-Round3-Rabbit",
+          "start": "2026-10-10T08:34:35.974957+00:00",
+          "end": "2026-10-10T08:34:36.088890+00:00",
+          "duration_seconds": 0.1,
+          "single_access": false,
+          "events": 5,
+          "resources": 5,
+          "max_depth": 4,
+          "clues_followed": 4,
+          "followed": true,
+          "scenarios": [
+            "web-backup-api"
+          ],
+          "links": [
+            "cookie",
+            "ip_ua"
+          ],
+          "denied_api_calls": 0,
+          "end_reason": "active",
+          "connection_seconds": null
+        },
+        {
+          "id": "11cce0fa50332ad24fb3",
+          "family": "web",
+          "protocol": "http",
+          "session_id": "1b9628049a221206e778eaabc55339cd",
+          "source_ip": "192.168.56.47",
+          "user_agent": "TRAP-E2E-Rabbit",
+          "start": "2026-10-10T07:37:55.371528+00:00",
+          "end": "2026-10-10T07:37:59.497323+00:00",
+          "duration_seconds": 4.1,
+          "single_access": false,
+          "events": 5,
+          "resources": 5,
+          "max_depth": 4,
+          "clues_followed": 4,
+          "followed": true,
+          "scenarios": [
+            "web-backup-api"
+          ],
+          "links": [
+            "cookie"
+          ],
+          "denied_api_calls": 0,
+          "end_reason": "idle_timeout",
+          "connection_seconds": null
+        },
+        {
+          "id": "f963ce27832ba58a7923",
+          "family": "shell",
+          "protocol": "ssh",
+          "session_id": "bf13695c974a",
+          "source_ip": "192.168.56.45",
+          "user_agent": null,
+          "start": "2026-10-10T07:37:42.887879+00:00",
+          "end": "2026-10-10T07:37:44.888963+00:00",
+          "duration_seconds": 2.0,
+          "single_access": false,
+          "events": 2,
+          "resources": 2,
+          "max_depth": 2,
+          "clues_followed": 1,
+          "followed": true,
+          "scenarios": [
+            "linux-server"
+          ],
+          "links": [
+            "cowrie_session"
+          ],
+          "denied_api_calls": 0,
+          "end_reason": "session_closed",
+          "connection_seconds": null
+        },
+        {
+          "id": "422a7fd4c1abb5a9235a",
+          "family": "web",
+          "protocol": "http",
+          "session_id": "82d627da7788950aa2b941677000d7ee",
+          "source_ip": "192.168.56.30",
+          "user_agent": "Mozilla/5.00 (Nikto/2.1.5) (Evasions:None) (Test:)",
+          "start": "2026-10-10T07:36:35.220744+00:00",
+          "end": "2026-10-10T07:36:35.237141+00:00",
+          "duration_seconds": 0.0,
+          "single_access": false,
+          "events": 3,
+          "resources": 1,
+          "max_depth": 1,
+          "clues_followed": 0,
+          "followed": false,
+          "scenarios": [
+            "web-backup-api"
+          ],
+          "links": [
+            "ip_ua"
+          ],
+          "denied_api_calls": 0,
+          "end_reason": "idle_timeout",
+          "connection_seconds": null
+        },
+        {
+          "id": "c19fbe1fd121d281f9aa",
+          "family": "web",
+          "protocol": "http",
+          "session_id": "dfb6151aaea9f415b615215a53840706",
+          "source_ip": "192.168.56.30",
+          "user_agent": "Mozilla/5.00 (Nikto/2.1.5) (Evasions:None) (Test:robots)",
+          "start": "2026-10-10T07:36:35.213420+00:00",
+          "end": "2026-10-10T07:36:35.213420+00:00",
+          "duration_seconds": null,
+          "single_access": true,
+          "events": 1,
+          "resources": 1,
+          "max_depth": 1,
+          "clues_followed": 0,
+          "followed": false,
+          "scenarios": [
+            "web-backup-api"
+          ],
+          "links": [
+            "ip_ua"
+          ],
+          "denied_api_calls": 0,
+          "end_reason": "idle_timeout",
+          "connection_seconds": null
+        },
+        {
+          "id": "2aedba45f744b33d7fcd",
+          "family": "shell",
+          "protocol": "ssh",
+          "session_id": "6e28451f193b",
+          "source_ip": "192.168.56.55",
+          "user_agent": null,
+          "start": "2026-10-10T07:28:30.243180+00:00",
+          "end": "2026-10-10T07:28:33.247344+00:00",
+          "duration_seconds": 3.0,
+          "single_access": false,
+          "events": 3,
+          "resources": 3,
+          "max_depth": 2,
+          "clues_followed": 2,
+          "followed": true,
+          "scenarios": [
+            "linux-server"
+          ],
+          "links": [
+            "cowrie_session"
+          ],
+          "denied_api_calls": 0,
+          "end_reason": "session_closed",
+          "connection_seconds": null
+        },
+        {
+          "id": "e3c17f14a71bb637ef78",
+          "family": "web",
+          "protocol": "http",
+          "session_id": "fb36368a764fd574d965012194f96b65",
+          "source_ip": "192.168.56.48",
+          "user_agent": "curl/8.5.0",
+          "start": "2026-10-10T07:24:02.342970+00:00",
+          "end": "2026-10-10T07:24:02.342970+00:00",
+          "duration_seconds": null,
+          "single_access": true,
+          "events": 1,
+          "resources": 1,
+          "max_depth": 1,
+          "clues_followed": 0,
+          "followed": false,
+          "scenarios": [
+            "web-env-admin"
+          ],
+          "links": [
+            "ip_ua"
+          ],
+          "denied_api_calls": 0,
+          "end_reason": "idle_timeout",
+          "connection_seconds": null
+        },
+        {
+          "id": "82f9505e68d2e609f23e",
+          "family": "web",
+          "protocol": "http",
+          "session_id": "1b9628049a221206e778eaabc55339cd",
+          "source_ip": "192.168.56.47",
+          "user_agent": "TRAP-E2E-Rabbit",
+          "start": "2026-10-10T07:23:52.941334+00:00",
+          "end": "2026-10-10T07:23:57.073565+00:00",
+          "duration_seconds": 4.1,
+          "single_access": false,
+          "events": 5,
+          "resources": 5,
+          "max_depth": 4,
+          "clues_followed": 4,
+          "followed": true,
+          "scenarios": [
+            "web-backup-api"
+          ],
+          "links": [
+            "cookie",
+            "ip_ua"
+          ],
+          "denied_api_calls": 0,
+          "end_reason": "idle_timeout",
+          "connection_seconds": null
+        }
+      ],
+      "total_windows": 9,
+      "idle_timeout_seconds": 300,
+      "scenarios": [
+        {
+          "id": "linux-server",
+          "title": "เซิร์ฟเวอร์ Linux ที่มีไฟล์สำรองฐานข้อมูล",
+          "description": "ผู้โจมตีที่เข้า Shell จะพบโน้ตและประวัติคำสั่งของผู้ดูแล ซึ่งชี้ไปยังไฟล์ตั้งค่าสำรองข้อมูลและไฟล์ Dump ฐานข้อมูล",
+          "protocol": "shell",
+          "selected": true,
+          "builtin": true,
+          "max_depth": 3,
+          "nodes": [
+            {
+              "id": "history",
+              "path": "/home/sysadmin/.bash_history",
+              "kind": "file",
+              "depth": 1,
+              "next": [
+                "backup-conf"
+              ],
+              "entry": true
+            },
+            {
+              "id": "notes",
+              "path": "/home/sysadmin/notes.txt",
+              "kind": "file",
+              "depth": 1,
+              "next": [
+                "backup-conf",
+                "dumps-dir"
+              ],
+              "entry": true
+            },
+            {
+              "id": "backup-conf",
+              "path": "/opt/backup/backup.conf",
+              "kind": "file",
+              "depth": 2,
+              "next": [
+                "dumps-dir"
+              ],
+              "entry": false
+            },
+            {
+              "id": "dumps-dir",
+              "path": "/var/backups/db",
+              "kind": "dir",
+              "depth": 2,
+              "next": [
+                "dump-file"
+              ],
+              "entry": false
+            },
+            {
+              "id": "dump-file",
+              "path": "/var/backups/db/acme_erp-2026-10-09.sql",
+              "kind": "file",
+              "depth": 3,
+              "next": [],
+              "entry": false
+            }
+          ]
+        },
+        {
+          "id": "web-env-admin",
+          "title": "ไฟล์ .env และหน้าแอดมินที่ซ่อนไว้",
+          "description": "ผู้โจมตีอ่าน .env หรือ .git/config แล้วพบที่อยู่หน้าแอดมินที่ซ่อนไว้ เมื่อเข้าสู่ระบบจะเห็นไฟล์ Export ข้อมูลลูกค้า",
+          "protocol": "web",
+          "selected": true,
+          "builtin": true,
+          "max_depth": 5,
+          "nodes": [
+            {
+              "id": "env",
+              "path": "/.env",
+              "kind": "file",
+              "depth": 1,
+              "next": [
+                "admin-login"
+              ],
+              "entry": true
+            },
+            {
+              "id": "git-config",
+              "path": "/.git/config",
+              "kind": "file",
+              "depth": 1,
+              "next": [
+                "deploy-notes"
+              ],
+              "entry": true
+            },
+            {
+              "id": "deploy-notes",
+              "path": "/deploy/NOTES.txt",
+              "kind": "file",
+              "depth": 2,
+              "next": [
+                "admin-login"
+              ],
+              "entry": false
+            },
+            {
+              "id": "admin-login",
+              "path": "/internal/admin-83a855/",
+              "kind": "form",
+              "depth": 2,
+              "next": [
+                "admin-home"
+              ],
+              "entry": false
+            },
+            {
+              "id": "admin-home",
+              "path": "/internal/admin-83a855/home",
+              "kind": "file",
+              "depth": 3,
+              "next": [
+                "admin-exports"
+              ],
+              "entry": false
+            },
+            {
+              "id": "admin-exports",
+              "path": "/internal/admin-83a855/exports/",
+              "kind": "listing",
+              "depth": 4,
+              "next": [
+                "customers-export"
+              ],
+              "entry": false
+            },
+            {
+              "id": "customers-export",
+              "path": "/internal/admin-83a855/exports/customers_2026-10-08.csv",
+              "kind": "file",
+              "depth": 5,
+              "next": [],
+              "entry": false
+            }
+          ]
+        },
+        {
+          "id": "web-backup-api",
+          "title": "ไฟล์สำรองและ API ภายใน",
+          "description": "ผู้โจมตีพบโฟลเดอร์ไฟล์สำรองจาก robots.txt แล้วเจอไฟล์ตั้งค่าที่มี API Key ซึ่งนำไปเรียก API ข้อมูลผู้ใช้และใบแจ้งหนี้ได้",
+          "protocol": "web",
+          "selected": true,
+          "builtin": true,
+          "max_depth": 4,
+          "nodes": [
+            {
+              "id": "backup-index",
+              "path": "/backup/",
+              "kind": "listing",
+              "depth": 1,
+              "next": [
+                "backup-config",
+                "backup-readme"
+              ],
+              "entry": true
+            },
+            {
+              "id": "robots",
+              "path": "/robots.txt",
+              "kind": "file",
+              "depth": 1,
+              "next": [
+                "backup-index",
+                "api-docs"
+              ],
+              "entry": true
+            },
+            {
+              "id": "api-docs",
+              "path": "/api/docs",
+              "kind": "file",
+              "depth": 2,
+              "next": [
+                "api-index"
+              ],
+              "entry": false
+            },
+            {
+              "id": "backup-readme",
+              "path": "/backup/README.txt",
+              "kind": "file",
+              "depth": 2,
+              "next": [
+                "old-exports"
+              ],
+              "entry": false
+            },
+            {
+              "id": "backup-config",
+              "path": "/backup/config.json",
+              "kind": "api",
+              "depth": 2,
+              "next": [
+                "api-index"
+              ],
+              "entry": false
+            },
+            {
+              "id": "api-index",
+              "path": "/api/v1/",
+              "kind": "api",
+              "depth": 3,
+              "next": [
+                "api-users",
+                "api-invoices"
+              ],
+              "entry": false
+            },
+            {
+              "id": "old-exports",
+              "path": "/backup/old/",
+              "kind": "listing",
+              "depth": 3,
+              "next": [
+                "users-export"
+              ],
+              "entry": false
+            },
+            {
+              "id": "api-invoices",
+              "path": "/api/v1/invoices",
+              "kind": "api",
+              "depth": 4,
+              "next": [],
+              "entry": false
+            },
+            {
+              "id": "api-users",
+              "path": "/api/v1/users",
+              "kind": "people_api",
+              "depth": 4,
+              "next": [],
+              "entry": false
+            },
+            {
+              "id": "users-export",
+              "path": "/backup/old/users_export_2026-09-10.csv",
+              "kind": "file",
+              "depth": 4,
+              "next": [],
+              "entry": false
+            }
+          ]
+        }
+      ],
+      "settings": {
+        "enabled": true,
+        "organization": {
+          "name": "TRAP Lab Services",
+          "short_name": "acme",
+          "domain": "trap.lab",
+          "hostname": "trap-backup-01",
+          "admin_user": "sysadmin",
+          "db_name": "acme_erp",
+          "internal_subnet": "10.20.0"
+        },
+        "scenarios": {
+          "web": [
+            "web-backup-api",
+            "web-env-admin"
+          ],
+          "shell": "linux-server"
+        },
+        "limits": {
+          "max_depth": 5,
+          "max_branches": 2,
+          "max_resources_per_session": 40,
+          "idle_timeout_seconds": 300,
+          "session_ttl_seconds": 3600,
+          "max_sessions": 5000
+        },
+        "web": {
+          "host": "10.10.10.2",
+          "port": 8084,
+          "log_path": "/var/log/trap/rabbit-hole-web.jsonl",
+          "trusted_proxies": [
+            "10.10.10.1/32"
+          ],
+          "server_header": "nginx/1.24.0"
+        }
+      },
+      "problems": []
+    }
+  },
+  {
+    "time": "2026-10-10T08:37:22.985260+00:00",
+    "path": "/api/reports.csv?window=all",
+    "method": "GET",
+    "status": 200,
+    "request": null,
+    "response": "﻿window,section,item,count,average_dwell_seconds\r\nall,summary,total_alerts,308,\r\nall,summary,total_decisions,308,\r\nall,summary,unique_source_ips,71,\r\nall,summary,high_severity_alerts,50,\r\nall,summary,honeypot_sessions,18,\r\nall,decision_protocols,SSH,19,\r\nall,decision_protocols,HTTP,273,\r\nall,decision_protocols,TELNET,16,\r\nall,decision_severities,2,240,\r\nall,decision_severities,1,50,\r\nall,decision_severities,3,18,\r\nall,destinations,real,32,\r\nall,destinations,honeypot,274,\r\nall,actions,redirect_ssh,11,\r\nall,actions,redirect_web,253,\r\nall,actions,monitor,32,\r\nall,actions,redirect_telnet,10,\r\nall,actions,temporary_block,2,\r\nall,honeypot_dwell,cowrie,12,2.18\r\nall,honeypot_dwell,rabbithole,6,1.4\r\nall,rabbit_hole_all,sessions,8,\r\nall,rabbit_hole_all,sessions_followed,5,\r\nall,rabbit_hole_all,follow_rate,0.625,\r\nall,rabbit_hole_all,average_resources,2.8,\r\nall,rabbit_hole_all,average_depth,2.3,\r\nall,rabbit_hole_all,max_depth,4,\r\nall,rabbit_hole_all,average_duration_seconds,2.1,\r\nall,rabbit_hole_all,average_connection_seconds,,\r\nall,rabbit_hole_ssh,sessions,3,\r\nall,rabbit_hole_ssh,sessions_followed,3,\r\nall,rabbit_hole_ssh,follow_rate,1.0,\r\nall,rabbit_hole_ssh,average_resources,2.3,\r\nall,rabbit_hole_ssh,average_depth,2.0,\r\nall,rabbit_hole_ssh,max_depth,2,\r\nall,rabbit_hole_ssh,average_duration_seconds,2.1,\r\nall,rabbit_hole_ssh,average_connection_seconds,,\r\nall,rabbit_hole_web,sessions,5,\r\nall,rabbit_hole_web,sessions_followed,2,\r\nall,rabbit_hole_web,follow_rate,0.4,\r\nall,rabbit_hole_web,average_resources,3.0,\r\nall,rabbit_hole_web,average_depth,2.5,\r\nall,rabbit_hole_web,max_depth,4,\r\nall,rabbit_hole_web,average_duration_seconds,2.1,\r\nall,rabbit_hole_web,average_connection_seconds,,\r\n"
+  }
+]

@@ -1,0 +1,35 @@
+#!/usr/sbin/nft -f
+# TRAP isolation — Project-Web (10.10.10.3, the real server)
+#
+# New connections from the lab network are accepted only from the Defender:
+#   - Nginx proxy 10.10.10.1 -> trap-web 8080 (Docker-published)
+#   - SSH 22 / Telnet 23 from the outer network arrive through Defender DNAT with
+#     the client's own 192.168.56.x address, so they are not matched here.
+# Everything else on 10.10.10.0/24 (the Honeypot and its containers) is dropped,
+# for the host (INPUT) and for Docker-published ports (FORWARD after DNAT).
+#
+# Own table, separate from Docker's rules. Never use `flush ruleset`.
+# Loaded by trap-isolation.service before docker.service.
+
+define DEFENDER = 10.10.10.1
+define LAB_NET  = 10.10.10.0/24
+
+table inet trap_isolation
+delete table inet trap_isolation
+
+table inet trap_isolation {
+    chain input {
+        type filter hook input priority filter - 5; policy accept;
+        ct state invalid drop
+        ct state established,related accept
+        iif "lo" accept
+        ip saddr $LAB_NET ip saddr != $DEFENDER ct state new counter drop comment "lab peer -> real host"
+    }
+
+    chain forward {
+        type filter hook forward priority filter - 5; policy accept;
+        ct state invalid drop
+        ct state established,related accept
+        ip saddr $LAB_NET ip saddr != $DEFENDER ct state new counter drop comment "lab peer -> real container"
+    }
+}

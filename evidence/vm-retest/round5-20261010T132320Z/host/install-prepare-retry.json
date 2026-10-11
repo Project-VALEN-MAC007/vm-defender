@@ -1,0 +1,7 @@
+{
+  "vm": "honeypot",
+  "utc": "2026-10-10T13:26:56.412418+00:00",
+  "exit_code": 127,
+  "stdout": "",
+  "stderr": "docker: Error response from daemon: failed to create task for container: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: error during container init: exec: \"/bin/sh\": stat /bin/sh: no such file or directory\n\nRun 'docker run --help' for more information\n"
+}

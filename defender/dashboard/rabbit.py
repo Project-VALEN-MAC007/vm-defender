@@ -78,6 +78,7 @@ class RabbitHoleService:
         """Rabbit Hole web windows in the session format used for Honeypot dwell time."""
         idle = self.config().limits["idle_timeout_seconds"]
         return [{"session_id": w["id"], "source_ip": w["source_ip"], "profile": "rabbithole",
+                 "protocol": w.get("protocol") or "http",
                  "first_action": w["start"], "last_action": w["end"], "timestamp": w["start"],
                  "actions": w["events"]}
                 for w in rabbit_analytics.windows(web_rows, idle) if w["family"] == "web"]

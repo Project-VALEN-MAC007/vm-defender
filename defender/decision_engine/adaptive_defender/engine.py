@@ -19,9 +19,85 @@ def _nginx_validate(_: Path) -> bool:
     return subprocess.run(["nginx", "-t"], capture_output=True, text=True).returncode == 0
 
 
-def _nginx_reload() -> bool:
-    import subprocess
-    return subprocess.run(["systemctl", "reload", "nginx"], capture_output=True, text=True).returncode == 0
+class NginxReloader:
+    """Reload nginx and wait until the new map is the one serving requests.
+
+    `systemctl reload nginx` only signals the master. Until the master has
+    started new workers and told the old ones to stop accepting, a request can
+    still be served with the previous map (seen in the 2026-10-10 HTTPS retest:
+    the first request after a redirect decision reached the real site). Ready
+    means: at least one worker that did not exist before the reload, and every
+    old worker gone or titled "worker process is shutting down" (old workers
+    close their listening sockets when they take that title).
+
+    `last_ready` is True when confirmed, False on timeout, None when it could
+    not be checked (no pid file). A timeout does not fail the reload: the map
+    is valid and nginx was signalled; the decision records the outcome.
+    """
+
+    def __init__(self, pid_file: Path = Path("/run/nginx.pid"), proc_root: Path = Path("/proc"),
+                 timeout: float = 5.0, interval: float = 0.05, run=None, sleep=None, monotonic=None):
+        import subprocess
+        import time
+        self.pid_file, self.proc_root = Path(pid_file), Path(proc_root)
+        self.timeout, self.interval = timeout, interval
+        self.run = run or (lambda command: subprocess.run(command, capture_output=True, text=True))
+        self.sleep = sleep or time.sleep
+        self.monotonic = monotonic or time.monotonic
+        self.last_ready: bool | None = None
+        self.last_wait_seconds: float | None = None
+
+    def _master(self) -> int | None:
+        try:
+            return int(self.pid_file.read_text(encoding="ascii").strip())
+        except (OSError, ValueError):
+            return None
+
+    def _workers(self, master: int) -> dict[int, str]:
+        workers: dict[int, str] = {}
+        try:
+            entries = list(self.proc_root.iterdir())
+        except OSError:
+            return workers
+        for entry in entries:
+            if not entry.name.isdigit():
+                continue
+            try:
+                stat = (entry / "stat").read_text(encoding="utf-8", errors="replace")
+                parent = int(stat.rsplit(")", 1)[1].split()[1])
+                if parent != master:
+                    continue
+                title = (entry / "cmdline").read_bytes().replace(b"\0", b" ").decode("utf-8", "replace").strip()
+            except (OSError, ValueError, IndexError):
+                continue  # process exited while we looked
+            if "worker process" in title:
+                workers[int(entry.name)] = title
+        return workers
+
+    def __call__(self) -> bool:
+        master = self._master()
+        before = set(self._workers(master)) if master is not None else set()
+        started = self.monotonic()
+        if self.run(["systemctl", "reload", "nginx"]).returncode != 0:
+            self.last_ready, self.last_wait_seconds = False, None
+            return False
+        if master is None:
+            self.last_ready, self.last_wait_seconds = None, None
+            return True
+        deadline = started + self.timeout
+        while True:
+            current = self._workers(master)
+            fresh = [pid for pid in current if pid not in before]
+            still_serving = [pid for pid, title in current.items()
+                             if pid in before and "shutting down" not in title]
+            now = self.monotonic()
+            if fresh and not still_serving:
+                self.last_ready, self.last_wait_seconds = True, round(now - started, 3)
+                return True
+            if now >= deadline:
+                self.last_ready, self.last_wait_seconds = False, round(now - started, 3)
+                return True
+            self.sleep(self.interval)
 
 
 class DecisionEngine:
@@ -32,7 +108,9 @@ class DecisionEngine:
                                web_profile=settings.web_profile,
                                scan_only_signatures=settings.scan_only_signatures)
         self.nft = NftSetAdapter(settings.nft_family, settings.nft_table, settings.dry_run)
-        self.nginx = NginxMapAdapter(settings.nginx_map_path, settings.dry_run, None if settings.dry_run else _nginx_validate, None if settings.dry_run else _nginx_reload)
+        self.nginx_reloader = None if settings.dry_run else NginxReloader()
+        self.nginx = NginxMapAdapter(settings.nginx_map_path, settings.dry_run,
+                                     None if settings.dry_run else _nginx_validate, self.nginx_reloader)
         self.web_state_path = settings.nginx_map_path.with_suffix(settings.nginx_map_path.suffix + ".state.json")
         self.web_entries = self._load_web_entries()
         self._web_reconciled = False
@@ -126,6 +204,11 @@ class DecisionEngine:
             payload["reason"] = (payload.get("reason") or "") + ";ipv6_shell_redirect_unsupported:monitor"
         if action == "redirect_web":
             payload["adapter_result"] = self._apply_web_redirect(decision)
+            if self.nginx_reloader is not None:
+                # Written after nginx confirmed the new map, so a logged
+                # redirect_web means requests from this source now reach the honeypot.
+                payload["nginx_ready"] = self.nginx_reloader.last_ready
+                payload["nginx_ready_seconds"] = self.nginx_reloader.last_wait_seconds
         elif action == "redirect_ssh":
             payload["adapter_command"] = self._retry(lambda: self.nft.add("ssh_redirect", decision.source_ip, self.settings.expiry_seconds))
         elif action == "redirect_telnet":

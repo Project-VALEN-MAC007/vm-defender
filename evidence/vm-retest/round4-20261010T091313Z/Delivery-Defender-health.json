@@ -1,0 +1,8 @@
+{
+  "utc": "20261010T131628Z",
+  "vm": "defender",
+  "command": "date -u; systemctl is-active suricata nginx adaptive-defender trap-dashboard trap-apply-rules.path trap-log-sync.timer trap-firewall; grep 10.10.10.3 /etc/nginx/conf.d/trap.conf",
+  "exit_code": 0,
+  "stdout": "Sat Oct 10 13:16:30 UTC 2026\nactive\nactive\nactive\nactive\nactive\nactive\nactive\n    default     http://10.10.10.3:8080;\n    real        http://10.10.10.3:8080;\n",
+  "stderr": ""
+}

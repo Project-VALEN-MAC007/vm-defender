@@ -1,0 +1,12 @@
+{
+  "service": "cowrie",
+  "fault": "remove",
+  "fault_time": "2026-10-10T13:33:38.486288+00:00",
+  "id_before": "4810c16aadcdc95a80c5d149179973dd8b34fd0617bec23b074f6b06b663ae56",
+  "id_after": "8b61b6dbbffc2450725413a1ef267a8e82d04ee74385118209a44e8e4622c477",
+  "restart_count_before": 1,
+  "restart_count_after": 0,
+  "listening_recovered_seconds": 17.180475303000094,
+  "start_before": "2026-10-10T13:33:09.995865032Z",
+  "start_after": "2026-10-10T13:33:53.815829985Z"
+}

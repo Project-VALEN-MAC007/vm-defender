@@ -3,6 +3,12 @@
 # Do not render/apply until the marked values are observed on the lab.
 # __COWRIE_IP__:__COWRIE_PORT__ = Cowrie SSH (10.10.10.2:2222)
 # __TELNET_IP__:__TELNET_PORT__ = Cowrie Telnet (10.10.10.2:2223). defender/telnet is a local test stub only.
+# __PRODUCTION_IP__ = Real (production) server (10.10.10.3): SSH 22 and Telnet 23
+# for every source that is not in a redirect set. Redirect rules come first;
+# the first matching dnat wins, so a risky source never reaches production.
+# No source NAT: Cowrie and the production server must see the client's real
+# IP. Both route the outer network back through the Defender instead
+# (192.168.56.0/24 via 10.10.10.1; see defender/network/topology.md).
 table inet adaptive_defender {
     set ssh_redirect {
         type ipv4_addr
@@ -22,6 +28,8 @@ table inet adaptive_defender {
             dnat ip to __COWRIE_IP__:__COWRIE_PORT__
         iifname "__OUTER_INTERFACE__" ip saddr @telnet_redirect tcp dport 23 \
             dnat ip to __TELNET_IP__:__TELNET_PORT__
+        iifname "__OUTER_INTERFACE__" tcp dport 22 dnat ip to __PRODUCTION_IP__:22
+        iifname "__OUTER_INTERFACE__" tcp dport 23 dnat ip to __PRODUCTION_IP__:23
     }
 
     chain forward {
@@ -32,13 +40,7 @@ table inet adaptive_defender {
             ip daddr __COWRIE_IP__ tcp dport __COWRIE_PORT__ ct status dnat accept
         iifname "__OUTER_INTERFACE__" oifname "__INNER_INTERFACE__" \
             ip daddr __TELNET_IP__ tcp dport __TELNET_PORT__ ct status dnat accept
-    }
-
-    chain postrouting {
-        type nat hook postrouting priority srcnat; policy accept;
-        oifname "__INNER_INTERFACE__" ip daddr __COWRIE_IP__ \
-            tcp dport __COWRIE_PORT__ masquerade
-        oifname "__INNER_INTERFACE__" ip daddr __TELNET_IP__ \
-            tcp dport __TELNET_PORT__ masquerade
+        iifname "__OUTER_INTERFACE__" oifname "__INNER_INTERFACE__" \
+            ip daddr __PRODUCTION_IP__ tcp dport { 22, 23 } ct status dnat accept
     }
 }

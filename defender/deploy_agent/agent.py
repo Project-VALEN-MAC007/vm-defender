@@ -1,10 +1,13 @@
-"""TRAP deploy agent: clone a website with SNARE and switch SNARE to it.
+"""TRAP deploy agent: receive website copies for SNARE and switch SNARE to them.
 
 Runs on the Honeypot machine. Only the Defender dashboard may call it, with a
-bearer token, from an allowed IP. Operations are fixed:
+bearer token, from an allowed IP. The Honeypot never fetches the real website
+itself (deploy/isolation blocks that): the Defender clones it
+(defender/deploy_agent/clone.py) and uploads the finished copy here.
+Operations are fixed:
 
   GET  /v1/status                       current page dir, health, versions, running job
-  POST /v1/clone      {url, depth}      clone an allowed URL into a new version
+  POST /v1/versions   {url, depth, files}  store an uploaded copy as a new version
   POST /v1/activate   {version}         point SNARE at a version, recreate, health-check, roll back on failure
   GET  /v1/jobs/<id>                    job state and log
   GET  /v1/versions/<v>/pages           cloned URLs of a version
@@ -17,7 +20,6 @@ from __future__ import annotations
 import argparse
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
-import hashlib
 import hmac
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import ipaddress
@@ -34,9 +36,12 @@ from typing import Callable
 from urllib.parse import parse_qs, urlsplit
 import urllib.request
 
+from .clone import MAX_TOTAL_BYTES, check_target, decode_package  # noqa: F401  (check_target re-exported)
+
 VERSION_PATTERN = re.compile(r"^[a-z0-9][a-z0-9.-]{0,90}$")
 MAX_LOG_LINES = 400
 MAX_PAGE_BYTES = 512 * 1024
+MAX_UPLOAD_BYTES = MAX_TOTAL_BYTES * 4 // 3 + 1024 * 1024  # base64 of the largest allowed copy
 SCAN_RULES = [
     ("secret", re.compile(rb"(?i)(password|passwd|secret|api[_-]?key|access[_-]?token)[\"']?\s*[:=]\s*[\"'][^\"'\s]{6,}")),
     ("private_key", re.compile(rb"-----BEGIN [A-Z ]*PRIVATE KEY-----")),
@@ -53,15 +58,12 @@ class AgentConfig:
     bind_port: int
     token: str
     allowed_clients: list
-    allowed_targets: list
     compose_dir: Path
     env_file: Path
     data_dir: Path
     health_url: str
     docker: str = "docker"
-    run_as: str = ""
     keep_versions: int = 10
-    clone_timeout: int = 900
     dry_run: bool = False
 
 
@@ -81,35 +83,15 @@ def load_config(path: str | Path) -> AgentConfig:
     clients = [ipaddress.ip_network(c, strict=False) for c in raw.get("allowed_clients") or []]
     if not clients:
         raise ValueError("allowed_clients must not be empty")
-    targets = [str(t).lower().strip() for t in raw.get("allowed_targets") or []]
-    if not targets:
-        raise ValueError("allowed_targets must not be empty")
     compose_dir = resolve(raw["compose_dir"])
     return AgentConfig(
         bind_host=str(raw.get("bind_host", "127.0.0.1")), bind_port=int(raw.get("bind_port", 8091)),
-        token=token, allowed_clients=clients, allowed_targets=targets, compose_dir=compose_dir,
+        token=token, allowed_clients=clients, compose_dir=compose_dir,
         env_file=resolve(raw.get("env_file", str(compose_dir / "settings.env"))),
         data_dir=resolve(raw.get("data_dir", str(compose_dir / "data/snare"))),
         health_url=str(raw.get("health_url", "http://127.0.0.1:8083/")),
-        docker=str(raw.get("docker", "docker")), run_as=str(raw.get("run_as", "")),
-        keep_versions=max(2, int(raw.get("keep_versions", 10))),
-        clone_timeout=int(raw.get("clone_timeout", 900)), dry_run=raw.get("dry_run") is True)
-
-
-def check_target(url: str, allowed: list) -> str:
-    """Return the normalised URL or raise ValueError. Prevents cloning arbitrary hosts (SSRF)."""
-    if not isinstance(url, str) or len(url) > 512:
-        raise ValueError("invalid_url")
-    parts = urlsplit(url.strip())
-    if parts.scheme not in {"http", "https"} or not parts.hostname:
-        raise ValueError("url_must_be_http_or_https")
-    if parts.username or parts.password:
-        raise ValueError("url_must_not_contain_credentials")
-    host = parts.hostname.lower()
-    hostport = f"{host}:{parts.port}" if parts.port else host
-    if hostport not in allowed and host not in allowed:
-        raise ValueError("target_not_allowed")
-    return f"{parts.scheme}://{hostport}{parts.path or '/'}"
+        docker=str(raw.get("docker", "docker")),
+        keep_versions=max(2, int(raw.get("keep_versions", 10))), dry_run=raw.get("dry_run") is True)
 
 
 def scan_version(folder: Path) -> list:
@@ -225,7 +207,7 @@ class Agent:
         for item in items:
             item["active"] = item["version"] == active
         return {"active": active, "healthy": bool(self.health()), "dry_run": self.config.dry_run,
-                "allowed_targets": self.config.allowed_targets, "versions": items,
+                "versions": items,
                 "job": self.current.public() if self.current and self.current.status in {"queued", "running"} else None}
 
     # ---------- jobs ----------
@@ -252,12 +234,6 @@ class Agent:
         threading.Thread(target=target, daemon=True).start()
         return job
 
-    def clone(self, url: str, depth) -> Job:
-        target = check_target(url, self.config.allowed_targets)
-        if isinstance(depth, bool) or not isinstance(depth, int) or not 1 <= depth <= 5:
-            raise ValueError("depth_must_be_1_to_5")
-        return self._start("clone", lambda job: self._clone(job, target, depth))
-
     def activate(self, version: str) -> Job:
         if version != "demo" and (not isinstance(version, str) or not VERSION_PATTERN.match(version)
                                   or version not in self.versions()):
@@ -269,36 +245,33 @@ class Agent:
                 "--env-file", str(self.config.env_file)]
         return base + list(args)
 
-    def _clone(self, job: Job, url: str, depth: int) -> dict:
-        staging = self.config.data_dir / "staging" / job.id
-        (staging / "snare").mkdir(parents=True, exist_ok=True)
-        container_path = f"/opt/snare/staging/{job.id}/"
-        argv = self._compose("--profile", "tools", "run", "--rm")
-        if self.config.run_as:
-            argv += ["--user", self.config.run_as]
-        argv += ["clone", "--target", url, "--max-depth", str(depth), "--path", container_path]
-        job.log.append(f"clone {url} depth={depth}")
-        code = self.runner(argv, self.config.clone_timeout, job.log, staging=staging, url=url)
-        if code != 0:
-            raise RuntimeError(f"clone_failed (exit {code})")
-        produced = [p for p in (staging / "snare" / "pages").glob("*") if p.is_dir()]
-        if len(produced) != 1 or not (produced[0] / "meta.json").is_file():
-            raise RuntimeError("clone_produced_no_pages")
-        host = re.sub(r"[^a-z0-9.-]", "-", (urlsplit(url).hostname or "site").lower())[:60]
-        version = f"{host}-{datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')}"
-        destination = self.pages / version
-        shutil.move(str(produced[0]), str(destination))
-        shutil.rmtree(staging, ignore_errors=True)
-        meta = _meta(destination)
-        size = sum(p.stat().st_size for p in destination.iterdir() if p.is_file())
-        findings = scan_version(destination)
-        record = {"version": version, "url": url, "depth": depth, "created": _now(),
-                  "pages": len(meta), "bytes": size, "findings": findings, "job": job.id}
-        versions = self.versions()
-        versions[version] = record
-        self._prune(versions)
-        self._save_versions(versions)
-        job.log.append(f"saved version {version}: {len(meta)} pages, {size} bytes, {len(findings)} findings")
+    def store(self, payload: dict) -> dict:
+        """Save a copy cloned and uploaded by the Defender as a new version."""
+        url, depth, files = decode_package(payload)
+        with self.lock:
+            if self.current and self.current.status in {"queued", "running"}:
+                raise RuntimeError("job_running")
+            host = re.sub(r"[^a-z0-9.-]", "-", (urlsplit(url).hostname or "site").lower())[:60]
+            version = f"{host}-{datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')}"
+            while (self.pages / version).exists():
+                version += "-1"
+            staging = self.config.data_dir / "staging" / secrets.token_hex(6)
+            staging.mkdir(parents=True)
+            try:
+                for name, data in files.items():
+                    (staging / name).write_bytes(data)
+                os.replace(staging, self.pages / version)
+            finally:
+                shutil.rmtree(staging, ignore_errors=True)
+            destination = self.pages / version
+            meta = _meta(destination)
+            record = {"version": version, "url": url, "depth": depth, "created": _now(), "pages": len(meta),
+                      "bytes": sum(len(d) for d in files.values()), "findings": scan_version(destination),
+                      "cloned_by": "defender"}
+            versions = self.versions()
+            versions[version] = record
+            self._prune(versions)
+            self._save_versions(versions)
         return record
 
     def _prune(self, versions: dict) -> None:
@@ -375,32 +348,10 @@ class Agent:
         return process.wait()
 
     @staticmethod
-    def _dry_runner(argv: list, timeout: int, log: list, staging: Path | None = None, url: str = "", **_) -> int:
-        """Simulates SNARE so the dashboard can be demonstrated without Docker."""
+    def _dry_runner(argv: list, timeout: int, log: list, **_) -> int:
+        """Simulates `docker compose up` so the dashboard can be demonstrated without Docker."""
         log.append("[dry-run] " + " ".join(argv))
-        if staging is None:
-            log.append("[dry-run] snare recreated")
-            return 0
-        host = urlsplit(url).hostname or "site"
-        folder = staging / "snare" / "pages" / host
-        folder.mkdir(parents=True, exist_ok=True)
-        pages = {
-            "/index.html": f"<!doctype html><html><head><title>{host}</title></head><body><h1>{host}</h1>"
-                           "<p>Customer portal</p><a href=\"/login.html\">Sign in</a></body></html>",
-            "/login.html": "<!doctype html><html><head><title>Sign in</title></head><body><form method=\"post\">"
-                           "<input name=\"username\"><input name=\"password\" type=\"password\"><button>Sign in"
-                           "</button></form></body></html>",
-            "/about.html": "<!doctype html><html><body><h2>About us</h2><p>Office: 10.20.0.15</p></body></html>",
-            "/status_404": "<!doctype html><html><body><h1>404 Not Found</h1></body></html>",
-        }
-        meta = {}
-        for page_url, body in pages.items():
-            name = hashlib.md5(page_url.encode()).hexdigest()
-            (folder / name).write_text(body, encoding="utf-8")
-            meta[page_url] = {"hash": name, "headers": [{"Content-Type": "text/html; charset=utf-8"}]}
-            log.append(f"[dry-run] cloned {page_url}")
-            time.sleep(0.3)
-        (folder / "meta.json").write_text(json.dumps(meta), encoding="utf-8")
+        log.append("[dry-run] snare recreated")
         return 0
 
     def _health(self) -> bool:
@@ -439,9 +390,9 @@ def handler_factory(agent: Agent):
             self.end_headers()
             self.wfile.write(body)
 
-        def _body(self) -> dict:
+        def _body(self, limit: int = 16384) -> dict:
             length = int(self.headers.get("Content-Length") or 0)
-            if length <= 0 or length > 16384:
+            if length <= 0 or length > limit:
                 return {}
             try:
                 value = json.loads(self.rfile.read(length))
@@ -475,11 +426,21 @@ def handler_factory(agent: Agent):
         def do_POST(self):
             if not self._authorised():
                 return
+            if self.path == "/v1/versions":
+                length = int(self.headers.get("Content-Length") or 0)
+                if length > MAX_UPLOAD_BYTES:
+                    self._json({"error": "package_too_large"}, 413)
+                    return
+                try:
+                    self._json(agent.store(self._body(MAX_UPLOAD_BYTES)), 201)
+                except ValueError as exc:
+                    self._json({"error": str(exc)}, 400)
+                except RuntimeError as exc:
+                    self._json({"error": str(exc)}, 409)
+                return
             payload = self._body()
             try:
-                if self.path == "/v1/clone":
-                    job = agent.clone(payload.get("url"), payload.get("depth"))
-                elif self.path == "/v1/activate":
+                if self.path == "/v1/activate":
                     job = agent.activate(payload.get("version"))
                 else:
                     self._json({"error": "not_found"}, 404)
@@ -499,7 +460,7 @@ def handler_factory(agent: Agent):
 
 
 def main(argv=None) -> int:
-    parser = argparse.ArgumentParser(description="TRAP deploy agent for SNARE")
+    parser = argparse.ArgumentParser(description="TRAP deploy agent for SNARE (receives copies from the Defender)")
     parser.add_argument("--config", required=True)
     args = parser.parse_args(argv)
     config = load_config(args.config)

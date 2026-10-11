@@ -1,0 +1,1 @@
+Original pause handling was proven successful by container_paused log at 13:34:43; temporary redundant Paused guard removed. Added test for real Status=paused.

@@ -1,0 +1,114 @@
+# TRAP Honeypot VM (Project-Honeypot, 10.10.10.2): one container per decoy.
+#   cowrie        SSH 2222 / Telnet 2223   (Defender DNATs risky SSH/Telnet here)
+#   web-honeypot  HTTP 8084                (Defender Nginx proxies risky web here)
+# Ports are published on the lab address only. Network isolation (containers
+# may not open connections out of their bridge; only the Defender may connect in)
+# is enforced by deploy/isolation/honeypot.nft, not by Docker.
+# Logs are bind-mounted to the host so they survive a container being replaced and deploy/trap-sync.sh
+# keeps pulling the same paths.
+#
+#   docker compose -p trap-honeypot -f /opt/trap/honeypot/docker/compose.yaml build web-honeypot
+#   docker compose -p trap-honeypot -f /opt/trap/honeypot/docker/compose.yaml up -d
+#
+# Recovery: restart policy restarts a crashed process within seconds;
+# watchdog.py (trap-honeypot-watchdog.timer) replaces a container that is
+# missing, stopped, crash-looping or no longer listening with a new one.
+name: trap-honeypot
+
+x-hardening: &hardening
+  restart: unless-stopped
+  security_opt:
+    - no-new-privileges:true
+  cap_drop:
+    - ALL
+  logging:
+    driver: json-file
+    options:
+      max-size: "10m"
+      max-file: "3"
+
+services:
+  cowrie:
+    <<: *hardening
+    # Pin the exact image in .env (COWRIE_IMAGE=cowrie/cowrie@sha256:...).
+    image: ${COWRIE_IMAGE:?pin COWRIE_IMAGE in honeypot/docker/.env}
+    container_name: cowrie
+    environment:
+      TZ: UTC
+    # Root filesystem read-only; Cowrie writes only to the log bind mount, the
+    # cowrie-var volume (downloads, tty logs) and /tmp.
+    read_only: true
+    tmpfs:
+      - /tmp
+    ports:
+      - "${HONEYPOT_IP:-10.10.10.2}:2222:2222"
+      - "${HONEYPOT_IP:-10.10.10.2}:2223:2223"
+    volumes:
+      # Container paths are those of the official image (/cowrie/cowrie-git);
+      # The official distroless image has no shell; inspect paths with its Python
+      # entrypoint (see README). Default config is src/cowrie/data/etc/cowrie.cfg.dist.
+      - /etc/trap/cowrie/cowrie.cfg:/cowrie/cowrie-git/etc/cowrie.cfg:ro
+      - /etc/trap/cowrie/userdb.txt:/cowrie/cowrie-git/etc/userdb.txt:ro
+      # Rabbit Hole decoy files, maintained by trap-cowrie-sync.service. Mount the
+      # folder, not fs.pickle itself: the sync replaces the file atomically (new
+      # inode), which a single-file bind mount would not follow. cowrie.cfg points
+      # [shell] filesystem and [honeypot] contents_path here.
+      - /var/lib/trap/cowrie-fs:/cowrie/trapfs:ro
+      - /var/log/cowrie:/cowrie/cowrie-git/var/log/cowrie
+      - cowrie-var:/cowrie/cowrie-git/var/lib/cowrie
+
+  web-honeypot:
+    <<: *hardening
+    image: trap/web-honeypot:local
+    build:
+      context: ../..
+      dockerfile: honeypot/docker/Dockerfile.webhoneypot
+    container_name: web-honeypot
+    command: ["--config", "/var/lib/trap/rabbit-hole.json"]
+    networks:
+      - default
+      - decoy
+    depends_on:
+      - web-app
+    # Run as the host's traprabbit user so the existing rabbit-hole secret (0600)
+    # and /var/log/trap/rabbit-hole-web.jsonl stay readable/writable without
+    # changing their owners. Set both from `id -u traprabbit` / `id -g traprabbit`.
+    user: "${RABBIT_UID:?set RABBIT_UID in .env}:${RABBIT_GID:?set RABBIT_GID in .env}"
+    read_only: true
+    tmpfs:
+      - /tmp
+    ports:
+      - "${HONEYPOT_IP:-10.10.10.2}:8084:8084"
+    volumes:
+      # rabbit-hole.json must use web.host "0.0.0.0" and trust the Defender
+      # (trusted_proxies ["10.10.10.1/32"]); the engine reloads it on change.
+      - /var/lib/trap:/var/lib/trap:ro
+      - /var/log/trap:/var/log/trap
+
+  web-app:
+    <<: *hardening
+    # Same company web app image as Project-Web, but BACKEND=decoy: identical
+    # public pages, isolated fake data. Only Rabbit Hole (web-honeypot) talks to
+    # it; it is not published to the lab network and has no external egress.
+    image: trap/web-app:local
+    build:
+      context: ../..
+      dockerfile: webapp/Dockerfile
+    container_name: web-app
+    environment:
+      BACKEND: decoy
+    read_only: true
+    tmpfs:
+      - /tmp
+    networks:
+      - decoy
+    expose:
+      - "8080"
+
+networks:
+  # Internal-only: the decoy web app reaches nothing and nothing outside reaches it.
+  decoy:
+    internal: true
+
+volumes:
+  cowrie-var:

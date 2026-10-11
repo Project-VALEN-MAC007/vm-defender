@@ -5,6 +5,7 @@ import copy
 from dataclasses import dataclass
 from datetime import date, datetime, timezone
 import ipaddress
+from urllib.parse import urlsplit
 import json
 import os
 from pathlib import Path
@@ -40,6 +41,7 @@ DEFAULTS = {
         "log_path": "evidence/rabbit-hole/web.jsonl",
         "trusted_proxies": ["127.0.0.1/32"],
         "server_header": "nginx/1.24.0",
+        "upstream": None,
     },
     "secret_path": "config/rabbit-hole.secret",
     "custom_scenario_dir": "config/rabbit-hole-scenarios",
@@ -106,6 +108,13 @@ def validate_raw(raw: dict) -> dict:
     port = web_cfg.get("port")
     if isinstance(port, bool) or not isinstance(port, int) or not 1 <= port <= 65535:
         raise ValueError("invalid_web_port")
+    upstream = web_cfg.get("upstream")
+    if upstream is not None:
+        if not isinstance(upstream, str):
+            raise ValueError("invalid_web_upstream")
+        parts = urlsplit(upstream)
+        if parts.scheme not in {"http", "https"} or not parts.hostname:
+            raise ValueError("invalid_web_upstream")
     for cidr in web_cfg.get("trusted_proxies") or []:
         try:
             ipaddress.ip_network(cidr, strict=False)

@@ -1,0 +1,39 @@
+# Merge into /etc/suricata/suricata.yaml (Suricata 7) so decrypted HTTPS is inspected.
+# 1) Capture the loopback hop that Nginx uses behind its TLS edge (port 18443 only).
+#    Add this entry to the existing af-packet list; keep the outer interface entry.
+af-packet:
+  - interface: lo
+    threads: 1
+    cluster-id: 98
+    cluster-type: cluster_flow
+    defrag: yes
+    bpf-filter: "tcp port 18443"
+    # Loopback packets carry offloaded (unfilled) checksums; without this
+    # Suricata may treat them as invalid and never build the HTTP session.
+    checksum-checks: no
+    use-mmap: yes
+    tpacket-v3: yes
+    block-size: 131072
+
+# Set block-size: 131072 on the existing trap-out entry as well. Suricata 7
+# sizes capture frames for the maximum interface MTU (lo is 65536), so its
+# default 32768-byte TPACKET_V3 block is too small even on trap-out.
+
+# 2) Report the client header that only the Nginx TLS edge sets.
+#    In outputs -> eve-log -> types -> alert, set:
+#      xff:
+#        enabled: yes
+#        mode: extra-data        # adds "xff"; never overwrite src_ip
+#        deployment: reverse
+#        header: X-Trap-Client-IP
+# 3) Address groups: the hop is 127.0.0.2 (client side) -> 127.0.0.1:18443 (server).
+#    ET rules are "$EXTERNAL_NET any -> $HOME_NET/$HTTP_SERVERS", so add 127.0.0.1/32
+#    to HOME_NET and HTTP_SERVERS. Keep EXTERNAL_NET "!$HOME_NET" (127.0.0.2 stays external).
+# 4) Make sure 18443 is treated as HTTP:
+#    app-layer -> protocols -> http -> ... default ports already detect HTTP by
+#    content; if not, add 18443 to the HTTP port group used by your rules
+#    (ET rules use $HTTP_PORTS): vars -> port-groups -> HTTP_PORTS: "[80,18443,...]"
+# 5) Install systemd/https-inspection.conf as a service drop-in, daemon-reload,
+#    then restart. The service must use --af-packet --runmode=workers, not
+#    --af-packet=trap-out or --runmode=single. Check iface-list includes both
+#    lo and trap-out. Only lo has the port 18443 BPF, so port 80 is captured once.

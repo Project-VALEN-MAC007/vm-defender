@@ -1,0 +1,17 @@
+Oct 10 15:34:46 project-defender systemd[1]: Starting trap-apply-rules.service - TRAP: test and install Dashboard rule changes into Suricata...
+Oct 10 15:34:47 project-defender python3[16051]: {"state": "applied", "sha256": "6150ca40d774d582b627d1f04457aeb45c53777b9e69b74758827e8c7e0abcdf", "backup": "/etc/suricata/rules/et-open-selected.rules.20261010T083446Z.bak"}
+Oct 10 15:34:47 project-defender systemd[1]: trap-apply-rules.service: Deactivated successfully.
+Oct 10 15:34:47 project-defender systemd[1]: Finished trap-apply-rules.service - TRAP: test and install Dashboard rule changes into Suricata.
+Oct 10 15:34:47 project-defender systemd[1]: Starting trap-apply-rules.service - TRAP: test and install Dashboard rule changes into Suricata...
+Oct 10 15:34:48 project-defender python3[16059]: {"state": "applied", "sha256": "049a99cf7e216ef541d33159708c0108816c4c71d46e14555889bb8effbd5b8a", "backup": "/etc/suricata/rules/et-open-selected.rules.20261010T083447Z.bak"}
+Oct 10 15:34:48 project-defender systemd[1]: trap-apply-rules.service: Deactivated successfully.
+Oct 10 15:34:48 project-defender systemd[1]: Finished trap-apply-rules.service - TRAP: test and install Dashboard rule changes into Suricata.
+Oct 10 15:34:51 project-defender systemd[1]: Starting trap-apply-rules.service - TRAP: test and install Dashboard rule changes into Suricata...
+Oct 10 15:34:51 project-defender python3[16087]: {"state": "failed", "step": "syntax_test", "sha256": "69f5141e77160d379b2f614dedc55d24a5b14a4f52ad600a94bd36f2d27b874b", "detail": "E: detect-parse: unknown rule keyword 'trap_unknown_keyword'.\nE: detect: error parsing signature \"alert http any any -> any any (msg:\"TRAP invalid syntax\"; trap_unknown_keyword:1; classtype:web-application-attack; sid:9900002; rev:1;)\" from file /var/lib/trap/rules/pending.rules at line 45\nE: suricata: Loading signatures failed."}
+Oct 10 15:34:51 project-defender systemd[1]: trap-apply-rules.service: Main process exited, code=exited, status=1/FAILURE
+Oct 10 15:34:51 project-defender systemd[1]: trap-apply-rules.service: Failed with result 'exit-code'.
+Oct 10 15:34:51 project-defender systemd[1]: Failed to start trap-apply-rules.service - TRAP: test and install Dashboard rule changes into Suricata.
+Oct 10 15:34:51 project-defender systemd[1]: Starting trap-apply-rules.service - TRAP: test and install Dashboard rule changes into Suricata...
+Oct 10 15:34:52 project-defender python3[16091]: {"state": "applied", "sha256": "049a99cf7e216ef541d33159708c0108816c4c71d46e14555889bb8effbd5b8a", "backup": "/etc/suricata/rules/et-open-selected.rules.20261010T083452Z.bak"}
+Oct 10 15:34:52 project-defender systemd[1]: trap-apply-rules.service: Deactivated successfully.
+Oct 10 15:34:52 project-defender systemd[1]: Finished trap-apply-rules.service - TRAP: test and install Dashboard rule changes into Suricata.

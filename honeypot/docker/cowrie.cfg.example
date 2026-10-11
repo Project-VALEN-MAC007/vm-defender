@@ -1,0 +1,39 @@
+# Copy to /etc/trap/cowrie/cowrie.cfg on the Honeypot. Overrides cowrie.cfg.dist
+# in the image; carry over any setting the current /opt/cowrie install changed
+# (hostname, banners, userdb) so the decoy looks the same as before.
+# Check every option name against the image's etc/cowrie.cfg.dist before use.
+#
+# STEALTH: SSH/Telnet redirect sends a risky client to Cowrie, so Cowrie must
+# look like the REAL server it stands in for (Project-Web). Round 6 found the
+# client could tell it had been redirected because Cowrie's SSH version string,
+# hostname and Telnet banner differed from the real server. Set the three values
+# below from the REAL server, read on Project-Web:
+#   ssh -V                      -> version_string (e.g. OpenSSH_9.6p1 Ubuntu-3ubuntu13.19)
+#   hostname                    -> [honeypot] hostname
+#   uname -sr ; cat /etc/issue  -> Telnet pre-login banner
+# Values here mirror the Project-Web server observed in round 6; verify on the
+# real VM and update if it changed. The SSH HOST KEY still cannot match without
+# copying the real server's private key into the honeypot (which would let an
+# attacker who breaches the honeypot impersonate the real server) — document
+# that as a known limitation instead.
+[honeypot]
+hostname = project-web
+# Rabbit Hole decoy contents (bind-mounted folder, see compose.yaml).
+contents_path = /cowrie/trapfs/honeyfs
+
+[shell]
+filesystem = /cowrie/trapfs/fs.pickle
+
+[ssh]
+enabled = true
+listen_endpoints = tcp:2222:interface=0.0.0.0
+# Must equal the real server's banner (ssh -V on Project-Web).
+version = SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.19
+
+[telnet]
+enabled = true
+listen_endpoints = tcp:2223:interface=0.0.0.0
+
+[output_jsonlog]
+enabled = true
+logfile = ${honeypot:log_path}/cowrie.json

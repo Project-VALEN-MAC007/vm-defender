@@ -1,0 +1,8 @@
+{
+  "utc": "20261010T080738Z",
+  "vm": "defender",
+  "command": "python3 /tmp/collect_retest.py; chmod 644 /tmp/trap-retest-evidence.tar.gz",
+  "exit_code": 0,
+  "stdout": "{\n  \"directory\": \"/var/lib/trap/retests/20261010T080123Z\",\n  \"test_start\": \"2026-10-10T08:01:23+00:00\",\n  \"cases\": [\n    [\n      \"FAIL1-LibSSH-handshakes\",\n      \"PASS\"\n    ],\n    [\n      \"FAIL1-Hydra\",\n      \"PASS\"\n    ],\n    [\n      \"FAIL2-Masscan-scan-only-and-followup\",\n      \"PASS\"\n    ],\n    [\n      \"FAIL3-Rule-approve-activate-alert-restore\",\n      \"PASS\"\n    ],\n    [\n      \"FAIL3-Invalid-rule-rejected-active-unchanged\",\n      \"PASS\"\n    ],\n    [\n      \"FAIL4-Threshold-API-reload-and-User-denied\",\n      \"PASS\"\n    ],\n    [\n      \"Regression-HTTP\",\n      \"PASS\"\n    ],\n    [\n      \"Regression-HTTPS\",\n      \"FAIL\"\n    ],\n    [\n      \"Regression-SSH\",\n      \"PASS\"\n    ],\n    [\n      \"Regression-Telnet\",\n      \"PASS\"\n    ],\n    [\n      \"Regression-HTTPS-retest\",\n      \"PASS\"\n    ]\n  ],\n  \"hashes\": {\n    \"cowrie.json\": \"148162144b744abe7479bf02aa0eb460e637d680a321d4809a6f79f08f6c24e2\",\n    \"rabbit-hole-web.jsonl\": \"338d79044ce2884cfc2983f3ded3dc3d3ad4b14c0380fac5c9bfa75f419550db\"\n  }\n}\n",
+  "stderr": ""
+}

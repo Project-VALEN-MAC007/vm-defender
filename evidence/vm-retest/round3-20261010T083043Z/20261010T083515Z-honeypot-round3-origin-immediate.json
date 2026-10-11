@@ -1,0 +1,8 @@
+{
+  "utc": "20261010T083515Z",
+  "vm": "honeypot",
+  "command": "python3 -c \"import json; r=[json.loads(x) for x in open(\\\"/var/log/trap/rabbit-hole-web.jsonl\\\")]; r=[x for x in r if x.get(\\\"query\\\",\\\"\\\").startswith(\\\"round3=immediate-\\\")]; print(len(r)); print([(x[\\\"source_ip\\\"],x[\\\"query\\\"],x[\\\"protocol\\\"],x[\\\"status\\\"]) for x in r])\"",
+  "exit_code": 0,
+  "stdout": "20\n[('192.168.56.130', 'round3=immediate-1', 'https', 200), ('192.168.56.131', 'round3=immediate-2', 'https', 200), ('192.168.56.132', 'round3=immediate-3', 'https', 200), ('192.168.56.133', 'round3=immediate-4', 'https', 200), ('192.168.56.134', 'round3=immediate-5', 'https', 200), ('192.168.56.135', 'round3=immediate-6', 'https', 200), ('192.168.56.136', 'round3=immediate-7', 'https', 200), ('192.168.56.137', 'round3=immediate-8', 'https', 200), ('192.168.56.138', 'round3=immediate-9', 'https', 200), ('192.168.56.139', 'round3=immediate-10', 'https', 200), ('192.168.56.140', 'round3=immediate-11', 'http', 200), ('192.168.56.141', 'round3=immediate-12', 'http', 200), ('192.168.56.142', 'round3=immediate-13', 'http', 200), ('192.168.56.143', 'round3=immediate-14', 'http', 200), ('192.168.56.144', 'round3=immediate-15', 'http', 200), ('192.168.56.145', 'round3=immediate-16', 'http', 200), ('192.168.56.146', 'round3=immediate-17', 'http', 200), ('192.168.56.147', 'round3=immediate-18', 'http', 200), ('192.168.56.148', 'round3=immediate-19', 'http', 200), ('192.168.56.149', 'round3=immediate-20', 'http', 200)]\n",
+  "stderr": ""
+}

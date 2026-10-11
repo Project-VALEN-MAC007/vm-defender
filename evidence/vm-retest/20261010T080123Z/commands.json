@@ -1,0 +1,359 @@
+[
+  {
+    "time": "2026-10-10T08:04:44.781166+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.101/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:04:44.803588+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.102/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:04:44.825543+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.103/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:04:44.845420+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.104/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:04:44.865363+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.105/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:04:44.886052+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.106/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:04:44.903198+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.107/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:04:44.921113+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.108/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:04:44.941515+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.109/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:04:44.958988+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.110/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:04:49.151844+00:00",
+    "command": "ip netns exec trap-attacker python3 -c 'import socket,paramiko,time\nfor i in range(6):\n s=socket.socket();s.settimeout(4);s.bind(('\"'\"'192.168.56.101'\"'\"',0));s.connect(('\"'\"'192.168.56.10'\"'\"',22))\n t=paramiko.Transport(s);t.local_version='\"'\"'SSH-2.0-libssh_0.10.6'\"'\"';t.start_client(timeout=4)\n print(i,t.remote_version,flush=True);t.close();time.sleep(.3)\n'",
+    "exit_code": 0,
+    "stdout": "0 SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.19\n1 SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.19\n2 SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.19\n3 SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.19\n4 SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.19\n5 SSH-2.0-OpenSSH_9.2p1 Debian-2+deb12u3\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:04:51.081657+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:04:51.217860+00:00",
+    "command": "ip netns exec trap-attacker ip route replace 192.168.56.0/24 dev trap-in src 192.168.56.102",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:04:57.549882+00:00",
+    "command": "ip netns exec trap-attacker hydra -l root -P /var/lib/trap/lab-wordlist.txt -t 6 -W 1 -V ssh://192.168.56.10",
+    "exit_code": 0,
+    "stdout": "Hydra v9.5 (c) 2023 by van Hauser/THC & David Maciejak - Please do not use in military or secret service organizations, or for illegal purposes (this is non-binding, these *** ignore laws and ethics anyway).\n\nHydra (https://github.com/vanhauser-thc/thc-hydra) starting at 2026-10-10 15:04:51\n[DATA] max 6 tasks per 1 server, overall 6 tasks, 8 login tries (l:1/p:8), ~2 tries per task\n[DATA] attacking ssh://192.168.56.10:22/\n[ATTEMPT] target 192.168.56.10 - login \"root\" - pass \"invalid-lab-0\" - 1 of 8 [child 0] (0/0)\n[ATTEMPT] target 192.168.56.10 - login \"root\" - pass \"invalid-lab-1\" - 2 of 8 [child 1] (0/0)\n[ATTEMPT] target 192.168.56.10 - login \"root\" - pass \"invalid-lab-2\" - 3 of 8 [child 2] (0/0)\n[ATTEMPT] target 192.168.56.10 - login \"root\" - pass \"invalid-lab-3\" - 4 of 8 [child 3] (0/0)\n[ATTEMPT] target 192.168.56.10 - login \"root\" - pass \"invalid-lab-4\" - 5 of 8 [child 4] (0/0)\n[ATTEMPT] target 192.168.56.10 - login \"root\" - pass \"invalid-lab-5\" - 6 of 8 [child 5] (0/0)\n[ATTEMPT] target 192.168.56.10 - login \"root\" - pass \"invalid-lab-6\" - 7 of 8 [child 1] (0/0)\n[ATTEMPT] target 192.168.56.10 - login \"root\" - pass \"invalid-lab-7\" - 8 of 8 [child 4] (0/0)\n1 of 1 target completed, 0 valid password found\nHydra (https://github.com/vanhauser-thc/thc-hydra) finished at 2026-10-10 15:04:57\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:04:57.562541+00:00",
+    "command": "ip netns exec trap-attacker ip route replace 192.168.56.0/24 dev trap-in src 192.168.56.30",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:04:58.213543+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:04:58.974593+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.103 -skS -i --max-time 5 -A masscan/1.3 'http://192.168.56.10/?scan=0'",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:04:58 GMT\nContent-Type: text/html\nContent-Length: 69\nConnection: keep-alive\nLast-Modified: Sat, 10 Oct 2026 07:17:51 GMT\n\n<!doctype html><title>TRAP Real Web</title><h1>TRAP REAL SERVICE</h1>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:04:59.500198+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.103 -skS -i --max-time 5 -A masscan/1.3 'http://192.168.56.10/?scan=1'",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:04:59 GMT\nContent-Type: text/html\nContent-Length: 69\nConnection: keep-alive\nLast-Modified: Sat, 10 Oct 2026 07:17:51 GMT\n\n<!doctype html><title>TRAP Real Web</title><h1>TRAP REAL SERVICE</h1>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:05:00.020714+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.103 -skS -i --max-time 5 -A masscan/1.3 'http://192.168.56.10/?scan=2'",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:05:00 GMT\nContent-Type: text/html\nContent-Length: 69\nConnection: keep-alive\nLast-Modified: Sat, 10 Oct 2026 07:17:51 GMT\n\n<!doctype html><title>TRAP Real Web</title><h1>TRAP REAL SERVICE</h1>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:05:00.544958+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.103 -skS -i --max-time 5 http://192.168.56.10/.htpasswd",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 404 File not found\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:05:00 GMT\nContent-Type: text/html;charset=utf-8\nContent-Length: 335\nConnection: keep-alive\n\n<!DOCTYPE HTML>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\">\n        <title>Error response</title>\n    </head>\n    <body>\n        <h1>Error response</h1>\n        <p>Error code: 404</p>\n        <p>Message: File not found.</p>\n        <p>Error code explanation: 404 - Nothing matches the given URI.</p>\n    </body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:05:00.870025+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.103 -skS -i --max-time 5 http://192.168.56.10/",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:05:00 GMT\nContent-Type: text/html\nContent-Length: 69\nConnection: keep-alive\nLast-Modified: Sat, 10 Oct 2026 07:17:51 GMT\n\n<!doctype html><title>TRAP Real Web</title><h1>TRAP REAL SERVICE</h1>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:05:02.060119+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:05:03.115086+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.104 -skS -i --max-time 5 http://192.168.56.10/trap-retest-probe",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 404 File not found\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:05:03 GMT\nContent-Type: text/html;charset=utf-8\nContent-Length: 335\nConnection: keep-alive\n\n<!DOCTYPE HTML>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\">\n        <title>Error response</title>\n    </head>\n    <body>\n        <h1>Error response</h1>\n        <p>Error code: 404</p>\n        <p>Message: File not found.</p>\n        <p>Error code explanation: 404 - Nothing matches the given URI.</p>\n    </body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:05:04.165067+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.110 -skS -i --max-time 5 http://192.168.56.10/trap-retest-probe",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 404 File not found\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:05:04 GMT\nContent-Type: text/html;charset=utf-8\nContent-Length: 335\nConnection: keep-alive\n\n<!DOCTYPE HTML>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\">\n        <title>Error response</title>\n    </head>\n    <body>\n        <h1>Error response</h1>\n        <p>Error code: 404</p>\n        <p>Message: File not found.</p>\n        <p>Error code explanation: 404 - Nothing matches the given URI.</p>\n    </body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:05:06.849697+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:05:08.806197+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:05:09.567800+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.105 -skS -i --max-time 5 http://192.168.56.10/.env",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 404 File not found\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:05:09 GMT\nContent-Type: text/html;charset=utf-8\nContent-Length: 335\nConnection: keep-alive\n\n<!DOCTYPE HTML>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\">\n        <title>Error response</title>\n    </head>\n    <body>\n        <h1>Error response</h1>\n        <p>Error code: 404</p>\n        <p>Message: File not found.</p>\n        <p>Error code explanation: 404 - Nothing matches the given URI.</p>\n    </body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:05:10.504921+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.105 -skS -i --max-time 5 http://192.168.56.10/.htpasswd",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 404 File not found\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:05:10 GMT\nContent-Type: text/html;charset=utf-8\nContent-Length: 335\nConnection: keep-alive\n\n<!DOCTYPE HTML>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\">\n        <title>Error response</title>\n    </head>\n    <body>\n        <h1>Error response</h1>\n        <p>Error code: 404</p>\n        <p>Message: File not found.</p>\n        <p>Error code explanation: 404 - Nothing matches the given URI.</p>\n    </body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:05:11.999187+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:05:12.137234+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.106 -skS -i --max-time 5 -A sqlmap/1.x 'http://192.168.56.10/?id=1'",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:05:12 GMT\nContent-Type: text/html\nContent-Length: 69\nConnection: keep-alive\nLast-Modified: Sat, 10 Oct 2026 07:17:51 GMT\n\n<!doctype html><title>TRAP Real Web</title><h1>TRAP REAL SERVICE</h1>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:05:12.510802+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.106 -skS -i --max-time 5 'http://192.168.56.10/?regression=http'",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:05:12 GMT\nContent-Type: text/html; charset=utf-8\nContent-Length: 322\nConnection: keep-alive\nSet-Cookie: PHPSESSID=[REDACTED]; Path=/; HttpOnly\n\n<!doctype html><html><head><meta charset=\"utf-8\"><title>TRAP Lab Services</title></head><body style=\"font-family:sans-serif;max-width:720px;margin:60px auto\"><h1>TRAP Lab Services</h1><p>Customer portal is under scheduled maintenance. Please try again later.</p><p style=\"color:#888\">&copy; 2026 trap.lab</p></body></html>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:05:13.093166+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:05:13.693859+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:05:13.852360+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.107 -skS -i --max-time 5 -A sqlmap/1.x 'http://192.168.56.10/?id=1'",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:05:13 GMT\nContent-Type: text/html\nContent-Length: 69\nConnection: keep-alive\nLast-Modified: Sat, 10 Oct 2026 07:17:51 GMT\n\n<!doctype html><title>TRAP Real Web</title><h1>TRAP REAL SERVICE</h1>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:05:14.190384+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.107 -skS -i --max-time 5 'https://192.168.56.10/?regression=https'",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:05:14 GMT\nContent-Type: text/html\nContent-Length: 69\nConnection: keep-alive\nLast-Modified: Sat, 10 Oct 2026 07:17:51 GMT\n\n<!doctype html><title>TRAP Real Web</title><h1>TRAP REAL SERVICE</h1>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:05:14.776798+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:05:14.812240+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Job for trap-log-sync.service failed.\nSee \"systemctl status trap-log-sync.service\" and \"journalctl -xeu trap-log-sync.service\" for details.\n"
+  },
+  {
+    "time": "2026-10-10T08:05:17.187401+00:00",
+    "command": "ip netns exec trap-attacker python3 -c 'import socket,time\nfor i in range(6):\n s=socket.socket();s.settimeout(3);s.bind(('\"'\"'192.168.56.108'\"'\"',0));s.connect(('\"'\"'192.168.56.10'\"'\"',22));s.recv(256);s.close();time.sleep(.25)'",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:05:21.057283+00:00",
+    "command": "ip netns exec trap-attacker python3 -c 'import socket,paramiko,time,json\ns=socket.socket();s.bind(('\"'\"'192.168.56.108'\"'\"',0));s.settimeout(5);s.connect(('\"'\"'192.168.56.10'\"'\"',22))\nc=paramiko.SSHClient();c.set_missing_host_key_policy(paramiko.AutoAddPolicy());c.connect('\"'\"'192.168.56.10'\"'\"',username='\"'\"'sysadmin'\"'\"',password='\"'\"'[REDACTED]'\"'\"',sock=s,look_for_keys=False,allow_agent=False,timeout=5)\nch=c.invoke_shell()\nfor cmd in ['\"'\"'whoami'\"'\"','\"'\"'ls'\"'\"','\"'\"'uname -a'\"'\"']:\n ch.send(cmd+'\"'\"'\\n'\"'\"');time.sleep(1);out='\"'\"''\"'\"'\n while ch.recv_ready():out+=ch.recv(65535).decode(errors='\"'\"'replace'\"'\"')\n print(json.dumps({'\"'\"'command'\"'\"':cmd,'\"'\"'output'\"'\"':out}),flush=True)\nch.send('\"'\"'exit\\n'\"'\"');time.sleep(.3);c.close()\n'",
+    "exit_code": 0,
+    "stdout": "{\"command\": \"whoami\", \"output\": \"\\r\\nThe programs included with the Debian GNU/Linux system are free software;\\r\\nthe exact distribution terms for each program are described in the\\r\\nindividual files in /usr/share/doc/*/copyright.\\r\\n\\r\\nDebian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent\\r\\npermitted by applicable law.\\r\\n\\u001b[4hsysadmin@trap-backup-01:~$ whoami\\r\\n\\u001b[4lsysadmin\\r\\n\\u001b[4hsysadmin@trap-backup-01:~$ \"}\n{\"command\": \"ls\", \"output\": \"ls\\r\\n\\u001b[4lnotes.txt \\r\\n\\u001b[4hsysadmin@trap-backup-01:~$ \"}\n{\"command\": \"uname -a\", \"output\": \"uname -a\\r\\n\\u001b[4lLinux trap-backup-01 6.1.0-21-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.1.90-1 (2024-05-03) x86_64 GNU/Linux\\r\\n\\u001b[4hsysadmin@trap-backup-01:~$ \"}\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:05:21.648508+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:05:22.873376+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:05:27.719522+00:00",
+    "command": "ip netns exec trap-attacker python3 -c 'import socket,telnetlib,time,json\norig=socket.create_connection\nsocket.create_connection=lambda address,timeout=None,source_address=None:orig(address,timeout,('\"'\"'192.168.56.109'\"'\"',0))\nfor i in range(2):\n t=telnetlib.Telnet('\"'\"'192.168.56.10'\"'\"',23,timeout=5)\n a=t.read_until(b'\"'\"'login: '\"'\"',3);t.write(b'\"'\"'invalid\\r\\n'\"'\"');b=t.read_until(b'\"'\"'Password: '\"'\"',3);t.write(b'\"'\"'wrong-lab-password\\r\\n'\"'\"');c=t.read_until(b'\"'\"'incorrect'\"'\"',4)\n print(json.dumps({'\"'\"'attempt'\"'\"':i,'\"'\"'banner'\"'\"':a.decode(errors='\"'\"'replace'\"'\"'),'\"'\"'reply'\"'\"':c.decode(errors='\"'\"'replace'\"'\"')}));t.close();time.sleep(2)\n'",
+    "exit_code": 0,
+    "stdout": "{\"attempt\": 0, \"banner\": \"TRAP lab login service\\r\\nlogin: \", \"reply\": \"Login incorrect\"}\n{\"attempt\": 1, \"banner\": \"login: \", \"reply\": \"\\nLogin incorrect\"}\n",
+    "stderr": "<string>:1: DeprecationWarning: 'telnetlib' is deprecated and slated for removal in Python 3.13\n"
+  },
+  {
+    "time": "2026-10-10T08:05:28.311856+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:05:29.504927+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:05:30.560946+00:00",
+    "command": "nft list table inet adaptive_defender",
+    "exit_code": 0,
+    "stdout": "table inet adaptive_defender {\n\tset ssh_redirect {\n\t\ttype ipv4_addr\n\t\ttimeout 30m\n\t\telements = { 192.168.56.101 timeout 2m expires 1m18s40ms, 192.168.56.102 timeout 2m expires 1m21s110ms,\n\t\t\t     192.168.56.108 timeout 2m expires 1m46s180ms }\n\t}\n\n\tset telnet_redirect {\n\t\ttype ipv4_addr\n\t\ttimeout 30m\n\t\telements = { 192.168.56.109 timeout 2m expires 1m53s235ms }\n\t}\n\n\tchain prerouting {\n\t\ttype nat hook prerouting priority dstnat; policy accept;\n\t\tiifname \"trap-out\" ip saddr @ssh_redirect tcp dport 22 counter packets 5 bytes 300 dnat ip to 10.10.10.2:2222\n\t\tiifname \"trap-out\" ip saddr @telnet_redirect tcp dport 23 counter packets 2 bytes 120 dnat ip to 10.10.10.2:2223\n\t}\n\n\tchain forward {\n\t\ttype filter hook forward priority filter; policy drop;\n\t\tct state invalid counter packets 0 bytes 0 drop\n\t\tct state established,related counter packets 169 bytes 31117 accept\n\t\tiifname \"trap-out\" oifname \"enp0s8\" ip daddr 10.10.10.2 tcp dport 2222 ct status dnat counter packets 5 bytes 300 accept\n\t\tiifname \"trap-out\" oifname \"enp0s8\" ip daddr 10.10.10.2 tcp dport 2223 ct status dnat counter packets 2 bytes 120 accept\n\t}\n}\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:05:30.576932+00:00",
+    "command": "systemctl is-active adaptive-defender trap-dashboard suricata nginx trap-apply-rules.path trap-log-sync.timer",
+    "exit_code": 0,
+    "stdout": "active\nactive\nactive\nactive\nactive\nactive\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:06:22.737646+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.111/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:06:22.759261+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.111 -skS -i --max-time 5 -A sqlmap/1.x 'http://192.168.56.10/?id=1'",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:06:22 GMT\nContent-Type: text/html\nContent-Length: 69\nConnection: keep-alive\nLast-Modified: Sat, 10 Oct 2026 07:17:51 GMT\n\n<!doctype html><title>TRAP Real Web</title><h1>TRAP REAL SERVICE</h1>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:06:25.105948+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.111 -skS -i --max-time 5 'https://192.168.56.10/?regression=https-retest'",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:06:25 GMT\nContent-Type: text/html; charset=utf-8\nContent-Length: 322\nConnection: keep-alive\nSet-Cookie: PHPSESSID=[REDACTED]; Path=/; HttpOnly\n\n<!doctype html><html><head><meta charset=\"utf-8\"><title>TRAP Lab Services</title></head><body style=\"font-family:sans-serif;max-width:720px;margin:60px auto\"><h1>TRAP Lab Services</h1><p>Customer portal is under scheduled maintenance. Please try again later.</p><p style=\"color:#888\">&copy; 2026 trap.lab</p></body></html>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:06:25.750547+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:06:26.421907+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  }
+]

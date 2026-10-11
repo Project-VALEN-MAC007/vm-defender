@@ -6,6 +6,8 @@ from pathlib import Path
 import threading
 from typing import Callable
 
+from defender.decision_engine.adaptive_defender.models import tls_inspection_client
+
 
 class JsonlTail:
     """Incrementally reads complete JSONL records and keeps a bounded snapshot."""
@@ -60,19 +62,37 @@ class JsonlTail:
             return
 
 
+TLS_INSPECT_PORT = 18443  # loopback HTTPS inspection hop behind the Nginx TLS edge
+
+
+def _tls_client(event: dict) -> str | None:
+    """Real client of an alert raised on the loopback HTTPS inspection hop
+    (same rule as the decision engine); None for any other alert."""
+    try:
+        return tls_inspection_client(event)
+    except ValueError:
+        return None
+
+
 def alert_transform(event: dict, path: Path) -> dict | None:
     if event.get("event_type") != "alert":
         return None
     alert = event.get("alert") or {}
     http = event.get("http") or {}
+    try:
+        tls_client = tls_inspection_client(event)
+    except ValueError:
+        # An inspection-hop alert without trustworthy attribution must not
+        # appear as an attacker alert for either loopback or a forged IP.
+        return None
     return {
         "timestamp": event.get("timestamp"),
-        "src_ip": event.get("src_ip"),
-        "src_port": event.get("src_port"),
+        "src_ip": tls_client or event.get("src_ip"),
+        "src_port": None if tls_client else event.get("src_port"),
         "dest_ip": event.get("dest_ip"),
-        "dest_port": event.get("dest_port"),
+        "dest_port": 443 if tls_client else event.get("dest_port"),
         "proto": event.get("proto"),
-        "app_proto": event.get("app_proto"),
+        "app_proto": "https" if tls_client else event.get("app_proto"),
         "signature_id": alert.get("signature_id"),
         "signature": alert.get("signature"),
         "category": alert.get("category"),

@@ -1,0 +1,82 @@
+﻿Test,Source IP,Case start UTC,Commands/API,Expected,Actual,Status,Evidence
+FAIL1-LibSSH-handshakes,192.168.56.101,2026-10-10T08:04:46.415016+00:00,"ip netns exec trap-attacker python3 -c 'import socket,paramiko,time
+for i in range(6):
+ s=socket.socket();s.settimeout(4);s.bind(('""'""'192.168.56.101'""'""',0));s.connect(('""'""'192.168.56.10'""'""',22))
+ t=paramiko.Transport(s);t.local_version='""'""'SSH-2.0-libssh_0.10.6'""'""';t.start_client(timeout=4)
+ print(i,t.remote_version,flush=True);t.close();time.sleep(.3)
+'
+systemctl start trap-log-sync
+",Paramiko banner libssh 6 handshakes/30 sec → SID2006546 + redirect_ssh,SID2006546 rev10 มี alert; risk80 redirect_ssh (ก่อนหน้า2001219 risk35 monitor),PASS,cases.json → FAIL1-LibSSH-handshakes; raw/eve.json; raw/decisions.jsonl; raw/nginx.jsonl; raw/cowrie.json; raw/web.jsonl
+FAIL1-Hydra,192.168.56.102,2026-10-10T08:04:51.210137+00:00,"ip netns exec trap-attacker ip route replace 192.168.56.0/24 dev trap-in src 192.168.56.102
+ip netns exec trap-attacker hydra -l root -P /var/lib/trap/lab-wordlist.txt -t 6 -W 1 -V ssh://192.168.56.10
+ip netns exec trap-attacker ip route replace 192.168.56.0/24 dev trap-in src 192.168.56.30
+systemctl start trap-log-sync
+",Hydra จาก IP ใหม่ → SID2006546 + redirect_ssh,SID2006546 มี alert; risk80 redirect_ssh,PASS,cases.json → FAIL1-Hydra; raw/eve.json; raw/decisions.jsonl; raw/nginx.jsonl; raw/cowrie.json; raw/web.jsonl
+FAIL2-Masscan-scan-only-and-followup,192.168.56.103,2026-10-10T08:04:58.337410+00:00,"ip netns exec trap-attacker curl --interface 192.168.56.103 -skS -i --max-time 5 -A masscan/1.3 'http://192.168.56.10/?scan=0'
+ip netns exec trap-attacker curl --interface 192.168.56.103 -skS -i --max-time 5 -A masscan/1.3 'http://192.168.56.10/?scan=1'
+ip netns exec trap-attacker curl --interface 192.168.56.103 -skS -i --max-time 5 -A masscan/1.3 'http://192.168.56.10/?scan=2'
+ip netns exec trap-attacker curl --interface 192.168.56.103 -skS -i --max-time 5 http://192.168.56.10/.htpasswd
+ip netns exec trap-attacker curl --interface 192.168.56.103 -skS -i --max-time 5 http://192.168.56.10/
+systemctl start trap-log-sync
+POST /api/thresholds payload={""monitor"": 5, ""redirect"": 10} → 200
+POST /api/thresholds payload={""monitor"": 15, ""redirect"": 40} → 200",redirect10: Masscan 3 ครั้ง monitor ทุกครั้ง มี scan_only_policy:monitor; .htpasswd IP เดิม redirect_web,"Masscan monitor ทั้ง3: risk37,73.99,100 พร้อม reason; SID2101071 จาก IP เดิม risk100 redirect_web",PASS,cases.json → FAIL2-Masscan-scan-only-and-followup; raw/eve.json; raw/decisions.jsonl; raw/nginx.jsonl; raw/cowrie.json; raw/web.jsonl
+FAIL3-Rule-approve-activate-alert-restore,"192.168.56.104,192.168.56.110",2026-10-10T08:05:02.155708+00:00,"ip netns exec trap-attacker curl --interface 192.168.56.104 -skS -i --max-time 5 http://192.168.56.10/trap-retest-probe
+ip netns exec trap-attacker curl --interface 192.168.56.110 -skS -i --max-time 5 http://192.168.56.10/trap-retest-probe
+systemctl start trap-log-sync
+POST /api/candidates/save payload={""rule_id"": ""trap-retest-20261010T080123Z"", ""version"": ""1.0.0"", ""status"": ""candidate"", ""evidence"": ""Real VM retest 20261010T080123Z"", ""confidence"": 0.9, ""reviewer"": ""lab-reviewer"", ""expected_sid"": 9900001, ""rule"": ""alert http $EXTERNAL_NET any -> $HOME_NET any (msg:\""AH generated repeat path\""; flow:established,to_server; http.uri; content:\""/trap-retest-probe\""; classtype:web-application-attack; metadata:severity high, project adaptive_honeypot; threshold:type limit, track by_src, count 1, seconds 60; sid:9900001; rev:1;)"", ""max_false_positive_rate"": 0.05, ""minimum_malicious_detections"": 1, ""max_validation_ms_per_event"": 10.0} → 200
+POST /api/candidates/approve payload={""rule_id"": ""trap-retest-20261010T080123Z""} → 200
+POST /api/rules/change payload={""action"": ""restore"", ""backup"": ""dashboard-20261010T080502-44e54479.rules""} → 200",Approve SID9900001 → helper applied + active + alert; restore → SID หายและไม่เกิด alert,API save/approve200; helper applied; probe SID9900001 alert; restore applied; IP ใหม่ยิงซ้ำไม่เกิด alert,PASS,cases.json → FAIL3-Rule-approve-activate-alert-restore; raw/eve.json; raw/decisions.jsonl; raw/nginx.jsonl; raw/cowrie.json; raw/web.jsonl
+FAIL3-Invalid-rule-rejected-active-unchanged,,2026-10-10T08:05:06.978982+00:00,"systemctl start trap-log-sync
+POST /api/rules/change payload={""action"": ""add"", ""rule"": ""alert http any any -> any any (msg:\""TRAP invalid syntax\""; trap_unknown_keyword:1; classtype:web-application-attack; sid:9900002; rev:1;)""} → 200
+POST /api/rules/change payload={""action"": ""restore"", ""backup"": ""dashboard-20261010T080506-247a131a.rules""} → 200","กฎผิดไวยากรณ์ → state failed, syntax_test, active SHA256 ไม่เปลี่ยน",POST rules/change200 staging; helper failed ที่ syntax_test; SHA256 active ก่อน/หลังเท่ากัน; restore applied,PASS,cases.json → FAIL3-Invalid-rule-rejected-active-unchanged; raw/eve.json; raw/decisions.jsonl; raw/nginx.jsonl; raw/cowrie.json; raw/web.jsonl
+FAIL4-Threshold-API-reload-and-User-denied,192.168.56.105,2026-10-10T08:05:08.920099+00:00,"ip netns exec trap-attacker curl --interface 192.168.56.105 -skS -i --max-time 5 http://192.168.56.10/.env
+ip netns exec trap-attacker curl --interface 192.168.56.105 -skS -i --max-time 5 http://192.168.56.10/.htpasswd
+systemctl start trap-log-sync
+POST /api/thresholds payload={""monitor"": 5, ""redirect"": 90} → 200
+POST /api/thresholds payload={""monitor"": 5, ""redirect"": 10} → 200
+POST /api/thresholds payload={""monitor"": 5, ""redirect"": 90} → 403
+POST /api/thresholds payload={""monitor"": 15, ""redirect"": 40} → 200",Master Admin+TOTP POST200; override file เปลี่ยน; engine ใช้ค่าใหม่; /etc SHA256 เดิม; User403,"POST200 high5/90 → .env monitor17; low5/10 → .htpasswd redirect_web56.99; thresholds.json={5,10}; /etc hashเดิม; User403; คืน15/40",PASS,cases.json → FAIL4-Threshold-API-reload-and-User-denied; raw/eve.json; raw/decisions.jsonl; raw/nginx.jsonl; raw/cowrie.json; raw/web.jsonl
+Regression-HTTP,192.168.56.106,2026-10-10T08:05:12.117059+00:00,"ip netns exec trap-attacker curl --interface 192.168.56.106 -skS -i --max-time 5 -A sqlmap/1.x 'http://192.168.56.10/?id=1'
+ip netns exec trap-attacker curl --interface 192.168.56.106 -skS -i --max-time 5 'http://192.168.56.10/?regression=http'
+systemctl start trap-log-sync
+systemctl start trap-log-sync
+",HTTP200 + redirect_web + Nginx upstream/Honeypot log,HTTP200; Web log source .106; redirect_web risk50,PASS,cases.json → Regression-HTTP; raw/eve.json; raw/decisions.jsonl; raw/nginx.jsonl; raw/cowrie.json; raw/web.jsonl
+Regression-HTTPS,192.168.56.107,2026-10-10T08:05:13.812505+00:00,"ip netns exec trap-attacker curl --interface 192.168.56.107 -skS -i --max-time 5 -A sqlmap/1.x 'http://192.168.56.10/?id=1'
+ip netns exec trap-attacker curl --interface 192.168.56.107 -skS -i --max-time 5 'https://192.168.56.10/?regression=https'
+systemctl start trap-log-sync
+systemctl start trap-log-sync
+",HTTPS200 + redirect_web + Nginx upstream/Honeypot log,HTTP200 แต่ Nginx upstream127.0.0.1:8080 profile real; ไม่พบ requestในHoneypot log (ครั้งแรก),FAIL (initial; retest PASS),cases.json → Regression-HTTPS; raw/eve.json; raw/decisions.jsonl; raw/nginx.jsonl; raw/cowrie.json; raw/web.jsonl
+Regression-SSH,192.168.56.108,2026-10-10T08:05:14.943864+00:00,"ip netns exec trap-attacker python3 -c 'import socket,time
+for i in range(6):
+ s=socket.socket();s.settimeout(3);s.bind(('""'""'192.168.56.108'""'""',0));s.connect(('""'""'192.168.56.10'""'""',22));s.recv(256);s.close();time.sleep(.25)'
+ip netns exec trap-attacker python3 -c 'import socket,paramiko,time,json
+s=socket.socket();s.bind(('""'""'192.168.56.108'""'""',0));s.settimeout(5);s.connect(('""'""'192.168.56.10'""'""',22))
+c=paramiko.SSHClient();c.set_missing_host_key_policy(paramiko.AutoAddPolicy());c.connect('""'""'192.168.56.10'""'""',username='""'""'sysadmin'""'""',password='""'""'[REDACTED]'""'""',sock=s,look_for_keys=False,allow_agent=False,timeout=5)
+ch=c.invoke_shell()
+for cmd in ['""'""'whoami'""'""','""'""'ls'""'""','""'""'uname -a'""'""']:
+ ch.send(cmd+'""'""'\n'""'""');time.sleep(1);out='""'""''""'""'
+ while ch.recv_ready():out+=ch.recv(65535).decode(errors='""'""'replace'""'""')
+ print(json.dumps({'""'""'command'""'""':cmd,'""'""'output'""'""':out}),flush=True)
+ch.send('""'""'exit\n'""'""');time.sleep(.3);c.close()
+'
+systemctl start trap-log-sync
+systemctl start trap-log-sync
+POST /api/thresholds payload={""monitor"": 5, ""redirect"": 30} → 200
+POST /api/thresholds payload={""monitor"": 15, ""redirect"": 40} → 200",SID2001219 redirect_ssh + nft DNAT + Cowrie login/whoami/ls/uname,"source .108; SSH scan risk35 redirect_ssh; Cowrie บันทึก whoami,ls,uname -a; shell exit0",PASS,cases.json → Regression-SSH; raw/eve.json; raw/decisions.jsonl; raw/nginx.jsonl; raw/cowrie.json; raw/web.jsonl
+Regression-Telnet,192.168.56.109,2026-10-10T08:05:22.995769+00:00,"ip netns exec trap-attacker python3 -c 'import socket,telnetlib,time,json
+orig=socket.create_connection
+socket.create_connection=lambda address,timeout=None,source_address=None:orig(address,timeout,('""'""'192.168.56.109'""'""',0))
+for i in range(2):
+ t=telnetlib.Telnet('""'""'192.168.56.10'""'""',23,timeout=5)
+ a=t.read_until(b'""'""'login: '""'""',3);t.write(b'""'""'invalid\r\n'""'""');b=t.read_until(b'""'""'Password: '""'""',3);t.write(b'""'""'wrong-lab-password\r\n'""'""');c=t.read_until(b'""'""'incorrect'""'""',4)
+ print(json.dumps({'""'""'attempt'""'""':i,'""'""'banner'""'""':a.decode(errors='""'""'replace'""'""'),'""'""'reply'""'""':c.decode(errors='""'""'replace'""'""')}));t.close();time.sleep(2)
+'
+systemctl start trap-log-sync
+systemctl start trap-log-sync
+POST /api/thresholds payload={""monitor"": 5, ""redirect"": 20} → 200
+POST /api/thresholds payload={""monitor"": 15, ""redirect"": 40} → 200",redirect_telnet + nft DNAT + Cowrie login.failed,source .109; SID2101251 risk35/69.97 redirect_telnet; Cowrie มีlogin.failed; nft counterDNAT,PASS,cases.json → Regression-Telnet; raw/eve.json; raw/decisions.jsonl; raw/nginx.jsonl; raw/cowrie.json; raw/web.jsonl
+Regression-HTTPS-retest,192.168.56.111,2026-10-10T08:06:22.737689+00:00,"ip netns exec trap-attacker curl --interface 192.168.56.111 -skS -i --max-time 5 -A sqlmap/1.x 'http://192.168.56.10/?id=1'
+ip netns exec trap-attacker curl --interface 192.168.56.111 -skS -i --max-time 5 'https://192.168.56.10/?regression=https-retest'
+systemctl start trap-log-sync
+systemctl start trap-log-sync
+",หลังรอ worker reload 2s: HTTPS200 + Nginx10.10.10.2:8084 + Web log protocol https,source .111; TLS200; Nginx profile rabbithole upstream10.10.10.2:8084; Honeypot protocolhttps/queryตรงกัน,PASS,cases.json → Regression-HTTPS-retest; raw/eve.json; raw/decisions.jsonl; raw/nginx.jsonl; raw/cowrie.json; raw/web.jsonl

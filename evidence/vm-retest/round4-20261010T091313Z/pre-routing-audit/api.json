@@ -1,0 +1,96 @@
+[
+  {
+    "time": "2026-10-10T09:22:17.422581+00:00",
+    "path": "/api/login",
+    "method": "POST",
+    "status": 200,
+    "response": {
+      "ok": true,
+      "totp_required": true
+    }
+  },
+  {
+    "time": "2026-10-10T09:22:17.619378+00:00",
+    "path": "/api/login/totp",
+    "method": "POST",
+    "status": 200,
+    "response": {
+      "ok": true,
+      "user": {
+        "username": "trapadmin",
+        "name": "trapadmin",
+        "role": "master_admin",
+        "totp_enabled": true,
+        "must_change_password": false
+      }
+    }
+  },
+  {
+    "time": "2026-10-10T09:22:17.909089+00:00",
+    "path": "/api/login",
+    "method": "POST",
+    "status": 200,
+    "response": {
+      "ok": true,
+      "totp_required": true
+    }
+  },
+  {
+    "time": "2026-10-10T09:22:17.918879+00:00",
+    "path": "/api/login/totp",
+    "method": "POST",
+    "status": 200,
+    "response": {
+      "ok": true,
+      "user": {
+        "username": "trapuser",
+        "name": "trapuser",
+        "role": "user",
+        "totp_enabled": true,
+        "must_change_password": false
+      }
+    }
+  },
+  {
+    "time": "2026-10-10T09:22:17.925603+00:00",
+    "path": "/api/thresholds",
+    "method": "POST",
+    "status": 200,
+    "request": {
+      "monitor": 15,
+      "redirect": 40
+    },
+    "response": {
+      "monitor": 15.0,
+      "redirect": 40.0
+    }
+  },
+  {
+    "time": "2026-10-10T09:22:31.095448+00:00",
+    "path": "/api/thresholds",
+    "method": "POST",
+    "status": 200,
+    "request": {
+      "monitor": 5,
+      "redirect": 30
+    },
+    "response": {
+      "monitor": 5.0,
+      "redirect": 30.0
+    }
+  },
+  {
+    "time": "2026-10-10T09:22:37.261977+00:00",
+    "path": "/api/thresholds",
+    "method": "POST",
+    "status": 200,
+    "request": {
+      "monitor": 15,
+      "redirect": 40
+    },
+    "response": {
+      "monitor": 15.0,
+      "redirect": 40.0
+    }
+  }
+]

@@ -70,3 +70,17 @@ sudo nft -f /root/trap-backup/nftables.before.nft
 ```
 
 ห้ามใช้ `nft flush ruleset` เพราะจะลบกฎของระบบอื่นด้วย
+
+## Round 4 deployed lab
+
+Render the template with outer `trap-out`, inner `enp0s8`, production
+`10.10.10.3`, Cowrie SSH `10.10.10.2:2222` and Telnet `10.10.10.2:2223`.
+Keep source-specific redirect-set DNAT rules before unconditional
+production DNAT for TCP 22 and 23. Forward permits only established traffic
+and the specified DNAT destinations, including production ports 22/23.
+Preserve source addresses; both downstream VMs route 192.168.56.0/24 back
+via 10.10.10.1. Management SSH enters the NAT NIC and does not match
+`iifname trap-out`. Validate atomically with `nft -c -f` and keep a timed
+rollback while applying. Persistent rules are `/etc/trap/redirect.nft`,
+loaded by `trap-firewall.service`. Temporary redirect sets are managed
+by the existing Engine.

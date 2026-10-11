@@ -1,0 +1,14 @@
+{
+  "listening_before_stop": "LISTEN 0      5         0.0.0.0:8084  0.0.0.0:*\nLISTEN 0      4096   127.0.0.11:46469 0.0.0.0:*\n",
+  "stopped_state_and_listening": "    PID STAT COMMAND\n  31878 Ts   python3 /opt/trap/run_rabbit_hole.py --config /var/lib/trap/rabbit-hole.json\nLISTEN 0      5         0.0.0.0:8084  0.0.0.0:*\nLISTEN 0      4096   127.0.0.11:46469 0.0.0.0:*\n",
+  "service": "web-honeypot",
+  "fault": "sigstop",
+  "fault_time": "2026-10-10T13:39:12.875827+00:00",
+  "id_before": "e99840d8f1e7ac740bd53fee823004fc53a64ae9f43e43cfa62968bf39090508",
+  "id_after": "ebb63bcc1fc0d1d0cf27d6c25f249ae7519fa846167e0a48e4e7d3b0c949ecb2",
+  "restart_count_before": 0,
+  "restart_count_after": 0,
+  "listening_recovered_seconds": 80.1856428860001,
+  "start_before": "2026-10-10T13:39:06.172203882Z",
+  "start_after": "2026-10-10T13:40:31.505357108Z"
+}

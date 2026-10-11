@@ -87,3 +87,25 @@ default real;
 
 หาก validation หรือ reload ล้มเหลว adapter จะคืน map ก่อนหน้า สำหรับการคืน
 Nginx ทั้งชุดให้ใช้ backup และคำสั่งใน `docs/root-operations.md`
+
+## Round 4 deployed lab
+
+The rendered `/etc/nginx/conf.d/trap.conf` uses both `default` and `real`
+backend `http://10.10.10.3:8080` on Project-Web. Honeypot profiles currently
+resolve to the observed Web decoy endpoint `10.10.10.2:8084`; the example
+8081/8082/8083 endpoints above are not separately deployed in this lab.
+HTTPS terminates on Defender and forwards X-Forwarded-Proto and client
+address. This lab renders the template HTTP listener as a proxy so HTTP
+and HTTPS can be tested independently; the upstream template's HTTP 308
+policy is not the runtime lab policy. Use `nginx -t` before reload.
+The Decision Engine readiness implementation was not changed for round 4.
+
+
+## HTTPS inspection hop
+
+พอร์ต 443 ไม่ส่งตรงไป backend แล้ว แต่ส่งผ่าน `127.0.0.1:18443` (ต่อจาก 127.0.0.2)
+เพื่อให้ Suricata ตรวจคำขอที่ถอดรหัสแล้วได้ ตัวตัดสิน profile/upstream และ
+`adaptive_access.json` อยู่ที่ server loopback (ใช้ realip จาก `X-Trap-Client-IP`
+ที่เชื่อเฉพาะ 127.0.0.2) ส่วนขอบ TLS บันทึกที่ `adaptive_tls_edge.json`
+ต้องมีโมดูล `ngx_http_realip_module` (มีใน nginx ของ Ubuntu) และตั้ง Suricata ตาม
+`defender/suricata/https-inspection.yaml`

@@ -1,0 +1,8 @@
+{
+  "utc": "20261010T080549Z",
+  "vm": "defender",
+  "command": "grep \"192.168.56.107\" /var/log/adaptive-defender/decisions.jsonl; cat /etc/nginx/maps/redirect_map.conf; journalctl -u adaptive-defender --since \"2026-10-10 08:04:00 UTC\" --no-pager | tail -n 10",
+  "exit_code": 0,
+  "stdout": "{\"action\": \"redirect_web\", \"adapter_result\": \"# generated atomically; do not edit\\ndefault real;\\n192.168.56.103 rabbithole;\\n192.168.56.104 rabbithole;\\n192.168.56.105 rabbithole;\\n192.168.56.106 rabbithole;\\n192.168.56.107 rabbithole;\\n\", \"dry_run\": false, \"event_id\": \"5a9d9ef8f656dfe3a4f0c34475a85eec0a1d2b531ec5cfbbc3a9529b8530059e\", \"expiry\": \"2026-10-10T08:07:14.008817+00:00\", \"profile\": \"rabbithole\", \"protocol\": \"http\", \"reason\": \"severity=2:+25;protocol=http:+5;active_scan_history:+20\", \"risk_score\": 50.0, \"severity\": 2, \"signature_id\": 2008538, \"source_ip\": \"192.168.56.107\", \"start_time\": \"2026-10-10T08:05:14.008817+00:00\"}\n# generated atomically; do not edit\ndefault real;\n192.168.56.103 rabbithole;\n192.168.56.104 rabbithole;\n192.168.56.105 rabbithole;\n192.168.56.106 rabbithole;\n192.168.56.107 rabbithole;\n-- No entries --\n",
+  "stderr": ""
+}

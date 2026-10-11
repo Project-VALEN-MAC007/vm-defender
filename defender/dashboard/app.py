@@ -20,7 +20,7 @@ from .metrics import calculate
 from .security import LoginLimiter, Session, SessionStore, UserStore, append_security_audit, verify_password
 from .scope import (DashboardState, RuleStore, honeypot_transform, sessions_from_events,
                     extend_analytics, event_notifications, report_csv, threshold_config, stamp)
-from .web_deploy import AgentError, DeployClient
+from .web_deploy import AgentError, CloneJobs, DeployClient
 from .rabbit import RabbitHoleService, log_rows as rabbit_log_rows, rabbit_transform
 from ..validation.deploy import staged_deploy
 from ..validation.pipeline import ValidationError, validate
@@ -279,6 +279,8 @@ class DashboardRuntime:
                                       self.settings.maximum_rows)
         self.rabbit = RabbitHoleService(self.settings.rabbit_hole_config_path, PROJECT_ROOT)
         self.deploy = DeployClient(self.settings.deploy_agent_url, self.settings.deploy_agent_token_path)
+        # The Defender clones the real website; the isolated Honeypot only receives the copy.
+        self.clones = CloneJobs(self.deploy, list(self.settings.deploy_allowed_targets), self.settings.deploy_dry_run)
 
     def alerts(self):
         return self.state.visible(self.alert_store.rows())
@@ -366,6 +368,22 @@ def _query_rows(rows: list[dict], query: dict[str, list[str]], kind: str) -> tup
     return rows[offset:offset + limit], total, limit, offset
 
 
+_WEB_HONEYPOT_PROFILES = {"rabbithole", "snare", "wordpress", "phpmyadmin", "web"}
+
+
+def _session_transport(session: dict) -> str:
+    """Transport protocol for a honeypot session, so a web decoy session is found
+    by an HTTP/HTTPS filter. Falls back to mapping the profile when the session
+    carries no protocol (older rows)."""
+    protocol = str(session.get("protocol") or "").lower()
+    if protocol:
+        return protocol
+    profile = str(session.get("profile") or "").lower()
+    if profile in _WEB_HONEYPOT_PROFILES:
+        return "http"
+    return profile
+
+
 def search_logs(alerts: list[dict], decisions: list[dict], query: dict[str, list[str]], sessions: list[dict] | None = None,
                 rabbit_events: list[dict] | None = None) -> dict:
     """Search all retained alert and decision rows before pagination."""
@@ -378,9 +396,9 @@ def search_logs(alerts: list[dict], decisions: list[dict], query: dict[str, list
               "summary": d.get("reason"), "result": d.get("action")}
              for d in decisions]
     rows += [{"type": "honeypot", "time": s["first_action"], "source": s["source_ip"],
-              "protocol": s["profile"], "severity": None,
+              "protocol": _session_transport(s), "profile": s.get("profile"), "severity": None,
               "summary": f"Session {s['session_id']} · {s['actions']} actions · {s['dwell_seconds']:.1f}s",
-              "result": s["profile"]} for s in (sessions or [])]
+              "result": s.get("profile")} for s in (sessions or [])]
     rows += rabbit_log_rows(rabbit_events or [])
     def param(name: str) -> str:
         return str((query.get(name) or [""])[0]).strip()
@@ -392,7 +410,10 @@ def search_logs(alerts: list[dict], decisions: list[dict], query: dict[str, list
     if source:
         rows = [r for r in rows if source in str(r["source"] or "").lower()]
     if protocol:
-        rows = [r for r in rows if str(r["protocol"] or "").lower() == protocol]
+        # Suricata names HTTPS traffic "tls"; web honeypot sessions say "https".
+        wanted = {"tls", "https"} if protocol in {"tls", "https"} else {protocol}
+        rows = [r for r in rows if wanted & {str(r.get("protocol") or "").lower(),
+                                             str(r.get("profile") or "").lower()}]
     if severity:
         rows = [r for r in rows if str(r["severity"] or "").lower() == severity]
     if search:
@@ -617,8 +638,11 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
             try:
                 if route == "/api/web-deploy/status.json":
                     result = runtime.deploy.status()
+                    result["allowed_targets"] = runtime.clones.allowed_targets
+                    result["clone_dry_run"] = runtime.clones.dry_run
+                    result["job"] = runtime.clones.running() or result.get("job")
                 elif route == "/api/web-deploy/job.json":
-                    result = runtime.deploy.job(value("id"))
+                    result = runtime.clones.get(value("id")) or runtime.deploy.job(value("id"))
                 elif route == "/api/web-deploy/pages.json":
                     result = runtime.deploy.pages(value("version"))
                 elif route == "/api/web-deploy/page.json":
@@ -636,7 +660,7 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
             try:
                 if route == "/api/web-deploy/clone":
                     depth = payload.get("depth")
-                    result = runtime.deploy.clone(str(payload.get("url", "")), depth if isinstance(depth, int) else 0)
+                    result = runtime.clones.start(str(payload.get("url", "")), depth if isinstance(depth, int) else 0)
                     audit = {"url": payload.get("url"), "depth": depth}
                 else:
                     # Switching what attackers see is a production change: re-check the
@@ -845,6 +869,7 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
             payload = self._read_json()
             password = payload.get("current_password")
             code = payload.get("totp") if route.endswith("/confirm") else None
+            current_totp = payload.get("current_totp") if route.endswith("/setup") else None
             if not isinstance(password, str) or (route.endswith("/confirm") and not isinstance(code, str)):
                 self._send_json({"error": "invalid_input"}, 400)
                 return
@@ -854,7 +879,7 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
                 self._send_json({"error": "rate_limited"}, 429, {"Retry-After": str(retry)})
                 return
             try:
-                secret = runtime.users.setup_totp(user["username"], password, code)
+                secret = runtime.users.setup_totp(user["username"], password, code, current_totp)
             except ValueError as error:
                 runtime.limiter.failure(key)
                 self._send_json({"error": str(error)}, 400)

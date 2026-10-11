@@ -1,0 +1,8 @@
+{
+  "utc": "20261010T083454Z",
+  "vm": "defender",
+  "command": "python3 -c \"import json,pathlib; d=pathlib.Path(\\\"/var/lib/trap/current-retest-dir\\\").read_text(); c=json.load(open(d+\\\"/cases.json\\\")); print(\\\"done\\\",len(c)); print([(x[\\\"name\\\"],x[\\\"error\\\"]) for x in c if x[\\\"status\\\"]!=\\\"PASS\\\"]); print(json.load(open(d+\\\"/readiness-statistics.json\\\")))\"",
+  "exit_code": 0,
+  "stdout": "done 43\n[('Immediate-HTTPS-3', 'AssertionError: Immediate request absent from Honeypot log'), ('Immediate-HTTPS-4', 'AssertionError: Immediate request absent from Honeypot log'), ('Immediate-HTTPS-5', 'AssertionError: Immediate request absent from Honeypot log'), ('Immediate-HTTPS-9', 'AssertionError: Immediate request absent from Honeypot log'), ('Immediate-HTTPS-10', 'AssertionError: Immediate request absent from Honeypot log'), ('Immediate-HTTP-1', 'AssertionError: Immediate request absent from Honeypot log'), ('Immediate-HTTP-2', 'AssertionError: Immediate request absent from Honeypot log'), ('Immediate-HTTP-3', 'AssertionError: Immediate request absent from Honeypot log'), ('Immediate-HTTP-4', 'AssertionError: Immediate request absent from Honeypot log'), ('Immediate-HTTP-5', 'AssertionError: Immediate request absent from Honeypot log'), ('Immediate-HTTP-6', 'AssertionError: Immediate request absent from Honeypot log'), ('Immediate-HTTP-7', 'AssertionError: Immediate request absent from Honeypot log'), ('Regression-HTTPS', 'AssertionError: No correlated web request in Honeypot VM log')]\n{'count': 20, 'min': 0.162, 'median': 0.1765, 'max': 0.186}\n",
+  "stderr": ""
+}

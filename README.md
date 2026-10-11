@@ -21,7 +21,7 @@ Nginx หรือ nftables ให้เฝ้าระวังและเป�
 | Nginx | รับ HTTP/HTTPS และเลือก backend ตาม source IP | config พร้อมตรวจสอบ ยังไม่ activate บนเครื่องจริง |
 | nftables | เปลี่ยนเส้นทาง SSH/Telnet | template พร้อม ยังรอชื่อ interface จริง |
 | Dashboard | แสดงสถานะ เหตุการณ์ รายงาน และจัดการ rule | พร้อมใช้งานบน loopback |
-| Deploy หน้าเว็บ | Clone เว็บด้วย SNARE และสลับหน้าเว็บ Honeypot ผ่าน Dashboard (agent บนเครื่อง Honeypot) | ชุดทดสอบผ่าน; ต้องติดตั้ง agent ตาม `honeypot/deploy-agent/README.md` |
+| Deploy หน้าเว็บ | Defender clone เว็บจริง ส่งสำเนาไปให้ SNARE และสลับหน้าเว็บ Honeypot ผ่าน Dashboard (agent บนเครื่อง Honeypot รับสำเนา ไม่ต่อเว็บจริงเอง) | ชุดทดสอบผ่าน; ต้องติดตั้ง agent ตาม `honeypot/deploy-agent/README.md` |
 | Rabbit Hole | เส้นทางลวงต่อเนื่อง Web + ไฟล์ลวงสำหรับ Cowrie และหน้า Dashboard | ชุดทดสอบผ่าน; ต้องติดตั้งบนเครื่อง Honeypot จริง |
 | Validation Pipeline | ตรวจ rule 5 gates พร้อม backup/rollback | ชุดทดสอบผ่าน; live deploy ปิดไว้เป็นค่าเริ่มต้น |
 

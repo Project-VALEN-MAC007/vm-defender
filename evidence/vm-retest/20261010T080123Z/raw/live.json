@@ -1,0 +1,22 @@
+{
+  "eve_path": "/var/log/suricata/eve.json",
+  "checkpoint_path": "/var/lib/adaptive-defender/eve.checkpoint.json",
+  "audit_path": "/var/log/adaptive-defender/decisions.jsonl",
+  "nginx_map_path": "/etc/nginx/maps/redirect_map.conf",
+  "dry_run": false,
+  "web_profile": "rabbithole",
+  "decay_per_minute": 1.0,
+  "expiry_seconds": 120,
+  "thresholds": {
+    "monitor": 15,
+    "redirect": 40
+  },
+  "nft_family": "inet",
+  "nft_table": "adaptive_defender",
+  "bind_host": "127.0.0.1",
+  "bind_port": 9090,
+  "thresholds_path": "/var/lib/trap/engine/thresholds.json",
+  "scan_only_signatures": [
+    2017616
+  ]
+}

@@ -1,0 +1,211 @@
+{
+  "window": "all",
+  "scope": "bounded_runtime_snapshot",
+  "total_alerts": 353,
+  "unique_source_ips": 108,
+  "high_severity_alerts": 75,
+  "total_decisions": 353,
+  "protocols": {
+    "HTTP": 306,
+    "TCP": 24,
+    "TELNET": 19,
+    "SSH": 4
+  },
+  "severities": {
+    "1": 75,
+    "3": 24,
+    "2": 254
+  },
+  "actions": {
+    "redirect_web": 279,
+    "monitor": 42,
+    "redirect_ssh": 18,
+    "redirect_telnet": 12,
+    "temporary_block": 2
+  },
+  "destinations": {
+    "real": 42,
+    "honeypot": 309
+  },
+  "trend": [
+    {
+      "time": "2026-10-10",
+      "count": 353
+    }
+  ],
+  "honeypot_telemetry_available": true,
+  "severity_rank": [
+    {
+      "source_ip": "192.168.56.30",
+      "count": 4
+    },
+    {
+      "source_ip": "192.168.56.39",
+      "count": 2
+    },
+    {
+      "source_ip": "192.168.56.36",
+      "count": 2
+    },
+    {
+      "source_ip": "192.168.56.35",
+      "count": 2
+    },
+    {
+      "source_ip": "192.168.56.33",
+      "count": 2
+    },
+    {
+      "source_ip": "192.168.56.119",
+      "count": 1
+    },
+    {
+      "source_ip": "192.168.56.117",
+      "count": 1
+    },
+    {
+      "source_ip": "192.168.56.115",
+      "count": 1
+    },
+    {
+      "source_ip": "192.168.56.112",
+      "count": 1
+    },
+    {
+      "source_ip": "192.168.56.100",
+      "count": 1
+    }
+  ],
+  "decision_protocols": {
+    "HTTP": 306,
+    "SSH": 28,
+    "TELNET": 19
+  },
+  "decision_severities": {
+    "1": 75,
+    "3": 24,
+    "2": 254
+  },
+  "honeypot_dwell": [
+    {
+      "profile": "cowrie",
+      "sessions": 20,
+      "average_seconds": 1.8
+    },
+    {
+      "profile": "rabbithole",
+      "sessions": 7,
+      "average_seconds": 1.21
+    }
+  ],
+  "honeypot_sessions": 27,
+  "rabbit_hole": {
+    "overall": {
+      "windows": 11,
+      "sessions": 10,
+      "sessions_followed": 7,
+      "follow_rate": 0.7,
+      "single_access": 2,
+      "average_resources": 2.9,
+      "average_depth": 2.5,
+      "max_depth": 4,
+      "average_duration_seconds": 1.8,
+      "median_duration_seconds": 1.4,
+      "max_duration_seconds": 4.1,
+      "average_connection_seconds": null
+    },
+    "by_protocol": {
+      "ssh": {
+        "windows": 4,
+        "sessions": 4,
+        "sessions_followed": 4,
+        "follow_rate": 1.0,
+        "single_access": 0,
+        "average_resources": 2.2,
+        "average_depth": 2.0,
+        "max_depth": 2,
+        "average_duration_seconds": 1.9,
+        "median_duration_seconds": 1.7,
+        "max_duration_seconds": 3.0,
+        "average_connection_seconds": null
+      },
+      "web": {
+        "windows": 7,
+        "sessions": 6,
+        "sessions_followed": 3,
+        "follow_rate": 0.5,
+        "single_access": 2,
+        "average_resources": 3.3,
+        "average_depth": 2.7,
+        "max_depth": 4,
+        "average_duration_seconds": 1.7,
+        "median_duration_seconds": 0.1,
+        "max_duration_seconds": 4.1,
+        "average_connection_seconds": null
+      }
+    },
+    "top_resources": [
+      {
+        "scenario": "web-backup-api",
+        "node_id": "robots",
+        "count": 5
+      },
+      {
+        "scenario": "web-backup-api",
+        "node_id": "backup-index",
+        "count": 5
+      },
+      {
+        "scenario": "linux-server",
+        "node_id": "notes",
+        "count": 4
+      },
+      {
+        "scenario": "linux-server",
+        "node_id": "backup-conf",
+        "count": 4
+      },
+      {
+        "scenario": "web-backup-api",
+        "node_id": "backup-config",
+        "count": 4
+      },
+      {
+        "scenario": "web-backup-api",
+        "node_id": "api-index",
+        "count": 4
+      },
+      {
+        "scenario": "web-backup-api",
+        "node_id": "api-users",
+        "count": 4
+      },
+      {
+        "scenario": "linux-server",
+        "node_id": "dumps-dir",
+        "count": 1
+      },
+      {
+        "scenario": "web-env-admin",
+        "node_id": "env",
+        "count": 1
+      }
+    ],
+    "depth_distribution": {
+      "1": 3,
+      "2": 4,
+      "4": 4
+    },
+    "end_reasons": {
+      "session_closed": 4,
+      "active": 1,
+      "idle_timeout": 6
+    },
+    "comparison": {
+      "static_sessions": 0,
+      "static_average_seconds": null,
+      "rabbit_average_seconds": 1.8,
+      "note": "เปรียบเทียบได้เมื่อใช้จุดเริ่มต้น ระยะเวลา และกลุ่มผู้ทดสอบเดียวกันเท่านั้น"
+    }
+  }
+}

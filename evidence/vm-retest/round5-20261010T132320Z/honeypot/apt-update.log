@@ -1,0 +1,8 @@
+Hit:1 http://archive.ubuntu.com/ubuntu noble InRelease
+Get:2 http://archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+Hit:3 http://security.ubuntu.com/ubuntu noble-security InRelease
+Hit:4 http://archive.ubuntu.com/ubuntu noble-backports InRelease
+Get:5 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [1375 kB]
+Get:6 http://archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [1702 kB]
+Fetched 3203 kB in 7s (440 kB/s)
+Reading package lists...

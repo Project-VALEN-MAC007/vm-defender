@@ -1,0 +1,1486 @@
+[
+  {
+    "time": "2026-10-10T08:33:16.035886+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.130/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:16.064499+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.131/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:16.091055+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.132/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:16.118123+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.133/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:16.142229+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.134/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:16.167232+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.135/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:16.195244+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.136/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:16.222932+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.137/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:16.249788+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.138/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:16.275845+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.139/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:16.302889+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.140/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:16.328866+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.141/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:16.355206+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.142/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:16.382056+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.143/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:16.408085+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.144/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:16.433198+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.145/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:16.457493+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.146/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:16.479957+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.147/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:16.506144+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.148/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:16.531928+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.149/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:16.562378+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.150/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:16.594792+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.151/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:16.623654+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.152/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:16.650765+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.160/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:16.678698+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.161/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:16.704501+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.162/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:16.731808+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.163/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:16.759072+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.164/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:16.786034+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.165/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:16.813032+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.166/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:16.839085+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.167/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:16.865216+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.168/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:16.893799+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.169/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:16.917517+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.170/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:16.942430+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.171/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:16.966395+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.172/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:16.991049+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.180/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:17.014968+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.181/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:17.040015+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.182/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:17.063274+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.183/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:17.088501+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.184/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:17.113503+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.185/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:17.138526+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.186/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:17.162288+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.187/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:17.186208+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.188/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:18.611884+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.130 -skS -i --max-time 5 http://192.168.56.10/.htpasswd",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 404 File not found\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:18 GMT\nContent-Type: text/html;charset=utf-8\nContent-Length: 335\nConnection: keep-alive\n\n<!DOCTYPE HTML>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\">\n        <title>Error response</title>\n    </head>\n    <body>\n        <h1>Error response</h1>\n        <p>Error code: 404</p>\n        <p>Message: File not found.</p>\n        <p>Error code explanation: 404 - Nothing matches the given URI.</p>\n    </body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:18.870211+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.130 -skS -i --max-time 5 'https://192.168.56.10/?round3=immediate-1'",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:18 GMT\nContent-Type: text/html; charset=utf-8\nContent-Length: 322\nConnection: keep-alive\nSet-Cookie: PHPSESSID=[REDACTED]; Path=/; HttpOnly\n\n<!doctype html><html><head><meta charset=\"utf-8\"><title>TRAP Lab Services</title></head><body style=\"font-family:sans-serif;max-width:720px;margin:60px auto\"><h1>TRAP Lab Services</h1><p>Customer portal is under scheduled maintenance. Please try again later.</p><p style=\"color:#888\">&copy; 2026 trap.lab</p></body></html>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:19.442482+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:20.030125+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:20.227191+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.131 -skS -i --max-time 5 http://192.168.56.10/.htpasswd",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 404 File not found\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:20 GMT\nContent-Type: text/html;charset=utf-8\nContent-Length: 335\nConnection: keep-alive\n\n<!DOCTYPE HTML>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\">\n        <title>Error response</title>\n    </head>\n    <body>\n        <h1>Error response</h1>\n        <p>Error code: 404</p>\n        <p>Message: File not found.</p>\n        <p>Error code explanation: 404 - Nothing matches the given URI.</p>\n    </body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:20.610843+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.131 -skS -i --max-time 5 'https://192.168.56.10/?round3=immediate-2'",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:20 GMT\nContent-Type: text/html; charset=utf-8\nContent-Length: 322\nConnection: keep-alive\nSet-Cookie: PHPSESSID=[REDACTED]; Path=/; HttpOnly\n\n<!doctype html><html><head><meta charset=\"utf-8\"><title>TRAP Lab Services</title></head><body style=\"font-family:sans-serif;max-width:720px;margin:60px auto\"><h1>TRAP Lab Services</h1><p>Customer portal is under scheduled maintenance. Please try again later.</p><p style=\"color:#888\">&copy; 2026 trap.lab</p></body></html>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:21.210228+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:21.810783+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:21.985214+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.132 -skS -i --max-time 5 http://192.168.56.10/.htpasswd",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 404 File not found\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:21 GMT\nContent-Type: text/html;charset=utf-8\nContent-Length: 335\nConnection: keep-alive\n\n<!DOCTYPE HTML>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\">\n        <title>Error response</title>\n    </head>\n    <body>\n        <h1>Error response</h1>\n        <p>Error code: 404</p>\n        <p>Message: File not found.</p>\n        <p>Error code explanation: 404 - Nothing matches the given URI.</p>\n    </body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:22.224000+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.132 -skS -i --max-time 5 'https://192.168.56.10/?round3=immediate-3'",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:22 GMT\nContent-Type: text/html; charset=utf-8\nContent-Length: 322\nConnection: keep-alive\nSet-Cookie: PHPSESSID=[REDACTED]; Path=/; HttpOnly\n\n<!doctype html><html><head><meta charset=\"utf-8\"><title>TRAP Lab Services</title></head><body style=\"font-family:sans-serif;max-width:720px;margin:60px auto\"><h1>TRAP Lab Services</h1><p>Customer portal is under scheduled maintenance. Please try again later.</p><p style=\"color:#888\">&copy; 2026 trap.lab</p></body></html>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:22.255247+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Job for trap-log-sync.service failed.\nSee \"systemctl status trap-log-sync.service\" and \"journalctl -xeu trap-log-sync.service\" for details.\n"
+  },
+  {
+    "time": "2026-10-10T08:33:22.285145+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Job for trap-log-sync.service failed.\nSee \"systemctl status trap-log-sync.service\" and \"journalctl -xeu trap-log-sync.service\" for details.\n"
+  },
+  {
+    "time": "2026-10-10T08:33:22.482825+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.133 -skS -i --max-time 5 http://192.168.56.10/.htpasswd",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 404 File not found\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:22 GMT\nContent-Type: text/html;charset=utf-8\nContent-Length: 335\nConnection: keep-alive\n\n<!DOCTYPE HTML>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\">\n        <title>Error response</title>\n    </head>\n    <body>\n        <h1>Error response</h1>\n        <p>Error code: 404</p>\n        <p>Message: File not found.</p>\n        <p>Error code explanation: 404 - Nothing matches the given URI.</p>\n    </body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:22.866057+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.133 -skS -i --max-time 5 'https://192.168.56.10/?round3=immediate-4'",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:22 GMT\nContent-Type: text/html; charset=utf-8\nContent-Length: 322\nConnection: keep-alive\nSet-Cookie: PHPSESSID=[REDACTED]; Path=/; HttpOnly\n\n<!doctype html><html><head><meta charset=\"utf-8\"><title>TRAP Lab Services</title></head><body style=\"font-family:sans-serif;max-width:720px;margin:60px auto\"><h1>TRAP Lab Services</h1><p>Customer portal is under scheduled maintenance. Please try again later.</p><p style=\"color:#888\">&copy; 2026 trap.lab</p></body></html>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:22.891830+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Job for trap-log-sync.service failed.\nSee \"systemctl status trap-log-sync.service\" and \"journalctl -xeu trap-log-sync.service\" for details.\n"
+  },
+  {
+    "time": "2026-10-10T08:33:22.921621+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Job for trap-log-sync.service failed.\nSee \"systemctl status trap-log-sync.service\" and \"journalctl -xeu trap-log-sync.service\" for details.\n"
+  },
+  {
+    "time": "2026-10-10T08:33:23.118500+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.134 -skS -i --max-time 5 http://192.168.56.10/.htpasswd",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 404 File not found\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:23 GMT\nContent-Type: text/html;charset=utf-8\nContent-Length: 335\nConnection: keep-alive\n\n<!DOCTYPE HTML>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\">\n        <title>Error response</title>\n    </head>\n    <body>\n        <h1>Error response</h1>\n        <p>Error code: 404</p>\n        <p>Message: File not found.</p>\n        <p>Error code explanation: 404 - Nothing matches the given URI.</p>\n    </body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:23.479006+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.134 -skS -i --max-time 5 'https://192.168.56.10/?round3=immediate-5'",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:23 GMT\nContent-Type: text/html; charset=utf-8\nContent-Length: 322\nConnection: keep-alive\nSet-Cookie: PHPSESSID=[REDACTED]; Path=/; HttpOnly\n\n<!doctype html><html><head><meta charset=\"utf-8\"><title>TRAP Lab Services</title></head><body style=\"font-family:sans-serif;max-width:720px;margin:60px auto\"><h1>TRAP Lab Services</h1><p>Customer portal is under scheduled maintenance. Please try again later.</p><p style=\"color:#888\">&copy; 2026 trap.lab</p></body></html>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:23.504431+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Job for trap-log-sync.service failed.\nSee \"systemctl status trap-log-sync.service\" and \"journalctl -xeu trap-log-sync.service\" for details.\n"
+  },
+  {
+    "time": "2026-10-10T08:33:23.537095+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Job for trap-log-sync.service failed.\nSee \"systemctl status trap-log-sync.service\" and \"journalctl -xeu trap-log-sync.service\" for details.\n"
+  },
+  {
+    "time": "2026-10-10T08:33:23.758064+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.135 -skS -i --max-time 5 http://192.168.56.10/.htpasswd",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 404 File not found\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:23 GMT\nContent-Type: text/html;charset=utf-8\nContent-Length: 335\nConnection: keep-alive\n\n<!DOCTYPE HTML>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\">\n        <title>Error response</title>\n    </head>\n    <body>\n        <h1>Error response</h1>\n        <p>Error code: 404</p>\n        <p>Message: File not found.</p>\n        <p>Error code explanation: 404 - Nothing matches the given URI.</p>\n    </body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:24.161856+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.135 -skS -i --max-time 5 'https://192.168.56.10/?round3=immediate-6'",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:24 GMT\nContent-Type: text/html; charset=utf-8\nContent-Length: 322\nConnection: keep-alive\nSet-Cookie: PHPSESSID=[REDACTED]; Path=/; HttpOnly\n\n<!doctype html><html><head><meta charset=\"utf-8\"><title>TRAP Lab Services</title></head><body style=\"font-family:sans-serif;max-width:720px;margin:60px auto\"><h1>TRAP Lab Services</h1><p>Customer portal is under scheduled maintenance. Please try again later.</p><p style=\"color:#888\">&copy; 2026 trap.lab</p></body></html>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:24.842443+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:25.492413+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:25.723852+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.136 -skS -i --max-time 5 http://192.168.56.10/.htpasswd",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 404 File not found\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:25 GMT\nContent-Type: text/html;charset=utf-8\nContent-Length: 335\nConnection: keep-alive\n\n<!DOCTYPE HTML>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\">\n        <title>Error response</title>\n    </head>\n    <body>\n        <h1>Error response</h1>\n        <p>Error code: 404</p>\n        <p>Message: File not found.</p>\n        <p>Error code explanation: 404 - Nothing matches the given URI.</p>\n    </body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:26.009710+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.136 -skS -i --max-time 5 'https://192.168.56.10/?round3=immediate-7'",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:26 GMT\nContent-Type: text/html; charset=utf-8\nContent-Length: 322\nConnection: keep-alive\nSet-Cookie: PHPSESSID=[REDACTED]; Path=/; HttpOnly\n\n<!doctype html><html><head><meta charset=\"utf-8\"><title>TRAP Lab Services</title></head><body style=\"font-family:sans-serif;max-width:720px;margin:60px auto\"><h1>TRAP Lab Services</h1><p>Customer portal is under scheduled maintenance. Please try again later.</p><p style=\"color:#888\">&copy; 2026 trap.lab</p></body></html>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:26.598408+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:27.181916+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:27.360810+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.137 -skS -i --max-time 5 http://192.168.56.10/.htpasswd",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 404 File not found\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:27 GMT\nContent-Type: text/html;charset=utf-8\nContent-Length: 335\nConnection: keep-alive\n\n<!DOCTYPE HTML>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\">\n        <title>Error response</title>\n    </head>\n    <body>\n        <h1>Error response</h1>\n        <p>Error code: 404</p>\n        <p>Message: File not found.</p>\n        <p>Error code explanation: 404 - Nothing matches the given URI.</p>\n    </body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:27.757207+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.137 -skS -i --max-time 5 'https://192.168.56.10/?round3=immediate-8'",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:27 GMT\nContent-Type: text/html; charset=utf-8\nContent-Length: 322\nConnection: keep-alive\nSet-Cookie: PHPSESSID=[REDACTED]; Path=/; HttpOnly\n\n<!doctype html><html><head><meta charset=\"utf-8\"><title>TRAP Lab Services</title></head><body style=\"font-family:sans-serif;max-width:720px;margin:60px auto\"><h1>TRAP Lab Services</h1><p>Customer portal is under scheduled maintenance. Please try again later.</p><p style=\"color:#888\">&copy; 2026 trap.lab</p></body></html>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:28.340173+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:28.374640+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Job for trap-log-sync.service failed.\nSee \"systemctl status trap-log-sync.service\" and \"journalctl -xeu trap-log-sync.service\" for details.\n"
+  },
+  {
+    "time": "2026-10-10T08:33:28.593742+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.138 -skS -i --max-time 5 http://192.168.56.10/.htpasswd",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 404 File not found\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:28 GMT\nContent-Type: text/html;charset=utf-8\nContent-Length: 335\nConnection: keep-alive\n\n<!DOCTYPE HTML>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\">\n        <title>Error response</title>\n    </head>\n    <body>\n        <h1>Error response</h1>\n        <p>Error code: 404</p>\n        <p>Message: File not found.</p>\n        <p>Error code explanation: 404 - Nothing matches the given URI.</p>\n    </body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:28.997156+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.138 -skS -i --max-time 5 'https://192.168.56.10/?round3=immediate-9'",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:28 GMT\nContent-Type: text/html; charset=utf-8\nContent-Length: 322\nConnection: keep-alive\nSet-Cookie: PHPSESSID=[REDACTED]; Path=/; HttpOnly\n\n<!doctype html><html><head><meta charset=\"utf-8\"><title>TRAP Lab Services</title></head><body style=\"font-family:sans-serif;max-width:720px;margin:60px auto\"><h1>TRAP Lab Services</h1><p>Customer portal is under scheduled maintenance. Please try again later.</p><p style=\"color:#888\">&copy; 2026 trap.lab</p></body></html>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:29.025121+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Job for trap-log-sync.service failed.\nSee \"systemctl status trap-log-sync.service\" and \"journalctl -xeu trap-log-sync.service\" for details.\n"
+  },
+  {
+    "time": "2026-10-10T08:33:29.058626+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Job for trap-log-sync.service failed.\nSee \"systemctl status trap-log-sync.service\" and \"journalctl -xeu trap-log-sync.service\" for details.\n"
+  },
+  {
+    "time": "2026-10-10T08:33:29.303283+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.139 -skS -i --max-time 5 http://192.168.56.10/.htpasswd",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 404 File not found\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:29 GMT\nContent-Type: text/html;charset=utf-8\nContent-Length: 335\nConnection: keep-alive\n\n<!DOCTYPE HTML>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\">\n        <title>Error response</title>\n    </head>\n    <body>\n        <h1>Error response</h1>\n        <p>Error code: 404</p>\n        <p>Message: File not found.</p>\n        <p>Error code explanation: 404 - Nothing matches the given URI.</p>\n    </body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:29.611505+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.139 -skS -i --max-time 5 'https://192.168.56.10/?round3=immediate-10'",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:29 GMT\nContent-Type: text/html; charset=utf-8\nContent-Length: 322\nConnection: keep-alive\nSet-Cookie: PHPSESSID=[REDACTED]; Path=/; HttpOnly\n\n<!doctype html><html><head><meta charset=\"utf-8\"><title>TRAP Lab Services</title></head><body style=\"font-family:sans-serif;max-width:720px;margin:60px auto\"><h1>TRAP Lab Services</h1><p>Customer portal is under scheduled maintenance. Please try again later.</p><p style=\"color:#888\">&copy; 2026 trap.lab</p></body></html>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:29.640448+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Job for trap-log-sync.service failed.\nSee \"systemctl status trap-log-sync.service\" and \"journalctl -xeu trap-log-sync.service\" for details.\n"
+  },
+  {
+    "time": "2026-10-10T08:33:29.676349+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Job for trap-log-sync.service failed.\nSee \"systemctl status trap-log-sync.service\" and \"journalctl -xeu trap-log-sync.service\" for details.\n"
+  },
+  {
+    "time": "2026-10-10T08:33:29.876295+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.140 -skS -i --max-time 5 http://192.168.56.10/.htpasswd",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 404 File not found\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:29 GMT\nContent-Type: text/html;charset=utf-8\nContent-Length: 335\nConnection: keep-alive\n\n<!DOCTYPE HTML>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\">\n        <title>Error response</title>\n    </head>\n    <body>\n        <h1>Error response</h1>\n        <p>Error code: 404</p>\n        <p>Message: File not found.</p>\n        <p>Error code explanation: 404 - Nothing matches the given URI.</p>\n    </body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:30.212153+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.140 -skS -i --max-time 5 'http://192.168.56.10/?round3=immediate-11'",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:30 GMT\nContent-Type: text/html; charset=utf-8\nContent-Length: 322\nConnection: keep-alive\nSet-Cookie: PHPSESSID=[REDACTED]; Path=/; HttpOnly\n\n<!doctype html><html><head><meta charset=\"utf-8\"><title>TRAP Lab Services</title></head><body style=\"font-family:sans-serif;max-width:720px;margin:60px auto\"><h1>TRAP Lab Services</h1><p>Customer portal is under scheduled maintenance. Please try again later.</p><p style=\"color:#888\">&copy; 2026 trap.lab</p></body></html>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:30.240953+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Job for trap-log-sync.service failed.\nSee \"systemctl status trap-log-sync.service\" and \"journalctl -xeu trap-log-sync.service\" for details.\n"
+  },
+  {
+    "time": "2026-10-10T08:33:30.276466+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Job for trap-log-sync.service failed.\nSee \"systemctl status trap-log-sync.service\" and \"journalctl -xeu trap-log-sync.service\" for details.\n"
+  },
+  {
+    "time": "2026-10-10T08:33:30.467865+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.141 -skS -i --max-time 5 http://192.168.56.10/.htpasswd",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 404 File not found\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:30 GMT\nContent-Type: text/html;charset=utf-8\nContent-Length: 335\nConnection: keep-alive\n\n<!DOCTYPE HTML>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\">\n        <title>Error response</title>\n    </head>\n    <body>\n        <h1>Error response</h1>\n        <p>Error code: 404</p>\n        <p>Message: File not found.</p>\n        <p>Error code explanation: 404 - Nothing matches the given URI.</p>\n    </body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:30.815974+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.141 -skS -i --max-time 5 'http://192.168.56.10/?round3=immediate-12'",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:30 GMT\nContent-Type: text/html; charset=utf-8\nContent-Length: 322\nConnection: keep-alive\nSet-Cookie: PHPSESSID=[REDACTED]; Path=/; HttpOnly\n\n<!doctype html><html><head><meta charset=\"utf-8\"><title>TRAP Lab Services</title></head><body style=\"font-family:sans-serif;max-width:720px;margin:60px auto\"><h1>TRAP Lab Services</h1><p>Customer portal is under scheduled maintenance. Please try again later.</p><p style=\"color:#888\">&copy; 2026 trap.lab</p></body></html>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:30.843075+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Job for trap-log-sync.service failed.\nSee \"systemctl status trap-log-sync.service\" and \"journalctl -xeu trap-log-sync.service\" for details.\n"
+  },
+  {
+    "time": "2026-10-10T08:33:30.875245+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Job for trap-log-sync.service failed.\nSee \"systemctl status trap-log-sync.service\" and \"journalctl -xeu trap-log-sync.service\" for details.\n"
+  },
+  {
+    "time": "2026-10-10T08:33:31.056189+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.142 -skS -i --max-time 5 http://192.168.56.10/.htpasswd",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 404 File not found\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:31 GMT\nContent-Type: text/html;charset=utf-8\nContent-Length: 335\nConnection: keep-alive\n\n<!DOCTYPE HTML>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\">\n        <title>Error response</title>\n    </head>\n    <body>\n        <h1>Error response</h1>\n        <p>Error code: 404</p>\n        <p>Message: File not found.</p>\n        <p>Error code explanation: 404 - Nothing matches the given URI.</p>\n    </body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:31.428902+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.142 -skS -i --max-time 5 'http://192.168.56.10/?round3=immediate-13'",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:31 GMT\nContent-Type: text/html; charset=utf-8\nContent-Length: 322\nConnection: keep-alive\nSet-Cookie: PHPSESSID=[REDACTED]; Path=/; HttpOnly\n\n<!doctype html><html><head><meta charset=\"utf-8\"><title>TRAP Lab Services</title></head><body style=\"font-family:sans-serif;max-width:720px;margin:60px auto\"><h1>TRAP Lab Services</h1><p>Customer portal is under scheduled maintenance. Please try again later.</p><p style=\"color:#888\">&copy; 2026 trap.lab</p></body></html>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:31.456340+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Job for trap-log-sync.service failed.\nSee \"systemctl status trap-log-sync.service\" and \"journalctl -xeu trap-log-sync.service\" for details.\n"
+  },
+  {
+    "time": "2026-10-10T08:33:31.487412+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Job for trap-log-sync.service failed.\nSee \"systemctl status trap-log-sync.service\" and \"journalctl -xeu trap-log-sync.service\" for details.\n"
+  },
+  {
+    "time": "2026-10-10T08:33:31.682069+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.143 -skS -i --max-time 5 http://192.168.56.10/.htpasswd",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 404 File not found\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:31 GMT\nContent-Type: text/html;charset=utf-8\nContent-Length: 335\nConnection: keep-alive\n\n<!DOCTYPE HTML>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\">\n        <title>Error response</title>\n    </head>\n    <body>\n        <h1>Error response</h1>\n        <p>Error code: 404</p>\n        <p>Message: File not found.</p>\n        <p>Error code explanation: 404 - Nothing matches the given URI.</p>\n    </body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:32.024061+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.143 -skS -i --max-time 5 'http://192.168.56.10/?round3=immediate-14'",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:32 GMT\nContent-Type: text/html; charset=utf-8\nContent-Length: 322\nConnection: keep-alive\nSet-Cookie: PHPSESSID=[REDACTED]; Path=/; HttpOnly\n\n<!doctype html><html><head><meta charset=\"utf-8\"><title>TRAP Lab Services</title></head><body style=\"font-family:sans-serif;max-width:720px;margin:60px auto\"><h1>TRAP Lab Services</h1><p>Customer portal is under scheduled maintenance. Please try again later.</p><p style=\"color:#888\">&copy; 2026 trap.lab</p></body></html>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:32.052741+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Job for trap-log-sync.service failed.\nSee \"systemctl status trap-log-sync.service\" and \"journalctl -xeu trap-log-sync.service\" for details.\n"
+  },
+  {
+    "time": "2026-10-10T08:33:32.086721+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Job for trap-log-sync.service failed.\nSee \"systemctl status trap-log-sync.service\" and \"journalctl -xeu trap-log-sync.service\" for details.\n"
+  },
+  {
+    "time": "2026-10-10T08:33:32.260809+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.144 -skS -i --max-time 5 http://192.168.56.10/.htpasswd",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 404 File not found\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:32 GMT\nContent-Type: text/html;charset=utf-8\nContent-Length: 335\nConnection: keep-alive\n\n<!DOCTYPE HTML>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\">\n        <title>Error response</title>\n    </head>\n    <body>\n        <h1>Error response</h1>\n        <p>Error code: 404</p>\n        <p>Message: File not found.</p>\n        <p>Error code explanation: 404 - Nothing matches the given URI.</p>\n    </body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:32.668963+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.144 -skS -i --max-time 5 'http://192.168.56.10/?round3=immediate-15'",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:32 GMT\nContent-Type: text/html; charset=utf-8\nContent-Length: 322\nConnection: keep-alive\nSet-Cookie: PHPSESSID=[REDACTED]; Path=/; HttpOnly\n\n<!doctype html><html><head><meta charset=\"utf-8\"><title>TRAP Lab Services</title></head><body style=\"font-family:sans-serif;max-width:720px;margin:60px auto\"><h1>TRAP Lab Services</h1><p>Customer portal is under scheduled maintenance. Please try again later.</p><p style=\"color:#888\">&copy; 2026 trap.lab</p></body></html>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:32.695815+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Job for trap-log-sync.service failed.\nSee \"systemctl status trap-log-sync.service\" and \"journalctl -xeu trap-log-sync.service\" for details.\n"
+  },
+  {
+    "time": "2026-10-10T08:33:32.728809+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Job for trap-log-sync.service failed.\nSee \"systemctl status trap-log-sync.service\" and \"journalctl -xeu trap-log-sync.service\" for details.\n"
+  },
+  {
+    "time": "2026-10-10T08:33:32.924169+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.145 -skS -i --max-time 5 http://192.168.56.10/.htpasswd",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 404 File not found\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:32 GMT\nContent-Type: text/html;charset=utf-8\nContent-Length: 335\nConnection: keep-alive\n\n<!DOCTYPE HTML>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\">\n        <title>Error response</title>\n    </head>\n    <body>\n        <h1>Error response</h1>\n        <p>Error code: 404</p>\n        <p>Message: File not found.</p>\n        <p>Error code explanation: 404 - Nothing matches the given URI.</p>\n    </body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:33.283162+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.145 -skS -i --max-time 5 'http://192.168.56.10/?round3=immediate-16'",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:33 GMT\nContent-Type: text/html; charset=utf-8\nContent-Length: 322\nConnection: keep-alive\nSet-Cookie: PHPSESSID=[REDACTED]; Path=/; HttpOnly\n\n<!doctype html><html><head><meta charset=\"utf-8\"><title>TRAP Lab Services</title></head><body style=\"font-family:sans-serif;max-width:720px;margin:60px auto\"><h1>TRAP Lab Services</h1><p>Customer portal is under scheduled maintenance. Please try again later.</p><p style=\"color:#888\">&copy; 2026 trap.lab</p></body></html>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:33.310871+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Job for trap-log-sync.service failed.\nSee \"systemctl status trap-log-sync.service\" and \"journalctl -xeu trap-log-sync.service\" for details.\n"
+  },
+  {
+    "time": "2026-10-10T08:33:33.348642+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Job for trap-log-sync.service failed.\nSee \"systemctl status trap-log-sync.service\" and \"journalctl -xeu trap-log-sync.service\" for details.\n"
+  },
+  {
+    "time": "2026-10-10T08:33:33.516883+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.146 -skS -i --max-time 5 http://192.168.56.10/.htpasswd",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 404 File not found\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:33 GMT\nContent-Type: text/html;charset=utf-8\nContent-Length: 335\nConnection: keep-alive\n\n<!DOCTYPE HTML>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\">\n        <title>Error response</title>\n    </head>\n    <body>\n        <h1>Error response</h1>\n        <p>Error code: 404</p>\n        <p>Message: File not found.</p>\n        <p>Error code explanation: 404 - Nothing matches the given URI.</p>\n    </body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:33.910940+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.146 -skS -i --max-time 5 'http://192.168.56.10/?round3=immediate-17'",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:33 GMT\nContent-Type: text/html; charset=utf-8\nContent-Length: 322\nConnection: keep-alive\nSet-Cookie: PHPSESSID=[REDACTED]; Path=/; HttpOnly\n\n<!doctype html><html><head><meta charset=\"utf-8\"><title>TRAP Lab Services</title></head><body style=\"font-family:sans-serif;max-width:720px;margin:60px auto\"><h1>TRAP Lab Services</h1><p>Customer portal is under scheduled maintenance. Please try again later.</p><p style=\"color:#888\">&copy; 2026 trap.lab</p></body></html>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:33.939804+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Job for trap-log-sync.service failed.\nSee \"systemctl status trap-log-sync.service\" and \"journalctl -xeu trap-log-sync.service\" for details.\n"
+  },
+  {
+    "time": "2026-10-10T08:33:33.975147+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Job for trap-log-sync.service failed.\nSee \"systemctl status trap-log-sync.service\" and \"journalctl -xeu trap-log-sync.service\" for details.\n"
+  },
+  {
+    "time": "2026-10-10T08:33:34.154986+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.147 -skS -i --max-time 5 http://192.168.56.10/.htpasswd",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 404 File not found\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:34 GMT\nContent-Type: text/html;charset=utf-8\nContent-Length: 335\nConnection: keep-alive\n\n<!DOCTYPE HTML>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\">\n        <title>Error response</title>\n    </head>\n    <body>\n        <h1>Error response</h1>\n        <p>Error code: 404</p>\n        <p>Message: File not found.</p>\n        <p>Error code explanation: 404 - Nothing matches the given URI.</p>\n    </body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:34.545069+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.147 -skS -i --max-time 5 'http://192.168.56.10/?round3=immediate-18'",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:34 GMT\nContent-Type: text/html; charset=utf-8\nContent-Length: 322\nConnection: keep-alive\nSet-Cookie: PHPSESSID=[REDACTED]; Path=/; HttpOnly\n\n<!doctype html><html><head><meta charset=\"utf-8\"><title>TRAP Lab Services</title></head><body style=\"font-family:sans-serif;max-width:720px;margin:60px auto\"><h1>TRAP Lab Services</h1><p>Customer portal is under scheduled maintenance. Please try again later.</p><p style=\"color:#888\">&copy; 2026 trap.lab</p></body></html>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:35.125747+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:35.751600+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:35.949337+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.148 -skS -i --max-time 5 http://192.168.56.10/.htpasswd",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 404 File not found\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:35 GMT\nContent-Type: text/html;charset=utf-8\nContent-Length: 335\nConnection: keep-alive\n\n<!DOCTYPE HTML>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\">\n        <title>Error response</title>\n    </head>\n    <body>\n        <h1>Error response</h1>\n        <p>Error code: 404</p>\n        <p>Message: File not found.</p>\n        <p>Error code explanation: 404 - Nothing matches the given URI.</p>\n    </body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:36.351909+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.148 -skS -i --max-time 5 'http://192.168.56.10/?round3=immediate-19'",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:36 GMT\nContent-Type: text/html; charset=utf-8\nContent-Length: 322\nConnection: keep-alive\nSet-Cookie: PHPSESSID=[REDACTED]; Path=/; HttpOnly\n\n<!doctype html><html><head><meta charset=\"utf-8\"><title>TRAP Lab Services</title></head><body style=\"font-family:sans-serif;max-width:720px;margin:60px auto\"><h1>TRAP Lab Services</h1><p>Customer portal is under scheduled maintenance. Please try again later.</p><p style=\"color:#888\">&copy; 2026 trap.lab</p></body></html>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:36.918065+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:37.509137+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:37.702400+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.149 -skS -i --max-time 5 http://192.168.56.10/.htpasswd",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 404 File not found\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:37 GMT\nContent-Type: text/html;charset=utf-8\nContent-Length: 335\nConnection: keep-alive\n\n<!DOCTYPE HTML>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\">\n        <title>Error response</title>\n    </head>\n    <body>\n        <h1>Error response</h1>\n        <p>Error code: 404</p>\n        <p>Message: File not found.</p>\n        <p>Error code explanation: 404 - Nothing matches the given URI.</p>\n    </body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:37.976207+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.149 -skS -i --max-time 5 'http://192.168.56.10/?round3=immediate-20'",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:37 GMT\nContent-Type: text/html; charset=utf-8\nContent-Length: 322\nConnection: keep-alive\nSet-Cookie: PHPSESSID=[REDACTED]; Path=/; HttpOnly\n\n<!doctype html><html><head><meta charset=\"utf-8\"><title>TRAP Lab Services</title></head><body style=\"font-family:sans-serif;max-width:720px;margin:60px auto\"><h1>TRAP Lab Services</h1><p>Customer portal is under scheduled maintenance. Please try again later.</p><p style=\"color:#888\">&copy; 2026 trap.lab</p></body></html>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:38.571706+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:38.608205+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Job for trap-log-sync.service failed.\nSee \"systemctl status trap-log-sync.service\" and \"journalctl -xeu trap-log-sync.service\" for details.\n"
+  },
+  {
+    "time": "2026-10-10T08:33:38.796834+00:00",
+    "command": "systemd-run --unit=trap-round3-resume-nginx --on-active=15s /bin/kill -CONT 4236",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "Running timer as unit: trap-round3-resume-nginx.timer\nWill run service as unit: trap-round3-resume-nginx.service\n"
+  },
+  {
+    "time": "2026-10-10T08:33:38.817364+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.150 -skS -i --max-time 5 http://192.168.56.10/.htpasswd",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 404 File not found\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:38 GMT\nContent-Type: text/html;charset=utf-8\nContent-Length: 335\nConnection: keep-alive\n\n<!DOCTYPE HTML>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\">\n        <title>Error response</title>\n    </head>\n    <body>\n        <h1>Error response</h1>\n        <p>Error code: 404</p>\n        <p>Message: File not found.</p>\n        <p>Error code explanation: 404 - Nothing matches the given URI.</p>\n    </body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:44.039413+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.151 -skS -i --max-time 5 http://192.168.56.10/.htpasswd",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 404 File not found\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:44 GMT\nContent-Type: text/html;charset=utf-8\nContent-Length: 335\nConnection: keep-alive\n\n<!DOCTYPE HTML>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\">\n        <title>Error response</title>\n    </head>\n    <body>\n        <h1>Error response</h1>\n        <p>Error code: 404</p>\n        <p>Message: File not found.</p>\n        <p>Error code explanation: 404 - Nothing matches the given URI.</p>\n    </body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:49.275109+00:00",
+    "command": "systemctl stop trap-round3-resume-nginx.timer",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:49.296426+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.152 -skS -i --max-time 5 http://192.168.56.10/.htpasswd",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 404 File not found\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:49 GMT\nContent-Type: text/html;charset=utf-8\nContent-Length: 335\nConnection: keep-alive\n\n<!DOCTYPE HTML>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\">\n        <title>Error response</title>\n    </head>\n    <body>\n        <h1>Error response</h1>\n        <p>Error code: 404</p>\n        <p>Message: File not found.</p>\n        <p>Error code explanation: 404 - Nothing matches the given URI.</p>\n    </body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:50.207336+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:50.460490+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.160 -skS -i --max-time 5 -A sqlmap/1.x 'http://192.168.56.10/?id=1'",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:50 GMT\nContent-Type: text/html\nContent-Length: 69\nConnection: keep-alive\nLast-Modified: Sat, 10 Oct 2026 07:17:51 GMT\n\n<!doctype html><title>TRAP Real Web</title><h1>TRAP REAL SERVICE</h1>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:51.546082+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:51.825410+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.161 -skS -i --max-time 5 -A 'Mozilla/5.00 (Nikto/2.1.5)' http://192.168.56.10/",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:51 GMT\nContent-Type: text/html\nContent-Length: 69\nConnection: keep-alive\nLast-Modified: Sat, 10 Oct 2026 07:17:51 GMT\n\n<!doctype html><title>TRAP Real Web</title><h1>TRAP REAL SERVICE</h1>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:51.848263+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.161 -skS -i --max-time 5 -A 'Mozilla/5.00 (Nikto/2.1.5)' http://192.168.56.10/",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:51 GMT\nContent-Type: text/html\nContent-Length: 69\nConnection: keep-alive\nLast-Modified: Sat, 10 Oct 2026 07:17:51 GMT\n\n<!doctype html><title>TRAP Real Web</title><h1>TRAP REAL SERVICE</h1>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:51.871289+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.161 -skS -i --max-time 5 -A 'Mozilla/5.00 (Nikto/2.1.5)' http://192.168.56.10/",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:51 GMT\nContent-Type: text/html\nContent-Length: 69\nConnection: keep-alive\nLast-Modified: Sat, 10 Oct 2026 07:17:51 GMT\n\n<!doctype html><title>TRAP Real Web</title><h1>TRAP REAL SERVICE</h1>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:51.894786+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.161 -skS -i --max-time 5 -A 'Mozilla/5.00 (Nikto/2.1.5)' http://192.168.56.10/",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:51 GMT\nContent-Type: text/html\nContent-Length: 69\nConnection: keep-alive\nLast-Modified: Sat, 10 Oct 2026 07:17:51 GMT\n\n<!doctype html><title>TRAP Real Web</title><h1>TRAP REAL SERVICE</h1>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:51.915786+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.161 -skS -i --max-time 5 -A 'Mozilla/5.00 (Nikto/2.1.5)' http://192.168.56.10/",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:51 GMT\nContent-Type: text/html\nContent-Length: 69\nConnection: keep-alive\nLast-Modified: Sat, 10 Oct 2026 07:17:51 GMT\n\n<!doctype html><title>TRAP Real Web</title><h1>TRAP REAL SERVICE</h1>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:51.934772+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.161 -skS -i --max-time 5 -A 'Mozilla/5.00 (Nikto/2.1.5)' http://192.168.56.10/",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:51 GMT\nContent-Type: text/html\nContent-Length: 69\nConnection: keep-alive\nLast-Modified: Sat, 10 Oct 2026 07:17:51 GMT\n\n<!doctype html><title>TRAP Real Web</title><h1>TRAP REAL SERVICE</h1>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:53.269096+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:53.581128+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.162 -skS -i --max-time 5 -A 'Mozilla/5.0 (compatible; Nmap NSE)' http://192.168.56.10/",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:53 GMT\nContent-Type: text/html\nContent-Length: 69\nConnection: keep-alive\nLast-Modified: Sat, 10 Oct 2026 07:17:51 GMT\n\n<!doctype html><title>TRAP Real Web</title><h1>TRAP REAL SERVICE</h1>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:54.961593+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:55.196117+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.163 -skS -i --max-time 5 -A masscan/1.3 http://192.168.56.10/",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:55 GMT\nContent-Type: text/html\nContent-Length: 69\nConnection: keep-alive\nLast-Modified: Sat, 10 Oct 2026 07:17:51 GMT\n\n<!doctype html><title>TRAP Real Web</title><h1>TRAP REAL SERVICE</h1>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:55.223802+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.163 -skS -i --max-time 5 -A masscan/1.3 http://192.168.56.10/",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:55 GMT\nContent-Type: text/html\nContent-Length: 69\nConnection: keep-alive\nLast-Modified: Sat, 10 Oct 2026 07:17:51 GMT\n\n<!doctype html><title>TRAP Real Web</title><h1>TRAP REAL SERVICE</h1>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:55.243166+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.163 -skS -i --max-time 5 -A masscan/1.3 http://192.168.56.10/",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:55 GMT\nContent-Type: text/html\nContent-Length: 69\nConnection: keep-alive\nLast-Modified: Sat, 10 Oct 2026 07:17:51 GMT\n\n<!doctype html><title>TRAP Real Web</title><h1>TRAP REAL SERVICE</h1>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:56.424627+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:56.706111+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.164 -skS -i --max-time 5 'http://192.168.56.10/?id=1%20UNION%20SELECT%201,2,3%3B'",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:56 GMT\nContent-Type: text/html\nContent-Length: 69\nConnection: keep-alive\nLast-Modified: Sat, 10 Oct 2026 07:17:51 GMT\n\n<!doctype html><title>TRAP Real Web</title><h1>TRAP REAL SERVICE</h1>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:57.451298+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Job for trap-log-sync.service failed.\nSee \"systemctl status trap-log-sync.service\" and \"journalctl -xeu trap-log-sync.service\" for details.\n"
+  },
+  {
+    "time": "2026-10-10T08:33:57.665721+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.165 -skS -i --max-time 5 -d 'q=1 UNION SELECT user,pass FROM users' http://192.168.56.10/",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 501 Unsupported method ('POST')\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:57 GMT\nContent-Type: text/html;charset=utf-8\nContent-Length: 357\nConnection: keep-alive\n\n<!DOCTYPE HTML>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\">\n        <title>Error response</title>\n    </head>\n    <body>\n        <h1>Error response</h1>\n        <p>Error code: 501</p>\n        <p>Message: Unsupported method ('POST').</p>\n        <p>Error code explanation: 501 - Server does not support this operation.</p>\n    </body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:58.507913+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Job for trap-log-sync.service failed.\nSee \"systemctl status trap-log-sync.service\" and \"journalctl -xeu trap-log-sync.service\" for details.\n"
+  },
+  {
+    "time": "2026-10-10T08:33:58.786562+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.166 -skS -i --max-time 5 'http://192.168.56.10/?file=../../etc/passwd'",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:33:58 GMT\nContent-Type: text/html\nContent-Length: 69\nConnection: keep-alive\nLast-Modified: Sat, 10 Oct 2026 07:17:51 GMT\n\n<!doctype html><title>TRAP Real Web</title><h1>TRAP REAL SERVICE</h1>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:33:59.881791+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:34:00.106327+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.167 -skS -i --max-time 5 http://192.168.56.10/.env",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 404 File not found\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:34:00 GMT\nContent-Type: text/html;charset=utf-8\nContent-Length: 335\nConnection: keep-alive\n\n<!DOCTYPE HTML>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\">\n        <title>Error response</title>\n    </head>\n    <body>\n        <h1>Error response</h1>\n        <p>Error code: 404</p>\n        <p>Message: File not found.</p>\n        <p>Error code explanation: 404 - Nothing matches the given URI.</p>\n    </body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:34:01.135791+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:34:01.343059+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.168 -skS -i --max-time 5 http://192.168.56.10/.htpasswd",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 404 File not found\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:34:01 GMT\nContent-Type: text/html;charset=utf-8\nContent-Length: 335\nConnection: keep-alive\n\n<!DOCTYPE HTML>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\">\n        <title>Error response</title>\n    </head>\n    <body>\n        <h1>Error response</h1>\n        <p>Error code: 404</p>\n        <p>Message: File not found.</p>\n        <p>Error code explanation: 404 - Nothing matches the given URI.</p>\n    </body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:34:02.680237+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:34:04.201796+00:00",
+    "command": "ip netns exec trap-attacker python3 -c 'import socket,time\nfor i in range(6):\n s=socket.socket();s.settimeout(3);s.bind(('\"'\"'192.168.56.169'\"'\"',0));s.connect(('\"'\"'192.168.56.10'\"'\"',22));s.recv(256);s.close();time.sleep(.2)'",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:34:04.915898+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:34:05.099499+00:00",
+    "command": "ip netns exec trap-attacker ip route replace 192.168.56.0/24 dev trap-in src 192.168.56.170",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:34:13.404699+00:00",
+    "command": "ip netns exec trap-attacker hydra -l root -P /var/lib/trap/lab-wordlist.txt -t 6 -W 1 -V ssh://192.168.56.10",
+    "exit_code": 0,
+    "stdout": "Hydra v9.5 (c) 2023 by van Hauser/THC & David Maciejak - Please do not use in military or secret service organizations, or for illegal purposes (this is non-binding, these *** ignore laws and ethics anyway).\n\nHydra (https://github.com/vanhauser-thc/thc-hydra) starting at 2026-10-10 15:34:05\n[DATA] max 6 tasks per 1 server, overall 6 tasks, 8 login tries (l:1/p:8), ~2 tries per task\n[DATA] attacking ssh://192.168.56.10:22/\n[ATTEMPT] target 192.168.56.10 - login \"root\" - pass \"invalid-lab-0\" - 1 of 8 [child 0] (0/0)\n[ATTEMPT] target 192.168.56.10 - login \"root\" - pass \"invalid-lab-1\" - 2 of 8 [child 1] (0/0)\n[ATTEMPT] target 192.168.56.10 - login \"root\" - pass \"invalid-lab-2\" - 3 of 8 [child 2] (0/0)\n[ATTEMPT] target 192.168.56.10 - login \"root\" - pass \"invalid-lab-3\" - 4 of 8 [child 3] (0/0)\n[ATTEMPT] target 192.168.56.10 - login \"root\" - pass \"invalid-lab-4\" - 5 of 8 [child 4] (0/0)\n[ATTEMPT] target 192.168.56.10 - login \"root\" - pass \"invalid-lab-5\" - 6 of 8 [child 5] (0/0)\n[ATTEMPT] target 192.168.56.10 - login \"root\" - pass \"invalid-lab-6\" - 7 of 8 [child 0] (0/0)\n[ATTEMPT] target 192.168.56.10 - login \"root\" - pass \"invalid-lab-7\" - 8 of 8 [child 3] (0/0)\n1 of 1 target completed, 0 valid password found\nHydra (https://github.com/vanhauser-thc/thc-hydra) finished at 2026-10-10 15:34:13\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:34:13.414101+00:00",
+    "command": "ip netns exec trap-attacker ip route replace 192.168.56.0/24 dev trap-in src 192.168.56.30",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:34:14.017199+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:34:14.240907+00:00",
+    "command": "ip netns exec trap-attacker python3 -c 'import socket,telnetlib\ns=socket.socket();s.bind(('\"'\"'192.168.56.171'\"'\"',0));s.settimeout(4);s.connect(('\"'\"'192.168.56.10'\"'\"',23))\nt=telnetlib.Telnet();t.sock=s\nprint(t.read_until(b'\"'\"'login: '\"'\"',3));t.write(b'\"'\"'invalid\\r\\n'\"'\"');print(t.read_until(b'\"'\"'Password: '\"'\"',3));t.write(b'\"'\"'wrong-lab-password\\r\\n'\"'\"');print(t.read_until(b'\"'\"'Login '\"'\"',3));print(t.read_some());t.close()\n'",
+    "exit_code": 0,
+    "stdout": "b'TRAP lab login service\\r\\nlogin: '\nb'Password: '\nb'Login '\nb'incorrect\\r\\n'\n",
+    "stderr": "<string>:1: DeprecationWarning: 'telnetlib' is deprecated and slated for removal in Python 3.13\n"
+  },
+  {
+    "time": "2026-10-10T08:34:16.129129+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:34:16.381136+00:00",
+    "command": "ip netns exec trap-attacker python3 -c 'import socket,telnetlib\ns=socket.socket();s.bind(('\"'\"'192.168.56.172'\"'\"',0));s.settimeout(4);s.connect(('\"'\"'192.168.56.10'\"'\"',23))\nt=telnetlib.Telnet();t.sock=s\nprint(t.read_until(b'\"'\"'login: '\"'\"',3));t.write(b'\"'\"'failcase\\r\\n'\"'\"');print(t.read_until(b'\"'\"'Password: '\"'\"',3));t.write(b'\"'\"'wrong-lab-password\\r\\n'\"'\"');print(t.read_until(b'\"'\"'Login '\"'\"',3));print(t.read_some());t.close()\n'",
+    "exit_code": 0,
+    "stdout": "b'TRAP lab login service\\r\\nlogin: '\nb'Password: '\nb'Login '\nb'failed\\r\\n'\n",
+    "stderr": "<string>:1: DeprecationWarning: 'telnetlib' is deprecated and slated for removal in Python 3.13\n"
+  },
+  {
+    "time": "2026-10-10T08:34:17.643819+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:34:17.841149+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.180 -skS -i --max-time 5 -A sqlmap/1.x 'http://192.168.56.10/?id=1'",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:34:17 GMT\nContent-Type: text/html\nContent-Length: 69\nConnection: keep-alive\nLast-Modified: Sat, 10 Oct 2026 07:17:51 GMT\n\n<!doctype html><title>TRAP Real Web</title><h1>TRAP REAL SERVICE</h1>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:34:18.477062+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.180 -skS -i --max-time 5 'http://192.168.56.10/?regression=http'",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:34:18 GMT\nContent-Type: text/html; charset=utf-8\nContent-Length: 322\nConnection: keep-alive\nSet-Cookie: PHPSESSID=[REDACTED]; Path=/; HttpOnly\n\n<!doctype html><html><head><meta charset=\"utf-8\"><title>TRAP Lab Services</title></head><body style=\"font-family:sans-serif;max-width:720px;margin:60px auto\"><h1>TRAP Lab Services</h1><p>Customer portal is under scheduled maintenance. Please try again later.</p><p style=\"color:#888\">&copy; 2026 trap.lab</p></body></html>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:34:19.059956+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:34:19.669659+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:34:19.876944+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.181 -skS -i --max-time 5 -A sqlmap/1.x 'http://192.168.56.10/?id=1'",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:34:19 GMT\nContent-Type: text/html\nContent-Length: 69\nConnection: keep-alive\nLast-Modified: Sat, 10 Oct 2026 07:17:51 GMT\n\n<!doctype html><title>TRAP Real Web</title><h1>TRAP REAL SERVICE</h1>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:34:20.522913+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.181 -skS -i --max-time 5 'https://192.168.56.10/?regression=https'",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:34:20 GMT\nContent-Type: text/html; charset=utf-8\nContent-Length: 322\nConnection: keep-alive\nSet-Cookie: PHPSESSID=[REDACTED]; Path=/; HttpOnly\n\n<!doctype html><html><head><meta charset=\"utf-8\"><title>TRAP Lab Services</title></head><body style=\"font-family:sans-serif;max-width:720px;margin:60px auto\"><h1>TRAP Lab Services</h1><p>Customer portal is under scheduled maintenance. Please try again later.</p><p style=\"color:#888\">&copy; 2026 trap.lab</p></body></html>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:34:20.537131+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Job for trap-log-sync.service failed.\nSee \"systemctl status trap-log-sync.service\" and \"journalctl -xeu trap-log-sync.service\" for details.\n"
+  },
+  {
+    "time": "2026-10-10T08:34:20.570811+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Job for trap-log-sync.service failed.\nSee \"systemctl status trap-log-sync.service\" and \"journalctl -xeu trap-log-sync.service\" for details.\n"
+  },
+  {
+    "time": "2026-10-10T08:34:22.974075+00:00",
+    "command": "ip netns exec trap-attacker python3 -c 'import socket,time\nfor i in range(6):\n s=socket.socket();s.settimeout(3);s.bind(('\"'\"'192.168.56.182'\"'\"',0));s.connect(('\"'\"'192.168.56.10'\"'\"',22));s.recv(256);s.close();time.sleep(.25)'",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:34:26.716899+00:00",
+    "command": "ip netns exec trap-attacker python3 -c 'import socket,paramiko,time,json\ns=socket.socket();s.bind(('\"'\"'192.168.56.182'\"'\"',0));s.settimeout(5);s.connect(('\"'\"'192.168.56.10'\"'\"',22))\nc=paramiko.SSHClient();c.set_missing_host_key_policy(paramiko.AutoAddPolicy());c.connect('\"'\"'192.168.56.10'\"'\"',username='\"'\"'sysadmin'\"'\"',password='\"'\"'[REDACTED]'\"'\"',sock=s,look_for_keys=False,allow_agent=False,timeout=5)\nch=c.invoke_shell()\nfor cmd in ['\"'\"'whoami'\"'\"','\"'\"'ls'\"'\"','\"'\"'uname -a'\"'\"']:\n ch.send(cmd+'\"'\"'\\n'\"'\"');time.sleep(1);out='\"'\"''\"'\"'\n while ch.recv_ready():out+=ch.recv(65535).decode(errors='\"'\"'replace'\"'\"')\n print(json.dumps({'\"'\"'command'\"'\"':cmd,'\"'\"'output'\"'\"':out}),flush=True)\nch.send('\"'\"'exit\\n'\"'\"');time.sleep(.3);c.close()\n'",
+    "exit_code": 0,
+    "stdout": "{\"command\": \"whoami\", \"output\": \"\\r\\nThe programs included with the Debian GNU/Linux system are free software;\\r\\nthe exact distribution terms for each program are described in the\\r\\nindividual files in /usr/share/doc/*/copyright.\\r\\n\\r\\nDebian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent\\r\\npermitted by applicable law.\\r\\n\\u001b[4hsysadmin@trap-backup-01:~$ whoami\\r\\n\\u001b[4lsysadmin\\r\\n\\u001b[4hsysadmin@trap-backup-01:~$ \"}\n{\"command\": \"ls\", \"output\": \"ls\\r\\n\\u001b[4lnotes.txt \\r\\n\\u001b[4hsysadmin@trap-backup-01:~$ \"}\n{\"command\": \"uname -a\", \"output\": \"uname -a\\r\\n\\u001b[4lLinux trap-backup-01 6.1.0-21-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.1.90-1 (2024-05-03) x86_64 GNU/Linux\\r\\n\\u001b[4hsysadmin@trap-backup-01:~$ \"}\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:34:27.274920+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:34:28.465167+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:34:33.372195+00:00",
+    "command": "ip netns exec trap-attacker python3 -c 'import socket,telnetlib,time,json\norig=socket.create_connection\nsocket.create_connection=lambda address,timeout=None,source_address=None:orig(address,timeout,('\"'\"'192.168.56.183'\"'\"',0))\nfor i in range(2):\n t=telnetlib.Telnet('\"'\"'192.168.56.10'\"'\"',23,timeout=5)\n a=t.read_until(b'\"'\"'login: '\"'\"',3);t.write(b'\"'\"'invalid\\r\\n'\"'\"');b=t.read_until(b'\"'\"'Password: '\"'\"',3);t.write(b'\"'\"'wrong-lab-password\\r\\n'\"'\"');c=t.read_until(b'\"'\"'incorrect'\"'\"',4)\n print(json.dumps({'\"'\"'attempt'\"'\"':i,'\"'\"'banner'\"'\"':a.decode(errors='\"'\"'replace'\"'\"'),'\"'\"'reply'\"'\"':c.decode(errors='\"'\"'replace'\"'\"')}));t.close();time.sleep(2)\n'",
+    "exit_code": 0,
+    "stdout": "{\"attempt\": 0, \"banner\": \"TRAP lab login service\\r\\nlogin: \", \"reply\": \"Login incorrect\"}\n{\"attempt\": 1, \"banner\": \"login: \", \"reply\": \"\\nLogin incorrect\"}\n",
+    "stderr": "<string>:1: DeprecationWarning: 'telnetlib' is deprecated and slated for removal in Python 3.13\n"
+  },
+  {
+    "time": "2026-10-10T08:34:33.972767+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:34:35.152798+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:34:35.358601+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.184 -skS -i --max-time 5 http://192.168.56.10/.htpasswd",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 404 File not found\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:34:35 GMT\nContent-Type: text/html;charset=utf-8\nContent-Length: 335\nConnection: keep-alive\n\n<!DOCTYPE HTML>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\">\n        <title>Error response</title>\n    </head>\n    <body>\n        <h1>Error response</h1>\n        <p>Error code: 404</p>\n        <p>Message: File not found.</p>\n        <p>Error code explanation: 404 - Nothing matches the given URI.</p>\n    </body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:34:35.996071+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.184 -skS -i --max-time 5 -A TRAP-Round3-Rabbit -b /var/lib/trap/retests/round3-20261010T083043Z/rabbit-cookies.txt -c /var/lib/trap/retests/round3-20261010T083043Z/rabbit-cookies.txt http://192.168.56.10/robots.txt",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:34:35 GMT\nContent-Type: text/plain; charset=utf-8\nContent-Length: 73\nConnection: keep-alive\nSet-Cookie: PHPSESSID=[REDACTED]; Path=/; HttpOnly\n\nUser-agent: *\nDisallow: /backup/\nDisallow: /api/docs\nDisallow: /cgi-bin/\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:34:36.022492+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.184 -skS -i --max-time 5 -A TRAP-Round3-Rabbit -b /var/lib/trap/retests/round3-20261010T083043Z/rabbit-cookies.txt -c /var/lib/trap/retests/round3-20261010T083043Z/rabbit-cookies.txt http://192.168.56.10/backup/",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:34:36 GMT\nContent-Type: text/html; charset=utf-8\nContent-Length: 632\nConnection: keep-alive\n\n<html>\n<head><title>Index of /backup/</title></head>\n<body>\n<h1>Index of /backup/</h1><hr><pre><a href=\"../\">../</a>\n<a href=\"README.txt\">README.txt</a>                                         26-Sep-2026 02:16                 216\n<a href=\"config.json\">config.json</a>                                        26-Sep-2026 02:20                 329\n<a href=\"db_2026-10-09.sql.gz\">db_2026-10-09.sql.gz</a>                               26-Sep-2026 02:45             4866459\n<a href=\"site-2026-10-03.tar.gz\">site-2026-10-03.tar.gz</a>                             26-Sep-2026 02:10             7055711\n</pre><hr></body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:34:36.047115+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.184 -skS -i --max-time 5 -A TRAP-Round3-Rabbit -b /var/lib/trap/retests/round3-20261010T083043Z/rabbit-cookies.txt -c /var/lib/trap/retests/round3-20261010T083043Z/rabbit-cookies.txt http://192.168.56.10/backup/config.json",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:34:36 GMT\nContent-Type: application/json\nContent-Length: 329\nConnection: keep-alive\n\n{\n  \"app\": \"acme-portal\",\n  \"environment\": \"production\",\n  \"database\": {\"host\": \"10.20.0.159\", \"name\": \"acme_erp\", \"user\": \"portal_rw\", \"password\": \"1oqlzsi1PC#78\"},\n  \"api\": {\"base_url\": \"https://trap.lab/api/v1/\", \"key\": \"sk_live_[REDACTED]\"},\n  \"backup\": {\"owner\": \"sysadmin\", \"schedule\": \"0 2 * * *\"}\n}\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:34:36.075024+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.184 -skS -i --max-time 5 -A TRAP-Round3-Rabbit -b /var/lib/trap/retests/round3-20261010T083043Z/rabbit-cookies.txt -c /var/lib/trap/retests/round3-20261010T083043Z/rabbit-cookies.txt http://192.168.56.10/api/v1/",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:34:36 GMT\nContent-Type: application/json\nContent-Length: 118\nConnection: keep-alive\n\n{\"service\": \"acme-api\", \"version\": \"1.4.2\", \"auth\": \"X-API-Key\",\n \"endpoints\": [\"/api/v1/users\", \"/api/v1/invoices\"]}\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:34:36.109733+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.184 -skS -i --max-time 5 -A TRAP-Round3-Rabbit -b /var/lib/trap/retests/round3-20261010T083043Z/rabbit-cookies.txt -c /var/lib/trap/retests/round3-20261010T083043Z/rabbit-cookies.txt -H 'X-API-Key: sk_live_[REDACTED]' https://192.168.56.10/api/v1/users",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:34:36 GMT\nContent-Type: application/json\nContent-Length: 1528\nConnection: keep-alive\n\n{\n  \"items\": [\n    {\n      \"id\": 1000,\n      \"name\": \"Wichai Chaiyaporn\",\n      \"email\": \"wchaiyaporn@trap.lab\",\n      \"role\": \"staff\"\n    },\n    {\n      \"id\": 1001,\n      \"name\": \"Pongsak Thongdee\",\n      \"email\": \"pthongdee@trap.lab\",\n      \"role\": \"staff\"\n    },\n    {\n      \"id\": 1002,\n      \"name\": \"Thanakorn Thongdee\",\n      \"email\": \"tthongdee@trap.lab\",\n      \"role\": \"manager\"\n    },\n    {\n      \"id\": 1003,\n      \"name\": \"Kittipong Meesuk\",\n      \"email\": \"kmeesuk@trap.lab\",\n      \"role\": \"staff\"\n    },\n    {\n      \"id\": 1004,\n      \"name\": \"Suda Chaiyaporn\",\n      \"email\": \"schaiyaporn@trap.lab\",\n      \"role\": \"admin\"\n    },\n    {\n      \"id\": 1005,\n      \"name\": \"Malee Somboon\",\n      \"email\": \"msomboon@trap.lab\",\n      \"role\": \"staff\"\n    },\n    {\n      \"id\": 1006,\n      \"name\": \"Kanokwan Panyasiri\",\n      \"email\": \"kpanyasiri@trap.lab\",\n      \"role\": \"admin\"\n    },\n    {\n      \"id\": 1007,\n      \"name\": \"Thanakorn Rattanakul\",\n      \"email\": \"trattanakul@trap.lab\",\n      \"role\": \"staff\"\n    },\n    {\n      \"id\": 1008,\n      \"name\": \"Jiraporn Boonmee\",\n      \"email\": \"jboonmee@trap.lab\",\n      \"role\": \"staff\"\n    },\n    {\n      \"id\": 1009,\n      \"name\": \"Narong Meesuk\",\n      \"email\": \"nmeesuk@trap.lab\",\n      \"role\": \"staff\"\n    },\n    {\n      \"id\": 1010,\n      \"name\": \"Nattaya Phromma\",\n      \"email\": \"nphromma@trap.lab\",\n      \"role\": \"staff\"\n    },\n    {\n      \"id\": 1011,\n      \"name\": \"Teerapat Inthasorn\",\n      \"email\": \"tinthasorn@trap.lab\",\n      \"role\": \"staff\"\n    }\n  ],\n  \"total\": 12\n}",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:34:36.679815+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:34:38.801736+00:00",
+    "command": "ip netns exec trap-attacker python3 -c 'import socket,time\nfor i in range(6):\n s=socket.socket();s.settimeout(3);s.bind(('\"'\"'192.168.56.185'\"'\"',0));s.connect(('\"'\"'192.168.56.10'\"'\"',22));s.recv(256);s.close();time.sleep(.2)'",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:34:41.389988+00:00",
+    "command": "ip netns exec trap-attacker python3 -c 'import socket,paramiko,time,json\ns=socket.socket();s.bind(('\"'\"'192.168.56.185'\"'\"',0));s.settimeout(5);s.connect(('\"'\"'192.168.56.10'\"'\"',22))\nc=paramiko.SSHClient();c.set_missing_host_key_policy(paramiko.AutoAddPolicy());c.connect('\"'\"'192.168.56.10'\"'\"',username='\"'\"'sysadmin'\"'\"',password='\"'\"'[REDACTED]'\"'\"',sock=s,look_for_keys=False,allow_agent=False)\nch=c.invoke_shell()\nfor cmd in ['\"'\"'cat notes.txt'\"'\"','\"'\"'ls /opt/backup/'\"'\"','\"'\"'cat /opt/backup/backup.conf'\"'\"']:\n ch.send(cmd+'\"'\"'\\n'\"'\"');time.sleep(.7);out='\"'\"''\"'\"'\n while ch.recv_ready():out+=ch.recv(65535).decode(errors='\"'\"'replace'\"'\"')\n print(json.dumps({'\"'\"'command'\"'\"':cmd,'\"'\"'output'\"'\"':out}))\nc.close()\n'",
+    "exit_code": 0,
+    "stdout": "{\"command\": \"cat notes.txt\", \"output\": \"\\r\\nThe programs included with the Debian GNU/Linux system are free software;\\r\\nthe exact distribution terms for each program are described in the\\r\\nindividual files in /usr/share/doc/*/copyright.\\r\\n\\r\\nDebian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent\\r\\npermitted by applicable law.\\r\\n\\u001b[4hsysadmin@trap-backup-01:~$ cat notes.txt\\r\\n\\u001b[4l- rotate DB password (see /opt/backup/backup.conf)\\r\\n- old dumps are in /var/backups/db, clean up before audit\\r\\n- vpn: 10.20.0.194\\r\\n\\u001b[4hsysadmin@trap-backup-01:~$ \"}\n{\"command\": \"ls /opt/backup/\", \"output\": \"ls /opt/backup/\\r\\n\\u001b[4lbackup.conf \\r\\n\\u001b[4hsysadmin@trap-backup-01:~$ \"}\n{\"command\": \"cat /opt/backup/backup.conf\", \"output\": \"cat /opt/backup/backup.conf\\r\\n\\u001b[4l# TRAP Lab Services database backup\\r\\nDB_HOST=10.20.0.148\\r\\nDB_NAME=acme_erp\\r\\nDB_USER=root\\r\\nDB_PASS=FtfiHdqfjy&10\\r\\nDUMP_DIR=/var/backups/db\\r\\nKEEP_DAYS=7\\r\\n\\u001b[4hsysadmin@trap-backup-01:~$ \"}\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:34:42.584216+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:34:43.440494+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.186 -skS -i --max-time 5 http://192.168.56.10/.env",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 404 File not found\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:34:43 GMT\nContent-Type: text/html;charset=utf-8\nContent-Length: 335\nConnection: keep-alive\n\n<!DOCTYPE HTML>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\">\n        <title>Error response</title>\n    </head>\n    <body>\n        <h1>Error response</h1>\n        <p>Error code: 404</p>\n        <p>Message: File not found.</p>\n        <p>Error code explanation: 404 - Nothing matches the given URI.</p>\n    </body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:34:44.384538+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.186 -skS -i --max-time 5 http://192.168.56.10/.htpasswd",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 404 File not found\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:34:44 GMT\nContent-Type: text/html;charset=utf-8\nContent-Length: 335\nConnection: keep-alive\n\n<!DOCTYPE HTML>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\">\n        <title>Error response</title>\n    </head>\n    <body>\n        <h1>Error response</h1>\n        <p>Error code: 404</p>\n        <p>Message: File not found.</p>\n        <p>Error code explanation: 404 - Nothing matches the given URI.</p>\n    </body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:34:46.208822+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:34:47.385421+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.187 -skS -i --max-time 5 http://192.168.56.10/trap-retest-probe",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 404 File not found\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:34:47 GMT\nContent-Type: text/html;charset=utf-8\nContent-Length: 335\nConnection: keep-alive\n\n<!DOCTYPE HTML>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\">\n        <title>Error response</title>\n    </head>\n    <body>\n        <h1>Error response</h1>\n        <p>Error code: 404</p>\n        <p>Message: File not found.</p>\n        <p>Error code explanation: 404 - Nothing matches the given URI.</p>\n    </body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:34:48.531926+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.188 -skS -i --max-time 5 http://192.168.56.10/trap-retest-probe",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 404 File not found\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:34:48 GMT\nContent-Type: text/html;charset=utf-8\nContent-Length: 335\nConnection: keep-alive\n\n<!DOCTYPE HTML>\n<html lang=\"en\">\n    <head>\n        <meta charset=\"utf-8\">\n        <title>Error response</title>\n    </head>\n    <body>\n        <h1>Error response</h1>\n        <p>Error code: 404</p>\n        <p>Message: File not found.</p>\n        <p>Error code explanation: 404 - Nothing matches the given URI.</p>\n    </body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:34:51.304120+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:34:53.060122+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:34:53.908878+00:00",
+    "command": "systemctl is-enabled suricata nginx adaptive-defender trap-dashboard trap-apply-rules.path trap-log-sync.timer",
+    "exit_code": 0,
+    "stdout": "enabled\nenabled\nenabled\nenabled\nenabled\nenabled\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:37:10.322519+00:00",
+    "command": "systemctl is-active suricata nginx adaptive-defender trap-dashboard trap-apply-rules.path trap-log-sync.timer",
+    "exit_code": 0,
+    "stdout": "active\nactive\nactive\nactive\nactive\nactive\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:37:10.879879+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:37:11.196101+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.189/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:37:11.217944+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.190/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:37:11.305514+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.189 -skS -i --max-time 5 -A sqlmap/1.x 'http://192.168.56.10/?id=1'",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:37:11 GMT\nContent-Type: text/html\nContent-Length: 69\nConnection: keep-alive\nLast-Modified: Sat, 10 Oct 2026 07:17:51 GMT\n\n<!doctype html><title>TRAP Real Web</title><h1>TRAP REAL SERVICE</h1>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:37:11.636495+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.189 -skS -i --max-time 5 'http://192.168.56.10/?regression=http'",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 08:37:11 GMT\nContent-Type: text/html; charset=utf-8\nContent-Length: 322\nConnection: keep-alive\nSet-Cookie: PHPSESSID=[REDACTED]; Path=/; HttpOnly\n\n<!doctype html><html><head><meta charset=\"utf-8\"><title>TRAP Lab Services</title></head><body style=\"font-family:sans-serif;max-width:720px;margin:60px auto\"><h1>TRAP Lab Services</h1><p>Customer portal is under scheduled maintenance. Please try again later.</p><p style=\"color:#888\">&copy; 2026 trap.lab</p></body></html>",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:37:12.204713+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:37:12.774744+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:37:15.197133+00:00",
+    "command": "ip netns exec trap-attacker python3 -c 'import socket,time\nfor i in range(6):\n s=socket.socket();s.settimeout(3);s.bind(('\"'\"'192.168.56.190'\"'\"',0));s.connect(('\"'\"'192.168.56.10'\"'\"',22));s.recv(256);s.close();time.sleep(.25)'",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:37:19.026787+00:00",
+    "command": "ip netns exec trap-attacker python3 -c 'import socket,paramiko,time,json\ns=socket.socket();s.bind(('\"'\"'192.168.56.190'\"'\"',0));s.settimeout(5);s.connect(('\"'\"'192.168.56.10'\"'\"',22))\nc=paramiko.SSHClient();c.set_missing_host_key_policy(paramiko.AutoAddPolicy());c.connect('\"'\"'192.168.56.10'\"'\"',username='\"'\"'sysadmin'\"'\"',password='\"'\"'[REDACTED]'\"'\"',sock=s,look_for_keys=False,allow_agent=False,timeout=5)\nch=c.invoke_shell()\nfor cmd in ['\"'\"'whoami'\"'\"','\"'\"'ls'\"'\"','\"'\"'uname -a'\"'\"']:\n ch.send(cmd+'\"'\"'\\n'\"'\"');time.sleep(1);out='\"'\"''\"'\"'\n while ch.recv_ready():out+=ch.recv(65535).decode(errors='\"'\"'replace'\"'\"')\n print(json.dumps({'\"'\"'command'\"'\"':cmd,'\"'\"'output'\"'\"':out}),flush=True)\nch.send('\"'\"'exit\\n'\"'\"');time.sleep(.3);c.close()\n'",
+    "exit_code": 0,
+    "stdout": "{\"command\": \"whoami\", \"output\": \"\\r\\nThe programs included with the Debian GNU/Linux system are free software;\\r\\nthe exact distribution terms for each program are described in the\\r\\nindividual files in /usr/share/doc/*/copyright.\\r\\n\\r\\nDebian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent\\r\\npermitted by applicable law.\\r\\n\\u001b[4hsysadmin@trap-backup-01:~$ whoami\\r\\n\\u001b[4lsysadmin\\r\\n\\u001b[4hsysadmin@trap-backup-01:~$ \"}\n{\"command\": \"ls\", \"output\": \"ls\\r\\n\\u001b[4lnotes.txt \\r\\n\\u001b[4hsysadmin@trap-backup-01:~$ \"}\n{\"command\": \"uname -a\", \"output\": \"uname -a\\r\\n\\u001b[4lLinux trap-backup-01 6.1.0-21-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.1.90-1 (2024-05-03) x86_64 GNU/Linux\\r\\n\\u001b[4hsysadmin@trap-backup-01:~$ \"}\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:37:19.567479+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:37:20.729201+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T08:37:21.853815+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  }
+]

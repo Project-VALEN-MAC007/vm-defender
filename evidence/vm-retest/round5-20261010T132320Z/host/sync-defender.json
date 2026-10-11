@@ -1,0 +1,7 @@
+{
+  "vm": "defender",
+  "utc": "2026-10-10T13:26:58.058193+00:00",
+  "exit_code": 0,
+  "stdout": "Sync paths configured; timer will be enabled after migration\n",
+  "stderr": ""
+}

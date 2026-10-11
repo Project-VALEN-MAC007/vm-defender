@@ -1,0 +1,54 @@
+#!/usr/sbin/nft -f
+# TRAP isolation — Project-Honeypot (10.10.10.2)
+#
+# The Honeypot is the machine an attacker is invited into, so it may only answer.
+#   - Defender (10.10.10.1) may open: SSH 22 (log sync pull), deploy agent 8091,
+#     and the decoys 2222/2223/8084 (Docker-published, DNAT keeps the client IP).
+#   - The Honeypot host may not open connections into the lab (10.10.10.0/24)
+#     or the outer network (192.168.56.0/24). Management NAT (enp0s3) is untouched.
+#   - Containers (cowrie, web-honeypot, web-app) may not open any connection that
+#     leaves their own Docker bridge: no lab, no Defender, no Internet, no host.
+#     web-honeypot -> web-app stays on the internal "decoy" bridge and still works.
+#
+# Own table, separate from Docker's iptables-nft rules: Docker never rewrites it,
+# and a drop here wins over an accept there. Never use `flush ruleset`.
+# Loaded by trap-isolation.service before docker.service.
+
+define DEFENDER  = 10.10.10.1
+define LAB_NET   = 10.10.10.0/24
+define OUTER_NET = 192.168.56.0/24
+
+table inet trap_isolation
+delete table inet trap_isolation
+
+table inet trap_isolation {
+    chain input {
+        type filter hook input priority filter - 5; policy accept;
+        ct state invalid drop
+        ct state established,related accept
+        iif "lo" accept
+        # Containers may not reach the host (SSH 22, deploy agent 8091, gateway).
+        iifname "br-*" ct state new counter drop comment "container -> honeypot host"
+        iifname "docker0" ct state new counter drop comment "container -> honeypot host"
+        # Only the Defender may open connections from the lab network.
+        ip saddr $LAB_NET ip saddr != $DEFENDER ct state new counter drop comment "lab peer -> honeypot host"
+    }
+
+    chain forward {
+        type filter hook forward priority filter - 5; policy accept;
+        ct state invalid drop
+        ct state established,related accept
+        # Container traffic may stay on its own Docker bridge, nothing else.
+        iifname "br-*" oifname != "br-*" ct state new counter drop comment "container egress"
+        iifname "docker0" oifname != "docker0" ct state new counter drop comment "container egress"
+        # Published decoy ports: only via the Defender (proxy or DNAT from the outer network).
+        ip saddr $LAB_NET ip saddr != $DEFENDER ct state new counter drop comment "lab peer -> decoy"
+    }
+
+    chain output {
+        type filter hook output priority filter - 5; policy accept;
+        ct state established,related accept
+        oif "lo" accept
+        ip daddr { $LAB_NET, $OUTER_NET } ct state new counter drop comment "honeypot host -> lab"
+    }
+}

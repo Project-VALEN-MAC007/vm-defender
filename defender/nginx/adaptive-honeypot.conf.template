@@ -17,19 +17,10 @@ log_format adaptive_json escape=json '{"timestamp":"$time_iso8601",'
   '"protocol":"$scheme","profile":"$adaptive_profile","status":$status,'
   '"request":"$request","upstream":"$upstream_addr"}';
 
+# HTTP (port 80) is routed like HTTPS: low risk -> real web, risky -> honeypot.
 server {
     listen __OUTER_IP__:80;
     server_name defender.lab;
-    access_log /var/log/nginx/adaptive_access.json adaptive_json;
-
-    return 308 https://$host$request_uri;
-}
-
-server {
-    listen __OUTER_IP__:443 ssl;
-    server_name defender.lab;
-    ssl_certificate __LAB_CERT_PATH__;
-    ssl_certificate_key __LAB_KEY_PATH__;
     access_log /var/log/nginx/adaptive_access.json adaptive_json;
 
     location / {
@@ -39,6 +30,72 @@ server {
         proxy_set_header X-Forwarded-Port $server_port;
         proxy_set_header X-Request-ID $request_id;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto http;
+        proxy_connect_timeout 5s;
+        proxy_read_timeout 30s;
+        proxy_intercept_errors on;
+        error_page 502 503 504 = @backend_unavailable;
+        proxy_pass $adaptive_backend;
+    }
+
+    location @backend_unavailable {
+        default_type application/json;
+        add_header Cache-Control no-store always;
+        return 503 '{"status":"backend_unavailable","profile":"$adaptive_profile"}';
+    }
+}
+
+# HTTPS (port 443). Suricata on the outer interface sees only TLS, so the
+# decrypted request is passed through a loopback hop (127.0.0.1:18443) that
+# Suricata also inspects. Only HTTPS uses this hop, so HTTP is never inspected
+# twice. The edge sets X-Trap-Client-IP from the real peer address (overwriting
+# anything the client sent); the decision engine trusts that header only for
+# alerts seen on the loopback hop.
+log_format adaptive_json_tls escape=json '{"timestamp":"$time_iso8601",'
+  '"source_ip":"$remote_addr","forwarded_for":"$proxy_add_x_forwarded_for",'
+  '"protocol":"https","profile":"$adaptive_profile","status":$status,'
+  '"request":"$request","upstream":"$upstream_addr"}';
+
+server {
+    listen __OUTER_IP__:443 ssl;
+    server_name defender.lab;
+    ssl_certificate __LAB_CERT_PATH__;
+    ssl_certificate_key __LAB_KEY_PATH__;
+    access_log /var/log/nginx/adaptive_tls_edge.json adaptive_json_tls;
+
+    location / {
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+        proxy_set_header Host $host;
+        proxy_set_header X-Trap-Client-IP $remote_addr;
+        proxy_set_header X-Trap-Client-Port $remote_port;
+        proxy_connect_timeout 5s;
+        proxy_read_timeout 35s;
+        # Connect from 127.0.0.2 so ET rules ($EXTERNAL_NET -> $HOME_NET) match:
+        # 127.0.0.1 is in HOME_NET/HTTP_SERVERS, 127.0.0.2 stays external.
+        proxy_bind 127.0.0.2;
+        proxy_pass http://127.0.0.1:18443;
+    }
+}
+
+# Loopback inspection hop: only reachable from the HTTPS edge above
+# (listens on loopback; client header trusted only from 127.0.0.2).
+server {
+    listen 127.0.0.1:18443;
+    server_name defender.lab;
+    set_real_ip_from 127.0.0.2;
+    real_ip_header X-Trap-Client-IP;
+    access_log /var/log/nginx/adaptive_access.json adaptive_json_tls;
+
+    location / {
+        proxy_set_header Host $host;
+        proxy_set_header X-Trap-Client-IP "";
+        proxy_set_header X-Trap-Client-Port "";
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Real-Port $http_x_trap_client_port;
+        proxy_set_header X-Forwarded-Port 443;
+        proxy_set_header X-Request-ID $request_id;
+        proxy_set_header X-Forwarded-For $remote_addr;
         proxy_set_header X-Forwarded-Proto https;
         proxy_connect_timeout 5s;
         proxy_read_timeout 30s;

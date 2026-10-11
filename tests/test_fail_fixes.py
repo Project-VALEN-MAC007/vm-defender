@@ -135,5 +135,111 @@ class InstallScriptTests(unittest.TestCase):
             self.assertIn(needle, script)
 
 
+class FakeProc:
+    """A /proc tree holding an nginx master (pid 100) and its workers."""
+
+    def __init__(self, root: Path):
+        self.root = root
+        (root / "proc").mkdir()
+        (root / "nginx.pid").write_text("100\n")
+        self.add(100, 1, "nginx: master process /usr/sbin/nginx")
+
+    def add(self, pid, parent, title):
+        entry = self.root / "proc" / str(pid)
+        entry.mkdir(exist_ok=True)
+        (entry / "stat").write_text(f"{pid} (nginx) S {parent} {pid} {pid} 0 -1\n")
+        (entry / "cmdline").write_bytes(title.encode() + b"\0")
+
+    def retitle(self, pid, title):
+        (self.root / "proc" / str(pid) / "cmdline").write_bytes(title.encode() + b"\0")
+
+    def remove(self, pid):
+        entry = self.root / "proc" / str(pid)
+        for child in entry.iterdir():
+            child.unlink()
+        entry.rmdir()
+
+
+class Completed:
+    def __init__(self, code):
+        self.returncode = code
+
+
+class NginxReadinessTests(unittest.TestCase):
+    """HTTPS retest: a redirect is logged only after nginx serves the new map."""
+
+    def make(self, root, run, steps=None, timeout=1.0):
+        from defender.decision_engine.adaptive_defender.engine import NginxReloader
+        clock = [0.0]
+        steps = list(steps or [])
+
+        def sleep(seconds):
+            clock[0] += seconds
+            if steps:
+                steps.pop(0)()
+
+        return NginxReloader(root / "nginx.pid", root / "proc", timeout=timeout, interval=0.05,
+                             run=run, sleep=sleep, monotonic=lambda: clock[0])
+
+    def test_waits_until_old_workers_stop_accepting(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory); proc = FakeProc(root)
+            proc.add(101, 100, "nginx: worker process"); proc.add(102, 100, "nginx: worker process")
+            proc.add(200, 1, "nginx: worker process")  # another master's worker: ignored
+            calls = []
+            reloader = self.make(root, lambda command: calls.append(command) or Completed(0), steps=[
+                lambda: proc.add(103, 100, "nginx: worker process"),          # new worker, old still serving
+                lambda: proc.retitle(101, "nginx: worker process is shutting down"),
+                lambda: proc.remove(102),                                      # now ready
+            ])
+            self.assertTrue(reloader())
+            self.assertEqual(calls, [["systemctl", "reload", "nginx"]])
+            self.assertIs(reloader.last_ready, True)
+            self.assertAlmostEqual(reloader.last_wait_seconds, 0.15)
+
+    def test_new_worker_alone_is_not_enough(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory); proc = FakeProc(root)
+            proc.add(101, 100, "nginx: worker process")
+            reloader = self.make(root, lambda command: Completed(0),
+                                 steps=[lambda: proc.add(103, 100, "nginx: worker process")], timeout=0.3)
+            self.assertTrue(reloader())          # reload itself succeeded
+            self.assertIs(reloader.last_ready, False)  # but old worker 101 kept serving
+
+    def test_failed_reload_and_missing_pid_file(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory); FakeProc(root)
+            self.assertFalse(self.make(root, lambda command: Completed(1))())
+            (root / "nginx.pid").unlink()
+            reloader = self.make(root, lambda command: Completed(0))
+            self.assertTrue(reloader())
+            self.assertIsNone(reloader.last_ready)
+
+    def test_decision_records_readiness(self):
+        from defender.decision_engine.adaptive_defender import engine as engine_module
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            config = engine_config(root, dry_run=False)
+            eve = json.loads(config.read_text())["eve_path"]
+            Path(eve).write_text("".join(json.dumps(raw_event(flow_id=i, sid=2101071, severity=1)) + "\n" for i in (1, 2)))
+
+            class Ready:
+                last_ready, last_wait_seconds = True, 0.12
+                def __call__(self):
+                    return True
+
+            original = (engine_module.NginxReloader, engine_module._nginx_validate)
+            engine_module.NginxReloader = Ready
+            engine_module._nginx_validate = lambda path: True
+            try:
+                decisions = DecisionEngine(load_settings(config)).run_once()
+            finally:
+                engine_module.NginxReloader, engine_module._nginx_validate = original
+            web = [d for d in decisions if d["action"] == "redirect_web"]
+            self.assertTrue(web)
+            self.assertIs(web[-1]["nginx_ready"], True)
+            self.assertEqual(web[-1]["nginx_ready_seconds"], 0.12)
+
+
 if __name__ == "__main__":
     unittest.main()

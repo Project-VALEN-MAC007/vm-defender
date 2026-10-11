@@ -1,0 +1,8 @@
+{
+  "utc": "20261010T080107Z",
+  "vm": "defender",
+  "command": "date -u +%FT%TZ; systemctl is-active adaptive-defender suricata nginx trap-dashboard; cat /etc/systemd/system/suricata.service; ip netns exec trap-attacker ip -br address; ip netns exec trap-attacker ip route",
+  "exit_code": 0,
+  "stdout": "2026-10-10T08:01:05Z\nactive\nactive\nactive\nactive\n[Unit]\nDescription=Suricata IDS for TRAP isolated lab\nRequires=trap-lab-network.service\nAfter=trap-lab-network.service\n[Service]\nType=simple\nExecStart=/usr/bin/suricata -c /etc/suricata/suricata.yaml --af-packet=trap-out --runmode=single\nRestart=on-failure\nUMask=0022\n[Install]\nWantedBy=multi-user.target\nlo               UNKNOWN        127.0.0.1/8 ::1/128 \ntrap-in@if5      UP             192.168.56.30/24 192.168.56.31/24 192.168.56.32/24 192.168.56.33/24 192.168.56.34/24 192.168.56.35/24 192.168.56.36/24 192.168.56.37/24 192.168.56.38/24 192.168.56.39/24 192.168.56.40/24 192.168.56.41/24 192.168.56.42/24 192.168.56.43/24 192.168.56.44/24 192.168.56.45/24 192.168.56.46/24 192.168.56.47/24 192.168.56.48/24 192.168.56.49/24 192.168.56.50/24 192.168.56.51/24 192.168.56.52/24 192.168.56.53/24 192.168.56.54/24 192.168.56.55/24 192.168.56.56/24 192.168.56.57/24 192.168.56.58/24 192.168.56.59/24 192.168.56.60/24 192.168.56.61/24 192.168.56.62/24 192.168.56.63/24 192.168.56.64/24 192.168.56.65/24 192.168.56.66/24 192.168.56.67/24 192.168.56.68/24 192.168.56.69/24 192.168.56.70/24 fe80::9cb3:ffff:fe32:e76d/64 \n192.168.56.0/24 dev trap-in scope link src 192.168.56.30 \n",
+  "stderr": ""
+}

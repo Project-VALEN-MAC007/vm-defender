@@ -1,0 +1,532 @@
+[
+  {
+    "index": 1,
+    "decision": {
+      "action": "redirect_web",
+      "adapter_result": "# generated atomically; do not edit\ndefault real;\n192.168.56.90 rabbithole;\n",
+      "dry_run": false,
+      "event_id": "5cc94fc5cab29e8c1d6c1d17ea563a1591614411c4d2e9abb0a9a63d6ba0b83d",
+      "expiry": "2026-10-10T09:30:29.411056+00:00",
+      "nginx_ready": true,
+      "nginx_ready_seconds": 0.161,
+      "profile": "rabbithole",
+      "protocol": "http",
+      "reason": "severity=1:+35;protocol=http:+5",
+      "risk_score": 40.0,
+      "severity": 1,
+      "signature_id": 2101071,
+      "source_ip": "192.168.56.90",
+      "start_time": "2026-10-10T09:28:29.411056+00:00"
+    },
+    "observed": "2026-10-10T09:28:29.594957+00:00",
+    "request": {
+      "time": "2026-10-10T09:28:29.618239+00:00",
+      "command": "ip netns exec trap-attacker curl --interface 192.168.56.90 -skS -i --max-time 5 'http://192.168.56.10/?round4=immediate-1'",
+      "exit_code": 0,
+      "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 09:28:29 GMT\nContent-Type: text/html; charset=utf-8\nContent-Length: 322\nConnection: keep-alive\nSet-Cookie: PHPSESSID=[REDACTED]\n\n<!doctype html><html><head><meta charset=\"utf-8\"><title>TRAP Lab Services</title></head><body style=\"font-family:sans-serif;max-width:720px;margin:60px auto\"><h1>TRAP Lab Services</h1><p>Customer portal is under scheduled maintenance. Please try again later.</p><p style=\"color:#888\">&copy; 2026 trap.lab</p></body></html>",
+      "stderr": ""
+    },
+    "nginx": [
+      {
+        "timestamp": "2026-10-10T16:28:29+07:00",
+        "source_ip": "192.168.56.90",
+        "forwarded_for": "192.168.56.90",
+        "protocol": "http",
+        "profile": "rabbithole",
+        "status": 200,
+        "request": "GET /?round4=immediate-1 HTTP/1.1",
+        "upstream": "10.10.10.2:8084"
+      }
+    ],
+    "honeypot": [
+      {
+        "action": "open_page",
+        "bytes": 322,
+        "clue_from": null,
+        "depth": null,
+        "dest_ip": "10.10.10.2",
+        "dest_port": 80,
+        "event": "rabbit_hole.web",
+        "followed_clue": false,
+        "headers": {
+          "accept": "*/*",
+          "connection": "close",
+          "host": "192.168.56.10",
+          "user-agent": "curl/8.5.0"
+        },
+        "kind": null,
+        "limit_reached": false,
+        "link": "ip_ua",
+        "linked_session": null,
+        "method": "GET",
+        "node_id": null,
+        "path": "/",
+        "payload": "",
+        "payload_truncated": false,
+        "profile": "rabbithole",
+        "protocol": "http",
+        "query": "round4=immediate-1",
+        "rabbit_hole_enabled": true,
+        "referer": null,
+        "request_id": "4f82e4d91e37106b6fabdf6ca8ee7c1a",
+        "resource_id": null,
+        "scenario": null,
+        "session_id": "ce7890d39d576ff049c948eef5740bf9",
+        "source_ip": "192.168.56.90",
+        "source_port": 44574,
+        "status": 200,
+        "timestamp": "2026-10-10T09:28:29.585002+00:00",
+        "user_agent": "curl/8.5.0"
+      }
+    ]
+  },
+  {
+    "index": 2,
+    "decision": {
+      "action": "redirect_web",
+      "adapter_result": "# generated atomically; do not edit\ndefault real;\n192.168.56.90 rabbithole;\n192.168.56.91 rabbithole;\n",
+      "dry_run": false,
+      "event_id": "a51134bba18c88b3cb3b11c1168a5d3eb71270ccb337c63e51ec6c64330e92c4",
+      "expiry": "2026-10-10T09:30:31.812791+00:00",
+      "nginx_ready": true,
+      "nginx_ready_seconds": 0.178,
+      "profile": "rabbithole",
+      "protocol": "http",
+      "reason": "severity=1:+35;protocol=http:+5",
+      "risk_score": 40.0,
+      "severity": 1,
+      "signature_id": 2101071,
+      "source_ip": "192.168.56.91",
+      "start_time": "2026-10-10T09:28:31.812791+00:00"
+    },
+    "observed": "2026-10-10T09:28:32.022915+00:00",
+    "request": {
+      "time": "2026-10-10T09:28:32.045292+00:00",
+      "command": "ip netns exec trap-attacker curl --interface 192.168.56.91 -skS -i --max-time 5 'http://192.168.56.10/?round4=immediate-2'",
+      "exit_code": 0,
+      "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 09:28:32 GMT\nContent-Type: text/html; charset=utf-8\nContent-Length: 322\nConnection: keep-alive\nSet-Cookie: PHPSESSID=[REDACTED]\n\n<!doctype html><html><head><meta charset=\"utf-8\"><title>TRAP Lab Services</title></head><body style=\"font-family:sans-serif;max-width:720px;margin:60px auto\"><h1>TRAP Lab Services</h1><p>Customer portal is under scheduled maintenance. Please try again later.</p><p style=\"color:#888\">&copy; 2026 trap.lab</p></body></html>",
+      "stderr": ""
+    },
+    "nginx": [
+      {
+        "timestamp": "2026-10-10T16:28:32+07:00",
+        "source_ip": "192.168.56.91",
+        "forwarded_for": "192.168.56.91",
+        "protocol": "http",
+        "profile": "rabbithole",
+        "status": 200,
+        "request": "GET /?round4=immediate-2 HTTP/1.1",
+        "upstream": "10.10.10.2:8084"
+      }
+    ],
+    "honeypot": []
+  },
+  {
+    "index": 3,
+    "decision": {
+      "action": "redirect_web",
+      "adapter_result": "# generated atomically; do not edit\ndefault real;\n192.168.56.90 rabbithole;\n192.168.56.91 rabbithole;\n192.168.56.92 rabbithole;\n",
+      "dry_run": false,
+      "event_id": "3e67c7ea78ebf6a4fa54a282954f85f37f2d1064cc39922d5bcfa1bc49060bc7",
+      "expiry": "2026-10-10T09:30:32.613056+00:00",
+      "nginx_ready": true,
+      "nginx_ready_seconds": 0.171,
+      "profile": "rabbithole",
+      "protocol": "http",
+      "reason": "severity=1:+35;protocol=http:+5",
+      "risk_score": 40.0,
+      "severity": 1,
+      "signature_id": 2101071,
+      "source_ip": "192.168.56.92",
+      "start_time": "2026-10-10T09:28:32.613056+00:00"
+    },
+    "observed": "2026-10-10T09:28:32.810238+00:00",
+    "request": {
+      "time": "2026-10-10T09:28:32.834358+00:00",
+      "command": "ip netns exec trap-attacker curl --interface 192.168.56.92 -skS -i --max-time 5 'http://192.168.56.10/?round4=immediate-3'",
+      "exit_code": 0,
+      "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 09:28:32 GMT\nContent-Type: text/html; charset=utf-8\nContent-Length: 322\nConnection: keep-alive\nSet-Cookie: PHPSESSID=[REDACTED]\n\n<!doctype html><html><head><meta charset=\"utf-8\"><title>TRAP Lab Services</title></head><body style=\"font-family:sans-serif;max-width:720px;margin:60px auto\"><h1>TRAP Lab Services</h1><p>Customer portal is under scheduled maintenance. Please try again later.</p><p style=\"color:#888\">&copy; 2026 trap.lab</p></body></html>",
+      "stderr": ""
+    },
+    "nginx": [
+      {
+        "timestamp": "2026-10-10T16:28:32+07:00",
+        "source_ip": "192.168.56.92",
+        "forwarded_for": "192.168.56.92",
+        "protocol": "http",
+        "profile": "rabbithole",
+        "status": 200,
+        "request": "GET /?round4=immediate-3 HTTP/1.1",
+        "upstream": "10.10.10.2:8084"
+      }
+    ],
+    "honeypot": []
+  },
+  {
+    "index": 4,
+    "decision": {
+      "action": "redirect_web",
+      "adapter_result": "# generated atomically; do not edit\ndefault real;\n192.168.56.90 rabbithole;\n192.168.56.91 rabbithole;\n192.168.56.92 rabbithole;\n192.168.56.93 rabbithole;\n",
+      "dry_run": false,
+      "event_id": "7e9e5f47102e699d186f8d0ee342009e79d69a69ee863ccf77450eb7a5d34157",
+      "expiry": "2026-10-10T09:30:33.415519+00:00",
+      "nginx_ready": true,
+      "nginx_ready_seconds": 0.171,
+      "profile": "rabbithole",
+      "protocol": "http",
+      "reason": "severity=1:+35;protocol=http:+5",
+      "risk_score": 40.0,
+      "severity": 1,
+      "signature_id": 2101071,
+      "source_ip": "192.168.56.93",
+      "start_time": "2026-10-10T09:28:33.415519+00:00"
+    },
+    "observed": "2026-10-10T09:28:33.648894+00:00",
+    "request": {
+      "time": "2026-10-10T09:28:33.676199+00:00",
+      "command": "ip netns exec trap-attacker curl --interface 192.168.56.93 -skS -i --max-time 5 'http://192.168.56.10/?round4=immediate-4'",
+      "exit_code": 0,
+      "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 09:28:33 GMT\nContent-Type: text/html; charset=utf-8\nContent-Length: 322\nConnection: keep-alive\nSet-Cookie: PHPSESSID=[REDACTED]\n\n<!doctype html><html><head><meta charset=\"utf-8\"><title>TRAP Lab Services</title></head><body style=\"font-family:sans-serif;max-width:720px;margin:60px auto\"><h1>TRAP Lab Services</h1><p>Customer portal is under scheduled maintenance. Please try again later.</p><p style=\"color:#888\">&copy; 2026 trap.lab</p></body></html>",
+      "stderr": ""
+    },
+    "nginx": [
+      {
+        "timestamp": "2026-10-10T16:28:33+07:00",
+        "source_ip": "192.168.56.93",
+        "forwarded_for": "192.168.56.93",
+        "protocol": "http",
+        "profile": "rabbithole",
+        "status": 200,
+        "request": "GET /?round4=immediate-4 HTTP/1.1",
+        "upstream": "10.10.10.2:8084"
+      }
+    ],
+    "honeypot": []
+  },
+  {
+    "index": 5,
+    "decision": {
+      "action": "redirect_web",
+      "adapter_result": "# generated atomically; do not edit\ndefault real;\n192.168.56.90 rabbithole;\n192.168.56.91 rabbithole;\n192.168.56.92 rabbithole;\n192.168.56.93 rabbithole;\n192.168.56.94 rabbithole;\n",
+      "dry_run": false,
+      "event_id": "7d8a949b80ff5b282184497e531129be400d0abcf8a33d1393ab5d1c4103f2d1",
+      "expiry": "2026-10-10T09:30:34.427681+00:00",
+      "nginx_ready": true,
+      "nginx_ready_seconds": 0.161,
+      "profile": "rabbithole",
+      "protocol": "http",
+      "reason": "severity=1:+35;protocol=http:+5",
+      "risk_score": 40.0,
+      "severity": 1,
+      "signature_id": 2101071,
+      "source_ip": "192.168.56.94",
+      "start_time": "2026-10-10T09:28:34.427681+00:00"
+    },
+    "observed": "2026-10-10T09:28:34.623699+00:00",
+    "request": {
+      "time": "2026-10-10T09:28:34.647244+00:00",
+      "command": "ip netns exec trap-attacker curl --interface 192.168.56.94 -skS -i --max-time 5 'http://192.168.56.10/?round4=immediate-5'",
+      "exit_code": 0,
+      "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 09:28:34 GMT\nContent-Type: text/html; charset=utf-8\nContent-Length: 322\nConnection: keep-alive\nSet-Cookie: PHPSESSID=[REDACTED]\n\n<!doctype html><html><head><meta charset=\"utf-8\"><title>TRAP Lab Services</title></head><body style=\"font-family:sans-serif;max-width:720px;margin:60px auto\"><h1>TRAP Lab Services</h1><p>Customer portal is under scheduled maintenance. Please try again later.</p><p style=\"color:#888\">&copy; 2026 trap.lab</p></body></html>",
+      "stderr": ""
+    },
+    "nginx": [
+      {
+        "timestamp": "2026-10-10T16:28:34+07:00",
+        "source_ip": "192.168.56.94",
+        "forwarded_for": "192.168.56.94",
+        "protocol": "http",
+        "profile": "rabbithole",
+        "status": 200,
+        "request": "GET /?round4=immediate-5 HTTP/1.1",
+        "upstream": "10.10.10.2:8084"
+      }
+    ],
+    "honeypot": []
+  },
+  {
+    "index": 6,
+    "decision": {
+      "action": "redirect_web",
+      "adapter_result": "# generated atomically; do not edit\ndefault real;\n192.168.56.90 rabbithole;\n192.168.56.91 rabbithole;\n192.168.56.92 rabbithole;\n192.168.56.93 rabbithole;\n192.168.56.94 rabbithole;\n192.168.56.95 rabbithole;\n",
+      "dry_run": false,
+      "event_id": "f4fa43b60fec620c74431b3de13f0b1d040fda2b6f593e3d70baa2165c3ad9e5",
+      "expiry": "2026-10-10T09:30:35.256244+00:00",
+      "nginx_ready": true,
+      "nginx_ready_seconds": 0.159,
+      "profile": "rabbithole",
+      "protocol": "http",
+      "reason": "severity=1:+35;protocol=http:+5",
+      "risk_score": 40.0,
+      "severity": 1,
+      "signature_id": 2101071,
+      "source_ip": "192.168.56.95",
+      "start_time": "2026-10-10T09:28:35.256244+00:00"
+    },
+    "observed": "2026-10-10T09:28:35.440096+00:00",
+    "request": {
+      "time": "2026-10-10T09:28:35.468687+00:00",
+      "command": "ip netns exec trap-attacker curl --interface 192.168.56.95 -skS -i --max-time 5 'https://192.168.56.10/?round4=immediate-6'",
+      "exit_code": 0,
+      "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 09:28:35 GMT\nContent-Type: text/html; charset=utf-8\nContent-Length: 322\nConnection: keep-alive\nSet-Cookie: PHPSESSID=[REDACTED]\n\n<!doctype html><html><head><meta charset=\"utf-8\"><title>TRAP Lab Services</title></head><body style=\"font-family:sans-serif;max-width:720px;margin:60px auto\"><h1>TRAP Lab Services</h1><p>Customer portal is under scheduled maintenance. Please try again later.</p><p style=\"color:#888\">&copy; 2026 trap.lab</p></body></html>",
+      "stderr": ""
+    },
+    "nginx": [
+      {
+        "timestamp": "2026-10-10T16:28:35+07:00",
+        "source_ip": "192.168.56.95",
+        "forwarded_for": "192.168.56.95",
+        "protocol": "https",
+        "profile": "rabbithole",
+        "status": 200,
+        "request": "GET /?round4=immediate-6 HTTP/1.1",
+        "upstream": "10.10.10.2:8084"
+      }
+    ],
+    "honeypot": []
+  },
+  {
+    "index": 7,
+    "decision": {
+      "action": "redirect_web",
+      "adapter_result": "# generated atomically; do not edit\ndefault real;\n192.168.56.90 rabbithole;\n192.168.56.91 rabbithole;\n192.168.56.92 rabbithole;\n192.168.56.93 rabbithole;\n192.168.56.94 rabbithole;\n192.168.56.95 rabbithole;\n192.168.56.96 rabbithole;\n",
+      "dry_run": false,
+      "event_id": "9b30f2e2e296c5ac25a164bc4fd28af2c3f390d3d43c822d237d0f82a9717b05",
+      "expiry": "2026-10-10T09:30:36.043818+00:00",
+      "nginx_ready": true,
+      "nginx_ready_seconds": 0.175,
+      "profile": "rabbithole",
+      "protocol": "http",
+      "reason": "severity=1:+35;protocol=http:+5",
+      "risk_score": 40.0,
+      "severity": 1,
+      "signature_id": 2101071,
+      "source_ip": "192.168.56.96",
+      "start_time": "2026-10-10T09:28:36.043818+00:00"
+    },
+    "observed": "2026-10-10T09:28:36.240768+00:00",
+    "request": {
+      "time": "2026-10-10T09:28:36.265679+00:00",
+      "command": "ip netns exec trap-attacker curl --interface 192.168.56.96 -skS -i --max-time 5 'https://192.168.56.10/?round4=immediate-7'",
+      "exit_code": 0,
+      "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 09:28:36 GMT\nContent-Type: text/html; charset=utf-8\nContent-Length: 322\nConnection: keep-alive\nSet-Cookie: PHPSESSID=[REDACTED]\n\n<!doctype html><html><head><meta charset=\"utf-8\"><title>TRAP Lab Services</title></head><body style=\"font-family:sans-serif;max-width:720px;margin:60px auto\"><h1>TRAP Lab Services</h1><p>Customer portal is under scheduled maintenance. Please try again later.</p><p style=\"color:#888\">&copy; 2026 trap.lab</p></body></html>",
+      "stderr": ""
+    },
+    "nginx": [
+      {
+        "timestamp": "2026-10-10T16:28:36+07:00",
+        "source_ip": "192.168.56.96",
+        "forwarded_for": "192.168.56.96",
+        "protocol": "https",
+        "profile": "rabbithole",
+        "status": 200,
+        "request": "GET /?round4=immediate-7 HTTP/1.1",
+        "upstream": "10.10.10.2:8084"
+      }
+    ],
+    "honeypot": []
+  },
+  {
+    "index": 8,
+    "decision": {
+      "action": "redirect_web",
+      "adapter_result": "# generated atomically; do not edit\ndefault real;\n192.168.56.90 rabbithole;\n192.168.56.91 rabbithole;\n192.168.56.92 rabbithole;\n192.168.56.93 rabbithole;\n192.168.56.94 rabbithole;\n192.168.56.95 rabbithole;\n192.168.56.96 rabbithole;\n192.168.56.97 rabbithole;\n",
+      "dry_run": false,
+      "event_id": "322c48a54cf737e09001f2e94bbf41e3120ba2453c63427a2f68099953671c78",
+      "expiry": "2026-10-10T09:30:36.722019+00:00",
+      "nginx_ready": true,
+      "nginx_ready_seconds": 0.156,
+      "profile": "rabbithole",
+      "protocol": "http",
+      "reason": "severity=1:+35;protocol=http:+5",
+      "risk_score": 40.0,
+      "severity": 1,
+      "signature_id": 2101071,
+      "source_ip": "192.168.56.97",
+      "start_time": "2026-10-10T09:28:36.722019+00:00"
+    },
+    "observed": "2026-10-10T09:28:36.902242+00:00",
+    "request": {
+      "time": "2026-10-10T09:28:36.928806+00:00",
+      "command": "ip netns exec trap-attacker curl --interface 192.168.56.97 -skS -i --max-time 5 'https://192.168.56.10/?round4=immediate-8'",
+      "exit_code": 0,
+      "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 09:28:36 GMT\nContent-Type: text/html; charset=utf-8\nContent-Length: 322\nConnection: keep-alive\nSet-Cookie: PHPSESSID=[REDACTED]\n\n<!doctype html><html><head><meta charset=\"utf-8\"><title>TRAP Lab Services</title></head><body style=\"font-family:sans-serif;max-width:720px;margin:60px auto\"><h1>TRAP Lab Services</h1><p>Customer portal is under scheduled maintenance. Please try again later.</p><p style=\"color:#888\">&copy; 2026 trap.lab</p></body></html>",
+      "stderr": ""
+    },
+    "nginx": [
+      {
+        "timestamp": "2026-10-10T16:28:36+07:00",
+        "source_ip": "192.168.56.97",
+        "forwarded_for": "192.168.56.97",
+        "protocol": "https",
+        "profile": "rabbithole",
+        "status": 200,
+        "request": "GET /?round4=immediate-8 HTTP/1.1",
+        "upstream": "10.10.10.2:8084"
+      }
+    ],
+    "honeypot": []
+  },
+  {
+    "index": 9,
+    "decision": {
+      "action": "redirect_web",
+      "adapter_result": "# generated atomically; do not edit\ndefault real;\n192.168.56.90 rabbithole;\n192.168.56.91 rabbithole;\n192.168.56.92 rabbithole;\n192.168.56.93 rabbithole;\n192.168.56.94 rabbithole;\n192.168.56.95 rabbithole;\n192.168.56.96 rabbithole;\n192.168.56.97 rabbithole;\n192.168.56.98 rabbithole;\n",
+      "dry_run": false,
+      "event_id": "7979801ebd9791bd85b2ad8e26952ec17024abea99b7d991622f6f94686767a3",
+      "expiry": "2026-10-10T09:30:37.519214+00:00",
+      "nginx_ready": true,
+      "nginx_ready_seconds": 0.159,
+      "profile": "rabbithole",
+      "protocol": "http",
+      "reason": "severity=1:+35;protocol=http:+5",
+      "risk_score": 40.0,
+      "severity": 1,
+      "signature_id": 2101071,
+      "source_ip": "192.168.56.98",
+      "start_time": "2026-10-10T09:28:37.519214+00:00"
+    },
+    "observed": "2026-10-10T09:28:37.700765+00:00",
+    "request": {
+      "time": "2026-10-10T09:28:37.731874+00:00",
+      "command": "ip netns exec trap-attacker curl --interface 192.168.56.98 -skS -i --max-time 5 'https://192.168.56.10/?round4=immediate-9'",
+      "exit_code": 0,
+      "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 09:28:37 GMT\nContent-Type: text/html; charset=utf-8\nContent-Length: 322\nConnection: keep-alive\nSet-Cookie: PHPSESSID=[REDACTED]\n\n<!doctype html><html><head><meta charset=\"utf-8\"><title>TRAP Lab Services</title></head><body style=\"font-family:sans-serif;max-width:720px;margin:60px auto\"><h1>TRAP Lab Services</h1><p>Customer portal is under scheduled maintenance. Please try again later.</p><p style=\"color:#888\">&copy; 2026 trap.lab</p></body></html>",
+      "stderr": ""
+    },
+    "nginx": [
+      {
+        "timestamp": "2026-10-10T16:28:37+07:00",
+        "source_ip": "192.168.56.98",
+        "forwarded_for": "192.168.56.98",
+        "protocol": "https",
+        "profile": "rabbithole",
+        "status": 200,
+        "request": "GET /?round4=immediate-9 HTTP/1.1",
+        "upstream": "10.10.10.2:8084"
+      }
+    ],
+    "honeypot": [
+      {
+        "action": "open_page",
+        "bytes": 322,
+        "clue_from": null,
+        "depth": null,
+        "dest_ip": "10.10.10.2",
+        "dest_port": 443,
+        "event": "rabbit_hole.web",
+        "followed_clue": false,
+        "headers": {
+          "accept": "*/*",
+          "connection": "close",
+          "host": "192.168.56.10",
+          "user-agent": "curl/8.5.0"
+        },
+        "kind": null,
+        "limit_reached": false,
+        "link": "ip_ua",
+        "linked_session": null,
+        "method": "GET",
+        "node_id": null,
+        "path": "/",
+        "payload": "",
+        "payload_truncated": false,
+        "profile": "rabbithole",
+        "protocol": "https",
+        "query": "round4=immediate-9",
+        "rabbit_hole_enabled": true,
+        "referer": null,
+        "request_id": "8d72efd0b6f6b3db4812d058d24b04af",
+        "resource_id": null,
+        "scenario": null,
+        "session_id": "fea3f1ff6d38639f9ae20bdd6c4ce2fa",
+        "source_ip": "192.168.56.98",
+        "source_port": 60692,
+        "status": 200,
+        "timestamp": "2026-10-10T09:28:37.698301+00:00",
+        "user_agent": "curl/8.5.0"
+      }
+    ]
+  },
+  {
+    "index": 10,
+    "decision": {
+      "action": "redirect_web",
+      "adapter_result": "# generated atomically; do not edit\ndefault real;\n192.168.56.90 rabbithole;\n192.168.56.91 rabbithole;\n192.168.56.92 rabbithole;\n192.168.56.93 rabbithole;\n192.168.56.94 rabbithole;\n192.168.56.95 rabbithole;\n192.168.56.96 rabbithole;\n192.168.56.97 rabbithole;\n192.168.56.98 rabbithole;\n192.168.56.99 rabbithole;\n",
+      "dry_run": false,
+      "event_id": "a3eefb39c8a2500eb2db8f24699452672d6111344b96cb10b7d80b42e7495efc",
+      "expiry": "2026-10-10T09:30:39.921629+00:00",
+      "nginx_ready": true,
+      "nginx_ready_seconds": 0.159,
+      "profile": "rabbithole",
+      "protocol": "http",
+      "reason": "severity=1:+35;protocol=http:+5",
+      "risk_score": 40.0,
+      "severity": 1,
+      "signature_id": 2101071,
+      "source_ip": "192.168.56.99",
+      "start_time": "2026-10-10T09:28:39.921629+00:00"
+    },
+    "observed": "2026-10-10T09:28:40.103918+00:00",
+    "request": {
+      "time": "2026-10-10T09:28:40.132089+00:00",
+      "command": "ip netns exec trap-attacker curl --interface 192.168.56.99 -skS -i --max-time 5 'https://192.168.56.10/?round4=immediate-10'",
+      "exit_code": 0,
+      "stdout": "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 09:28:40 GMT\nContent-Type: text/html; charset=utf-8\nContent-Length: 322\nConnection: keep-alive\nSet-Cookie: PHPSESSID=[REDACTED]\n\n<!doctype html><html><head><meta charset=\"utf-8\"><title>TRAP Lab Services</title></head><body style=\"font-family:sans-serif;max-width:720px;margin:60px auto\"><h1>TRAP Lab Services</h1><p>Customer portal is under scheduled maintenance. Please try again later.</p><p style=\"color:#888\">&copy; 2026 trap.lab</p></body></html>",
+      "stderr": ""
+    },
+    "nginx": [
+      {
+        "timestamp": "2026-10-10T16:28:40+07:00",
+        "source_ip": "192.168.56.99",
+        "forwarded_for": "192.168.56.99",
+        "protocol": "https",
+        "profile": "rabbithole",
+        "status": 200,
+        "request": "GET /?round4=immediate-10 HTTP/1.1",
+        "upstream": "10.10.10.2:8084"
+      }
+    ],
+    "honeypot": [
+      {
+        "action": "open_page",
+        "bytes": 322,
+        "clue_from": null,
+        "depth": null,
+        "dest_ip": "10.10.10.2",
+        "dest_port": 443,
+        "event": "rabbit_hole.web",
+        "followed_clue": false,
+        "headers": {
+          "accept": "*/*",
+          "connection": "close",
+          "host": "192.168.56.10",
+          "user-agent": "curl/8.5.0"
+        },
+        "kind": null,
+        "limit_reached": false,
+        "link": "ip_ua",
+        "linked_session": null,
+        "method": "GET",
+        "node_id": null,
+        "path": "/",
+        "payload": "",
+        "payload_truncated": false,
+        "profile": "rabbithole",
+        "protocol": "https",
+        "query": "round4=immediate-10",
+        "rabbit_hole_enabled": true,
+        "referer": null,
+        "request_id": "b6d01da1b274a0937ee08a544b819d70",
+        "resource_id": null,
+        "scenario": null,
+        "session_id": "e3e9dbf7229f7002818f51e3fefbb991",
+        "source_ip": "192.168.56.99",
+        "source_port": 45106,
+        "status": 200,
+        "timestamp": "2026-10-10T09:28:40.097519+00:00",
+        "user_agent": "curl/8.5.0"
+      }
+    ]
+  }
+]

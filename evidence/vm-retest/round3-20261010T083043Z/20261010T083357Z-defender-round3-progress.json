@@ -1,0 +1,8 @@
+{
+  "utc": "20261010T083357Z",
+  "vm": "defender",
+  "command": "D=$(cat /var/lib/trap/current-retest-dir); python3 -c \"import json,pathlib; d=pathlib.Path(\\\"/var/lib/trap/current-retest-dir\\\").read_text(); p=pathlib.Path(d)/\\\"cases.json\\\"; print([(x[\\\"name\\\"],x[\\\"status\\\"],x[\\\"error\\\"]) for x in json.loads(p.read_text())][-8:] if p.exists() else \\\"running\\\")\"",
+  "exit_code": 0,
+  "stdout": "[('Immediate-HTTP-10', 'PASS', None), ('Readiness-timeout-and-engine-continues', 'PASS', None), ('ET-sqlmap-UA', 'PASS', None), ('ET-Nikto-UA-threshold', 'PASS', None), ('ET-Nmap-NSE-UA', 'PASS', None), ('ET-Masscan-UA', 'PASS', None), ('ET-UNION-URI', 'PASS', None), ('ET-UNION-body', 'PASS', None)]\n",
+  "stderr": ""
+}

@@ -1,0 +1,59 @@
+# TRAP production (real) web server — runs on the third VM (Project-Web).
+# Low-risk traffic reaches it through the Defender: Nginx proxies HTTP/HTTPS
+# to http://10.10.10.3:8080. Bound to the inner address only, so it is not
+# reachable except through the Defender.
+# Secrets come from production/.env (not committed); see README.md.
+services:
+  web:
+    image: wordpress:php8.3-apache
+    restart: unless-stopped
+    ports:
+      - "${WEB_BIND_IP:-10.10.10.3}:${WEB_PORT:-8080}:80"
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_NAME: "${DB_NAME:-trap_production}"
+      WORDPRESS_DB_USER: "${DB_USER:-trapweb}"
+      WORDPRESS_DB_PASSWORD: "${DB_PASSWORD:?set DB_PASSWORD in production/.env}"
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_DEBUG', false);
+        define('DISALLOW_FILE_EDIT', true);
+        // Visitors reach this site through the Defender. Build links from the
+        // address they used, but only for known lab hosts: an arbitrary Host
+        // header must not become the site URL (Host header injection).
+        if (isset($$_SERVER['HTTP_X_FORWARDED_PROTO']) && $$_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') { $$_SERVER['HTTPS'] = 'on'; }
+        if (isset($$_SERVER['HTTP_HOST']) && in_array($$_SERVER['HTTP_HOST'], ['192.168.56.10', 'defender.lab', '10.10.10.3:8080'], true)) {
+          define('WP_HOME', (isset($$_SERVER['HTTPS']) && $$_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . '://' . $$_SERVER['HTTP_HOST']);
+          define('WP_SITEURL', WP_HOME);
+        }
+    volumes:
+      - web_data:/var/www/html
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS -o /dev/null http://127.0.0.1/ || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+
+  db:
+    image: mariadb:11.4
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: "${DB_NAME:-trap_production}"
+      MARIADB_USER: "${DB_USER:-trapweb}"
+      MARIADB_PASSWORD: "${DB_PASSWORD:?set DB_PASSWORD in production/.env}"
+      MARIADB_ROOT_PASSWORD: "${DB_ROOT_PASSWORD:?set DB_ROOT_PASSWORD in production/.env}"
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mariadb-admin ping -h 127.0.0.1 -uroot -p$${MARIADB_ROOT_PASSWORD} --silent"]
+      interval: 20s
+      timeout: 5s
+      retries: 10
+      start_period: 40s
+
+volumes:
+  web_data:
+  db_data:

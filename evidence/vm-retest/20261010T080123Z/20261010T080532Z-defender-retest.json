@@ -1,0 +1,8 @@
+{
+  "utc": "20261010T080532Z",
+  "vm": "defender",
+  "command": "python3 /tmp/trap-retest.py",
+  "exit_code": 0,
+  "stdout": "FAIL1-LibSSH-handshakes PASS \nFAIL1-Hydra PASS \nFAIL2-Masscan-scan-only-and-followup PASS \nFAIL3-Rule-approve-activate-alert-restore PASS \nFAIL3-Invalid-rule-rejected-active-unchanged PASS \nFAIL4-Threshold-API-reload-and-User-denied PASS \nRegression-HTTP PASS \nRegression-HTTPS FAIL AssertionError: No correlated web request in Honeypot VM log\nRegression-SSH PASS \nRegression-Telnet PASS \nFINAL [('FAIL1-LibSSH-handshakes', 'PASS'), ('FAIL1-Hydra', 'PASS'), ('FAIL2-Masscan-scan-only-and-followup', 'PASS'), ('FAIL3-Rule-approve-activate-alert-restore', 'PASS'), ('FAIL3-Invalid-rule-rejected-active-unchanged', 'PASS'), ('FAIL4-Threshold-API-reload-and-User-denied', 'PASS'), ('Regression-HTTP', 'PASS'), ('Regression-HTTPS', 'FAIL'), ('Regression-SSH', 'PASS'), ('Regression-Telnet', 'PASS')]\n",
+  "stderr": ""
+}

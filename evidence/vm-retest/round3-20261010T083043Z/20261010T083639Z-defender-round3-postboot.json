@@ -1,0 +1,8 @@
+{
+  "utc": "20261010T083639Z",
+  "vm": "defender",
+  "command": "python3 /tmp/postboot_round3.py",
+  "exit_code": 2,
+  "stdout": "",
+  "stderr": "python3: can't open file '/tmp/postboot_round3.py': [Errno 2] No such file or directory\n"
+}

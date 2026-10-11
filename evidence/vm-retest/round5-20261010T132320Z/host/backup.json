@@ -1,0 +1,7 @@
+{
+  "vm": "honeypot",
+  "utc": "2026-10-10T13:23:31.101161+00:00",
+  "exit_code": 0,
+  "stdout": "7ecac33ac774bc59247bf034c7e28cfe6aad1b5005f8409e3979a314ef47a568  /root/trap-round5-backup/round5-20261010T132320Z.tar.gz\nactive\nactive\n130eccd2c89921355e41fffd178d9e6c93b8af5cc9c8d30402eee0d864164ec4  /opt/cowrie/var/log/cowrie/cowrie.json\n01ac17b0313cc6102ca009b73ff608d74b54ec0ff0c3ab2691390d44a87b4dd0  /var/log/trap/rabbit-hole-web.jsonl\n",
+  "stderr": "tar: Removing leading `/' from member names\ntar: Removing leading `/' from hard link targets\n"
+}

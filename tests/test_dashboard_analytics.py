@@ -51,3 +51,36 @@ class DashboardAnalyticsTests(unittest.TestCase):
         self.assertEqual([row["summary"] for row in result["items"]], ["probe"])
         with self.assertRaises(ValueError):
             search_logs(alerts, decisions, {"from": ["not-a-date"]})
+
+    def test_web_honeypot_session_matches_http_filter(self):
+        # A3 fix: a Web Honeypot session (profile rabbithole, transport http)
+        # must be found by an HTTP protocol filter, and still by its profile name.
+        sessions = [{"session_id": "w1", "source_ip": "192.0.2.9", "profile": "rabbithole",
+                     "protocol": "http", "first_action": "2026-09-30T11:00:00+00:00",
+                     "actions": 5, "dwell_seconds": 42.0},
+                    {"session_id": "c1", "source_ip": "192.0.2.8", "profile": "cowrie",
+                     "protocol": "ssh", "first_action": "2026-09-30T11:05:00+00:00",
+                     "actions": 3, "dwell_seconds": 12.0}]
+        http = search_logs([], [], {"type": ["honeypot"], "protocol": ["http"]}, sessions)
+        self.assertEqual([r["source"] for r in http["items"]], ["192.0.2.9"])
+        by_profile = search_logs([], [], {"type": ["honeypot"], "protocol": ["rabbithole"]}, sessions)
+        self.assertEqual([r["source"] for r in by_profile["items"]], ["192.0.2.9"])
+        ssh = search_logs([], [], {"type": ["honeypot"], "protocol": ["ssh"]}, sessions)
+        self.assertEqual([r["source"] for r in ssh["items"]], ["192.0.2.8"])
+
+    def test_https_and_tls_filters_are_aliases(self):
+        sessions = [{"session_id": "w3", "source_ip": "192.0.2.11", "profile": "rabbithole",
+                     "protocol": "https", "first_action": "2026-09-30T11:00:00+00:00",
+                     "actions": 3, "dwell_seconds": 5.0}]
+        alerts = [{"timestamp": "2026-09-30T11:00:01+00:00", "src_ip": "192.0.2.12",
+                   "app_proto": "tls", "proto": "TCP", "alert": {"signature_id": 1, "signature": "x", "severity": 2}}]
+        for value in ("tls", "https", "HTTPS"):
+            result = search_logs(alerts, [], {"protocol": [value]}, sessions)
+            self.assertEqual(sorted(r["source"] for r in result["items"]),
+                             ["192.0.2.11", "192.0.2.12"], value)
+
+    def test_web_honeypot_session_without_protocol_maps_from_profile(self):
+        sessions = [{"session_id": "w2", "source_ip": "192.0.2.10", "profile": "snare",
+                     "first_action": "2026-09-30T11:00:00+00:00", "actions": 2, "dwell_seconds": 9.0}]
+        result = search_logs([], [], {"type": ["honeypot"], "protocol": ["http"]}, sessions)
+        self.assertEqual([r["source"] for r in result["items"]], ["192.0.2.10"])

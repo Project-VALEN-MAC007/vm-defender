@@ -1,0 +1,8 @@
+{
+  "utc": "20261010T083841Z",
+  "vm": "defender",
+  "command": "python3 /tmp/collect_round3.py; chmod 644 /tmp/trap-round3-evidence.tar.gz",
+  "exit_code": 0,
+  "stdout": "{\n  \"test_start\": \"2026-10-10T08:30:43+00:00\",\n  \"case_count\": 47,\n  \"final_pass\": 47,\n  \"final_fail\": 0,\n  \"initial_fail_count\": 13,\n  \"immediate_pass\": 20,\n  \"readiness_seconds\": {\n    \"count\": 20,\n    \"min\": 0.162,\n    \"median\": 0.1765,\n    \"max\": 0.186\n  },\n  \"et_pass\": 13\n}\nHashes: {\"cowrie.json\": \"b62f8ec3638bbd50ab9f0521ce655a2a320264c4e3d3dd5dbc470d5e34f01267\", \"rabbit-hole-web.jsonl\": \"c4130fc98a2df3e60185d2a909249de5bb3e87eb4cf4d6a311be739857e35669\"}\n",
+  "stderr": "nginx: the configuration file /etc/nginx/nginx.conf syntax is ok\nnginx: configuration file /etc/nginx/nginx.conf test is successful\n"
+}

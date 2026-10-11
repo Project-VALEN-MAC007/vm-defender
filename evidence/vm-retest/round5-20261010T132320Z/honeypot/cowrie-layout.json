@@ -1,0 +1,4 @@
+999
+[PosixPath('/cowrie/cowrie-git/etc/.gitignore')]
+['/cowrie/cowrie-git/src/cowrie/data/etc/cowrie.cfg.dist']
+['/cowrie/cowrie-git/src/cowrie/data/fs.pickle']

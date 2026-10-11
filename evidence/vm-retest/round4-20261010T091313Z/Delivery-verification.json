@@ -1,0 +1,10 @@
+{
+  "verified_utc": "2026-10-10T13:17:05.441405+00:00",
+  "archive_crc_check": "PASS",
+  "production_and_dashboard_passwords_and_totp_secrets_absent": "PASS",
+  "env_files_absent": "PASS",
+  "auth_cookie_headers_redacted": "PASS",
+  "all_three_vms_running": true,
+  "delivery_services_active": true,
+  "resume_note": "All VMs were powered off when user resumed. Started all three. Defender and Honeypot initial cold boots stayed at Loading essential drivers; reset recovered them. Existing round4 test results preserved. Only read-only delivery checks followed the final Flush."
+}

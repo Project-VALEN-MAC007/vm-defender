@@ -156,6 +156,31 @@ class DashboardApiSecurityTests(unittest.TestCase):
         self.assertIsNone(store.complete_login(challenge, totp_code(secret, counter + 1)))
         self.assertIsNone(store.begin_login("admin", "Admin-password-123"))
 
+    def test_totp_resetup_requires_current_code(self):
+        # A6: re-enrolling an authenticator from My Account needs the current
+        # password AND a valid current TOTP; then a new secret replaces the old.
+        store = UserStore(self.paths["users"])
+        counter = int(time.time()) // 30
+        with patch("defender.dashboard.security.time.time", return_value=counter * 30):
+            first = store.setup_totp("admin", "Admin-password-123")
+            store.setup_totp("admin", "Admin-password-123", totp_code(first, counter))
+            self.assertEqual(store.load()["admin"]["totp_secret"], first)
+            # begin re-setup without the current code is refused
+            with self.assertRaises(ValueError) as ctx:
+                store.setup_totp("admin", "Admin-password-123")
+            self.assertEqual(str(ctx.exception), "invalid_totp")
+            with self.assertRaises(ValueError):
+                store.setup_totp("admin", "Admin-password-123", current_totp="000000")
+            # with a valid current code a new pending secret is issued and confirmed
+            new_secret = store.setup_totp("admin", "Admin-password-123",
+                                          current_totp=totp_code(first, counter + 1))
+            self.assertNotEqual(new_secret, first)
+            self.assertIsNone(store.setup_totp("admin", "Admin-password-123", totp_code(new_secret, counter + 1)))
+            self.assertEqual(store.load()["admin"]["totp_secret"], new_secret)
+        # wrong current password is still rejected outright
+        with self.assertRaises(ValueError):
+            store.setup_totp("admin", "wrong-password", current_totp="123456")
+
     def test_user_cannot_access_rule_management(self):
         cookie, _ = self.login("viewer", "Viewer-password-123")
         status, _, payload = self.request("GET", "/api/rules.json", headers={"Cookie": cookie})

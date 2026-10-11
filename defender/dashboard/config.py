@@ -35,6 +35,8 @@ class DashboardSettings:
     rabbit_hole_log_paths: tuple[Path, ...] = ()
     deploy_agent_url: str | None = None
     deploy_agent_token_path: Path | None = None
+    deploy_allowed_targets: tuple[str, ...] = ()
+    deploy_dry_run: bool = False
     rule_apply_dir: Path | None = None
 
 
@@ -103,6 +105,8 @@ def load_dashboard_settings(path: str | Path) -> DashboardSettings:
         deploy_agent_url=(raw.get("web_deploy") or {}).get("agent_url") or None,
         deploy_agent_token_path=(_resolve(root, raw["web_deploy"]["token_file"], "web_deploy.token_file")
                                  if (raw.get("web_deploy") or {}).get("token_file") else None),
+        deploy_allowed_targets=tuple(str(t) for t in (raw.get("web_deploy") or {}).get("allowed_targets") or []),
+        deploy_dry_run=(raw.get("web_deploy") or {}).get("dry_run") is True,
         rabbit_hole_log_paths=tuple(_resolve(root, value, "paths.rabbit_hole_logs")
                                     for value in paths.get("rabbit_hole_logs", [])),
     )

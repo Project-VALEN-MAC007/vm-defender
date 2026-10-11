@@ -1,0 +1,14 @@
+[
+  {
+    "vm": "Web",
+    "reboot_requested_utc": "2026-10-10T09:35:17.589792+00:00"
+  },
+  {
+    "vm": "Honeypot",
+    "reboot_requested_utc": "2026-10-10T09:35:18.470402+00:00"
+  },
+  {
+    "vm": "Defender",
+    "reboot_requested_utc": "2026-10-10T09:35:19.979274+00:00"
+  }
+]

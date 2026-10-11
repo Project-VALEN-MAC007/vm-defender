@@ -1,0 +1,10 @@
+[Unit]
+Description=TRAP: replace a broken honeypot container with a new one
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /opt/trap/honeypot/docker/watchdog.py
+RuntimeDirectory=trap-honeypot-watchdog
+RuntimeDirectoryPreserve=yes

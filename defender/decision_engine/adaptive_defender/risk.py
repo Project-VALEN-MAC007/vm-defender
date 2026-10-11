@@ -46,7 +46,7 @@ class RiskEngine:
         elapsed_minutes = max(0.0, (now - state.updated).total_seconds() / 60)
         state.score = max(0.0, state.score - elapsed_minutes * self.decay_per_minute)
         severity_points = {1: 35, 2: 25, 3: 12}.get(event.severity, 8)
-        protocol_points = {"scan": 25, "ssh": 10, "telnet": 10, "http": 5, "tls": 5}.get(event.protocol, 3)
+        protocol_points = {"scan": 25, "ssh": 10, "telnet": 10, "http": 5, "https": 5, "tls": 5}.get(event.protocol, 3)
         reasons = [f"severity={event.severity}:+{severity_points}", f"protocol={event.protocol}:+{protocol_points}"]
         if event.signature_id in {2002677, 2008538, 2009359, 2017616, 2001219} or event.protocol == "scan":
             state.scan_until = now + timedelta(seconds=self.expiry_seconds)
@@ -54,13 +54,13 @@ class RiskEngine:
             state.ssh_until = now + timedelta(seconds=self.expiry_seconds)
         if event.protocol == "telnet":
             state.telnet_until = now + timedelta(seconds=self.expiry_seconds)
-        if event.protocol in {"http", "tls"} and state.scan_until and state.scan_until > now:
+        if event.protocol in {"http", "https", "tls"} and state.scan_until and state.scan_until > now:
             protocol_points += 20
             reasons.append("active_scan_history:+20")
-        if event.protocol in {"http", "tls"} and state.ssh_until and state.ssh_until > now:
+        if event.protocol in {"http", "https", "tls"} and state.ssh_until and state.ssh_until > now:
             protocol_points += 10
             reasons.append("active_ssh_history:+10")
-        if event.protocol in {"http", "tls"} and state.telnet_until and state.telnet_until > now:
+        if event.protocol in {"http", "https", "tls"} and state.telnet_until and state.telnet_until > now:
             protocol_points += 10
             reasons.append("active_telnet_history:+10")
         state.score = min(100.0, state.score + severity_points + protocol_points)

@@ -50,7 +50,7 @@ def seed_demo_candidate(directory: Path) -> None:
 
 
 def write_deploy_demo(directory: Path) -> dict:
-    """Dry-run deploy agent config so the Deploy page works without Docker."""
+    """Dry-run deploy agent config so the Deploy page works without Docker or a real site."""
     import secrets
     token = directory / "deploy-agent.token"
     if not token.exists():
@@ -62,10 +62,10 @@ def write_deploy_demo(directory: Path) -> dict:
     (directory / "deploy-agent.json").write_text(json.dumps({
         "bind_host": "127.0.0.1", "bind_port": 8091, "token_file": "deploy-agent.token",
         "allowed_clients": ["127.0.0.1/32"],
-        "allowed_targets": ["www.example.com", "shop.example.com", "10.10.10.3:8080"],
         "compose_dir": "snare", "env_file": "snare/settings.env", "data_dir": "snare/data/snare",
         "health_url": "http://127.0.0.1:8083/", "dry_run": True}, indent=2) + "\n", encoding="utf-8")
-    return {"agent_url": "http://127.0.0.1:8091", "token_file": "evidence/demo/deploy-agent.token"}
+    return {"agent_url": "http://127.0.0.1:8091", "token_file": "evidence/demo/deploy-agent.token",
+            "allowed_targets": ["www.example.com", "shop.example.com", "10.10.10.3:8080"], "dry_run": True}
 
 
 def generate(alert_count: int, decision_count: int, seed: int) -> dict:

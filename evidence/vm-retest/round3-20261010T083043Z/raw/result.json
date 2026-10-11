@@ -1,0 +1,6 @@
+{
+  "state": "applied",
+  "sha256": "049a99cf7e216ef541d33159708c0108816c4c71d46e14555889bb8effbd5b8a",
+  "backup": "/etc/suricata/rules/et-open-selected.rules.20261010T083452Z.bak",
+  "time": "2026-10-10T08:34:52.459838+00:00"
+}

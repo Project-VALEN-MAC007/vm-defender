@@ -1,0 +1,39 @@
+#!/usr/sbin/nft -f
+
+# Do not render/apply until the marked values are observed on the lab.
+# 10.10.10.2:2222 = Cowrie SSH (10.10.10.2:2222)
+# 10.10.10.2:2223 = Cowrie Telnet (10.10.10.2:2223). defender/telnet is a local test stub only.
+table inet adaptive_defender {
+    set ssh_redirect {
+        type ipv4_addr
+        flags timeout
+        timeout 30m
+    }
+
+    set telnet_redirect {
+        type ipv4_addr
+        flags timeout
+        timeout 30m
+    }
+
+    chain prerouting {
+        type nat hook prerouting priority dstnat; policy accept;
+        iifname "trap-out" ip saddr @ssh_redirect tcp dport 22 \
+            counter dnat ip to 10.10.10.2:2222
+        iifname "trap-out" ip saddr @telnet_redirect tcp dport 23 \
+            counter dnat ip to 10.10.10.2:2223
+        iifname "trap-out" tcp dport 22 counter dnat ip to 10.10.10.3:22
+    }
+
+    chain forward {
+        type filter hook forward priority filter; policy drop;
+        ct state invalid counter drop
+        ct state established,related counter accept
+        iifname "trap-out" oifname "enp0s8" ip daddr 10.10.10.3 tcp dport 22 ct status dnat counter accept
+        iifname "trap-out" oifname "enp0s8" \
+            ip daddr 10.10.10.2 tcp dport 2222 ct status dnat counter accept
+        iifname "trap-out" oifname "enp0s8" \
+            ip daddr 10.10.10.2 tcp dport 2223 ct status dnat counter accept
+    }
+
+}

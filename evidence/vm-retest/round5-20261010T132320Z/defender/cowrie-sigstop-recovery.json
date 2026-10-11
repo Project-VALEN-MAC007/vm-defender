@@ -1,0 +1,14 @@
+{
+  "listening_before_stop": "LISTEN 0      50        0.0.0.0:2222  0.0.0.0:*\nLISTEN 0      50        0.0.0.0:2223  0.0.0.0:*\nLISTEN 0      4096   127.0.0.11:45651 0.0.0.0:*\n",
+  "stopped_state_and_listening": "    PID STAT COMMAND\n  21439 Ts   /cowrie/cowrie-env/bin/python3 /cowrie/cowrie-env/bin/twistd -n --umask=0022 --pidfile= --logger cowrie.python.logfile.stdoutLogger cowrie\nLISTEN 0      50        0.0.0.0:2222  0.0.0.0:*\nLISTEN 0      50        0.0.0.0:2223  0.0.0.0:*\nLISTEN 0      4096   127.0.0.11:45651 0.0.0.0:*\n",
+  "service": "cowrie",
+  "fault": "sigstop",
+  "fault_time": "2026-10-10T13:34:53.501176+00:00",
+  "id_before": "ee92960bb077f62abfd5e34a6c701e8de5ee181a6d524cb3cc73ea0be8395b72",
+  "id_after": "319e0eec7e4de889c97066ba5e90bf4af61742c47370c049992b2df2307986f9",
+  "restart_count_before": 0,
+  "restart_count_after": 0,
+  "listening_recovered_seconds": 90.9241835639998,
+  "start_before": "2026-10-10T13:34:43.226126507Z",
+  "start_after": "2026-10-10T13:36:23.378339933Z"
+}

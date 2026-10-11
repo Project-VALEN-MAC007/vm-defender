@@ -1,0 +1,478 @@
+[
+  {
+    "time": "2026-10-10T09:22:19.365420+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.200/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:19.394378+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.201/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:19.421253+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.202/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:19.448287+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.203/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:19.473739+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.204/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:19.503362+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.205/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:19.532836+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.206/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:19.562661+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.207/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:19.591534+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.208/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:19.621620+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.209/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:19.650565+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.210/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:19.682127+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.211/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:19.708101+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.212/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:19.736590+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.213/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:19.764974+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.214/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:19.793477+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.215/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:19.820592+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.216/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:19.848511+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.217/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:19.876458+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.218/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:19.905392+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.219/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:19.935378+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.220/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:19.962524+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.221/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:19.989806+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.222/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:20.015967+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.223/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:20.041292+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.224/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:20.068192+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.225/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:20.096061+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.226/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:20.124336+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.227/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:20.151968+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.228/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:20.179933+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.229/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:20.209091+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.230/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:20.237062+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.231/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:20.264642+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.232/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:20.293285+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.233/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:20.322052+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.234/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:20.348442+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.235/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:20.376091+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.236/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:20.404223+00:00",
+    "command": "ip netns exec trap-attacker ip addr add 192.168.56.237/24 dev trap-in",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:20.424325+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.200 -skS -i --max-time 5 -b /var/lib/trap/round4-20261010T091313Z/normal-192.168.56.200.cookies -c /var/lib/trap/round4-20261010T091313Z/normal-192.168.56.200.cookies http://192.168.56.10/",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 502 Bad Gateway\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 09:22:20 GMT\nContent-Type: text/html\nContent-Length: 166\nConnection: keep-alive\n\n<html>\n<head><title>502 Bad Gateway</title></head>\n<body>\n<center><h1>502 Bad Gateway</h1></center>\n<hr><center>nginx/1.24.0 (Ubuntu)</center>\n</body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:20.948012+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:21.809492+00:00",
+    "command": "systemctl restart trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:21.857606+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.201 -skS -i --max-time 5 -b /var/lib/trap/round4-20261010T091313Z/normal-192.168.56.201.cookies -c /var/lib/trap/round4-20261010T091313Z/normal-192.168.56.201.cookies https://192.168.56.10/",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 503 Service Temporarily Unavailable\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 09:22:21 GMT\nContent-Type: application/json\nContent-Length: 49\nConnection: keep-alive\nCache-Control: no-store\n\n{\"status\":\"backend_unavailable\",\"profile\":\"real\"}",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:22.417740+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:23.301188+00:00",
+    "command": "systemctl restart trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:25.823345+00:00",
+    "command": "systemctl restart trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:27.851317+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:28.623616+00:00",
+    "command": "systemctl restart trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:29.424425+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:30.222353+00:00",
+    "command": "systemctl restart trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:30.264102+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.204 -skS -i --max-time 5 http://192.168.56.10/trap-static.txt",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 502 Bad Gateway\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 09:22:30 GMT\nContent-Type: text/html\nContent-Length: 166\nConnection: keep-alive\n\n<html>\n<head><title>502 Bad Gateway</title></head>\n<body>\n<center><h1>502 Bad Gateway</h1></center>\n<hr><center>nginx/1.24.0 (Ubuntu)</center>\n</body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:30.279921+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Job for trap-log-sync.service failed.\nSee \"systemctl status trap-log-sync.service\" and \"journalctl -xeu trap-log-sync.service\" for details.\n"
+  },
+  {
+    "time": "2026-10-10T09:22:30.518211+00:00",
+    "command": "systemctl restart trap-log-sync",
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Job for trap-log-sync.service failed.\nSee \"systemctl status trap-log-sync.service\" and \"journalctl -xeu trap-log-sync.service\" for details.\n"
+  },
+  {
+    "time": "2026-10-10T09:22:33.002614+00:00",
+    "command": "ip netns exec trap-attacker python3 -c 'import socket,time\nfor i in range(6):\n s=socket.socket();s.settimeout(4);s.bind(('\"'\"'192.168.56.205'\"'\"',0));s.connect(('\"'\"'192.168.56.10'\"'\"',22));s.recv(256);s.close();time.sleep(.2)'",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:35.494663+00:00",
+    "command": "ip netns exec trap-attacker python3 -c 'import socket,paramiko,time,json\ns=socket.socket();s.bind(('\"'\"'192.168.56.205'\"'\"',0));s.settimeout(5);s.connect(('\"'\"'192.168.56.10'\"'\"',22));c=paramiko.SSHClient();c.set_missing_host_key_policy(paramiko.AutoAddPolicy());c.connect('\"'\"'192.168.56.10'\"'\"',username='\"'\"'sysadmin'\"'\"',password='\"'\"'[REDACTED]'\"'\"',sock=s,look_for_keys=False,allow_agent=False);ch=c.invoke_shell()\nfor cmd in ['\"'\"'whoami'\"'\"', '\"'\"'ls'\"'\"', '\"'\"'uname -a'\"'\"']:\n ch.send(cmd+'\"'\"'\\n'\"'\"');time.sleep(.7);out='\"'\"''\"'\"'\n while ch.recv_ready():out+=ch.recv(65535).decode(errors='\"'\"'replace'\"'\"')\n print(json.dumps({'\"'\"'command'\"'\"':cmd,'\"'\"'output'\"'\"':out}))\nc.close()\n'",
+    "exit_code": 0,
+    "stdout": "{\"command\": \"whoami\", \"output\": \"\\r\\nThe programs included with the Debian GNU/Linux system are free software;\\r\\nthe exact distribution terms for each program are described in the\\r\\nindividual files in /usr/share/doc/*/copyright.\\r\\n\\r\\nDebian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent\\r\\npermitted by applicable law.\\r\\n\\u001b[4hsysadmin@trap-backup-01:~$ whoami\\r\\n\\u001b[4lsysadmin\\r\\n\\u001b[4hsysadmin@trap-backup-01:~$ \"}\n{\"command\": \"ls\", \"output\": \"ls\\r\\n\\u001b[4lnotes.txt \\r\\n\\u001b[4hsysadmin@trap-backup-01:~$ \"}\n{\"command\": \"uname -a\", \"output\": \"uname -a\\r\\n\\u001b[4lLinux trap-backup-01 6.1.0-21-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.1.90-1 (2024-05-03) x86_64 GNU/Linux\\r\\n\\u001b[4hsysadmin@trap-backup-01:~$ \"}\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:36.061681+00:00",
+    "command": "systemctl restart trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:38.405493+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:39.185668+00:00",
+    "command": "systemctl restart trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:39.220152+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.206 -skS -i --max-time 5 -A sqlmap/1.x 'http://192.168.56.10/?id=1'",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 502 Bad Gateway\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 09:22:39 GMT\nContent-Type: text/html\nContent-Length: 166\nConnection: keep-alive\n\n<html>\n<head><title>502 Bad Gateway</title></head>\n<body>\n<center><h1>502 Bad Gateway</h1></center>\n<hr><center>nginx/1.24.0 (Ubuntu)</center>\n</body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:40.589968+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:40.881644+00:00",
+    "command": "systemctl restart trap-log-sync",
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Job for trap-log-sync.service failed.\nSee \"systemctl status trap-log-sync.service\" and \"journalctl -xeu trap-log-sync.service\" for details.\n"
+  },
+  {
+    "time": "2026-10-10T09:22:40.925169+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.207 -skS -i --max-time 5 -A 'Mozilla/5.00 (Nikto/2.1.5)' http://192.168.56.10/",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 502 Bad Gateway\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 09:22:40 GMT\nContent-Type: text/html\nContent-Length: 166\nConnection: keep-alive\n\n<html>\n<head><title>502 Bad Gateway</title></head>\n<body>\n<center><h1>502 Bad Gateway</h1></center>\n<hr><center>nginx/1.24.0 (Ubuntu)</center>\n</body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:40.944696+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.207 -skS -i --max-time 5 -A 'Mozilla/5.00 (Nikto/2.1.5)' http://192.168.56.10/",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 502 Bad Gateway\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 09:22:40 GMT\nContent-Type: text/html\nContent-Length: 166\nConnection: keep-alive\n\n<html>\n<head><title>502 Bad Gateway</title></head>\n<body>\n<center><h1>502 Bad Gateway</h1></center>\n<hr><center>nginx/1.24.0 (Ubuntu)</center>\n</body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:40.964012+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.207 -skS -i --max-time 5 -A 'Mozilla/5.00 (Nikto/2.1.5)' http://192.168.56.10/",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 502 Bad Gateway\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 09:22:40 GMT\nContent-Type: text/html\nContent-Length: 166\nConnection: keep-alive\n\n<html>\n<head><title>502 Bad Gateway</title></head>\n<body>\n<center><h1>502 Bad Gateway</h1></center>\n<hr><center>nginx/1.24.0 (Ubuntu)</center>\n</body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:40.984040+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.207 -skS -i --max-time 5 -A 'Mozilla/5.00 (Nikto/2.1.5)' http://192.168.56.10/",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 502 Bad Gateway\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 09:22:40 GMT\nContent-Type: text/html\nContent-Length: 166\nConnection: keep-alive\n\n<html>\n<head><title>502 Bad Gateway</title></head>\n<body>\n<center><h1>502 Bad Gateway</h1></center>\n<hr><center>nginx/1.24.0 (Ubuntu)</center>\n</body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:41.005911+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.207 -skS -i --max-time 5 -A 'Mozilla/5.00 (Nikto/2.1.5)' http://192.168.56.10/",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 502 Bad Gateway\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 09:22:41 GMT\nContent-Type: text/html\nContent-Length: 166\nConnection: keep-alive\n\n<html>\n<head><title>502 Bad Gateway</title></head>\n<body>\n<center><h1>502 Bad Gateway</h1></center>\n<hr><center>nginx/1.24.0 (Ubuntu)</center>\n</body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:41.030555+00:00",
+    "command": "ip netns exec trap-attacker curl --interface 192.168.56.207 -skS -i --max-time 5 -A 'Mozilla/5.00 (Nikto/2.1.5)' http://192.168.56.10/",
+    "exit_code": 0,
+    "stdout": "HTTP/1.1 502 Bad Gateway\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sat, 10 Oct 2026 09:22:41 GMT\nContent-Type: text/html\nContent-Length: 166\nConnection: keep-alive\n\n<html>\n<head><title>502 Bad Gateway</title></head>\n<body>\n<center><h1>502 Bad Gateway</h1></center>\n<hr><center>nginx/1.24.0 (Ubuntu)</center>\n</body>\n</html>\n",
+    "stderr": ""
+  },
+  {
+    "time": "2026-10-10T09:22:41.630954+00:00",
+    "command": "systemctl start trap-log-sync",
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Job for trap-log-sync.service failed.\nSee \"systemctl status trap-log-sync.service\" and \"journalctl -xeu trap-log-sync.service\" for details.\n"
+  },
+  {
+    "time": "2026-10-10T09:22:41.915624+00:00",
+    "command": "systemctl restart trap-log-sync",
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Job for trap-log-sync.service failed.\nSee \"systemctl status trap-log-sync.service\" and \"journalctl -xeu trap-log-sync.service\" for details.\n"
+  }
+]

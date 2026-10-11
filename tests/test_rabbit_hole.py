@@ -176,12 +176,39 @@ class AnalyticsTests(unittest.TestCase):
         self.assertEqual(summary["overall"]["sessions"], 1)
         self.assertEqual(summary["overall"]["sessions_followed"], 1)
 
-    def test_window_starts_only_at_successful_decoy_access(self):
+    def test_ordinary_visit_counts_as_session_but_not_followed(self):
+        # A2 fix: a redirected attacker who only views ordinary pages (no decoy
+        # node_id) is still a honeypot session with a dwell time; it just did not
+        # follow a Rabbit Hole clue.
         start = datetime(2026, 10, 1, 10, 0, tzinfo=timezone.utc)
-        events = [self.event(start, node=None), self.event(start, "api-users", status=401),
-                  self.event(start + timedelta(seconds=30))]
-        result = analytics.windows(events, 300, now=start)
-        self.assertEqual(result[0]["start"], (start + timedelta(seconds=30)).isoformat())
+        events = [self.event(start, node=None),
+                  self.event(start + timedelta(seconds=40), node=None, status=404),
+                  self.event(start + timedelta(seconds=95), node=None)]
+        window = analytics.windows(events, 300, now=start + timedelta(seconds=95))[0]
+        self.assertEqual(window["start"], start.isoformat())
+        self.assertEqual(window["duration_seconds"], 95.0)
+        self.assertFalse(window["single_access"])
+        self.assertFalse(window["followed"])
+        self.assertEqual(window["max_depth"], 0)
+        summary = analytics.summarize([window])
+        self.assertEqual(summary["overall"]["sessions"], 1)
+        self.assertEqual(summary["overall"]["sessions_followed"], 0)
+
+    def test_single_ordinary_request_is_a_session_without_dwell(self):
+        start = datetime(2026, 10, 1, 10, 0, tzinfo=timezone.utc)
+        window = analytics.windows([self.event(start, node=None)], 300, now=start)[0]
+        self.assertTrue(window["single_access"])
+        self.assertIsNone(window["duration_seconds"])
+        self.assertEqual(window["source_ip"], "192.0.2.1")
+
+    def test_trail_still_tracks_only_decoy_nodes(self):
+        start = datetime(2026, 10, 1, 10, 0, tzinfo=timezone.utc)
+        events = [self.event(start, node=None),
+                  self.event(start + timedelta(seconds=10), "backup-index", depth=2, followed=True)]
+        window = analytics.windows(events, 300, now=start + timedelta(seconds=10))[0]
+        self.assertTrue(window["followed"])
+        self.assertEqual(window["max_depth"], 2)
+        self.assertEqual(window["resources"], 1)
 
 
 class ShellTests(unittest.TestCase):

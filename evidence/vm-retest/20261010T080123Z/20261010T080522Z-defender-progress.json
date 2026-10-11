@@ -1,0 +1,8 @@
+{
+  "utc": "20261010T080522Z",
+  "vm": "defender",
+  "command": "D=$(cat /var/lib/trap/current-retest-dir); if [ -f \"$D/cases.json\" ]; then python3 -c \"import json,pathlib; d=pathlib.Path(\\\"/var/lib/trap/current-retest-dir\\\").read_text(); print([(x[\\\"name\\\"],x[\\\"status\\\"],x[\\\"error\\\"]) for x in json.load(open(d+\\\"/cases.json\\\"))])\"; fi; systemctl is-active trap-apply-rules.path adaptive-defender suricata",
+  "exit_code": 0,
+  "stdout": "[('FAIL1-LibSSH-handshakes', 'PASS', None), ('FAIL1-Hydra', 'PASS', None), ('FAIL2-Masscan-scan-only-and-followup', 'PASS', None), ('FAIL3-Rule-approve-activate-alert-restore', 'PASS', None), ('FAIL3-Invalid-rule-rejected-active-unchanged', 'PASS', None), ('FAIL4-Threshold-API-reload-and-User-denied', 'PASS', None), ('Regression-HTTP', 'PASS', None), ('Regression-HTTPS', 'FAIL', 'AssertionError: No correlated web request in Honeypot VM log')]\nactive\nactive\nactive\n",
+  "stderr": ""
+}

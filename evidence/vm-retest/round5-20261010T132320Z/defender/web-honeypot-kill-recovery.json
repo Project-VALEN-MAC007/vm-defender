@@ -1,0 +1,12 @@
+{
+  "service": "web-honeypot",
+  "fault": "kill",
+  "fault_time": "2026-10-10T13:36:33.157429+00:00",
+  "id_before": "11e6d82da4e58219b9459f82a2e6264c0159eeb713847bc51571794e9f2e8acc",
+  "id_after": "11e6d82da4e58219b9459f82a2e6264c0159eeb713847bc51571794e9f2e8acc",
+  "restart_count_before": 0,
+  "restart_count_after": 1,
+  "listening_recovered_seconds": 49.3957547550001,
+  "start_before": "2026-10-10T13:28:27.315257743Z",
+  "start_after": "2026-10-10T13:36:34.242242006Z"
+}

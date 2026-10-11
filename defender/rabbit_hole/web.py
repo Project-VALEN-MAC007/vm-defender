@@ -18,6 +18,8 @@ import json
 from pathlib import Path
 import re
 import secrets
+import urllib.error
+import urllib.request
 import threading
 import time
 from typing import Callable
@@ -91,6 +93,7 @@ class WebEngine:
         self.trusted = [ipaddress.ip_network(c, strict=False)
                         for c in config.web.get("trusted_proxies") or []]
         self.server_header = str(config.web.get("server_header") or "nginx")
+        self.upstream = (config.web.get("upstream") or "").rstrip("/") or None
         self._mtime = self._signature(config)
 
     def _signature(self, config: RabbitConfig) -> tuple:
@@ -203,7 +206,9 @@ class WebEngine:
             "limit_reached": False, "rabbit_hole_enabled": self.config.enabled,
         }
         response_headers = {"Content-Type": "text/html", "Server": self.server_header}
-        if link != "cookie":
+        # With an upstream the public site sets no anonymous cookie, so neither do we
+        # (sessions then link by IP + User-Agent).
+        if link != "cookie" and not self.upstream:
             response_headers["Set-Cookie"] = f"{SESSION_COOKIE}={sid}; Path=/; HttpOnly"
         status, payload = self._route(method, path, headers, body, state, faker, event,
                                       response_headers)
@@ -212,6 +217,42 @@ class WebEngine:
         if method == "HEAD":
             payload = b""
         return Response(status, response_headers, payload, event)
+
+    # Headers that must not be copied verbatim between hops.
+    _HOP_BY_HOP = {"connection", "keep-alive", "proxy-authenticate", "proxy-authorization",
+                   "te", "trailers", "transfer-encoding", "upgrade", "content-length", "server"}
+
+    def _forward(self, method, path, query, headers, body, event, out) -> tuple:
+        """Proxy an ordinary (non-bait) request to the decoy web app and return
+        its response, so the honeypot's pages match the real site. The request is
+        still logged as a Rabbit Hole web event (node_id stays null)."""
+        event["action"] = "proxy"
+        target = self.upstream + path + (("?" + query) if query else "")
+        forward_headers = {}
+        for name in ("user-agent", "accept", "accept-language", "content-type", "referer", "cookie"):
+            value = headers.get(name)
+            if value:
+                forward_headers[name.title()] = value
+        data = body if method == "POST" and body else None
+        request = urllib.request.Request(target, data=data, method=method, headers=forward_headers)
+        try:
+            with urllib.request.urlopen(request, timeout=5) as response:
+                status = response.status
+                raw = response.read(MAX_BODY + 1)
+                resp_headers = response.headers
+        except urllib.error.HTTPError as error:
+            status = error.code
+            raw = error.read(MAX_BODY + 1)
+            resp_headers = error.headers
+        except (urllib.error.URLError, OSError, ValueError):
+            event["action"] = "proxy_error"
+            return self._page(NOT_FOUND.replace("404 Not Found", "502 Bad Gateway"), out, 502)
+        out["Content-Type"] = resp_headers.get("Content-Type", "text/html; charset=utf-8")
+        for name in ("Set-Cookie", "Location", "Cache-Control", "Content-Language"):
+            value = resp_headers.get(name)
+            if value and name.lower() not in self._HOP_BY_HOP:
+                out[name] = value
+        return status, raw[:MAX_BODY]
 
     def _page(self, template: str, headers: dict, status: int) -> tuple:
         headers["Content-Type"] = "text/html"
@@ -222,11 +263,13 @@ class WebEngine:
             return self._page(NOT_ALLOWED, out, 405)
         if len(body) > MAX_BODY:
             return self._page(TOO_LARGE, out, 413)
-        if path == "/":
+        if path == "/" and not self.upstream:
             event["action"] = "open_page"
             out["Content-Type"] = "text/html; charset=utf-8"
             return 200, self._landing().encode("utf-8")
         if not self.config.enabled:
+            if self.upstream:
+                return self._forward(method, path, event.get("query") or "", headers, body, event, out)
             return self._page(NOT_FOUND, out, 404)
         match = self.routes.get(path)
         item_id = None
@@ -244,6 +287,8 @@ class WebEngine:
             if path in self.fillers:
                 event["action"] = "read_file"
                 return self._page(FORBIDDEN, out, 403)
+            if self.upstream:
+                return self._forward(method, path, event.get("query") or "", headers, body, event, out)
             return self._page(NOT_FOUND, out, 404)
         scenario, node = match
         if node.depth > self.config.limits["max_depth"]:

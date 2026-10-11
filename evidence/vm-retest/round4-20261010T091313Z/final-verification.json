@@ -1,0 +1,497 @@
+[
+  {
+    "case": "Normal-Web-HTTP",
+    "status": "PASS",
+    "initial_status": "PASS",
+    "source_ips": "192.168.56.71",
+    "start_time": "2026-10-10T09:23:34.445744+00:00",
+    "evidence": "cases.json",
+    "note": ""
+  },
+  {
+    "case": "Normal-Web-HTTPS",
+    "status": "PASS",
+    "initial_status": "PASS",
+    "source_ips": "192.168.56.72",
+    "start_time": "2026-10-10T09:23:39.604954+00:00",
+    "evidence": "cases.json",
+    "note": ""
+  },
+  {
+    "case": "Normal-SSH",
+    "status": "PASS",
+    "initial_status": "PASS",
+    "source_ips": "192.168.56.73",
+    "start_time": "2026-10-10T09:23:43.635514+00:00",
+    "evidence": "cases.json",
+    "note": ""
+  },
+  {
+    "case": "Normal-Telnet",
+    "status": "PASS",
+    "initial_status": "FAIL",
+    "source_ips": "192.168.56.74",
+    "start_time": "2026-10-10T09:23:48.458031+00:00",
+    "evidence": "normal-telnet-origin-proof.json",
+    "note": "Initial auth collector omitted login process events; fresh-IP retest passed with /bin/login journal and packet address proof"
+  },
+  {
+    "case": "Transition-HTTP-production-to-Honeypot",
+    "status": "PASS",
+    "initial_status": "PASS",
+    "source_ips": "192.168.56.75",
+    "start_time": "2026-10-10T09:23:59.397793+00:00",
+    "evidence": "cases.json",
+    "note": ""
+  },
+  {
+    "case": "Transition-SSH-production-to-Cowrie",
+    "status": "PASS",
+    "initial_status": "PASS",
+    "source_ips": "192.168.56.76",
+    "start_time": "2026-10-10T09:24:41.752080+00:00",
+    "evidence": "cases.json",
+    "note": ""
+  },
+  {
+    "case": "ET-sqlmap",
+    "status": "PASS",
+    "initial_status": "PASS",
+    "source_ips": "192.168.56.77",
+    "start_time": "2026-10-10T09:24:50.687542+00:00",
+    "evidence": "cases.json",
+    "note": ""
+  },
+  {
+    "case": "ET-Nikto",
+    "status": "PASS",
+    "initial_status": "PASS",
+    "source_ips": "192.168.56.78",
+    "start_time": "2026-10-10T09:24:52.665120+00:00",
+    "evidence": "cases.json",
+    "note": ""
+  },
+  {
+    "case": "ET-Nmap",
+    "status": "PASS",
+    "initial_status": "PASS",
+    "source_ips": "192.168.56.79",
+    "start_time": "2026-10-10T09:24:55.295151+00:00",
+    "evidence": "cases.json",
+    "note": ""
+  },
+  {
+    "case": "ET-Masscan",
+    "status": "PASS",
+    "initial_status": "PASS",
+    "source_ips": "192.168.56.80",
+    "start_time": "2026-10-10T09:24:56.224035+00:00",
+    "evidence": "cases.json",
+    "note": ""
+  },
+  {
+    "case": "ET-UNION-URI",
+    "status": "PASS",
+    "initial_status": "PASS",
+    "source_ips": "192.168.56.81",
+    "start_time": "2026-10-10T09:24:57.089519+00:00",
+    "evidence": "cases.json",
+    "note": ""
+  },
+  {
+    "case": "ET-UNION-body",
+    "status": "PASS",
+    "initial_status": "PASS",
+    "source_ips": "192.168.56.82",
+    "start_time": "2026-10-10T09:24:58.368592+00:00",
+    "evidence": "cases.json",
+    "note": ""
+  },
+  {
+    "case": "ET-passwd",
+    "status": "PASS",
+    "initial_status": "PASS",
+    "source_ips": "192.168.56.83",
+    "start_time": "2026-10-10T09:24:59.342454+00:00",
+    "evidence": "cases.json",
+    "note": ""
+  },
+  {
+    "case": "ET-env",
+    "status": "PASS",
+    "initial_status": "PASS",
+    "source_ips": "192.168.56.84",
+    "start_time": "2026-10-10T09:25:01.138622+00:00",
+    "evidence": "cases.json",
+    "note": ""
+  },
+  {
+    "case": "ET-htpasswd",
+    "status": "PASS",
+    "initial_status": "PASS",
+    "source_ips": "192.168.56.85",
+    "start_time": "2026-10-10T09:25:08.228124+00:00",
+    "evidence": "cases.json",
+    "note": ""
+  },
+  {
+    "case": "ET-SSH-scan",
+    "status": "PASS",
+    "initial_status": "PASS",
+    "source_ips": "192.168.56.86",
+    "start_time": "2026-10-10T09:25:10.062950+00:00",
+    "evidence": "cases.json",
+    "note": ""
+  },
+  {
+    "case": "ET-LibSSH",
+    "status": "PASS",
+    "initial_status": "PASS",
+    "source_ips": "192.168.56.87",
+    "start_time": "2026-10-10T09:25:13.014910+00:00",
+    "evidence": "cases.json",
+    "note": ""
+  },
+  {
+    "case": "ET-Telnet-real-Login-incorrect",
+    "status": "PASS",
+    "initial_status": "PASS",
+    "source_ips": "192.168.56.88",
+    "start_time": "2026-10-10T09:25:16.294862+00:00",
+    "evidence": "cases.json",
+    "note": ""
+  },
+  {
+    "case": "ET-Telnet-real-Login-failed",
+    "status": "FAIL",
+    "initial_status": "FAIL",
+    "source_ips": "192.168.56.89",
+    "start_time": "2026-10-10T09:25:23.789906+00:00",
+    "evidence": "cases.json",
+    "note": "AssertionError: Real telnetd response did not trigger SID 2100492; see captured reply and production auth log"
+  },
+  {
+    "case": "Immediate-HTTP-1",
+    "status": "PASS",
+    "initial_status": "PASS",
+    "source_ips": "192.168.56.90",
+    "start_time": "2026-10-10T09:28:29.277661+00:00",
+    "evidence": "cases.json",
+    "note": ""
+  },
+  {
+    "case": "Immediate-HTTP-2",
+    "status": "PASS",
+    "initial_status": "FAIL",
+    "source_ips": "192.168.56.91",
+    "start_time": "2026-10-10T09:28:31.624418+00:00",
+    "evidence": "Honeypot-web-origin.json + Defender-nginx.json",
+    "note": "Original same request verified against Honeypot origin log; initial copied-log check FAIL retained"
+  },
+  {
+    "case": "Immediate-HTTP-3",
+    "status": "PASS",
+    "initial_status": "FAIL",
+    "source_ips": "192.168.56.92",
+    "start_time": "2026-10-10T09:28:32.536135+00:00",
+    "evidence": "Honeypot-web-origin.json + Defender-nginx.json",
+    "note": "Original same request verified against Honeypot origin log; initial copied-log check FAIL retained"
+  },
+  {
+    "case": "Immediate-HTTP-4",
+    "status": "PASS",
+    "initial_status": "FAIL",
+    "source_ips": "192.168.56.93",
+    "start_time": "2026-10-10T09:28:33.367397+00:00",
+    "evidence": "Honeypot-web-origin.json + Defender-nginx.json",
+    "note": "Original same request verified against Honeypot origin log; initial copied-log check FAIL retained"
+  },
+  {
+    "case": "Immediate-HTTP-5",
+    "status": "PASS",
+    "initial_status": "FAIL",
+    "source_ips": "192.168.56.94",
+    "start_time": "2026-10-10T09:28:34.221593+00:00",
+    "evidence": "Honeypot-web-origin.json + Defender-nginx.json",
+    "note": "Original same request verified against Honeypot origin log; initial copied-log check FAIL retained"
+  },
+  {
+    "case": "Immediate-HTTPS-1",
+    "status": "PASS",
+    "initial_status": "FAIL",
+    "source_ips": "192.168.56.95",
+    "start_time": "2026-10-10T09:28:35.070114+00:00",
+    "evidence": "Honeypot-web-origin.json + Defender-nginx.json",
+    "note": "Original same request verified against Honeypot origin log; initial copied-log check FAIL retained"
+  },
+  {
+    "case": "Immediate-HTTPS-2",
+    "status": "PASS",
+    "initial_status": "FAIL",
+    "source_ips": "192.168.56.96",
+    "start_time": "2026-10-10T09:28:35.866192+00:00",
+    "evidence": "Honeypot-web-origin.json + Defender-nginx.json",
+    "note": "Original same request verified against Honeypot origin log; initial copied-log check FAIL retained"
+  },
+  {
+    "case": "Immediate-HTTPS-3",
+    "status": "PASS",
+    "initial_status": "FAIL",
+    "source_ips": "192.168.56.97",
+    "start_time": "2026-10-10T09:28:36.603825+00:00",
+    "evidence": "Honeypot-web-origin.json + Defender-nginx.json",
+    "note": "Original same request verified against Honeypot origin log; initial copied-log check FAIL retained"
+  },
+  {
+    "case": "Immediate-HTTPS-4",
+    "status": "PASS",
+    "initial_status": "PASS",
+    "source_ips": "192.168.56.98",
+    "start_time": "2026-10-10T09:28:37.331590+00:00",
+    "evidence": "cases.json",
+    "note": ""
+  },
+  {
+    "case": "Immediate-HTTPS-5",
+    "status": "PASS",
+    "initial_status": "PASS",
+    "source_ips": "192.168.56.99",
+    "start_time": "2026-10-10T09:28:39.852585+00:00",
+    "evidence": "cases.json",
+    "note": ""
+  },
+  {
+    "case": "Redirect-HTTP",
+    "status": "PASS",
+    "initial_status": "FAIL",
+    "source_ips": "192.168.56.100",
+    "start_time": "2026-10-10T09:28:41.675172+00:00",
+    "evidence": "Honeypot-web-origin.json + Defender-nginx.json",
+    "note": "Original same request verified against Honeypot origin log; initial copied-log check FAIL retained"
+  },
+  {
+    "case": "Redirect-HTTPS",
+    "status": "PASS",
+    "initial_status": "FAIL",
+    "source_ips": "192.168.56.112",
+    "start_time": "2026-10-10T09:28:42.720725+00:00",
+    "evidence": "Honeypot-web-origin.json + Defender-nginx.json",
+    "note": "Original same request verified against Honeypot origin log; initial copied-log check FAIL retained"
+  },
+  {
+    "case": "Redirect-SSH",
+    "status": "PASS",
+    "initial_status": "FAIL",
+    "source_ips": "192.168.56.113",
+    "start_time": "2026-10-10T09:28:43.747627+00:00",
+    "evidence": "Honeypot-cowrie-origin.json",
+    "note": "Same Cowrie connection/command confirmed in origin log; initial copied-log check FAIL retained"
+  },
+  {
+    "case": "Redirect-Telnet",
+    "status": "PASS",
+    "initial_status": "PASS",
+    "source_ips": "192.168.56.114",
+    "start_time": "2026-10-10T09:28:48.443517+00:00",
+    "evidence": "cases.json",
+    "note": ""
+  },
+  {
+    "case": "Rabbit-Hole-Web",
+    "status": "PASS",
+    "initial_status": "PASS",
+    "source_ips": "192.168.56.115",
+    "start_time": "2026-10-10T09:29:02.480382+00:00",
+    "evidence": "cases.json",
+    "note": ""
+  },
+  {
+    "case": "Rabbit-Hole-SSH",
+    "status": "PASS",
+    "initial_status": "PASS",
+    "source_ips": "192.168.56.116",
+    "start_time": "2026-10-10T09:29:04.669695+00:00",
+    "evidence": "cases.json",
+    "note": ""
+  },
+  {
+    "case": "Dashboard-Rule-apply-restore",
+    "status": "PASS",
+    "initial_status": "PASS",
+    "source_ips": "192.168.56.117,192.168.56.118",
+    "start_time": "2026-10-10T09:29:11.259509+00:00",
+    "evidence": "cases.json",
+    "note": ""
+  },
+  {
+    "case": "Dashboard-Invalid-rule-safe-reject",
+    "status": "PASS",
+    "initial_status": "PASS",
+    "source_ips": "",
+    "start_time": "2026-10-10T09:29:17.234217+00:00",
+    "evidence": "cases.json",
+    "note": ""
+  },
+  {
+    "case": "Dashboard-Threshold-TOTP-roles",
+    "status": "PASS",
+    "initial_status": "PASS",
+    "source_ips": "192.168.56.119",
+    "start_time": "2026-10-10T09:29:19.888814+00:00",
+    "evidence": "cases.json",
+    "note": ""
+  },
+  {
+    "case": "Normal-Telnet-auth-and-source-proof-retest",
+    "status": "PASS",
+    "initial_status": "PASS",
+    "source_ips": "192.168.56.120",
+    "start_time": "2026-10-10T09:29:42.943397+00:00",
+    "evidence": "cases.json",
+    "note": ""
+  },
+  {
+    "case": "Dashboard-Notifications-read-unread-delete-filter-order",
+    "status": "SUPERSEDED",
+    "initial_status": "PASS",
+    "source_ips": "",
+    "start_time": "2026-10-10T09:29:52.441464+00:00",
+    "evidence": "cases.json",
+    "note": "; preserved initial attempt; latest attempt listed separately"
+  },
+  {
+    "case": "Dashboard-Master-user-lifecycle-policy",
+    "status": "SUPERSEDED",
+    "initial_status": "PASS",
+    "source_ips": "",
+    "start_time": "2026-10-10T09:29:53.898298+00:00",
+    "evidence": "cases.json",
+    "note": "; preserved initial attempt; latest attempt listed separately"
+  },
+  {
+    "case": "Dashboard-Self-password-change-trapuser",
+    "status": "SUPERSEDED",
+    "initial_status": "FAIL",
+    "source_ips": "",
+    "start_time": "2026-10-10T09:29:55.447948+00:00",
+    "evidence": "cases.json",
+    "note": "AssertionError: Old session remains authenticated; preserved initial attempt; latest attempt listed separately"
+  },
+  {
+    "case": "Dashboard-Self-password-change-trapadmin",
+    "status": "SUPERSEDED",
+    "initial_status": "FAIL",
+    "source_ips": "",
+    "start_time": "2026-10-10T09:29:56.448937+00:00",
+    "evidence": "cases.json",
+    "note": "AssertionError: Old session remains authenticated; preserved initial attempt; latest attempt listed separately"
+  },
+  {
+    "case": "Dashboard-Report-dwell-by-profile-CSV",
+    "status": "SUPERSEDED",
+    "initial_status": "FAIL",
+    "source_ips": "",
+    "start_time": "2026-10-10T09:29:57.448816+00:00",
+    "evidence": "cases.json",
+    "note": "AssertionError: Report unavailable; preserved initial attempt; latest attempt listed separately"
+  },
+  {
+    "case": "Dashboard-Notifications-read-unread-delete-filter-order",
+    "status": "PASS",
+    "initial_status": "PASS",
+    "source_ips": "",
+    "start_time": "2026-10-10T09:31:31.009426+00:00",
+    "evidence": "cases.json",
+    "note": ""
+  },
+  {
+    "case": "Dashboard-Master-user-lifecycle-policy",
+    "status": "PASS",
+    "initial_status": "PASS",
+    "source_ips": "",
+    "start_time": "2026-10-10T09:31:32.640446+00:00",
+    "evidence": "cases.json",
+    "note": ""
+  },
+  {
+    "case": "Dashboard-Self-password-change-trapuser",
+    "status": "PASS",
+    "initial_status": "PASS",
+    "source_ips": "",
+    "start_time": "2026-10-10T09:31:34.364325+00:00",
+    "evidence": "cases.json",
+    "note": ""
+  },
+  {
+    "case": "Dashboard-Self-password-change-trapadmin",
+    "status": "PASS",
+    "initial_status": "PASS",
+    "source_ips": "",
+    "start_time": "2026-10-10T09:32:32.010172+00:00",
+    "evidence": "cases.json",
+    "note": ""
+  },
+  {
+    "case": "Dashboard-Report-dwell-by-profile-CSV",
+    "status": "PASS",
+    "initial_status": "PASS",
+    "source_ips": "",
+    "start_time": "2026-10-10T09:33:01.303070+00:00",
+    "evidence": "cases.json",
+    "note": ""
+  },
+  {
+    "case": "Reboot-all-three-services-containers-thresholds",
+    "status": "PASS",
+    "initial_status": "PASS",
+    "source_ips": "",
+    "start_time": "2026-10-10T09:38:11.020827+00:00",
+    "evidence": "cases.json",
+    "note": ""
+  },
+  {
+    "case": "Postboot-Normal-Web-HTTPS",
+    "status": "PASS",
+    "initial_status": "PASS",
+    "source_ips": "192.168.56.121",
+    "start_time": "2026-10-10T09:38:16.716988+00:00",
+    "evidence": "cases.json",
+    "note": ""
+  },
+  {
+    "case": "Postboot-Normal-SSH",
+    "status": "PASS",
+    "initial_status": "PASS",
+    "source_ips": "192.168.56.122",
+    "start_time": "2026-10-10T09:38:21.466476+00:00",
+    "evidence": "cases.json",
+    "note": ""
+  },
+  {
+    "case": "Postboot-Redirect-HTTP",
+    "status": "PASS",
+    "initial_status": "PASS",
+    "source_ips": "192.168.56.123",
+    "start_time": "2026-10-10T09:38:26.315328+00:00",
+    "evidence": "cases.json",
+    "note": ""
+  },
+  {
+    "case": "Postboot-Redirect-SSH",
+    "status": "PASS",
+    "initial_status": "PASS",
+    "source_ips": "192.168.56.124",
+    "start_time": "2026-10-10T09:38:28.436495+00:00",
+    "evidence": "cases.json",
+    "note": ""
+  },
+  {
+    "case": "Dashboard-Flush-final-step-backup-confirmation-TOTP",
+    "status": "PASS",
+    "initial_status": "PASS",
+    "source_ips": "",
+    "start_time": "2026-10-10T09:39:33.407768+00:00",
+    "evidence": "cases.json",
+    "note": ""
+  }
+]

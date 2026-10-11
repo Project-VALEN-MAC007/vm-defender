@@ -57,3 +57,23 @@ endpoint ที่ยืนยันแล้ว
 
 ขั้นตอนเตรียม interface อยู่ที่ `defender/network/virtualbox-nic-checklist.md`
 และคำสั่ง root อยู่ที่ `docs/root-operations.md`
+
+## Lab deployed in round 4 (2026-10-10)
+
+```text
+trap-attacker namespace (no default route)
+  -> 192.168.56.10 [Project-Defender: Suricata / Engine / Nginx / nftables]
+       inner 10.10.10.1, VirtualBox Project-Lab
+       |-- low risk -> Project-Web 10.10.10.3:8080 / :22 / :23
+       `-- redirected -> Project-Honeypot 10.10.10.2:8084 / :2222 / :2223
+```
+
+Management uses each VM's NAT NIC: host SSH 2221 (Defender), 2222
+(Honeypot), 2223 (Web). Defender outer NIC is `trap-out` (veth to the
+namespace), inner NIC is `enp0s8`. Project-Web has 2 vCPUs / 2 GB RAM.
+The Web lab NIC has only 10.10.10.3/24, no gateway or DNS, and a persistent
+192.168.56.0/24 route via 10.10.10.1. SSH/Telnet DNAT preserves client IP;
+there is no source NAT on Defender. Production WordPress/MariaDB run in
+Docker Compose on Project-Web. Real SSH uses OpenSSH; real Telnet uses
+inetutils-telnetd with /bin/login. Local Defender web/Telnet fixtures are
+not production services.

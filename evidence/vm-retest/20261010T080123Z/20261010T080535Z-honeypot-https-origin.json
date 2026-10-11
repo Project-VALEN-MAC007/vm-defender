@@ -1,0 +1,8 @@
+{
+  "utc": "20261010T080535Z",
+  "vm": "honeypot",
+  "command": "grep \"192.168.56.107\" /var/log/trap/rabbit-hole-web.jsonl",
+  "exit_code": 1,
+  "stdout": "",
+  "stderr": ""
+}

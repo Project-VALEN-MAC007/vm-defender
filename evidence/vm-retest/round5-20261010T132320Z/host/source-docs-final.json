@@ -1,0 +1,24 @@
+{
+  "files": [
+    {
+      "path": "honeypot/docker/README.md",
+      "sha256": "39e7e83e401072ba2a6a71b5e5f849ec487771183d76b25eeac768c496a64cc4"
+    },
+    {
+      "path": "honeypot/docker/compose.yaml",
+      "sha256": "55ffc459ed7f60c13928d22fa2c52863fa0e325e73df62ba638b20e70fd88c71"
+    },
+    {
+      "path": "honeypot/docker/cowrie.cfg.example",
+      "sha256": "6b51b44056043dbbae87d91439fc5c659b69e20adc71bfd3177f22fce1db76d0"
+    },
+    {
+      "path": "tests/test_honeypot_watchdog.py",
+      "sha256": "b398e3e867dcd40ee9c9446fc567a23153ec0c32af0f1763410055f60c756efa"
+    },
+    {
+      "path": "honeypot/docker/watchdog.py",
+      "sha256": "aaf7a088a085162ed0d2e531e2a7e083097577dcd23e1b73c6c4a821b526a2f5"
+    }
+  ]
+}

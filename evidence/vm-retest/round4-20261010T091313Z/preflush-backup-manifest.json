@@ -1,0 +1,27 @@
+{
+  "/var/log/suricata/eve.json": {
+    "backup": "/var/lib/trap/private-round4-log-backup/round4-20261010T091313Z/0-eve.json",
+    "bytes": 9817463,
+    "sha256": "9be85c79c866df811b30a416b4f499e3e585c1aebe0b61325471a5bf6ee85a4c"
+  },
+  "/var/log/adaptive-defender/decisions.jsonl": {
+    "backup": "/var/lib/trap/private-round4-log-backup/round4-20261010T091313Z/1-decisions.jsonl",
+    "bytes": 210732,
+    "sha256": "1e117726f324d955fcfde03f70c861b4f4523b643385b252137a0763a5ddeabd"
+  },
+  "/var/log/trap/honeypot/cowrie.json": {
+    "backup": "/var/lib/trap/private-round4-log-backup/round4-20261010T091313Z/2-cowrie.json",
+    "bytes": 104300,
+    "sha256": "130eccd2c89921355e41fffd178d9e6c93b8af5cc9c8d30402eee0d864164ec4"
+  },
+  "/var/log/trap/honeypot/rabbit-hole-web.jsonl": {
+    "backup": "/var/lib/trap/private-round4-log-backup/round4-20261010T091313Z/3-rabbit-hole-web.jsonl",
+    "bytes": 972982,
+    "sha256": "01ac17b0313cc6102ca009b73ff608d74b54ec0ff0c3ab2691390d44a87b4dd0"
+  },
+  "/var/log/nginx/adaptive_access.json": {
+    "backup": "/var/lib/trap/private-round4-log-backup/round4-20261010T091313Z/4-adaptive_access.json",
+    "bytes": 388154,
+    "sha256": "6d3d9a36cef648447a241bf6524082bea473387bf4922e47f91a9d9a113e163f"
+  }
+}

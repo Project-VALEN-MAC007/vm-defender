@@ -22,3 +22,15 @@ config/rabbit-hole.json
 config/rabbit-hole.secret
 evidence/rabbit-hole/
 config/rabbit-hole-scenarios/
+
+production/.env
+honeypot/docker/.env
+
+# Synthetic / unrelated logs (not real lab results)
+evidence/test-results/
+evidence/baseline/
+evidence/google-docs/
+
+# Unredacted originals and duplicate evidence zips (contain lab password/cookies)
+evidence/_private-original/
+evidence/vm-retest/*/TRAP-Retest-Evidence-*.zip

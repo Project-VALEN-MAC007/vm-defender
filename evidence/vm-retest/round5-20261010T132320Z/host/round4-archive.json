@@ -1,0 +1,20 @@
+[
+  {
+    "file": "TRAP-Test-Report.md",
+    "archive": "C:\\Users\\Yakult\\Desktop\\report\\Previous-Reports\\round4-before-round5-20261010T132320Z\\TRAP-Test-Report.md",
+    "sha256": "f76d981a2e23f91700755b496dc72fc60ad342ee08c6ddb5561536c05125c589",
+    "verified": true
+  },
+  {
+    "file": "TRAP-Test-Matrix.csv",
+    "archive": "C:\\Users\\Yakult\\Desktop\\report\\Previous-Reports\\round4-before-round5-20261010T132320Z\\TRAP-Test-Matrix.csv",
+    "sha256": "c59c72d1a656abded239b7881c0612863f7f913d8fb6535aa7d1bf3292e621f4",
+    "verified": true
+  },
+  {
+    "file": "TRAP-Access-Guide.md",
+    "archive": "C:\\Users\\Yakult\\Desktop\\report\\Previous-Reports\\round4-before-round5-20261010T132320Z\\TRAP-Access-Guide.md",
+    "sha256": "0cafaf5cbefb47d57ce8d8829da8fa911b844f1a7e09b7b17fae9aaad6ef02fd",
+    "verified": true
+  }
+]

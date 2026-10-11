@@ -25,12 +25,25 @@ def _stamp(value):
     return parsed.replace(tzinfo=timezone.utc) if parsed.tzinfo is None else parsed
 
 
-def _success(event: dict) -> bool:
+def _bait_hit(event: dict) -> bool:
+    """A Rabbit Hole decoy node the attacker actually reached (drives the trail,
+    depth and 'followed a clue'). Ordinary pages have no node_id."""
     if not event.get("node_id"):
         return False
     if event.get("event") == "rabbit_hole.web":
         return int(event.get("status") or 0) in {200, 302}
     return True
+
+
+def _is_visit(event: dict, family: str) -> bool:
+    """Whether this event means the attacker was interacting with the honeypot,
+    for session/dwell accounting. A web visit is any response the honeypot
+    served (landing page, 404 or decoy alike), so a redirected attacker who only
+    views the front page still counts; shell dwell still begins at the first
+    decoy node, preserving existing Cowrie behaviour."""
+    if family == "web":
+        return event.get("status") is not None
+    return _bait_hit(event)
 
 
 def windows(events: list, idle_timeout: int, now: datetime | None = None) -> list:
@@ -60,7 +73,7 @@ def windows(events: list, idle_timeout: int, now: datetime | None = None) -> lis
                     current = None
                 continue
             if current is None:
-                if not _success(event):
+                if not _is_visit(event, family):
                     continue
                 current = {"family": family, "session_id": sid, "protocol": event.get("protocol"),
                            "source_ip": event.get("source_ip"), "start": when, "end": when,
@@ -77,7 +90,7 @@ def windows(events: list, idle_timeout: int, now: datetime | None = None) -> lis
                 current["limit_reached"] = True
             if event.get("action") == "call_api_denied":
                 current["denied"] += 1
-            if _success(event):
+            if _bait_hit(event):
                 current["scenarios"].add(event.get("scenario"))
                 resource = event.get("resource_id") or event.get("node_id")
                 if resource not in current["resources"]:

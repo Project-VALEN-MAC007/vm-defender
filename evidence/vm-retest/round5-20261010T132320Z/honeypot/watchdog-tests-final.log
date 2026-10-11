@@ -1,0 +1,15 @@
+test_compose_has_one_container_per_decoy (test_honeypot_watchdog.ComposeFileTests.test_compose_has_one_container_per_decoy) ... ok
+test_web_image_runs_the_decoy_from_its_package_only (test_honeypot_watchdog.ComposeFileTests.test_web_image_runs_the_decoy_from_its_package_only) ... ok
+test_failed_replacement_is_reported (test_honeypot_watchdog.WatchdogTests.test_failed_replacement_is_reported) ... ok
+test_healthy_containers_are_left_alone (test_honeypot_watchdog.WatchdogTests.test_healthy_containers_are_left_alone) ... ok
+test_hung_container_is_replaced_after_consecutive_failures (test_honeypot_watchdog.WatchdogTests.test_hung_container_is_replaced_after_consecutive_failures) ... ok
+test_missing_stopped_and_crash_looping_are_replaced_at_once (test_honeypot_watchdog.WatchdogTests.test_missing_stopped_and_crash_looping_are_replaced_at_once) ... ok
+test_never_connects_to_the_decoys (test_honeypot_watchdog.WatchdogTests.test_never_connects_to_the_decoys) ... ok
+test_recovery_resets_the_counter (test_honeypot_watchdog.WatchdogTests.test_recovery_resets_the_counter) ... ok
+test_stopped_process_is_replaced_although_ports_still_listen (test_honeypot_watchdog.WatchdogTests.test_stopped_process_is_replaced_although_ports_still_listen) ... ok
+test_without_cgroup_view_checks_the_main_process (test_honeypot_watchdog.WatchdogTests.test_without_cgroup_view_checks_the_main_process) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.056s
+
+OK

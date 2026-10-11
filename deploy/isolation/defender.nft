@@ -1,0 +1,24 @@
+#!/usr/sbin/nft -f
+# TRAP isolation — Project-Defender (10.10.10.1 inner / 192.168.56.10 outer)
+#
+# The Honeypot never needs to open a connection to the Defender: log sync and
+# config push are pulled/pushed by the Defender (deploy/trap-sync.sh), and Nginx
+# and DNAT traffic to the decoys is answered on the Defender's own connections.
+# Drop every new connection from the Honeypot to the Defender itself, on any of
+# its addresses (SSH 22, Dashboard 9090, Nginx 80/443). Forwarding through the
+# Defender is already default-drop in table inet adaptive_defender.
+#
+# Own table, separate from adaptive_defender. Never use `flush ruleset`.
+
+define HONEYPOT = 10.10.10.2
+
+table inet trap_isolation
+delete table inet trap_isolation
+
+table inet trap_isolation {
+    chain input {
+        type filter hook input priority filter - 5; policy accept;
+        ct state established,related accept
+        ip saddr $HONEYPOT ct state new counter drop comment "honeypot -> defender"
+    }
+}

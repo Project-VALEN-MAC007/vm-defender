@@ -45,3 +45,20 @@ thresholds the Dashboard saves. When the file exists it overrides
 risk state; an invalid file is ignored (journald: `threshold_reload_failed`)
 and the last good thresholds stay in use. Install with
 `deploy/install-dashboard-helpers.sh`.
+
+## Web redirect takes effect before it is logged
+
+`systemctl reload nginx` only signals the nginx master, so a request that
+arrives right after the reload can still be served with the old map. The
+engine therefore waits after each map reload until nginx has at least one new
+worker and every old worker is gone or titled `worker process is shutting
+down` (old workers stop accepting at that point). It reads `/run/nginx.pid`
+and `/proc`, polling every 50 ms for up to 5 s. The decision is written to
+`decisions.jsonl` only after this, with:
+
+- `nginx_ready`: `true` confirmed, `false` not confirmed within 5 s,
+  `null` could not be checked (no pid file)
+- `nginx_ready_seconds`: time from reload to confirmation
+
+A `redirect_web` line with `nginx_ready: true` means requests from that source
+reach the honeypot from that moment on.

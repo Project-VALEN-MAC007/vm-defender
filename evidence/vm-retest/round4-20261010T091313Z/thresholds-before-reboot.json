@@ -1,0 +1,6 @@
+{
+  "thresholds": {
+    "monitor": 15.0,
+    "redirect": 40.0
+  }
+}

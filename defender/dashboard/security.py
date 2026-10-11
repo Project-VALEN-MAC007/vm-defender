@@ -189,15 +189,23 @@ class UserStore:
             return {**{key: account[key] for key in ("username", "name", "role")},
                     "totp_enabled": bool(account["totp_secret"])}
 
-    def setup_totp(self, username: str, password: str, code: str | None = None) -> str | None:
+    def setup_totp(self, username: str, password: str, code: str | None = None,
+                   current_totp: str | None = None) -> str | None:
+        """Begin (code is None) or confirm (code set) enrolling an authenticator.
+
+        A fresh account begins with its current password only. Re-enrolling an
+        account that already has an authenticator also requires a valid code
+        from the current authenticator, so a stolen session cannot silently swap
+        it out (thesis "บัญชีของฉัน": current password + current TOTP)."""
         with self._lock:
             users = self.load()
             account = users.get(username)
             if not account or account["disabled"] or not verify_password(password, account["password_hash"]):
                 raise ValueError("invalid_current_password")
-            if account["totp_secret"]:
-                raise ValueError("totp_already_enabled")
             if code is None:
+                if account["totp_secret"] and match_totp(
+                        account["totp_secret"], current_totp or "", account.get("totp_last_counter", -1)) is None:
+                    raise ValueError("invalid_totp")
                 secret = base64.b32encode(secrets.token_bytes(20)).decode("ascii")
                 self._pending_totp[username] = (secret, time.monotonic() + 300, 0)
                 return secret

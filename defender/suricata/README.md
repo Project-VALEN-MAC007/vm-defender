@@ -38,9 +38,25 @@ Dashboard ตั้งค่าเริ่มต้นให้ชี้ไฟ�
 
 ## ขอบเขตการตอบสนอง
 
-HTTP ใน HTTPS ตรวจได้เมื่อ capture หลัง Nginx ถอด TLS แล้ว ต้องเชื่อมโยง
-IP ผู้ใช้จริงจากข้อมูลที่เชื่อถือได้ก่อนป้อน alert ฝั่ง backend เข้า Decision Engine
-มิฉะนั้นอาจประเมิน IP ของ proxy แทนผู้ใช้
+HTTPS: Nginx ถอด TLS ที่พอร์ต 443 แล้วส่งคำขอที่ถอดรหัสแล้วผ่านจุดตรวจบน loopback
+(127.0.0.2 → 127.0.0.1:18443) ให้ Suricata ตรวจด้วยกฎชุดเดียวกับ HTTP
+Nginx ขอบนอกเขียน IP ผู้ใช้จริงลง header `X-Trap-Client-IP` (เขียนทับค่าที่ผู้ใช้ส่งมา)
+Suricata 7 รายงานเป็นฟิลด์ `alert.xff` และ Decision Engine/Dashboard เชื่อฟิลด์นี้
+**เฉพาะ alert บน `lo` จาก 127.0.0.2 ไป 127.0.0.1:18443** เท่านั้น
+ค่าต้องเป็น IP เดียวที่ไม่ใช่ loopback/unspecified/multicast; alert จาก interface ภายนอกไม่ใช้ header นี้
+จึงปลอม header เพื่อให้ระบบ redirect IP อื่นไม่ได้ ตั้งค่า Suricata ตาม `https-inspection.yaml`
+
+Service ต้องใช้ `--af-packet --runmode=workers` เพื่ออ่านทั้ง `trap-out` และ `lo`
+จาก YAML. `--af-packet=trap-out` จะข้าม lo และ `single` ไม่รองรับหลาย interface.
+ติดตั้ง `systemd/https-inspection.conf` เป็น drop-in หลังสำรอง unit/config เดิม.
+ตั้งหนึ่ง thread ต่อ interface และ `block-size: 131072` ทั้งสอง entry: MTU 65536
+ของ lo ทำให้ TPACKET_V3 block เดิม 32768 เล็กเกินไป. ตรวจ `suricata -T`,
+`nginx -t`, `suricatasc -c iface-list` และ service health ก่อนยิงทดสอบ;
+ถ้าเริ่ม service ไม่ได้ ให้คืน config/drop-in เดิมทันที.
+
+HTTP พอร์ต 80 จับเฉพาะ `trap-out`; decrypted HTTPS จับเฉพาะ lo ด้วย BPF
+`tcp port 18443`. ตรวจ `(flow_id, tx_id, signature_id)` ใน EVE ว่าไม่ซ้ำ
+เพื่อแยก alert ซ้ำจาก request เดียวออกจากหลาย signature ที่ตรง request เดียวกัน.
 
 Decision Engine รองรับ SID Telnet 2100492/2101251 ซึ่งเป็นคำตอบฝั่งเซิร์ฟเวอร์
 โดยใช้ dest_ip เป็น IP ผู้ใช้ และตรวจ src_port ว่าเป็น 23 ก่อนรับเหตุการณ์
