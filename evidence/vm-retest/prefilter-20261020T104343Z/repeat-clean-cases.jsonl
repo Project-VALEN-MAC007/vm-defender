@@ -1,0 +1,3 @@
+{"timestamp":"2026-10-20T18:10:00+07:00","source_ip":"192.168.56.121","protocol":"http","profile":"rabbithole","prefilter":1,"status":200,"request":"GET / HTTP/1.1","upstream":"10.10.10.2:8084","note":"sqlmap UA clean-IP rerun; repeated request"}
+{"timestamp":"2026-10-20T18:10:00+07:00","source_ip":"192.168.56.26","protocol":"http","profile":"real","prefilter":0,"status":404,"request":"GET /.env HTTP/1.1","upstream":"10.10.10.3:8080"}
+{"timestamp":"2026-10-20T18:10:01+07:00","source_ip":"192.168.56.28","protocol":"https","profile":"real","prefilter":0,"status":200,"request":"GET / HTTP/1.1","upstream":"10.10.10.3:8080","note":"forged X-Trap-Client-IP had no routing effect"}

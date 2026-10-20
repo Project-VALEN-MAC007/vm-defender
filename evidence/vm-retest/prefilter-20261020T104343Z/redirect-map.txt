@@ -1,0 +1,13 @@
+# generated atomically; do not edit
+default real;
+192.168.56.120 rabbithole;
+192.168.56.157 rabbithole;
+192.168.56.203 rabbithole;
+192.168.56.204 rabbithole;
+192.168.56.205 rabbithole;
+192.168.56.206 rabbithole;
+192.168.56.207 rabbithole;
+192.168.56.65 rabbithole;
+192.168.56.73 rabbithole;
+192.168.56.74 rabbithole;
+192.168.56.89 rabbithole;

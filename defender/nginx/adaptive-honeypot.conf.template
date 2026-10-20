@@ -1,6 +1,43 @@
 # Render only after person 2 confirms every __TOKEN__ value.
-map $remote_addr $adaptive_profile {
+
+# 1) Source IP decision, written by the Decision Engine after a Suricata alert.
+#    It only takes effect from the NEXT request of that source.
+map $remote_addr $adaptive_ip_profile {
     include __REDIRECT_MAP_PATH__;
+}
+
+# 2) Prefilter: checked by Nginx BEFORE the request is proxied, so a request
+#    that is risky on its own is sent to the honeypot on its FIRST attempt and
+#    never reaches the real web. Each pattern mirrors an ET Open rule that the
+#    Decision Engine already redirects on a single alert (score >= 40), so the
+#    prefilter adds no new false positives beyond the engine's own policy.
+#    Rules that only reach "monitor" on their own (.env, /etc/passwd, Masscan)
+#    are deliberately left out. Suricata still alerts on the same request, so
+#    the source IP is then added to the map above for every later request.
+#    $uri is the decoded path (catches /%2ehtpasswd); $request_uri is raw.
+map "$uri $request_uri" $trap_uri_risk {
+    default                                  0;
+    "~*\.htpasswd"                           1;  # SID 2101071 (severity 1)
+    "~*union.+select.+(;|%3b)"               1;  # SID 2006446 (severity 1)
+}
+
+map $http_user_agent $trap_ua_risk {
+    default                                  0;
+    "~\(Nikto"                               1;  # SID 2002677 (Suricata waits for 5 hits)
+    "~^sqlmap"                               1;  # SID 2008538
+    "~Nmap NSE"                              1;  # SID 2009359
+}
+
+map "$trap_uri_risk$trap_ua_risk" $trap_prefilter {
+    default 1;
+    "00"    0;
+}
+
+# 3) Final profile: an IP decision always wins; otherwise a prefilter hit sends
+#    this one request to the honeypot; otherwise the real web.
+map "$trap_prefilter:$adaptive_ip_profile" $adaptive_profile {
+    default  $adaptive_ip_profile;
+    "1:real" __PREFILTER_PROFILE__;
 }
 
 map $adaptive_profile $adaptive_backend {
@@ -14,8 +51,8 @@ map $adaptive_profile $adaptive_backend {
 
 log_format adaptive_json escape=json '{"timestamp":"$time_iso8601",'
   '"source_ip":"$remote_addr","forwarded_for":"$proxy_add_x_forwarded_for",'
-  '"protocol":"$scheme","profile":"$adaptive_profile","status":$status,'
-  '"request":"$request","upstream":"$upstream_addr"}';
+  '"protocol":"$scheme","profile":"$adaptive_profile","prefilter":$trap_prefilter,'
+  '"status":$status,"request":"$request","upstream":"$upstream_addr"}';
 
 # HTTP (port 80) is routed like HTTPS: low risk -> real web, risky -> honeypot.
 server {
@@ -53,8 +90,8 @@ server {
 # alerts seen on the loopback hop.
 log_format adaptive_json_tls escape=json '{"timestamp":"$time_iso8601",'
   '"source_ip":"$remote_addr","forwarded_for":"$proxy_add_x_forwarded_for",'
-  '"protocol":"https","profile":"$adaptive_profile","status":$status,'
-  '"request":"$request","upstream":"$upstream_addr"}';
+  '"protocol":"https","profile":"$adaptive_profile","prefilter":$trap_prefilter,'
+  '"status":$status,"request":"$request","upstream":"$upstream_addr"}';
 
 server {
     listen __OUTER_IP__:443 ssl;
