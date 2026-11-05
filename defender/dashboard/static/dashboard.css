@@ -670,3 +670,11 @@ dialog code { color: var(--accent); word-break: break-all; }
 /* จัดการบัญชี: การ์ดฟอร์ม (สร้าง User / บัญชีของฉัน) อยู่กลางพื้นที่ */
 .account-form-panel { width: 100%; max-width: 640px; margin-inline: auto; }
 .account-form-panel > p { text-align: center; }
+
+/* TOTP step: compact card, code-style input */
+.login-card.totp-card h1 { font-family: inherit; font-size: 26px; line-height: 1.3; letter-spacing: 0; color: var(--text); }
+.login-card.totp-card > p { margin-bottom: 12px; }
+.totp-card .totp-hint { color: var(--muted); font-size: 14px; margin: 0 0 6px; }
+.totp-card #login-totp-secret { font-family: var(--mono); font-size: 13px; letter-spacing: .04em; color: var(--muted); }
+.totp-card #totp { font-family: var(--mono); font-size: 26px; letter-spacing: .4em; text-align: center; padding-left: .4em; }
+.visually-hidden { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

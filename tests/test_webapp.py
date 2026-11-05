@@ -36,9 +36,11 @@ class Client:
             else urllib.request.build_opener(_NoRedirect())
         try:
             resp = opener.open(req)
-            status, resp_headers, payload = resp.status, resp.headers, resp.read().decode()
+            status, resp_headers, payload = resp.status, resp.headers, resp.read()
         except urllib.error.HTTPError as err:
-            status, resp_headers, payload = err.code, err.headers, err.read().decode()
+            status, resp_headers, payload = err.code, err.headers, err.read()
+        if resp_headers.get_content_maintype() == "text" or "json" in resp_headers.get_content_type():
+            payload = payload.decode("utf-8", "replace")
         set_cookie = resp_headers.get("Set-Cookie")
         if set_cookie and "alsid=" in set_cookie and "Max-Age=0" not in set_cookie:
             self.cookie = set_cookie.split(";", 1)[0]
@@ -67,12 +69,45 @@ class WebAppTests(unittest.TestCase):
     def test_public_pages_identical_between_real_and_decoy(self):
         real, _ = self.client("real")
         decoy, _ = self.client("decoy")
-        for path in ("/", "/about", "/services", "/news", "/contact", "/login",
-                     "/static/site.css", "/news/iso-audit", "/missing-page"):
+        captured = ("/", "/?page=home", "/?page=programs",
+                    *(f"/?page=programs&id={i}" for i in range(1, 6)),
+                    "/?page=about&section=faculty", "/?page=faculty",
+                    "/?page=calendar", "/?page=activities", "/?page=news",
+                    "/?page=downloads", "/?page=contact", "/?lang=th", "/?lang=en")
+        for path in captured:
+            rs, _, rbody = real.request("GET", path)
+            ds, _, dbody = decoy.request("GET", path)
+            self.assertEqual(rs, ds, path)
+            self.assertEqual(rs, 200, path)
+            self.assertEqual(rbody, dbody, f"body differs for {path}")
+            self.assertLessEqual(len(rbody.encode("utf-8")), 65536, path)
+        for path in ("/login", "/static/site.css", "/about", "/services", "/news", "/contact"):
             rs, _, rbody = real.request("GET", path)
             ds, _, dbody = decoy.request("GET", path)
             self.assertEqual(rs, ds, path)
             self.assertEqual(rbody, dbody, f"body differs for {path}")
+
+    def test_uncaptured_admin_page_is_not_snapshotted(self):
+        for name in ("real", "decoy"):
+            status, _, _ = self.client(name)[0].request("GET", "/?page=admin")
+            self.assertEqual(status, 404)
+
+    def test_snapshot_fragment_is_same_origin_and_identical(self):
+        real, _ = self.client("real")
+        decoy, _ = self.client("decoy")
+        path = "/fragments/programs-1/0000.txt"
+        rs, _, rbody = real.request("GET", path)
+        ds, _, dbody = decoy.request("GET", path)
+        self.assertEqual((rs, ds), (200, 200))
+        self.assertEqual(rbody, dbody)
+        self.assertLessEqual(len(rbody.encode("utf-8")), 65536)
+
+    def test_snapshot_assets_fit_rabbit_proxy_response_limit(self):
+        for name in ("real", "decoy"):
+            status, headers, body = self.client(name)[0].request("GET", "/uploads/programs/1.webp")
+            self.assertEqual(status, 200)
+            self.assertEqual(headers.get("Content-Type"), "image/webp")
+            self.assertLessEqual(len(body), 65536)
 
     def test_not_found_is_404_on_both(self):
         for name in ("real", "decoy"):

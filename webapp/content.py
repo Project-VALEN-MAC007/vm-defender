@@ -23,18 +23,20 @@ NAV = (("/", "Home"), ("/about", "About"), ("/services", "Services"),
 
 
 def page(company: str, title: str, body: str, year: int) -> str:
-    links = "".join(f'<a href="{escape(path)}">{escape(label)}</a>' for path, label in NAV)
-    safe_company = escape(company)
+    links = "".join(f'<a href="{escape(path)}">{escape(label)}</a>' for path, label in
+                     (("/?page=home", "หน้าแรก"), ("/?page=programs", "หลักสูตร"),
+                      ("/?page=faculty", "บุคลากร"), ("/?page=news", "ข่าวสาร"),
+                      ("/?page=contact", "ติดต่อเรา")))
+    safe_company = "ภาควิชาวิทยาการคอมพิวเตอร์ · มหาวิทยาลัยมหาสารคาม"
     return (
-        "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n"
+        "<!doctype html>\n<html lang=\"th\">\n<head>\n<meta charset=\"utf-8\">\n"
         "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n"
-        f"<title>{escape(title)} · {safe_company}</title>\n"
-        "<link rel=\"stylesheet\" href=\"/static/site.css\">\n</head>\n<body>\n"
-        f"<header class=\"site-header\"><div class=\"wrap\"><a class=\"brand\" href=\"/\">{safe_company}</a>"
+        f"<title>{escape(title)} · {escape(safe_company)}</title>\n"
+        "<link rel=\"stylesheet\" href=\"/offline.css\">\n</head>\n<body>\n"
+        f"<header class=\"site-header\"><div class=\"wrap\"><a class=\"brand\" href=\"/?page=home\">CS MSU</a>"
         f"<nav>{links}</nav></div></header>\n"
         f"<main class=\"wrap\">\n{body}\n</main>\n"
-        f"<footer class=\"site-footer\"><div class=\"wrap\">&copy; {year} {safe_company} Co., Ltd. "
-        "· All rights reserved.</div></footer>\n</body>\n</html>\n"
+        f"<footer class=\"site-footer\"><div class=\"wrap\">© {year} {escape(safe_company)} · คณะวิทยาการสารสนเทศ มหาวิทยาลัยมหาสารคาม</div></footer>\n</body>\n</html>\n"
     )
 
 

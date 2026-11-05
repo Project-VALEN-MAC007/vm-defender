@@ -34,18 +34,19 @@
         <div class="error" id="login-error"></div>
       </div>
     </form>
-    <form class="login-card hidden" id="totp-login-form">
-      <h1>ยืนยัน TOTP</h1>
-      <p>กรอกรหัส 6 หลักจากแอป Authenticator เพื่อเข้าสู่ TRAP</p>
+    <form class="login-card totp-card hidden" id="totp-login-form">
+      <h1>ยืนยันตัวตน</h1>
+      <p>กรอกรหัส 6 หลักจากแอป Authenticator</p>
       <div class="form-grid">
         <div id="login-totp-enrollment" class="hidden">
-          <p>ตั้งค่า TOTP ก่อนเข้าใช้งานครั้งแรก: เพิ่มบัญชี TRAP ในแอป Authenticator เลือกกรอกคีย์เองและชนิดอิงเวลา แล้วกรอกรหัส 6 หลักด้านล่างภายใน 5 นาที</p>
-          <label>คีย์สำหรับตั้งค่า<input id="login-totp-secret" readonly autocomplete="off"></label>
+          <p class="totp-hint">ใช้งานครั้งแรก: เพิ่มคีย์นี้ในแอป Authenticator</p>
+          <label class="visually-hidden" for="login-totp-secret">คีย์สำหรับตั้งค่า</label>
+          <input id="login-totp-secret" readonly autocomplete="off">
         </div>
-        <label for="totp">รหัส TOTP</label>
-        <input id="totp" autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="123456" required>
-        <button type="submit">ยืนยันและเข้าสู่ระบบ</button>
-        <button id="totp-back" type="button" class="text">กลับไปหน้าเข้าสู่ระบบ</button>
+        <label class="visually-hidden" for="totp">รหัส TOTP</label>
+        <input id="totp" autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="000000" required>
+        <button type="submit">ยืนยัน</button>
+        <button id="totp-back" type="button" class="text">กลับ</button>
         <div class="error" id="totp-login-error" role="status"></div>
       </div>
     </form>

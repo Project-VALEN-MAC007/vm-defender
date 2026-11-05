@@ -34,3 +34,10 @@ evidence/google-docs/
 # Unredacted originals and duplicate evidence zips (contain lab password/cookies)
 evidence/_private-original/
 evidence/vm-retest/*/TRAP-Retest-Evidence-*.zip
+
+# Local scratch / captures (browser profiles, archives) - never commit
+work/
+# Local backups
+webapp/acme-backup/
+# Captured snapshot of a third-party site (contains staff photos/content)
+webapp/site/
