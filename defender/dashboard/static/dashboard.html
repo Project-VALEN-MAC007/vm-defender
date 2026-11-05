@@ -154,6 +154,17 @@
                 <p id="rh-settings-result" class="data-note" role="status"></p>
               </form>
             </div></div>
+            <div class="card"><div class="card-head"><h3 class="card-title">วิเคราะห์ผู้โจมตีด้วย AI (Jev)</h3><span class="data-note">ประเมินเจตนา บอทหรือคน ระดับฝีมือ ในหน้าเส้นทางของแต่ละ Session</span></div><div class="card-body">
+              <form id="rh-ai-form" class="form-grid" autocomplete="off">
+                <label class="switch-row"><input type="checkbox" id="rh-ai-enabled"> เปิดใช้การวิเคราะห์ด้วย Jev</label>
+                <div class="settings-grid">
+                  <label>API Key ของ TypeSafe<input id="rh-ai-key" type="password" autocomplete="new-password" spellcheck="false" maxlength="512" placeholder="เว้นว่างไว้เพื่อใช้คีย์เดิม"></label>
+                </div>
+                <p class="data-note" id="rh-ai-status"></p>
+                <div class="form-actions"><button type="button" class="secondary" id="rh-ai-clear">ลบคีย์</button><button type="button" class="tonal" id="rh-ai-test">ทดสอบการเชื่อมต่อ</button><button type="submit">บันทึก AI</button></div>
+                <p id="rh-ai-result" class="data-note" role="status"></p>
+              </form>
+            </div></div>
             <div class="group" id="rh-library">
               <div class="library-head"><h3 class="group-title">คลังฉากเส้นทางลวง</h3><div class="split-actions"><button type="button" class="tonal" id="rh-new-web">+ สร้างฉาก Web</button><button type="button" class="tonal" id="rh-new-shell">+ สร้างฉาก SSH/Telnet</button></div></div>
               <p class="data-note">เลือกฉากที่จะใช้แล้วกด "บันทึกการตั้งค่า" ด้านบน · เทมเพลตแก้ไม่ได้ กด "ใช้เป็นต้นแบบ" เพื่อคัดลอกมาแก้เป็นฉากของคุณ</p>

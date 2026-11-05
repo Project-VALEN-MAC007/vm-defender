@@ -574,6 +574,9 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
             elif route in {"/api/web-deploy/clone", "/api/web-deploy/activate"}:
                 if self._has_role(user, "master_admin"):
                     self._deploy_post(route, user)
+            elif route in {"/api/rabbit-hole/ai", "/api/rabbit-hole/ai/test"}:
+                if self._has_role(user, "master_admin"):
+                    self._rabbit_ai(route, user)
             elif route in {"/api/rabbit-hole/scenario/check", "/api/rabbit-hole/scenario/preview",
                            "/api/rabbit-hole/scenario/save", "/api/rabbit-hole/scenario/delete"}:
                 if self._has_role(user, "master_admin"):
@@ -622,6 +625,9 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
                 elif route == "/api/rabbit-hole/window.json":
                     self._send_json(runtime.rabbit.window_detail(runtime.rabbit_events(),
                                                                  (query.get("id") or [""])[0]))
+                elif route == "/api/rabbit-hole/ai.json":
+                    self._send_json(runtime.rabbit.ai_profile(runtime.rabbit_events(),
+                                                              (query.get("id") or [""])[0]))
                 elif route == "/api/rabbit-hole/preview.json":
                     self._send_json(runtime.rabbit.preview((query.get("scenario") or [""])[0]))
                 elif route == "/api/rabbit-hole/scenario.json":
@@ -722,6 +728,23 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
             append_security_audit(settings.security_audit_path, "rabbit_hole_settings", self.client_address[0],
                                   user["username"], {"enabled": result["settings"]["enabled"],
                                                      "scenarios": result["settings"]["scenarios"]})
+            self._send_json(result)
+
+        def _rabbit_ai(self, route, user):
+            payload = self._read_json() if route == "/api/rabbit-hole/ai" else {}
+            try:
+                if route == "/api/rabbit-hole/ai/test":
+                    self._send_json(runtime.rabbit.test_ai())
+                    return
+                result = runtime.rabbit.save_ai(payload if isinstance(payload, dict) else {})
+            except (ValueError, OSError, KeyError, TypeError) as exc:
+                self._send_json({"error": str(exc)}, 400)
+                return
+            # Record what changed, never the key itself.
+            append_security_audit(settings.security_audit_path, "rabbit_hole_ai", self.client_address[0],
+                                  user["username"], {"enabled": result["ai"]["enabled"],
+                                                     "key_changed": bool(payload.get("api_key")) or bool(payload.get("clear_key")),
+                                                     "key_set": result["ai"]["key_set"]})
             self._send_json(result)
 
         def _scope_post(self, route, user):

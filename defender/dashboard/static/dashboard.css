@@ -678,3 +678,9 @@ dialog code { color: var(--accent); word-break: break-all; }
 .totp-card #login-totp-secret { font-family: var(--mono); font-size: 13px; letter-spacing: .04em; color: var(--muted); }
 .totp-card #totp { font-family: var(--mono); font-size: 26px; letter-spacing: .4em; text-align: center; padding-left: .4em; }
 .visually-hidden { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* Rabbit Hole: Jev attacker profile */
+.rh-ai:empty { display: none; }
+.rh-ai { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; margin-bottom: 14px; }
+.rh-ai-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+.rh-ai-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 6px 14px; margin-bottom: 6px; }

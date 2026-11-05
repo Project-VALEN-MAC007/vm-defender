@@ -8,6 +8,7 @@ from ..rabbit_hole import analytics as rabbit_analytics
 from ..rabbit_hole import config as rabbit_config
 from ..rabbit_hole import shell as rabbit_shell
 from ..rabbit_hole import custom
+from ..rabbit_hole import jev
 from ..rabbit_hole.render import Faker, render
 from ..rabbit_hole.scenario import parse as parse_scenario, resolve_paths
 from ..rabbit_hole.web import WebEngine
@@ -28,6 +29,8 @@ class RabbitHoleService:
         self.lock = threading.Lock()
         self._cached = None
         self._mtime = None
+        self._profiler = None
+        self._profiler_settings = None
 
     @property
     def available(self) -> bool:
@@ -72,7 +75,7 @@ class RabbitHoleService:
                 "windows": light, "total_windows": len(items),
                 "idle_timeout_seconds": config.limits["idle_timeout_seconds"],
                 "scenarios": self.catalog(), "settings": config.public(),
-                "problems": config.problems()}
+                "problems": config.problems(), "ai": self.ai_status()}
 
     def web_sessions(self, web_rows: list) -> list:
         """Rabbit Hole web windows in the session format used for Honeypot dwell time."""
@@ -89,6 +92,47 @@ class RabbitHoleService:
             if item["id"] == identifier:
                 return item
         raise ValueError("window_not_found")
+
+    def profiler(self) -> jev.Profiler:
+        config = self.config()
+        settings = config.ai
+        with self.lock:
+            if self._profiler is None or settings != self._profiler_settings:
+                client = jev.JevClient(dict(settings), key_file=config.ai_key_path())
+                self._profiler = jev.Profiler(dict(settings), client)
+                self._profiler_settings = dict(settings)
+            return self._profiler
+
+    def ai_status(self) -> dict:
+        client = self.profiler().client
+        return {"enabled": bool(self.config().ai["enabled"]), "key_set": client.has_key,
+                "key_source": client.key_source(), "key_hint": jev.key_hint(client.key()),
+                "key_env": client.key_env}
+
+    def save_ai(self, payload: dict) -> dict:
+        """Master Admin: switch Jev on/off and set or clear the API key.
+        The key is written to a separate owner-only file and never echoed back."""
+        config = self.config()
+        key = payload.get("api_key")
+        if payload.get("clear_key"):
+            jev.write_key_file(config.ai_key_path(), None)
+        elif isinstance(key, str) and key.strip():
+            jev.write_key_file(config.ai_key_path(), key)
+        elif key not in (None, ""):
+            raise ValueError("invalid_api_key_format")
+        if "enabled" in payload:
+            config.save_ai(payload["enabled"])
+        with self.lock:
+            self._cached, self._mtime, self._profiler = None, None, None
+        return {"ok": True, "ai": self.ai_status()}
+
+    def test_ai(self) -> dict:
+        return self.profiler().test()
+
+    def ai_profile(self, events: list, identifier: str) -> dict:
+        """Jev assessment of one tracking window; never raises for API problems."""
+        window = self.window_detail(events, identifier)
+        return self.profiler().profile(window, events)
 
     def catalog(self) -> list:
         config = self.config()

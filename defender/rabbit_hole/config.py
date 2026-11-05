@@ -43,6 +43,17 @@ DEFAULTS = {
         "server_header": "nginx/1.24.0",
         "upstream": None,
     },
+    "ai": {
+        "enabled": False,
+        "provider": "jev",
+        "api_url": "https://api.typesafe.ai/v1/systemone",
+        "model": "jev-latest",
+        "api_key_env": "TYPESAFE_API_KEY",
+        "api_key_path": "config/jev.key",
+        "timeout_seconds": 5,
+        "min_confidence": 0.5,
+        "cache_size": 500,
+    },
     "secret_path": "config/rabbit-hole.secret",
     "custom_scenario_dir": "config/rabbit-hole-scenarios",
     "extra_scenario_dirs": [],
@@ -51,6 +62,8 @@ ORG_FIELD = re.compile(r"^[A-Za-z0-9 .,&()'_-]{1,80}$")
 HOST_FIELD = re.compile(r"^[A-Za-z0-9][A-Za-z0-9.-]{0,62}$")
 USER_FIELD = re.compile(r"^[a-z_][a-z0-9_-]{0,31}$")
 SUBNET_FIELD = re.compile(r"^(10|172|192)\.\d{1,3}\.\d{1,3}$")
+ENV_FIELD = re.compile(r"^[A-Z_][A-Z0-9_]{0,63}$")
+MODEL_FIELD = re.compile(r"^[A-Za-z0-9._-]{1,64}$")
 LIMIT_RANGES = {
     "max_depth": (1, 10),
     "max_branches": (1, 5),
@@ -120,7 +133,32 @@ def validate_raw(raw: dict) -> dict:
             ipaddress.ip_network(cidr, strict=False)
         except ValueError as exc:
             raise ValueError("invalid_trusted_proxy") from exc
+    _validate_ai(data["ai"])
     return data
+
+
+def _validate_ai(ai: dict) -> None:
+    """Jev attacker profiling (optional, off by default). The API key itself is
+    never stored here, only the name of the environment variable holding it."""
+    if not isinstance(ai.get("enabled"), bool):
+        raise ValueError("invalid_ai_enabled")
+    if ai.get("provider") != "jev":
+        raise ValueError("invalid_ai_provider")
+    parts = urlsplit(str(ai.get("api_url") or ""))
+    local = parts.hostname in {"127.0.0.1", "localhost", "::1"}
+    if not parts.hostname or parts.scheme not in ({"https", "http"} if local else {"https"}):
+        raise ValueError("invalid_ai_api_url")
+    if not isinstance(ai.get("model"), str) or not MODEL_FIELD.match(ai["model"]):
+        raise ValueError("invalid_ai_model")
+    if not isinstance(ai.get("api_key_env"), str) or not ENV_FIELD.match(ai["api_key_env"]):
+        raise ValueError("invalid_ai_api_key_env")
+    path = ai.get("api_key_path")
+    if not isinstance(path, str) or not path.strip() or "\0" in path:
+        raise ValueError("invalid_ai_api_key_path")
+    for key, low, high in (("timeout_seconds", 1, 30), ("min_confidence", 0, 1), ("cache_size", 10, 10000)):
+        value = ai.get(key)
+        if isinstance(value, bool) or not isinstance(value, (int, float)) or not low <= value <= high:
+            raise ValueError(f"invalid_ai_{key}")
 
 
 def _is_ip(value) -> bool:
@@ -148,6 +186,10 @@ class RabbitConfig:
     @property
     def limits(self) -> dict:
         return self.data["limits"]
+
+    @property
+    def ai(self) -> dict:
+        return self.data["ai"]
 
     @property
     def web(self) -> dict:
@@ -256,7 +298,29 @@ class RabbitConfig:
         data.pop("secret_path", None)
         data.pop("custom_scenario_dir", None)
         data.pop("extra_scenario_dirs", None)
+        data.get("ai", {}).pop("api_key_path", None)
         return data
+
+    def ai_key_path(self) -> Path:
+        return self.resolve(self.ai["api_key_path"])
+
+    def save_ai(self, enabled: bool) -> "RabbitConfig":
+        """Only the on/off switch is editable from the dashboard; the endpoint,
+        model and key location stay as the operator wrote them in the file."""
+        if self.path is None:
+            raise ValueError("rabbit_hole_config_path_missing")
+        if not isinstance(enabled, bool):
+            raise ValueError("invalid_ai_enabled")
+        raw = json.loads(self.path.read_text(encoding="utf-8")) if self.path.is_file() else {}
+        raw.setdefault("ai", {})
+        if not isinstance(raw["ai"], dict):
+            raw["ai"] = {}
+        raw["ai"]["enabled"] = enabled
+        validated = validate_raw({k: v for k, v in raw.items() if k != "project_root"})
+        temporary = self.path.with_name(self.path.name + "." + secrets.token_hex(4) + ".tmp")
+        temporary.write_text(json.dumps(raw, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        os.replace(temporary, self.path)
+        return RabbitConfig(self.path, self.root, validated)
 
     def save(self, data: dict) -> "RabbitConfig":
         if self.path is None:
@@ -265,6 +329,7 @@ class RabbitConfig:
         merged = _merge(current, data)
         merged["secret_path"] = current["secret_path"]
         merged["web"] = current["web"]
+        merged["ai"] = current["ai"]
         merged["extra_scenario_dirs"] = current.get("extra_scenario_dirs", [])
         merged["custom_scenario_dir"] = current.get("custom_scenario_dir")
         validated = validate_raw(merged)
