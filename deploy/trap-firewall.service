@@ -1,0 +1,18 @@
+[Unit]
+Description=TRAP redirect rules (nft table inet adaptive_defender)
+Documentation=file:/opt/trap/defender/nftables/README.md
+# No network-online here: trap-isolation runs Before=network-pre.target, so pulling
+# network-online into this unit creates a systemd ordering cycle that cancels
+# NetworkManager at boot (interfaces stay down).
+Before=trap-isolation.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+# Table is recreated from /etc/trap/redirect.nft on every boot/restart.
+ExecStartPre=-/usr/sbin/nft delete table inet adaptive_defender
+ExecStart=/usr/sbin/nft -f /etc/trap/redirect.nft
+ExecStop=-/usr/sbin/nft delete table inet adaptive_defender
+
+[Install]
+WantedBy=multi-user.target

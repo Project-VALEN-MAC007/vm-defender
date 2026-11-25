@@ -1,5 +1,5 @@
 #!/usr/sbin/nft -f
-# TRAP isolation — Project-Honeypot (10.10.10.2)
+# TRAP isolation â€” Project-Honeypot (10.10.10.2)
 #
 # The Honeypot is the machine an attacker is invited into, so it may only answer.
 #   - Defender (10.10.10.1) may open: SSH 22 (log sync pull), deploy agent 8091,
@@ -50,5 +50,10 @@ table inet trap_isolation {
         ct state established,related accept
         oif "lo" accept
         ip daddr { $LAB_NET, $OUTER_NET } ct state new counter drop comment "honeypot host -> lab"
+        # The Honeypot host may not reach the Internet either. Management SSH from
+        # the host comes inbound on enp0s3 and its replies are already accepted
+        # above as established, so this only blocks new outbound connections.
+        # During installation (apt / docker pull) stop trap-isolation first.
+        oif "enp0s3" ct state new counter drop comment "honeypot host -> internet"
     }
 }
