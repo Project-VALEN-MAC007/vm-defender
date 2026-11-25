@@ -131,7 +131,7 @@
     const g=a.goal||{};
     const steps=(a.steps||[]).map(x=>`<li class="${x.by||''}"><span class="d">${x.depth??'·'}</span><code title="${escapeHtml(x.path||'')}">${escapeHtml(x.path||'-')}</code>${x.by==='jev'?`<em>Jev ${pc(x.confidence)}</em>`:x.by==='fallback'?'<em class="fb">สำรอง</em>':''}</li>`).join('');
     const next=(a.decisions||[]).map(dec=>`<div class="jv-pick"><div class="jv-from"><code>${escapeHtml(dec.from.path)}</code>${dec.seen?'<span class="pill deep">เปิดแล้ว</span>':''}</div>${dec.options.map(o=>`<div class="jv-opt ${o.chosen?'on':''}" title="${escapeHtml(o.path)}"><span>${o.chosen?'✓ ':''}${escapeHtml(short(o.path))}</span><div class="jv-track"><i style="width:${o.p==null?0:Math.round(o.p*100)}%"></i></div><b>${o.p==null?'-':Math.round(o.p*100)+'%'}</b></div>`).join('')}</div>`).join('');
-    return `<header class="jv-dh">${gauge(g.confidence)}<div><code class="jv-ip">${escapeHtml(a.source_ip)}</code><strong>${escapeHtml(GOAL[g.label]||'ยังไม่ชัด')}</strong><small>${a.family==='shell'?'SSH/Telnet':a.family==='web'?'Web':'-'} · ลึก ${a.max_depth||0} ชั้น · ${num(a.sessions)} ช่วง</small></div></header>
+    return `<div class="jv-dh">${gauge(g.confidence)}<div><code class="jv-ip">${escapeHtml(a.source_ip)}</code><strong>${escapeHtml(GOAL[g.label]||'ยังไม่ชัด')}</strong><small>${a.family==='shell'?'SSH/Telnet':a.family==='web'?'Web':'-'} · ลึก ${a.max_depth||0} ชั้น · ${num(a.sessions)} ช่วง</small></div></div>
       <h6>เส้นทาง</h6>${steps?`<ol class="jv-path-list">${steps}</ol>`:'<div class="empty">ยังไม่ได้เปิดเหยื่อ</div>'}
       <h6>Jev เลือกเบาะแสถัดไป</h6>${next||'<div class="empty">ยังไม่มีทางแยกให้ตัดสิน</div>'}`;
   }
