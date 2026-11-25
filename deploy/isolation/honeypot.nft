@@ -1,5 +1,5 @@
 #!/usr/sbin/nft -f
-# TRAP isolation â€” Project-Honeypot (10.10.10.2)
+# TRAP isolation — Project-Honeypot (10.10.10.2)
 #
 # The Honeypot is the machine an attacker is invited into, so it may only answer.
 #   - Defender (10.10.10.1) may open: SSH 22 (log sync pull), deploy agent 8091,
