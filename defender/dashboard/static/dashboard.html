@@ -114,12 +114,18 @@
           <p id="rh-error" class="error" role="status"></p>
 
           <div class="rh-panel" id="rh-summary">
-            <div class="card rh-hero"><div class="tunnel" id="rh-tunnel" role="img" aria-label="จำนวนการเข้าเส้นทางลวงที่ไปถึงแต่ละชั้น"></div><div class="figures" id="rh-figures"></div></div>
+            <div class="card jv-status" id="rh-jev-status" aria-live="polite"></div>
+            <div class="figures" id="rh-figures"></div>
+            <div class="card"><div class="card-head"><div><h4 class="card-title">ผู้โจมตีลงลึกแค่ไหน</h4><p class="data-note">แต่ละแถวคือ 1 ชั้นของเส้นทางลวง แท่งบอกว่าผู้โจมตีที่เข้ามา<b>กี่เปอร์เซ็นต์</b>ไปถึงชั้นนั้น (เทียบในกลุ่มตัวเอง) ยิ่งแท่งชั้นลึกยาว แปลว่าเบาะแสดึงคนให้เดินต่อได้ดี</p></div><div class="jv-legend" id="rh-ladder-legend"></div></div>
+              <div class="card-body"><div id="rh-ladder" class="jv-ladder"></div></div></div>
+            <div class="card"><div class="card-head"><div><h4 class="card-title">Jev เทียบกับเส้นทางคงที่</h4><p class="data-note">ตัวเลขเดียวกันแยกตามผู้วางเบาะแส ค่าที่ดีกว่าในแต่ละแถวเป็นสีเขียว</p></div></div>
+              <div class="table-wrap"><table class="jv-compare"><thead id="rh-strategy-head"></thead><tbody id="rh-strategy-body"></tbody></table></div>
+              <p class="data-note jv-foot" id="rh-strategy-note"></p></div>
             <div class="rh-panel">
               <div class="card"><div class="card-head"><h4 class="card-title">เทียบกับ Honeypot แบบคงที่</h4></div><div class="card-body"><div id="rh-compare"></div><p class="data-note" id="rh-compare-note"></p></div></div>
               <div class="card"><div class="card-head"><h4 class="card-title">แยกตามโปรโตคอล</h4></div><div class="table-wrap"><table><thead><tr><th>โปรโตคอล</th><th>Session</th><th>เดินตามเบาะแส</th><th>ความลึกเฉลี่ย / สูงสุด</th><th>เวลาโต้ตอบเฉลี่ย</th><th>เวลาเชื่อมต่อ SSH/Telnet เฉลี่ย</th></tr></thead><tbody id="rh-protocols"></tbody></table></div></div>
             </div>
-            <div hidden aria-hidden="true"><div id="rh-strata"></div><div id="rh-resources"></div></div>
+            <div hidden aria-hidden="true"><div id="rh-strata"></div><div id="rh-resources"></div><div id="rh-tunnel"></div></div>
           </div>
 
           <div class="rh-panel hidden" id="rh-sessions">
@@ -301,5 +307,6 @@
   <script src="/static/dashboard.js"></script>
   <script src="/static/guide.js"></script>
   <script src="/static/rabbit-pool.js"></script>
+  <script src="/static/rabbit-overview.js"></script>
 </body>
 </html>
