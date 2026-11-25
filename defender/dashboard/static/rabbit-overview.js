@@ -2,8 +2,8 @@
    Uses globals from dashboard.js: rh, renderRabbit, $, escapeHtml, when, pct, secs. */
 (function(){
   const GROUPS=[
-    {id:'jev',name:'Jev คุมเส้นทาง',short:'Jev',cls:'jev'},
-    {id:'fallback',name:'ตัวเลือกสำรอง (Jev ไม่ตอบ)',short:'สำรอง',cls:'fallback'}];
+    {id:'jev',name:'Jev',short:'Jev',cls:'jev'},
+    {id:'fallback',name:'ตัวสำรอง',short:'สำรอง',cls:'fallback'}];
   const GOAL={recon:'สำรวจระบบ',credential_hunting:'หารหัสผ่าน/คีย์',data_theft:'ขโมยข้อมูล',exploitation:'โจมตีช่องโหว่',persistence:'พยายามฝังตัว',other:'ยังไม่ชัด'};
   const CATEGORY={recon:'สำรวจ',config:'ไฟล์ตั้งค่า',credential:'รหัส/คีย์',backup:'แบ็กอัป',data:'ข้อมูลลับ',admin:'หน้าแอดมิน',notes:'บันทึก',api:'API'};
   const num=v=>(v||0).toLocaleString('th-TH');
@@ -19,54 +19,38 @@
 
   function status(d){
     const s=d.summary,ai=d.ai||{},plan=d.plan||{},by=s.followed_clue_by||{};
-    const followed=(by.jev||0)+(by.fallback||0);
-    const share=followed?(by.jev||0)/followed:null;
-    const jevMode=d.strategy==='jev';
+    const followed=(by.jev||0)+(by.fallback||0),share=followed?(by.jev||0)/followed:null;
     let state,cls;
-    if(!jevMode){state='ยังไม่ได้ตั้งให้ Jev คุมเส้นทาง';cls='warn'}
-    else if(!ai.enabled||!ai.key_set){state='ใช้ตัวเลือกสำรอง (ยังไม่เปิด Jev หรือยังไม่มีคีย์)';cls='warn'}
-    else if(!plan.exists){state='รอแผนแรกจาก Jev planner';cls='warn'}
-    else if(plan.error){state='อ่านแผนของ Jev ไม่ได้';cls='bad'}
-    else{state='กำลังคุมเส้นทาง';cls='ok'}
+    if(d.strategy!=='jev'){state='ปิด';cls='warn'}
+    else if(!ai.enabled||!ai.key_set){state='ใช้ตัวสำรอง';cls='warn'}
+    else if(!plan.exists||plan.error){state='รอแผน';cls='warn'}
+    else{state='ทำงาน';cls='ok'}
     const conf=s.by_strategy&&s.by_strategy.jev&&s.by_strategy.jev.average_confidence;
-    const kpis=[
-      [share==null?'-':Math.round(share*100)+'%','เบาะแสที่ Jev ตัดสินเอง',`${num(by.jev)} จาก ${num(followed)} ที่ผู้โจมตีเดินตาม`],
-      [num(by.jev),'ครั้งที่ผู้โจมตีตามเบาะแสของ Jev',`ตัวเลือกสำรอง ${num(by.fallback)} ครั้ง`],
-      [plan.exists&&!plan.error?num(plan.attackers):'-','ผู้โจมตีที่ Jev มีแผนให้',plan.generated?'อัปเดต '+when(plan.generated):'ยังไม่มีแผน'],
-      [conf==null?'-':Math.round(conf*100)+'%','ความมั่นใจเฉลี่ยของ Jev','ตอนเลือกเบาะแสที่มีคนเดินตาม']];
+    const pc=v=>v==null?'-':Math.round(v*100)+'%';
+    const list=d.jev_attackers||[];
     $('rh-jev-status').innerHTML=`
-      <div class="jv-top">
-        <div class="jv-id"><span class="jv-mark" aria-hidden="true"><img src="/static/jev-logo.png" alt="" onerror="this.remove()"><em>J</em></span><div><h4>Jev</h4><span class="pill ${cls}">${escapeHtml(state)}</span></div></div>
-        <div class="jv-kpis">${kpis.map(([v,l,h])=>`<div><b>${v}</b><span>${l}</span><small>${escapeHtml(h)}</small></div>`).join('')}</div>
+      <div class="jv-head">
+        <span class="jv-mark" aria-hidden="true"><img src="/static/jev-logo.png" alt="" onerror="this.remove()"><em>J</em></span>
+        <h4>Jev</h4><span class="pill ${cls}">${state}</span>
+        <div class="jv-stats"><span><b>${list.length}</b>กำลังคุม</span><span><b>${pc(share)}</b>Jev ตัดสินเอง</span><span><b>${pc(conf)}</b>มั่นใจเฉลี่ย</span></div>
       </div>
-      <div class="jv-grid">
-        <section class="jv-panel"><h5>เป้าหมายผู้โจมตีที่ Jev ประเมิน</h5>${goals(plan)}</section>
-        <section class="jv-panel"><h5>การตัดสินใจล่าสุดของ Jev</h5>${decisions(s.jev_decisions||[])}</section>
-      </div>
-      <section class="jv-panel"><h5>เบาะแสที่ผู้โจมตีเดินตาม ตามเวลา <small>${(s.clue_timeline||{}).unit==='day'?'รายวัน':'รายชั่วโมง'}</small></h5>${timeline(s.clue_timeline||{})}</section>
-      ${(plan.recent||[]).length?`<section class="jv-panel"><h5>แผนของ Jev ราย IP <small>${num(plan.attackers)} IP</small></h5><div class="jv-chips">${plan.recent.map(r=>`<div class="jv-chip"><code>${escapeHtml(r.source_ip)}</code><span>${escapeHtml(GOAL[r.goal&&r.goal.label]||'ยังไม่ชัด')}${r.goal&&r.goal.confidence!=null?` · ${Math.round(r.goal.confidence*100)}%`:''}</span><small>ตัดสินแล้ว ${r.choices} ช่อง · ${escapeHtml(when(r.updated))}</small></div>`).join('')}</div></section>`:''}`;
+      ${list.length?`<div class="jv-cards">${list.map(card).join('')}</div>`:'<div class="empty">ยังไม่มีผู้โจมตี</div>'}`;
   }
 
-  function goals(plan){
-    const g=Object.entries(plan.goals||{}).sort((a,b)=>b[1]-a[1]),total=g.reduce((a,[,v])=>a+v,0);
-    if(!total)return '<div class="empty">ยังไม่มีแผนจาก Jev</div>';
-    return `<div class="jv-goals">${g.map(([k,v])=>`<div class="jv-goal"><span>${escapeHtml(GOAL[k]||k)}</span><div class="jv-track"><i style="width:${(v/total*100).toFixed(1)}%"></i></div><b>${num(v)}</b></div>`).join('')}</div>`;
+  function gauge(v){const p=v==null?0:Math.round(v*100);return `<span class="jv-gauge" style="--p:${p}"><b>${v==null?'-':p+'%'}</b></span>`}
+
+  function card(a){
+    const g=a.goal||{};
+    const steps=(a.steps||[]).map(x=>`<code title="${escapeHtml(x.path||'')}">${escapeHtml(short(x.path))}</code>`).join('<i>›</i>');
+    const next=(a.decisions||[]).map(dec=>`<div class="jv-pick"><div class="jv-from">${escapeHtml(short(dec.from.path))} ›</div>${dec.options.map(o=>`<div class="jv-opt ${o.chosen?'on':''}" title="${escapeHtml(o.path)}"><span>${o.chosen?'✓ ':''}${escapeHtml(short(o.path))}</span><div class="jv-track"><i style="width:${o.p==null?0:Math.round(o.p*100)}%"></i></div><b>${o.p==null?'-':Math.round(o.p*100)+'%'}</b></div>`).join('')}</div>`).join('');
+    return `<article class="jv-card">
+      <header>${gauge(g.confidence)}<div><code class="jv-ip">${escapeHtml(a.source_ip)}</code><strong>${escapeHtml(GOAL[g.label]||'ยังไม่ชัด')}</strong></div>${a.max_depth?`<span class="pill deep">ชั้น ${a.max_depth}</span>`:''}</header>
+      ${steps?`<div class="jv-steps">${steps}</div>`:''}
+      ${next?`<div class="jv-next">${next}</div>`:''}
+    </article>`;
   }
 
-  function decisions(rows){
-    if(!rows.length)return '<div class="empty">ยังไม่มีผู้โจมตีเดินตามเบาะแสที่ Jev วาง</div>';
-    return `<div class="table-wrap"><table class="jv-feed"><thead><tr><th>เวลา</th><th>Source IP</th><th>เบาะแสที่วาง</th><th>ชั้น</th><th>โดย</th></tr></thead><tbody>${rows.map(r=>`<tr><td class="mono">${escapeHtml(when(r.time))}</td><td><code>${escapeHtml(r.source_ip||'-')}</code></td><td><code class="jv-path">${escapeHtml(r.path||'-')}</code>${r.clue_from?`<small>ต่อจาก ${escapeHtml(r.clue_from)}</small>`:''}</td><td>${r.depth??'-'}</td><td>${r.by==='jev'?`<span class="jv-key jev">Jev${r.confidence!=null?' '+Math.round(r.confidence*100)+'%':''}</span>`:'<span class="jv-key fallback">สำรอง</span>'}</td></tr>`).join('')}</tbody></table></div>`;
-  }
-
-  function timeline(t){
-    const b=t.buckets||[];
-    if(!b.length)return '<div class="empty">ยังไม่มีการเดินตามเบาะแสในช่วงเวลานี้</div>';
-    const rows=b.filter(x=>x.jev+x.fallback);if(!rows.length)return '<div class="empty">ยังไม่มีการเดินตามเบาะแสของ Jev ในช่วงเวลานี้</div>';
-    const max=Math.max(1,...rows.map(x=>x.jev+x.fallback));
-    const label=x=>{const d=new Date(x.start);return t.unit==='day'?d.toLocaleDateString('th-TH',{day:'numeric',month:'short'}):d.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'})};
-    const every=Math.max(1,Math.ceil(rows.length/12));
-    return `<div class="jv-timeline">${rows.map((x,i)=>{const tot=x.jev+x.fallback;return `<div class="jv-col" title="${escapeHtml(label(x))}: Jev ${x.jev} · สำรอง ${x.fallback}"><div class="jv-stack" style="height:${(tot/max*100).toFixed(1)}%">${[['fallback',x.fallback],['jev',x.jev]].map(([k,v])=>v?`<i class="${k}" style="flex:${v}"></i>`:'').join('')}</div><small>${i%every===0?escapeHtml(label(x)):''}</small></div>`}).join('')}</div><div class="jv-legend jv-legend-left">${GROUPS.map(g=>`<span class="jv-key ${g.cls}">${g.short}</span>`).join('')}</div>`;
-  }
+  function short(path){path=String(path||'-');const parts=path.split('/').filter(Boolean);return parts.length>2?'…/'+parts.slice(-2).join('/'):path}
 
   function ladder(d){
     const s=d.summary,groups=GROUPS.filter(g=>s.by_strategy&&s.by_strategy[g.id]&&s.by_strategy[g.id].windows);
@@ -104,7 +88,7 @@
       const best=better&&groups.length>1&&nums.length>1?Math.max(...nums):null;
       return `<tr><td>${label}</td>${vals.map(v=>`<td class="${best!=null&&v===best?'jv-best':''}">${fmt(v)}</td>`).join('')}</tr>`}).join('');
     const small=groups.some(g=>(s.by_strategy[g.id].sessions||0)<10);
-    $('rh-strategy-note').textContent=(small?'กลุ่มใดกลุ่มหนึ่งมีน้อยกว่า 10 Session ตัวเลขยังแกว่งได้มาก · ':'')+'เทียบได้ตรงเมื่อใช้จุดเริ่ม ช่วงเวลา และกลุ่มผู้ทดสอบเดียวกัน';
+    $('rh-strategy-note').textContent=small?'ข้อมูลยังน้อย (< 10 Session)':'';
   }
 
   const base=renderRabbit;

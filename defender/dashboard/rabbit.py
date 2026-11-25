@@ -83,7 +83,8 @@ class RabbitHoleService:
                 "idle_timeout_seconds": config.limits["idle_timeout_seconds"],
                 "scenarios": self.catalog(), "settings": config.public(),
                 "problems": config.problems(), "ai": self.ai_status(),
-                "strategy": config.strategy, "pool": self.pool_catalog(), "plan": self.plan_status()}
+                "strategy": config.strategy, "pool": self.pool_catalog(), "plan": self.plan_status(),
+                "jev_attackers": self.jev_attackers(items)}
 
     def web_sessions(self, web_rows: list) -> list:
         """Rabbit Hole web windows in the session format used for Honeypot dwell time."""
@@ -263,6 +264,58 @@ class RabbitHoleService:
         return {"exists": True, "generated": raw.get("generated"), "attackers": len(ips), "goals": dict(goals),
                 "recent": [{"source_ip": ip, "updated": plan.get("updated"), "goal": plan.get("goal"),
                             "choices": len(plan.get("choices") or {})} for ip, plan in recent]}
+
+    def jev_attackers(self, windows: list, limit: int = 6) -> list:
+        """The attackers Jev is steering, newest first: Jev's guess of their goal, where they went,
+        and for the next clues the decoy each one points to with Jev's probability for every option."""
+        try:
+            raw = json.loads(self.config().plan_path.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            return []
+        ips = raw.get("ips") if isinstance(raw.get("ips"), dict) else {}
+        items = {}
+        for protocol in ("web", "shell"):
+            try:
+                items.update(self.config().pool(protocol=protocol).items)
+            except (rabbit_pool.PoolError, KeyError, ValueError):
+                pass
+
+        def view(item_id):
+            item = items.get(item_id)
+            return {"id": item_id, "path": item.path if item else item_id,
+                    "category": item.category if item else None}
+
+        latest = {}
+        for window in windows:  # newest first
+            if window.get("source_ip") in ips and window["source_ip"] not in latest:
+                latest[window["source_ip"]] = window
+        result = []
+        for ip, plan in sorted(ips.items(), key=lambda kv: str(kv[1].get("updated")), reverse=True)[:limit]:
+            window = latest.get(ip) or {}
+            trail = window.get("trail") or []
+            visited = [step.get("resource") for step in trail]
+            steps = []
+            for step in trail:  # one entry per page, in visiting order
+                if steps and steps[-1]["path"] == step.get("path"):
+                    continue
+                steps.append({"path": step.get("path"), "depth": step.get("depth"), "by": step.get("clue_by"),
+                              "confidence": step.get("clue_confidence")})
+            steps = steps[-6:]
+            decisions = []
+            for key, choice in (plan.get("choices") or {}).items():
+                item_id, _, slot = key.rpartition(".")
+                probabilities = choice.get("probabilities") or {}
+                chosen = list(choice.get("items") or [])
+                options = sorted(set(probabilities) | set(chosen), key=lambda k: probabilities.get(k, 0), reverse=True)[:3]
+                decisions.append({"from": view(item_id), "slot": slot, "confidence": choice.get("confidence"),
+                                  "options": [{**view(o), "p": probabilities.get(o), "chosen": o in chosen} for o in options],
+                                  "seen": item_id in visited})
+            # clues on pages the attacker already opened first, then the most confident
+            decisions.sort(key=lambda d: (not d["seen"], -(d["confidence"] or 0)))
+            result.append({"source_ip": ip, "updated": plan.get("updated"), "goal": plan.get("goal") or {},
+                           "family": window.get("family"), "max_depth": window.get("max_depth"),
+                           "steps": steps, "decisions": decisions[:3], "decided": len(plan.get("choices") or {})})
+        return result
 
     def pool_preview(self, item_id: str) -> dict:
         config = self.config()
