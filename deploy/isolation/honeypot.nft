@@ -54,6 +54,7 @@ table inet trap_isolation {
         # the host comes inbound on enp0s3 and its replies are already accepted
         # above as established, so this only blocks new outbound connections.
         # During installation (apt / docker pull) stop trap-isolation first.
-        oif "enp0s3" ct state new counter drop comment "honeypot host -> internet"
+        # oifname (not oif): the ruleset must load even if this NIC is absent or renamed.
+        oifname "enp0s3" ct state new counter drop comment "honeypot host -> internet"
     }
 }
