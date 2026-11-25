@@ -29,24 +29,43 @@
     else if(!plan.exists){state='รอแผนแรกจาก Jev planner';cls='warn'}
     else if(plan.error){state='อ่านแผนของ Jev ไม่ได้';cls='bad'}
     else{state='กำลังคุมเส้นทาง';cls='ok'}
-    const conf=(s.by_strategy&&s.by_strategy.jev&&s.by_strategy.jev.average_confidence);
-    const recent=(plan.recent||[]).slice(0,5);
-    const flow=[
-      ['1','ผู้โจมตีเข้ามา','โดน redirect จาก IDS เข้าเว็บ/SSH ลวง'],
-      ['2','Jev อ่านพฤติกรรม','ดูว่าเปิดอะไร เร็วแค่ไหน แล้วเดาเป้าหมาย'],
-      ['3','เลือกเบาะแสจากคลัง','หยิบเหยื่อที่ตรงเป้าหมายมาเติมในช่องเบาะแส'],
-      ['4','ผู้โจมตีเดินลึกขึ้น','ยิ่งลึก ยิ่งอยู่นาน ยิ่งเห็นพฤติกรรมมาก']];
+    const conf=s.by_strategy&&s.by_strategy.jev&&s.by_strategy.jev.average_confidence;
+    const kpis=[
+      [share==null?'-':Math.round(share*100)+'%','เบาะแสที่ผู้โจมตีเดินตาม ที่ Jev วาง',`${num(by.jev)} จาก ${num(followed)}`],
+      [num(by.jev),'ครั้งที่ผู้โจมตีตามเบาะแสของ Jev',`ตัวเลือกสำรอง ${num(by.fallback)} ครั้ง`],
+      [plan.exists&&!plan.error?num(plan.attackers):'-','ผู้โจมตีที่ Jev มีแผนให้',plan.generated?'อัปเดต '+when(plan.generated):'ยังไม่มีแผน'],
+      [conf==null?'-':Math.round(conf*100)+'%','ความมั่นใจเฉลี่ยของ Jev','ตอนเลือกเบาะแสที่มีคนเดินตาม']];
     $('rh-jev-status').innerHTML=`
       <div class="jv-top">
-        <div class="jv-id"><span class="jv-mark" aria-hidden="true">J</span><div><h4>Jev — ผู้วางเบาะแส</h4><span class="pill ${cls}">${escapeHtml(state)}</span></div></div>
-        <div class="jv-kpis">
-          <div><b>${share==null?'-':Math.round(share*100)+'%'}</b><small>ของเบาะแสที่ผู้โจมตีเดินตาม<br>Jev เป็นคนวาง (${num(by.jev)} จาก ${num(followed)})</small></div>
-          <div><b>${plan.exists&&!plan.error?num(plan.attackers):'-'}</b><small>ผู้โจมตีที่ Jev มีแผนให้<br>${plan.generated?'อัปเดต '+escapeHtml(when(plan.generated)):'ยังไม่มีแผน'}</small></div>
-          <div><b>${conf==null?'-':Math.round(conf*100)+'%'}</b><small>ความมั่นใจเฉลี่ยของ Jev<br>ตอนเลือกเบาะแส</small></div>
-        </div>
+        <div class="jv-id"><span class="jv-mark" aria-hidden="true">J</span><div><h4>Jev</h4><span class="pill ${cls}">${escapeHtml(state)}</span></div></div>
+        <div class="jv-kpis">${kpis.map(([v,l,h])=>`<div><b>${v}</b><span>${l}</span><small>${escapeHtml(h)}</small></div>`).join('')}</div>
       </div>
-      <ol class="jv-flow">${flow.map(([n,t,x])=>`<li><span>${n}</span><div><b>${t}</b><small>${x}</small></div></li>`).join('')}</ol>
-      ${recent.length?`<div class="jv-recent"><h5>Jev กำลังวางแผนให้ใคร</h5><div class="jv-chips">${recent.map(r=>`<div class="jv-chip"><code>${escapeHtml(r.source_ip)}</code><span>${escapeHtml(GOAL[r.goal&&r.goal.label]||'ยังไม่ชัด')}${r.goal&&r.goal.confidence!=null?` · ${Math.round(r.goal.confidence*100)}%`:''}</span><small>ตัดสินแล้ว ${r.choices} ช่อง</small></div>`).join('')}</div></div>`:''}`;
+      <div class="jv-grid">
+        <section class="jv-panel"><h5>เป้าหมายผู้โจมตีที่ Jev ประเมิน</h5>${goals(plan)}</section>
+        <section class="jv-panel"><h5>การตัดสินใจล่าสุดของ Jev</h5>${decisions(s.jev_decisions||[])}</section>
+      </div>
+      <section class="jv-panel"><h5>ใครวางเบาะแสที่ผู้โจมตีเดินตาม ตามเวลา <small>${(s.clue_timeline||{}).unit==='day'?'รายวัน':'รายชั่วโมง'}</small></h5>${timeline(s.clue_timeline||{})}</section>
+      ${(plan.recent||[]).length?`<section class="jv-panel"><h5>แผนของ Jev ราย IP <small>${num(plan.attackers)} IP</small></h5><div class="jv-chips">${plan.recent.map(r=>`<div class="jv-chip"><code>${escapeHtml(r.source_ip)}</code><span>${escapeHtml(GOAL[r.goal&&r.goal.label]||'ยังไม่ชัด')}${r.goal&&r.goal.confidence!=null?` · ${Math.round(r.goal.confidence*100)}%`:''}</span><small>ตัดสินแล้ว ${r.choices} ช่อง · ${escapeHtml(when(r.updated))}</small></div>`).join('')}</div></section>`:''}`;
+  }
+
+  function goals(plan){
+    const g=Object.entries(plan.goals||{}).sort((a,b)=>b[1]-a[1]),total=g.reduce((a,[,v])=>a+v,0);
+    if(!total)return '<div class="empty">ยังไม่มีแผนจาก Jev</div>';
+    return `<div class="jv-goals">${g.map(([k,v])=>`<div class="jv-goal"><span>${escapeHtml(GOAL[k]||k)}</span><div class="jv-track"><i style="width:${(v/total*100).toFixed(1)}%"></i></div><b>${num(v)}</b></div>`).join('')}</div>`;
+  }
+
+  function decisions(rows){
+    if(!rows.length)return '<div class="empty">ยังไม่มีผู้โจมตีเดินตามเบาะแสที่ Jev วาง</div>';
+    return `<div class="table-wrap"><table class="jv-feed"><thead><tr><th>เวลา</th><th>Source IP</th><th>เบาะแสที่วาง</th><th>ชั้น</th><th>โดย</th></tr></thead><tbody>${rows.map(r=>`<tr><td class="mono">${escapeHtml(when(r.time))}</td><td><code>${escapeHtml(r.source_ip||'-')}</code></td><td><code class="jv-path">${escapeHtml(r.path||'-')}</code>${r.clue_from?`<small>ต่อจาก ${escapeHtml(r.clue_from)}</small>`:''}</td><td>${r.depth??'-'}</td><td>${r.by==='jev'?`<span class="jv-key jev">Jev${r.confidence!=null?' '+Math.round(r.confidence*100)+'%':''}</span>`:'<span class="jv-key fallback">สำรอง</span>'}</td></tr>`).join('')}</tbody></table></div>`;
+  }
+
+  function timeline(t){
+    const b=t.buckets||[];
+    if(!b.length)return '<div class="empty">ยังไม่มีการเดินตามเบาะแสในช่วงเวลานี้</div>';
+    const max=Math.max(1,...b.map(x=>x.jev+x.fallback+x.fixed));
+    const label=x=>{const d=new Date(x.start);return t.unit==='day'?d.toLocaleDateString('th-TH',{day:'numeric',month:'short'}):d.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'})};
+    const every=Math.max(1,Math.ceil(b.length/12));
+    return `<div class="jv-timeline">${b.map((x,i)=>{const tot=x.jev+x.fallback+x.fixed;return `<div class="jv-col" title="${escapeHtml(label(x))}: Jev ${x.jev} · สำรอง ${x.fallback} · คงที่ ${x.fixed}"><div class="jv-stack" style="height:${(tot/max*100).toFixed(1)}%">${[['fixed',x.fixed],['fallback',x.fallback],['jev',x.jev]].map(([k,v])=>v?`<i class="${k}" style="flex:${v}"></i>`:'').join('')}</div><small>${i%every===0?escapeHtml(label(x)):''}</small></div>`}).join('')}</div><div class="jv-legend jv-legend-left">${GROUPS.map(g=>`<span class="jv-key ${g.cls}">${g.short}</span>`).join('')}</div>`;
   }
 
   function ladder(d){

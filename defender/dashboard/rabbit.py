@@ -1,6 +1,7 @@
 """Dashboard side of Rabbit Hole: read logs, build reports, manage settings."""
 from __future__ import annotations
 
+from collections import Counter
 from datetime import datetime, timedelta, timezone
 import json
 import os
@@ -258,7 +259,8 @@ class RabbitHoleService:
             return {"exists": True, "error": "unreadable"}
         ips = raw.get("ips") if isinstance(raw.get("ips"), dict) else {}
         recent = sorted(ips.items(), key=lambda kv: str(kv[1].get("updated")), reverse=True)[:10]
-        return {"exists": True, "generated": raw.get("generated"), "attackers": len(ips),
+        goals = Counter(str((plan.get("goal") or {}).get("label") or "other") for plan in ips.values())
+        return {"exists": True, "generated": raw.get("generated"), "attackers": len(ips), "goals": dict(goals),
                 "recent": [{"source_ip": ip, "updated": plan.get("updated"), "goal": plan.get("goal"),
                             "choices": len(plan.get("choices") or {})} for ip, plan in recent]}
 
