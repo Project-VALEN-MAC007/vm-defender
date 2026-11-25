@@ -142,7 +142,7 @@
                 <label class="switch-row"><input type="checkbox" id="rh-enabled"> เปิดใช้เส้นทางลวงต่อเนื่อง</label>
                 <fieldset class="rh-strategy"><legend>วิธีวางเบาะแสฝั่งเว็บ</legend>
                   <label class="strategy-card"><input type="radio" name="rh-strategy" value="jev"><span><strong>Jev คุมเส้นทาง</strong><small>Jev ดูพฤติกรรมของผู้โจมตีแต่ละคน แล้วเลือกจากคลังข้อมูลลวงว่าเบาะแสถัดไปควรพาไปที่ไหน ถ้ายังไม่มีแผนจาก Jev ระบบใช้ตัวเลือกสำรองทันที</small></span></label>
-                  <label class="strategy-card"><input type="radio" name="rh-strategy" value="fixed"><span><strong>เส้นทางคงที่ (กลุ่มเปรียบเทียบ)</strong><small>ใช้ฉาก Web ที่เลือกไว้ด้านล่างแบบเดิม สำหรับทดลองเทียบผลกับโหมด Jev</small></span></label>
+                  <label class="strategy-card"><input type="radio" name="rh-strategy" value="fixed"><span><strong>เส้นทางคงที่ (กลุ่มเปรียบเทียบ)</strong><small>ใช้ฉาก Web ชุดเดิมที่ตั้งไว้ในระบบ สำหรับทดลองเทียบผลกับโหมด Jev</small></span></label>
                 </fieldset>
                 <div class="settings-grid">
                   <label>ชื่อองค์กร<input id="rh-org-name" maxlength="80" required></label>
@@ -187,7 +187,7 @@
                 <p id="rh-ai-result" class="data-note" role="status"></p>
               </form>
             </div></div>
-            <div class="group" id="rh-library">
+            <div class="group jv-retired" id="rh-library" aria-hidden="true">
               <div class="library-head"><h3 class="group-title">คลังฉากเส้นทางลวง</h3><div class="split-actions"><button type="button" class="tonal" id="rh-new-web">+ สร้างฉาก Web</button><button type="button" class="tonal" id="rh-new-shell">+ สร้างฉาก SSH/Telnet</button></div></div>
               <p class="data-note">เลือกฉากที่จะใช้แล้วกด "บันทึกการตั้งค่า" ด้านบน · เทมเพลตแก้ไม่ได้ กด "ใช้เป็นต้นแบบ" เพื่อคัดลอกมาแก้เป็นฉากของคุณ</p>
               <div id="rh-scenarios" class="rh-panel"></div>

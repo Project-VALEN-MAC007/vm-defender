@@ -772,3 +772,6 @@ dialog code { color: var(--accent); word-break: break-all; }
 @media (max-width: 640px) {
   .jv-kpis, .jv-flow { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* Fixed-scenario library is kept in the DOM (its selections are still saved for the fixed/SSH paths) but no longer shown: the Jev decoy pool replaces it. */
+.jv-retired { display: none !important; }
