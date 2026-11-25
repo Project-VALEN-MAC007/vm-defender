@@ -62,7 +62,7 @@
         <button class="nav-btn" data-view="rabbit"><svg aria-hidden="true"><use href="#icon-hole"></use></svg>Rabbit Hole</button>
         <button class="nav-btn" data-view="logs"><svg aria-hidden="true"><use href="#icon-list"></use></svg>ค้นหา Log</button>
         <button class="nav-btn" data-view="rules" data-admin><svg aria-hidden="true"><use href="#icon-rule"></use></svg>จัดการกฎ</button>
-        <button class="nav-btn" data-view="deploy" data-admin><svg aria-hidden="true"><use href="#icon-deploy"></use></svg>Deploy หน้าเว็บ</button>
+        <button class="nav-btn jv-retired" data-view="deploy" data-admin aria-hidden="true" tabindex="-1"><svg aria-hidden="true"><use href="#icon-deploy"></use></svg>Deploy หน้าเว็บ</button>
         <button class="nav-btn" data-view="reports"><svg aria-hidden="true"><use href="#icon-chart"></use></svg>รายงาน</button>
         <button class="nav-btn" data-view="account"><svg aria-hidden="true"><use href="#icon-users"></use></svg>จัดการบัญชี</button>
         <button class="nav-btn" data-view="guide" data-admin><svg aria-hidden="true"><use href="#icon-book"></use></svg>คู่มือติดตั้ง</button>
@@ -116,13 +116,13 @@
           <div class="rh-panel" id="rh-summary">
             <div class="card jv-status" id="rh-jev-status" aria-live="polite"></div>
             <div class="figures" id="rh-figures"></div>
-            <div class="card"><div class="card-head"><div><h4 class="card-title">ผู้โจมตีลงลึกแค่ไหน</h4><p class="data-note">แต่ละแถวคือ 1 ชั้นของเส้นทางลวง แท่งบอกว่าผู้โจมตีที่เข้ามา<b>กี่เปอร์เซ็นต์</b>ไปถึงชั้นนั้น (เทียบในกลุ่มตัวเอง) ยิ่งแท่งชั้นลึกยาว แปลว่าเบาะแสดึงคนให้เดินต่อได้ดี</p></div><div class="jv-legend" id="rh-ladder-legend"></div></div>
+            <div class="card jv-retired"><div class="card-head"><div><h4 class="card-title">ผู้โจมตีลงลึกแค่ไหน</h4><p class="data-note">% ที่ไปถึงแต่ละชั้น</p></div><div class="jv-legend" id="rh-ladder-legend"></div></div>
               <div class="card-body"><div id="rh-ladder" class="jv-ladder"></div></div></div>
-            <div class="card"><div class="card-head"><div><h4 class="card-title">Jev เทียบกับเส้นทางคงที่</h4><p class="data-note">ตัวเลขเดียวกันแยกตามผู้วางเบาะแส ค่าที่ดีกว่าในแต่ละแถวเป็นสีเขียว</p></div></div>
+            <div class="card jv-retired"><div class="card-head"><div><h4 class="card-title">Jev เทียบกับตัวสำรอง</h4></div></div>
               <div class="table-wrap"><table class="jv-compare"><thead id="rh-strategy-head"></thead><tbody id="rh-strategy-body"></tbody></table></div>
               <p class="data-note jv-foot" id="rh-strategy-note"></p></div>
             <div class="rh-panel">
-              <div class="card"><div class="card-head"><h4 class="card-title">เทียบกับ Honeypot แบบคงที่</h4></div><div class="card-body"><div id="rh-compare"></div><p class="data-note" id="rh-compare-note"></p></div></div>
+              <div class="card jv-retired"><div class="card-head"><h4 class="card-title">เทียบกับ Honeypot แบบคงที่</h4></div><div class="card-body"><div id="rh-compare"></div><p class="data-note" id="rh-compare-note"></p></div></div>
               <div class="card"><div class="card-head"><h4 class="card-title">แยกตามโปรโตคอล</h4></div><div class="table-wrap"><table><thead><tr><th>โปรโตคอล</th><th>Session</th><th>เดินตามเบาะแส</th><th>ความลึกเฉลี่ย / สูงสุด</th><th>เวลาโต้ตอบเฉลี่ย</th><th>เวลาเชื่อมต่อ SSH/Telnet เฉลี่ย</th></tr></thead><tbody id="rh-protocols"></tbody></table></div></div>
             </div>
             <div hidden aria-hidden="true"><div id="rh-strata"></div><div id="rh-resources"></div><div id="rh-tunnel"></div></div>
@@ -142,7 +142,7 @@
                 <label class="switch-row"><input type="checkbox" id="rh-enabled"> เปิดใช้เส้นทางลวงต่อเนื่อง</label>
                 <fieldset class="rh-strategy"><legend>วิธีวางเบาะแสฝั่งเว็บ</legend>
                   <label class="strategy-card"><input type="radio" name="rh-strategy" value="jev"><span><strong>Jev คุมเส้นทาง</strong><small>Jev ดูพฤติกรรมของผู้โจมตีแต่ละคน แล้วเลือกจากคลังข้อมูลลวงว่าเบาะแสถัดไปควรพาไปที่ไหน ถ้ายังไม่มีแผนจาก Jev ระบบใช้ตัวเลือกสำรองทันที</small></span></label>
-                  <label class="strategy-card"><input type="radio" name="rh-strategy" value="fixed"><span><strong>เส้นทางคงที่ (กลุ่มเปรียบเทียบ)</strong><small>ใช้ฉาก Web ที่เลือกไว้ด้านล่างแบบเดิม สำหรับทดลองเทียบผลกับโหมด Jev</small></span></label>
+                  <label class="strategy-card jv-retired"><input type="radio" name="rh-strategy" value="fixed"><span><strong>เส้นทางคงที่ (กลุ่มเปรียบเทียบ)</strong><small>ใช้ฉาก Web ชุดเดิมที่ตั้งไว้ในระบบ สำหรับทดลองเทียบผลกับโหมด Jev</small></span></label>
                 </fieldset>
                 <div class="settings-grid">
                   <label>ชื่อองค์กร<input id="rh-org-name" maxlength="80" required></label>
@@ -165,8 +165,8 @@
               </form>
             </div></div>
             <div class="card" id="rh-pool-card"><div class="card-head"><h3 class="card-title">คลังข้อมูลลวง — Jev เลือกจากที่นี่</h3><div class="split-actions"><span class="pill" id="rh-plan-state">-</span><button type="button" class="tonal small" id="rh-pool-new">+ เพิ่มชิ้นข้อมูลลวง</button></div></div><div class="card-body">
-              <p class="data-note" id="rh-pool-intro">แต่ละชิ้นมีช่องเบาะแส (slot) ที่ Jev เติมให้ผู้โจมตีแต่ละคนต่างกัน เลือกได้เฉพาะชิ้นในคลังนี้ ลึกไม่เกินความลึกสูงสุด และแยกไม่เกินทางแยกสูงสุดต่อจุด</p>
-              <div id="rh-plan-detail" class="rh-plan"></div>
+              <p class="data-note" id="rh-pool-intro">Jev เลือกเบาะแสจากชิ้นในคลังนี้เท่านั้น</p>
+              <div id="rh-plan-detail" class="rh-plan jv-retired" aria-hidden="true"></div>
               <p class="problems" id="rh-pool-errors"></p>
               <div id="rh-pool" class="rh-pool"></div>
               <form id="rh-pool-form" class="form-grid hidden"><h4 class="sub-title" id="rh-pool-form-title">เพิ่มชิ้นข้อมูลลวง</h4>
@@ -187,7 +187,7 @@
                 <p id="rh-ai-result" class="data-note" role="status"></p>
               </form>
             </div></div>
-            <div class="group" id="rh-library">
+            <div class="group jv-retired" id="rh-library" aria-hidden="true">
               <div class="library-head"><h3 class="group-title">คลังฉากเส้นทางลวง</h3><div class="split-actions"><button type="button" class="tonal" id="rh-new-web">+ สร้างฉาก Web</button><button type="button" class="tonal" id="rh-new-shell">+ สร้างฉาก SSH/Telnet</button></div></div>
               <p class="data-note">เลือกฉากที่จะใช้แล้วกด "บันทึกการตั้งค่า" ด้านบน · เทมเพลตแก้ไม่ได้ กด "ใช้เป็นต้นแบบ" เพื่อคัดลอกมาแก้เป็นฉากของคุณ</p>
               <div id="rh-scenarios" class="rh-panel"></div>
@@ -197,7 +197,7 @@
           </div>
         </section>
 
-        <section id="deploy" class="view">
+        <section id="deploy" class="view jv-retired" aria-hidden="true">
           <div class="rh-head"><div><h3>Deploy หน้าเว็บ Honeypot</h3><p>Defender clone เว็บจริงแล้วส่งสำเนาไปให้ SNARE บน Honeypot ตรวจดูก่อน แล้วเปลี่ยนหน้าเว็บที่ผู้โจมตีเห็นได้ในคลิกเดียว ย้อนกลับเวอร์ชันเดิมได้เสมอ</p></div><span class="pill" id="dp-mode">-</span></div>
           <p id="dp-error" class="error" role="status"></p>
           <div id="dp-missing" class="empty-box hidden">ยังไม่ได้เชื่อม Deploy agent บนเครื่อง Honeypot · ติดตั้งตาม <code>honeypot/deploy-agent/README.md</code> แล้วเพิ่ม <code>web_deploy</code> ใน trap.json · ลองบนเครื่องตัวเองได้ด้วย <code>python run_deploy_agent.py --config evidence/demo/deploy-agent.json</code></div>

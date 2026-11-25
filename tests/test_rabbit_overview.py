@@ -5,8 +5,9 @@ from defender.rabbit_hole.analytics import placement, summarize
 
 def window(sid, depth, steps):
     trail = [{"depth": d, "resource": r, "category": c, "clue_by": by, "clue_confidence": conf,
-              "followed_clue": by is not None, "scenario": None} for d, r, c, by, conf in steps]
-    return {"family": "web", "protocol": "http", "session_id": sid, "followed": any(s["followed_clue"] for s in trail),
+              "followed_clue": by is not None, "scenario": None,
+              "time": f"2026-11-25T10:{d:02d}:00+00:00", "path": "/" + r, "clue_from": None} for d, r, c, by, conf in steps]
+    return {"id": sid, "source_ip": "192.0.2." + str(ord(sid)), "family": "web", "protocol": "http", "session_id": sid, "followed": any(s["followed_clue"] for s in trail),
             "duration_seconds": 30.0, "resources": len(trail), "max_depth": depth, "single_access": False,
             "connection_seconds": None, "end_reason": "idle_timeout", "trail": trail}
 
@@ -39,10 +40,19 @@ class RabbitOverviewTest(unittest.TestCase):
         self.assertEqual(s["depth_examples"]["1"][0], {"resource": "robots", "count": 2, "category": "recon"})
         self.assertEqual(s["depth_examples"]["3"][0]["resource"], "backup-config")
 
+    def test_decisions_and_timeline(self):
+        s = summarize(self.items)
+        self.assertEqual([d["by"] for d in s["jev_decisions"]], ["jev", "jev", "fallback"])
+        self.assertEqual(s["jev_decisions"][0]["path"], "/backup-config")
+        self.assertEqual(s["clue_timeline"]["unit"], "hour")
+        self.assertEqual(s["clue_timeline"]["buckets"], [{"start": "2026-11-25T10:00:00+00:00", "jev": 2, "fallback": 1, "fixed": 0}])
+
     def test_empty(self):
         s = summarize([])
         self.assertEqual(s["by_strategy"], {})
         self.assertEqual(s["depth_examples"], {})
+        self.assertEqual(s["jev_decisions"], [])
+        self.assertEqual(s["clue_timeline"], {"unit": "hour", "buckets": []})
 
 
 if __name__ == "__main__":

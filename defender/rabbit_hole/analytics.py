@@ -238,4 +238,33 @@ def _strategy_view(items: list, block) -> dict:
     depth_examples = {str(d): [{"resource": n, "count": c, "category": categories.get(n)}
                                for n, c in counter.most_common(3)]
                       for d, counter in sorted(per_depth.items())}
-    return {"by_strategy": by_strategy, "depth_examples": depth_examples}
+    decisions = []
+    for item in items:
+        for step in item["trail"]:
+            if step.get("followed_clue") and step.get("clue_by") in {"jev", "fallback"}:
+                decisions.append({"time": step["time"], "source_ip": item["source_ip"], "window": item["id"],
+                                  "family": item["family"], "path": step.get("path"), "category": step.get("category"),
+                                  "clue_from": step.get("clue_from"), "depth": step.get("depth"),
+                                  "by": step["clue_by"], "confidence": step.get("clue_confidence")})
+    decisions.sort(key=lambda d: d["time"], reverse=True)
+    return {"by_strategy": by_strategy, "depth_examples": depth_examples,
+            "jev_decisions": decisions[:200], "clue_timeline": _timeline(items)}
+
+
+def _timeline(items: list) -> dict:
+    """Followed clues per hour (or per day when the data spans more than two days), split by who placed them."""
+    steps = [(_stamp(step["time"]), step.get("clue_by") or "fixed")
+             for item in items for step in item["trail"] if step.get("followed_clue")]
+    steps = [(t, by) for t, by in steps if t is not None]
+    if not steps:
+        return {"unit": "hour", "buckets": []}
+    first, last = min(t for t, _ in steps), max(t for t, _ in steps)
+    unit = "day" if (last - first).total_seconds() > 2 * 86400 else "hour"
+    def key(t):
+        return (t.replace(hour=0, minute=0, second=0, microsecond=0) if unit == "day"
+                else t.replace(minute=0, second=0, microsecond=0)).isoformat()
+    buckets = defaultdict(Counter)
+    for t, by in steps:
+        buckets[key(t)][by] += 1
+    return {"unit": unit, "buckets": [{"start": k, "jev": c["jev"], "fallback": c["fallback"], "fixed": c["fixed"]}
+                                      for k, c in sorted(buckets.items())][-48:]}

@@ -450,7 +450,8 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
         status_path or PROJECT_ROOT / "evidence/test-results/status.json", eve_paths)
     runtime = DashboardRuntime(settings)
     static_files = {"/static/rabbit-pool.js": ("rabbit-pool.js", "application/javascript; charset=utf-8"),
-                    "/static/rabbit-overview.js": ("rabbit-overview.js", "application/javascript; charset=utf-8")}
+                    "/static/rabbit-overview.js": ("rabbit-overview.js", "application/javascript; charset=utf-8"),
+                    "/static/jev-logo.png": ("jev-logo.png", "image/png")}
 
     class Handler(BaseHTTPRequestHandler):
         server_version = "TRAPDashboard/1.0"
@@ -479,7 +480,11 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
                 return
             if route in static_files:
                 name, content_type = static_files[route]
-                self._send(content_type, (Path(__file__).parent / "static" / name).read_bytes())
+                asset = Path(__file__).parent / "static" / name
+                if not asset.is_file():  # optional assets such as jev-logo.png
+                    self.send_error(404)
+                    return
+                self._send(content_type, asset.read_bytes())
                 return
             if route == "/api/session.json":
                 session = self._current_session()
@@ -634,6 +639,9 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
                 elif route == "/api/rabbit-hole/window.json":
                     self._send_json(runtime.rabbit.window_detail(runtime.rabbit_events(),
                                                                  (query.get("id") or [""])[0]))
+                elif route == "/api/rabbit-hole/jev-attacker.json":
+                    self._send_json(runtime.rabbit.jev_attacker(runtime.rabbit_events(),
+                                                                (query.get("ip") or [""])[0]))
                 elif route == "/api/rabbit-hole/ai.json":
                     self._send_json(runtime.rabbit.ai_profile(runtime.rabbit_events(),
                                                               (query.get("id") or [""])[0]))
