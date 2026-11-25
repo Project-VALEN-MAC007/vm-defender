@@ -185,6 +185,7 @@ def summarize(items: list, static_sessions: list | None = None) -> dict:
                # Who placed the clues attackers actually followed: Jev, the fallback, or a fixed scenario.
                "followed_clue_by": dict(Counter(step.get("clue_by") or "fixed" for item in items
                                                 for step in item["trail"] if step.get("followed_clue")))}
+    summary.update(_strategy_view(items, block))
     static = [s for s in (static_sessions or []) if s.get("profile") not in {"rabbithole"}]
     static_durations = [s["dwell_seconds"] for s in static if s.get("actions", 0) > 1]
     rabbit = summary["overall"]["average_duration_seconds"]
@@ -195,3 +196,46 @@ def summarize(items: list, static_sessions: list | None = None) -> dict:
         "note": "เปรียบเทียบได้เมื่อใช้จุดเริ่มต้น ระยะเวลา และกลุ่มผู้ทดสอบเดียวกันเท่านั้น",
     }
     return summary
+
+
+def placement(item: dict) -> str:
+    """Who placed the clues in this window: "jev", "fallback" (planner fallback) or "fixed"."""
+    sources = {step.get("clue_by") for step in item["trail"]}
+    if "jev" in sources:
+        return "jev"
+    if "fallback" in sources:
+        return "fallback"
+    return "fixed"
+
+
+def _strategy_view(items: list, block) -> dict:
+    """Jev-centred figures: the same metrics split by who placed the clues, how deep each group
+    got, and which decoys attackers opened at each depth."""
+    groups = defaultdict(list)
+    for item in items:
+        groups[placement(item)].append(item)
+    by_strategy = {}
+    for name, rows in sorted(groups.items()):
+        figures = block(rows)
+        hist = Counter(r["max_depth"] for r in rows)
+        figures["depth_distribution"] = {str(k): v for k, v in sorted(hist.items())}
+        confidences = [step["clue_confidence"] for r in rows for step in r["trail"]
+                       if step.get("clue_by") == "jev" and isinstance(step.get("clue_confidence"), (int, float))]
+        figures["average_confidence"] = round(sum(confidences) / len(confidences), 3) if confidences else None
+        figures["jev_steps"] = sum(1 for r in rows for step in r["trail"] if step.get("clue_by") == "jev")
+        by_strategy[name] = figures
+    per_depth = defaultdict(Counter)
+    categories = {}
+    for item in items:
+        for step in item["trail"]:
+            depth = step.get("depth")
+            if not depth:
+                continue
+            name = (step.get("resource") or "").split("/")[0] or (step.get("path") or "?")
+            per_depth[depth][name] += 1
+            if step.get("category"):
+                categories[name] = step["category"]
+    depth_examples = {str(d): [{"resource": n, "count": c, "category": categories.get(n)}
+                               for n, c in counter.most_common(3)]
+                      for d, counter in sorted(per_depth.items())}
+    return {"by_strategy": by_strategy, "depth_examples": depth_examples}

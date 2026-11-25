@@ -449,7 +449,8 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
         audit_path or PROJECT_ROOT / "evidence/test-results/decisions.jsonl",
         status_path or PROJECT_ROOT / "evidence/test-results/status.json", eve_paths)
     runtime = DashboardRuntime(settings)
-    static_files = {"/static/rabbit-pool.js": ("rabbit-pool.js", "application/javascript; charset=utf-8")}
+    static_files = {"/static/rabbit-pool.js": ("rabbit-pool.js", "application/javascript; charset=utf-8"),
+                    "/static/rabbit-overview.js": ("rabbit-overview.js", "application/javascript; charset=utf-8")}
 
     class Handler(BaseHTTPRequestHandler):
         server_version = "TRAPDashboard/1.0"
