@@ -792,7 +792,7 @@ dialog code { color: var(--accent); word-break: break-all; }
 .jv-legend-left { justify-content: flex-start; margin-top: 8px; }
 @media (max-width: 1100px) { .jv-grid { grid-template-columns: minmax(0, 1fr); } .jv-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .jv-mark { position: relative; overflow: hidden; }
-.jv-mark img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: var(--panel); padding: 4px; }
+.jv-mark img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .jv-mark em { font-style: normal; }
 
 /* Jev panel v3: attacker cards */
