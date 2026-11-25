@@ -265,14 +265,32 @@ class RabbitHoleService:
                 "recent": [{"source_ip": ip, "updated": plan.get("updated"), "goal": plan.get("goal"),
                             "choices": len(plan.get("choices") or {})} for ip, plan in recent]}
 
-    def jev_attackers(self, windows: list, limit: int = 6) -> list:
-        """The attackers Jev is steering, newest first: Jev's guess of their goal, where they went,
-        and for the next clues the decoy each one points to with Jev's probability for every option."""
+    def _plans(self) -> dict:
         try:
             raw = json.loads(self.config().plan_path.read_text(encoding="utf-8"))
         except (OSError, ValueError):
-            return []
-        ips = raw.get("ips") if isinstance(raw.get("ips"), dict) else {}
+            return {}
+        return raw.get("ips") if isinstance(raw.get("ips"), dict) else {}
+
+    def jev_attackers(self, windows: list, limit: int = 500) -> list:
+        """Every attacker Jev has a plan for (newest first), light enough to list hundreds."""
+        latest = {}
+        for window in windows:  # newest first
+            latest.setdefault(window.get("source_ip"), window)
+        rows = []
+        for ip, plan in sorted(self._plans().items(), key=lambda kv: str(kv[1].get("updated")), reverse=True)[:limit]:
+            window = latest.get(ip) or {}
+            goal = plan.get("goal") or {}
+            rows.append({"source_ip": ip, "updated": plan.get("updated"), "goal": goal.get("label"),
+                         "confidence": goal.get("confidence"), "decided": len(plan.get("choices") or {}),
+                         "family": window.get("family"), "max_depth": window.get("max_depth") or 0})
+        return rows
+
+    def jev_attacker(self, events: list, ip: str) -> dict:
+        """One attacker: where they went and, for the next clues, every option Jev weighed."""
+        plan = self._plans().get(ip)
+        if plan is None:
+            raise ValueError("attacker_not_found")
         items = {}
         for protocol in ("web", "shell"):
             try:
@@ -285,37 +303,31 @@ class RabbitHoleService:
             return {"id": item_id, "path": item.path if item else item_id,
                     "category": item.category if item else None}
 
-        latest = {}
-        for window in windows:  # newest first
-            if window.get("source_ip") in ips and window["source_ip"] not in latest:
-                latest[window["source_ip"]] = window
-        result = []
-        for ip, plan in sorted(ips.items(), key=lambda kv: str(kv[1].get("updated")), reverse=True)[:limit]:
-            window = latest.get(ip) or {}
-            trail = window.get("trail") or []
-            visited = [step.get("resource") for step in trail]
-            steps = []
-            for step in trail:  # one entry per page, in visiting order
-                if steps and steps[-1]["path"] == step.get("path"):
-                    continue
-                steps.append({"path": step.get("path"), "depth": step.get("depth"), "by": step.get("clue_by"),
-                              "confidence": step.get("clue_confidence")})
-            steps = steps[-6:]
-            decisions = []
-            for key, choice in (plan.get("choices") or {}).items():
-                item_id, _, slot = key.rpartition(".")
-                probabilities = choice.get("probabilities") or {}
-                chosen = list(choice.get("items") or [])
-                options = sorted(set(probabilities) | set(chosen), key=lambda k: probabilities.get(k, 0), reverse=True)[:3]
-                decisions.append({"from": view(item_id), "slot": slot, "confidence": choice.get("confidence"),
-                                  "options": [{**view(o), "p": probabilities.get(o), "chosen": o in chosen} for o in options],
-                                  "seen": item_id in visited})
-            # clues on pages the attacker already opened first, then the most confident
-            decisions.sort(key=lambda d: (not d["seen"], -(d["confidence"] or 0)))
-            result.append({"source_ip": ip, "updated": plan.get("updated"), "goal": plan.get("goal") or {},
-                           "family": window.get("family"), "max_depth": window.get("max_depth"),
-                           "steps": steps, "decisions": decisions[:3], "decided": len(plan.get("choices") or {})})
-        return result
+        windows = [w for w in rabbit_analytics.windows(events, self.config().limits["idle_timeout_seconds"])
+                   if w.get("source_ip") == ip]
+        window = windows[0] if windows else {}
+        trail = window.get("trail") or []
+        visited = {step.get("resource") for step in trail}
+        steps = []
+        for step in trail:  # one entry per page, in visiting order
+            if steps and steps[-1]["path"] == step.get("path"):
+                continue
+            steps.append({"path": step.get("path"), "depth": step.get("depth"), "by": step.get("clue_by"),
+                          "confidence": step.get("clue_confidence")})
+        decisions = []
+        for key, choice in (plan.get("choices") or {}).items():
+            item_id, _, slot = key.rpartition(".")
+            probabilities = choice.get("probabilities") or {}
+            chosen = list(choice.get("items") or [])
+            options = sorted(set(probabilities) | set(chosen), key=lambda k: probabilities.get(k, 0), reverse=True)[:4]
+            decisions.append({"from": view(item_id), "slot": slot, "confidence": choice.get("confidence"),
+                              "options": [{**view(o), "p": probabilities.get(o), "chosen": o in chosen} for o in options],
+                              "seen": item_id in visited})
+        decisions.sort(key=lambda d: (not d["seen"], -(d["confidence"] or 0)))
+        return {"source_ip": ip, "updated": plan.get("updated"), "goal": plan.get("goal") or {},
+                "family": window.get("family"), "max_depth": window.get("max_depth") or 0,
+                "window": window.get("id"), "sessions": len(windows),
+                "steps": steps[-10:], "decisions": decisions[:6], "decided": len(plan.get("choices") or {})}
 
     def pool_preview(self, item_id: str) -> dict:
         config = self.config()

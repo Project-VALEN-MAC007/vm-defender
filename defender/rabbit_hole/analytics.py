@@ -248,7 +248,7 @@ def _strategy_view(items: list, block) -> dict:
                                   "by": step["clue_by"], "confidence": step.get("clue_confidence")})
     decisions.sort(key=lambda d: d["time"], reverse=True)
     return {"by_strategy": by_strategy, "depth_examples": depth_examples,
-            "jev_decisions": decisions[:8], "clue_timeline": _timeline(items)}
+            "jev_decisions": decisions[:200], "clue_timeline": _timeline(items)}
 
 
 def _timeline(items: list) -> dict:

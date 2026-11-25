@@ -639,6 +639,9 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
                 elif route == "/api/rabbit-hole/window.json":
                     self._send_json(runtime.rabbit.window_detail(runtime.rabbit_events(),
                                                                  (query.get("id") or [""])[0]))
+                elif route == "/api/rabbit-hole/jev-attacker.json":
+                    self._send_json(runtime.rabbit.jev_attacker(runtime.rabbit_events(),
+                                                                (query.get("ip") or [""])[0]))
                 elif route == "/api/rabbit-hole/ai.json":
                     self._send_json(runtime.rabbit.ai_profile(runtime.rabbit_events(),
                                                               (query.get("id") or [""])[0]))
