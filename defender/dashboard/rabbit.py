@@ -2,6 +2,9 @@
 from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
+import json
+import os
+import re
 import threading
 
 from ..rabbit_hole import analytics as rabbit_analytics
@@ -9,6 +12,7 @@ from ..rabbit_hole import config as rabbit_config
 from ..rabbit_hole import shell as rabbit_shell
 from ..rabbit_hole import custom
 from ..rabbit_hole import jev
+from ..rabbit_hole import pool as rabbit_pool
 from ..rabbit_hole.render import Faker, render
 from ..rabbit_hole.scenario import parse as parse_scenario, resolve_paths
 from ..rabbit_hole.web import WebEngine
@@ -17,7 +21,9 @@ WINDOWS = {"24h": timedelta(hours=24), "7d": timedelta(days=7), "30d": timedelta
 
 
 def rabbit_transform(event: dict, path) -> dict | None:
-    if event.get("event") != "rabbit_hole.web" or not event.get("session_id") or not event.get("timestamp"):
+    # rabbit_hole.shell comes from the trap-rabbit Cowrie plugin (Jev mode).
+    if event.get("event") not in {"rabbit_hole.web", "rabbit_hole.shell"} or not event.get("session_id") \
+            or not event.get("timestamp"):
         return None
     return {**event, "source_file": str(path)}
 
@@ -75,7 +81,8 @@ class RabbitHoleService:
                 "windows": light, "total_windows": len(items),
                 "idle_timeout_seconds": config.limits["idle_timeout_seconds"],
                 "scenarios": self.catalog(), "settings": config.public(),
-                "problems": config.problems(), "ai": self.ai_status()}
+                "problems": config.problems(), "ai": self.ai_status(),
+                "strategy": config.strategy, "pool": self.pool_catalog(), "plan": self.plan_status()}
 
     def web_sessions(self, web_rows: list) -> list:
         """Rabbit Hole web windows in the session format used for Honeypot dwell time."""
@@ -206,11 +213,124 @@ class RabbitHoleService:
         return custom.delete(self.config(), scenario_id)
 
     def save(self, payload: dict) -> dict:
-        allowed = {k: payload[k] for k in ("enabled", "organization", "scenarios", "limits") if k in payload}
+        allowed = {k: payload[k] for k in ("enabled", "strategy", "organization", "scenarios", "limits")
+                   if k in payload}
         updated = self.config().save(allowed)
         with self.lock:
             self._cached, self._mtime = None, None
         return {"ok": True, "settings": updated.public()}
+
+    # ---------- Jev decoy pool ----------
+    def pool_catalog(self) -> dict:
+        config = self.config()
+        errors: list = []
+        try:
+            pool = config.pool(errors)
+        except (rabbit_pool.PoolError, KeyError, ValueError) as exc:
+            return {"items": [], "errors": [str(exc)], "categories": rabbit_pool.CATEGORIES}
+        def view(item):
+            data = item.public()
+            if not item.builtin:  # the admin's own items come with their definition for editing
+                try:
+                    raw = json.loads((config.pool_dir / f"{item.id}.json").read_text(encoding="utf-8"))
+                    data["raw"] = raw[0] if isinstance(raw, list) and raw else raw
+                except (OSError, ValueError):
+                    data["raw"] = None
+            return data
+        try:
+            shell = [item.public() for item in sorted(config.pool(protocol="shell").items.values(),
+                                                      key=lambda i: (not i.entry, i.category, i.path))]
+        except (rabbit_pool.PoolError, KeyError, ValueError) as exc:
+            shell, errors = [], errors + [f"shell pool: {exc}"]
+        return {"items": [view(item) for item in sorted(pool.items.values(),
+                                                       key=lambda i: (not i.entry, i.category, i.path))],
+                "shell_items": shell,
+                "errors": errors, "categories": rabbit_pool.CATEGORIES}
+
+    def plan_status(self) -> dict:
+        """What the Defender's Jev planner last wrote (it runs as its own service)."""
+        path = self.config().plan_path
+        try:
+            raw = json.loads(path.read_text(encoding="utf-8"))
+        except FileNotFoundError:
+            return {"exists": False}
+        except (OSError, ValueError):
+            return {"exists": True, "error": "unreadable"}
+        ips = raw.get("ips") if isinstance(raw.get("ips"), dict) else {}
+        recent = sorted(ips.items(), key=lambda kv: str(kv[1].get("updated")), reverse=True)[:10]
+        return {"exists": True, "generated": raw.get("generated"), "attackers": len(ips),
+                "recent": [{"source_ip": ip, "updated": plan.get("updated"), "goal": plan.get("goal"),
+                            "choices": len(plan.get("choices") or {})} for ip, plan in recent]}
+
+    def pool_preview(self, item_id: str) -> dict:
+        config = self.config()
+        pool = config.pool()
+        if item_id not in pool.items:
+            raise ValueError("pool_item_not_found")
+        item = pool.items[item_id]
+        faker = Faker(config.secret(), "web:preview", config.organization)
+        secret = config.secret()
+        choices = {}
+        for slot in item.slots.values():
+            ordered = rabbit_pool.fallback_order(secret, "preview", rabbit_pool.slot_key(item.id, slot.name),
+                                                 pool.candidates(item, slot))
+            choices[slot.name] = ordered[:slot.count]
+        content = rabbit_pool.render_item(item, faker, choices, config.deployment_faker()) or ""
+        return {"item": item.public(), "content": content[:6000],
+                "candidates": {slot.name: [{"id": c.id, "path": c.path, "category": c.category}
+                                           for c in pool.candidates(item, slot)] for slot in item.slots.values()},
+                "note": "ตัวอย่างใช้ตัวเลือกสำรอง (fallback) เมื่อมีแผนจาก Jev ระบบจะใช้ชิ้นที่ Jev เลือกแทน"}
+
+    def save_pool_item(self, raw: dict) -> dict:
+        """Add or replace one admin item. Built-in items cannot be overwritten."""
+        config = self.config()
+        item = rabbit_pool.parse_item(raw)
+        pool = config.pool()
+        if item.id in pool.items and pool.items[item.id].builtin:
+            raise ValueError("builtin_item_cannot_be_changed")
+        target = config.pool_dir / f"{item.id}.json"
+        config.pool_dir.mkdir(parents=True, exist_ok=True)
+        previous = target.read_text(encoding="utf-8") if target.is_file() else None
+        temporary = target.with_name(target.name + ".tmp")
+        temporary.write_text(json.dumps(raw, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        os.replace(temporary, target)
+        try:
+            problems = config.pool().problems(config.limits, config.organization)
+        except (rabbit_pool.PoolError, KeyError, ValueError) as exc:
+            problems = [str(exc)]
+        if problems:
+            if previous is None:
+                target.unlink()
+            else:
+                target.write_text(previous, encoding="utf-8")
+            raise ValueError("pool_check_failed: " + "; ".join(problems[:5]))
+        if previous is not None:
+            backups = config.pool_dir / ".backups"
+            backups.mkdir(exist_ok=True)
+            stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+            (backups / f"{item.id}.{stamp}.json").write_text(previous, encoding="utf-8")
+        return {"ok": True, "pool": self.pool_catalog()}
+
+    def delete_pool_item(self, item_id: str) -> dict:
+        config = self.config()
+        if not isinstance(item_id, str) or not re.match(r"^[a-z0-9][a-z0-9_-]{0,63}$", item_id):
+            raise ValueError("invalid_item_id")
+        target = config.pool_dir / f"{item_id}.json"
+        if not target.is_file():
+            raise ValueError("custom_item_not_found")
+        previous = target.read_text(encoding="utf-8")
+        target.unlink()
+        try:
+            problems = config.pool().problems(config.limits, config.organization)
+        except (rabbit_pool.PoolError, KeyError, ValueError) as exc:
+            problems = [str(exc)]
+        if problems:
+            target.write_text(previous, encoding="utf-8")
+            raise ValueError("pool_check_failed: " + "; ".join(problems[:5]))
+        backups = config.pool_dir / ".backups"
+        backups.mkdir(exist_ok=True)
+        (backups / f"{item_id}.deleted.json").write_text(previous, encoding="utf-8")
+        return {"ok": True, "pool": self.pool_catalog()}
 
     def bundle(self) -> bytes:
         return rabbit_shell.export_bundle(self.config())

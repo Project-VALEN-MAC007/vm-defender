@@ -11,12 +11,16 @@ Two jobs:
 """
 from __future__ import annotations
 
+import hashlib
+import hmac
 import io
+import json
 import posixpath
 import re
 import shlex
 import zipfile
 
+from . import pool as pool_mod
 from .config import RabbitConfig
 from .render import Faker, render
 
@@ -31,9 +35,67 @@ def shell_scenario(config: RabbitConfig):
     return chosen[0] if chosen else None
 
 
+def _shell_faker(config: RabbitConfig) -> Faker:
+    return Faker(config.secret(), "shell", config.organization, config.anchor_date())
+
+
+def _template(item, faker: Faker) -> str:
+    """Render everything except the clue slots, which the Cowrie plugin fills per session."""
+    marks = {}
+
+    def keep(match):
+        token = f"\x00CLUE{len(marks)}\x00"
+        marks[token] = match.group(0)
+        return token
+    text = render(pool_mod.CLUE.sub(keep, item.body), faker, {})
+    for token, original in marks.items():
+        text = text.replace(token, original)
+    return text
+
+
+def _plugin_salt(config: RabbitConfig) -> str:
+    # Derived, so the Cowrie container never holds the deployment secret itself.
+    return hmac.new(config.secret(), b"cowrie-plugin-salt", hashlib.sha256).hexdigest()
+
+
+def shell_pool_bundle(config: RabbitConfig) -> dict:
+    """Everything the trap-rabbit Cowrie plugin needs to choose clues on its own:
+    pre-rendered templates, candidate lists and limits. No secret is included."""
+    pool = config.pool(protocol="shell")
+    faker = _shell_faker(config)
+    items = {}
+    for item in pool.items.values():
+        items[item.id] = {
+            "path": item.path, "kind": item.kind, "category": item.category, "entry": item.entry,
+            "lure": item.lure, "template": "" if item.kind == "dir" else _template(item, faker),
+            "slots": {slot.name: {"count": slot.count, "candidates": [c.id for c in pool.candidates(item, slot)]}
+                      for slot in item.slots.values()}}
+    return {"version": 1, "salt": _plugin_salt(config), "max_depth": config.limits["max_depth"],
+            "max_resources": config.limits["max_resources_per_session"], "items": items}
+
+
+def _static_files(config: RabbitConfig) -> dict:
+    """Jev mode: files Cowrie serves when the plugin is not loaded (fallback choices)."""
+    pool = config.pool(protocol="shell")
+    faker = _shell_faker(config)
+    secret = _plugin_salt(config).encode("utf-8")
+    files = {}
+    for item in pool.items.values():
+        if item.kind == "dir":
+            files[item.path] = ("dir", "")
+            continue
+        choices = {slot.name: pool_mod.fallback_order(secret, "static", pool_mod.slot_key(item.id, slot.name),
+                                                      pool.candidates(item, slot))[:slot.count]
+                   for slot in item.slots.values()}
+        files[item.path] = ("file", render(pool_mod.fill_clues(item, choices), faker, {}))
+    return files
+
+
 def render_files(config: RabbitConfig) -> dict:
     """Map absolute path -> (kind, content). Shell content uses the deployment seed
     because Cowrie serves the same filesystem to every session."""
+    if config.strategy == "jev":
+        return _static_files(config)
     scenario = shell_scenario(config)
     if scenario is None:
         return {}
@@ -86,6 +148,8 @@ def export_bundle(config: RabbitConfig) -> bytes:
         for path, (kind, content) in sorted(files.items()):
             if kind == "file":
                 archive.writestr("honeyfs" + path, content)
+        if config.strategy == "jev":
+            archive.writestr("trap-shell-pool.json", json.dumps(shell_pool_bundle(config), ensure_ascii=False, indent=1))
     return buffer.getvalue()
 
 
@@ -105,8 +169,22 @@ def _resolve(token: str, cwd: str, home: str) -> str:
     return "/" if normal in {"", "."} else normal
 
 
+class _PoolMarker:
+    id = "jev-pool"
+
+
 def events_from_cowrie(events: list, config: RabbitConfig) -> list:
-    """Convert Cowrie events (oldest first or any order) into Rabbit Hole events."""
+    """Convert Cowrie events (oldest first or any order) into Rabbit Hole events.
+
+    In Jev mode the trap-rabbit Cowrie plugin logs decoy reads itself (with the
+    clue choices); only the connection end comes from Cowrie's own log."""
+    if config.strategy == "jev":
+        closed = []
+        for event in events:
+            if event.get("eventid") == "cowrie.session.closed" and event.get("session"):
+                protocol = "telnet" if str(event.get("protocol") or "").lower() == "telnet" else "ssh"
+                closed.append(_shell_event(event, {"protocol": protocol}, "session_closed", None, None, _PoolMarker))
+        return closed
     scenario = shell_scenario(config)
     if scenario is None:
         return []

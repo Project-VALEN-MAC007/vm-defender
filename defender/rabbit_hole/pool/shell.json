@@ -1,0 +1,115 @@
+{
+  "version": 1,
+  "protocol": "shell",
+  "note": "Decoy pool for SSH/Telnet (Cowrie). Every path exists in Cowrie's filesystem; the trap-rabbit Cowrie plugin fills {{clue:<slot>}} per session from the Jev plan or the fallback.",
+  "items": [
+    {"id": "sh-notes", "kind": "file", "category": "notes", "entry": true, "lure": 2,
+     "path": "/home/{{org.admin_user}}/notes.txt",
+     "description": "Admin's personal to-do notes pointing at a config file and a backup folder",
+     "body_lines": [
+       "- rotate DB password (see {{clue:conf}})",
+       "- old dumps are in {{clue:dumps}}, clean up before audit",
+       "- vpn: {{ip:vpn}}"],
+     "slots": {"conf": {"categories": ["config", "credential"], "kinds": ["file"]},
+               "dumps": {"categories": ["backup"], "kinds": ["dir"]}}},
+
+    {"id": "sh-history", "kind": "file", "category": "recon", "entry": true, "lure": 2,
+     "path": "/home/{{org.admin_user}}/.bash_history",
+     "description": "Shell history showing which files the admin edited and copied",
+     "body_lines": [
+       "sudo systemctl status nginx",
+       "vi {{clue:edit}}",
+       "mysql -h {{ip:db}} -u root -p",
+       "scp {{clue:copy}} backup@{{ip:backup}}:/srv/incoming/",
+       "sudo crontab -e"],
+     "slots": {"edit": {"categories": ["config", "credential"], "kinds": ["file"]},
+               "copy": {"categories": ["data", "credential"], "kinds": ["file"]}}},
+
+    {"id": "sh-cron", "kind": "file", "category": "notes", "entry": true, "lure": 1,
+     "path": "/etc/cron.d/db-backup",
+     "description": "Cron job that runs the nightly database backup and names its config",
+     "body_lines": [
+       "# {{org.name}} nightly backup",
+       "0 2 * * * root /opt/backup/run.sh --config {{clue:conf}} >/dev/null 2>&1"],
+     "slots": {"conf": {"categories": ["config"], "kinds": ["file"]}}},
+
+    {"id": "sh-backup-conf", "kind": "file", "category": "config", "lure": 3,
+     "path": "/opt/backup/backup.conf",
+     "description": "Backup config with the database root password and the dump folder",
+     "body_lines": [
+       "# {{org.name}} database backup",
+       "DB_HOST={{ip:db}}",
+       "DB_NAME={{org.db_name}}",
+       "DB_USER=root",
+       "DB_PASS={{secret:password:dbroot}}",
+       "DUMP_DIR={{clue:dumps}}",
+       "KEEP_DAYS=7"],
+     "slots": {"dumps": {"categories": ["backup"], "kinds": ["dir"]}}},
+
+    {"id": "sh-app-env", "kind": "file", "category": "config", "lure": 3,
+     "path": "/var/www/portal/.env",
+     "description": "Web application .env with database and mail passwords and a deploy key path",
+     "body_lines": [
+       "APP_ENV=production",
+       "DB_HOST={{ip:db}}",
+       "DB_DATABASE={{org.db_name}}",
+       "DB_USERNAME=portal_rw",
+       "DB_PASSWORD={{secret:password:db}}",
+       "MAIL_PASSWORD={{secret:password:mail}}",
+       "DEPLOY_KEY={{clue:key}}"],
+     "slots": {"key": {"categories": ["credential"], "kinds": ["file"]}}},
+
+    {"id": "sh-mysql-cnf", "kind": "file", "category": "credential", "lure": 3,
+     "path": "/etc/mysql/debian.cnf",
+     "description": "MySQL maintenance account password file with a note about where dumps go",
+     "body_lines": [
+       "# Automatically generated for Debian scripts. DO NOT TOUCH!",
+       "[client]",
+       "host     = localhost",
+       "user     = debian-sys-maint",
+       "password = {{secret:password:dbmaint}}",
+       "socket   = /var/run/mysqld/mysqld.sock",
+       "# dumps synced to {{clue:dumps}}"],
+     "slots": {"dumps": {"categories": ["backup"], "kinds": ["dir"]}}},
+
+    {"id": "sh-deploy-key", "kind": "file", "category": "credential", "lure": 3,
+     "path": "/home/{{org.admin_user}}/.ssh/id_ed25519_deploy",
+     "description": "Private SSH key used for deployments (fake)",
+     "body_lines": [
+       "-----BEGIN OPENSSH PRIVATE KEY-----",
+       "b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW",
+       "{{secret:hex:64:dk1}}",
+       "{{secret:hex:64:dk2}}",
+       "{{secret:hex:40:dk3}}",
+       "-----END OPENSSH PRIVATE KEY-----"]},
+
+    {"id": "sh-dumps-dir", "kind": "dir", "category": "backup", "lure": 2,
+     "path": "/var/backups/db",
+     "description": "Folder of database dumps"},
+
+    {"id": "sh-archive-dir", "kind": "dir", "category": "backup", "lure": 2,
+     "path": "/srv/archive",
+     "description": "Archive folder with old staff and customer exports"},
+
+    {"id": "sh-dump-file", "kind": "file", "category": "data", "lure": 3,
+     "path": "/var/backups/db/{{org.db_name}}-{{date:-1}}.sql",
+     "description": "SQL dump of the users table with password hashes",
+     "body_lines": [
+       "-- MySQL dump 10.13  Distrib 8.0.36",
+       "-- Host: {{ip:db}}    Database: {{org.db_name}}",
+       "CREATE TABLE `users` (`id` int, `name` varchar(80), `email` varchar(120), `password_hash` char(60));",
+       "INSERT INTO `users` VALUES (1001,'{{person:1:name}}','{{person:1:email}}','$2y$10${{secret:hex:53:h1}}');",
+       "INSERT INTO `users` VALUES (1002,'{{person:2:name}}','{{person:2:email}}','$2y$10${{secret:hex:53:h2}}');",
+       "INSERT INTO `users` VALUES (1003,'{{person:3:name}}','{{person:3:email}}','$2y$10${{secret:hex:53:h3}}');"]},
+
+    {"id": "sh-customers", "kind": "file", "category": "data", "lure": 3,
+     "path": "/var/backups/db/customers_{{date:-3}}.csv",
+     "description": "CSV export of customers",
+     "body": "{{people_csv:30}}\n"},
+
+    {"id": "sh-staff", "kind": "file", "category": "data", "lure": 3,
+     "path": "/srv/archive/staff_{{date:-20}}.csv",
+     "description": "CSV export of staff accounts",
+     "body": "{{people_csv:20}}\n"}
+  ]
+}

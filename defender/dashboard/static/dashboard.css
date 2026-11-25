@@ -684,3 +684,31 @@ dialog code { color: var(--accent); word-break: break-all; }
 .rh-ai { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; margin-bottom: 14px; }
 .rh-ai-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
 .rh-ai-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 6px 14px; margin-bottom: 6px; }
+
+/* ---------- Rabbit Hole: Jev strategy + decoy pool ---------- */
+.rh-strategy { border: 1px solid var(--line); border-radius: var(--r-md); padding: 12px 16px 16px; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+.rh-strategy legend { color: var(--muted); font-size: 13px; font-weight: 600; padding: 0 6px; }
+.strategy-card { display: grid !important; grid-template-columns: auto 1fr; gap: 12px; align-items: start; padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--nav); cursor: pointer; }
+.strategy-card:has(input:checked) { border-color: rgba(159, 239, 0, .55); background: var(--accent-tonal); }
+.strategy-card strong { display: block; color: var(--text); font-size: 14px; margin-bottom: 2px; }
+.strategy-card small { color: var(--muted); font-weight: 400; line-height: 1.5; }
+#rh-pool-card.dimmed .rh-pool { opacity: .55; }
+.rh-plan { display: grid; gap: 8px; margin: 12px 0; }
+.rh-pool { display: grid; gap: 16px; margin-top: 8px; }
+.pool-group h5 { color: var(--accent); font-size: 14px; margin-bottom: 8px; }
+.pool-group { display: grid; gap: 8px; }
+.pool-group > .pool-item { margin: 0; }
+.pool-group { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+.pool-group h5 { grid-column: 1 / -1; }
+.pool-item { border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--nav); padding: 10px 12px; display: grid; gap: 6px; }
+.pool-item.entry { border-left: 3px solid var(--accent); }
+.pool-item p { color: var(--muted); font-size: 13px; line-height: 1.5; }
+.pool-top { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.pool-top code { color: #c8f27a; word-break: break-all; }
+.pool-top .lure { color: var(--warning); letter-spacing: 2px; font-size: 12px; flex: none; }
+.pool-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+.pool-tags .pill { font-size: 11.5px; }
+#rh-pool-json { min-height: 280px; }
+#rh-pool-preview { margin-top: 16px; }
+#rh-pool-preview .preview-item header { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.step-why .jev-pick { color: var(--accent); }

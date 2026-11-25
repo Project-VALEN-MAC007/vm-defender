@@ -449,6 +449,7 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
         audit_path or PROJECT_ROOT / "evidence/test-results/decisions.jsonl",
         status_path or PROJECT_ROOT / "evidence/test-results/status.json", eve_paths)
     runtime = DashboardRuntime(settings)
+    static_files = {"/static/rabbit-pool.js": ("rabbit-pool.js", "application/javascript; charset=utf-8")}
 
     class Handler(BaseHTTPRequestHandler):
         server_version = "TRAPDashboard/1.0"
@@ -474,6 +475,10 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
             if route == "/static/guide.js":
                 script = Path(__file__).parent / "static/guide.js"
                 self._send("application/javascript; charset=utf-8", script.read_bytes())
+                return
+            if route in static_files:
+                name, content_type = static_files[route]
+                self._send(content_type, (Path(__file__).parent / "static" / name).read_bytes())
                 return
             if route == "/api/session.json":
                 session = self._current_session()
@@ -574,6 +579,9 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
             elif route in {"/api/web-deploy/clone", "/api/web-deploy/activate"}:
                 if self._has_role(user, "master_admin"):
                     self._deploy_post(route, user)
+            elif route in {"/api/rabbit-hole/pool/save", "/api/rabbit-hole/pool/delete"}:
+                if self._has_role(user, "master_admin"):
+                    self._rabbit_pool(route, user)
             elif route in {"/api/rabbit-hole/ai", "/api/rabbit-hole/ai/test"}:
                 if self._has_role(user, "master_admin"):
                     self._rabbit_ai(route, user)
@@ -616,7 +624,7 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
                 self._send_json({"error": "rabbit_hole_not_configured"}, 404)
                 return
             admin_only = {"/api/rabbit-hole/preview.json", "/api/rabbit-hole/cowrie-bundle.zip",
-                          "/api/rabbit-hole/scenario.json"}
+                          "/api/rabbit-hole/scenario.json", "/api/rabbit-hole/pool-preview.json"}
             if route in admin_only and not self._has_role(user, "master_admin"):
                 return
             try:
@@ -632,6 +640,8 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
                     self._send_json(runtime.rabbit.preview((query.get("scenario") or [""])[0]))
                 elif route == "/api/rabbit-hole/scenario.json":
                     self._send_json(runtime.rabbit.definition((query.get("id") or [""])[0]))
+                elif route == "/api/rabbit-hole/pool-preview.json":
+                    self._send_json(runtime.rabbit.pool_preview((query.get("id") or [""])[0]))
                 elif route == "/api/rabbit-hole/cowrie-bundle.zip":
                     self._send_download("application/zip", runtime.rabbit.bundle(), "rabbit-hole-cowrie.zip")
                 else:
@@ -728,6 +738,25 @@ def handler_factory(audit_path: Path | None = None, status_path: Path | None = N
             append_security_audit(settings.security_audit_path, "rabbit_hole_settings", self.client_address[0],
                                   user["username"], {"enabled": result["settings"]["enabled"],
                                                      "scenarios": result["settings"]["scenarios"]})
+            self._send_json(result)
+
+        def _rabbit_pool(self, route, user):
+            if not runtime.rabbit.available:
+                self._send_json({"error": "rabbit_hole_not_configured"}, 404)
+                return
+            payload = self._read_json()
+            try:
+                if route == "/api/rabbit-hole/pool/save":
+                    result = runtime.rabbit.save_pool_item(payload.get("item") if isinstance(payload.get("item"), dict) else {})
+                    target = (payload.get("item") or {}).get("id")
+                else:
+                    target = payload.get("id")
+                    result = runtime.rabbit.delete_pool_item(str(target or ""))
+            except (ValueError, OSError, KeyError, TypeError) as exc:
+                self._send_json({"error": str(exc)[:400]}, 400)
+                return
+            append_security_audit(settings.security_audit_path, route[5:], self.client_address[0],
+                                  user["username"], {"item": str(target)[:64]})
             self._send_json(result)
 
         def _rabbit_ai(self, route, user):

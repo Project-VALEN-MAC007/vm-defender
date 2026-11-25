@@ -102,7 +102,8 @@ def windows(events: list, idle_timeout: int, now: datetime | None = None) -> lis
                     "scenario": event.get("scenario"), "depth": event.get("depth"),
                     "action": event.get("action"), "path": event.get("path") or event.get("command"),
                     "clue_from": event.get("clue_from"), "followed_clue": bool(event.get("followed_clue")),
-                    "status": event.get("status")})
+                    "clue_by": event.get("clue_by"), "clue_confidence": event.get("clue_confidence"),
+                    "category": event.get("category"), "status": event.get("status")})
         if current is not None:
             if current["limit_reached"]:
                 current["end_reason"] = "limit_reached"
@@ -180,7 +181,10 @@ def summarize(items: list, static_sessions: list | None = None) -> dict:
                "top_resources": [{"scenario": s, "node_id": n, "count": c}
                                  for (s, n), c in resources.most_common(10)],
                "depth_distribution": {str(k): v for k, v in sorted(depth_hist.items())},
-               "end_reasons": dict(Counter(item["end_reason"] for item in items))}
+               "end_reasons": dict(Counter(item["end_reason"] for item in items)),
+               # Who placed the clues attackers actually followed: Jev, the fallback, or a fixed scenario.
+               "followed_clue_by": dict(Counter(step.get("clue_by") or "fixed" for item in items
+                                                for step in item["trail"] if step.get("followed_clue")))}
     static = [s for s in (static_sessions or []) if s.get("profile") not in {"rabbithole"}]
     static_durations = [s["dwell_seconds"] for s in static if s.get("actions", 0) > 1]
     rabbit = summary["overall"]["average_duration_seconds"]

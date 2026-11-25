@@ -20,6 +20,8 @@ honeypot/snare-tanner/data/
 honeypot/snare-tanner/settings.env
 config/rabbit-hole.json
 config/rabbit-hole.secret
+config/jev.key
+config/jev.key.tmp
 evidence/rabbit-hole/
 config/rabbit-hole-scenarios/
 
