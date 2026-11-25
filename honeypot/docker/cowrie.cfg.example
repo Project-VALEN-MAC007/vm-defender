@@ -34,6 +34,12 @@ version = SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.19
 enabled = true
 listen_endpoints = tcp:2223:interface=0.0.0.0
 
+# TRAP Rabbit Hole Jev plugin (honeypot/cowrie/traprabbit.py, mounted by compose.yaml).
+# Fills decoy clues per attacker from the Jev plan; without it Cowrie serves the
+# static decoy files. Turn off by setting enabled = false.
+[output_traprabbit]
+enabled = true
+
 [output_jsonlog]
 enabled = true
 logfile = ${honeypot:log_path}/cowrie.json

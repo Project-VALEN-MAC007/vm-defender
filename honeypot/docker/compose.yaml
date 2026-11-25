@@ -54,6 +54,10 @@ services:
       # inode), which a single-file bind mount would not follow. cowrie.cfg points
       # [shell] filesystem and [honeypot] contents_path here.
       - /var/lib/trap/cowrie-fs:/cowrie/trapfs:ro
+      # Rabbit Hole Jev plugin (SSH/Telnet clues per attacker). Enable it with
+      # [output_traprabbit] in cowrie.cfg. It reads trapfs/trap-shell-pool.json and
+      # trapfs/rabbit-hole-plan.json and logs to var/log/cowrie/trap-rabbit-shell.jsonl.
+      - /opt/trap/honeypot/cowrie/traprabbit.py:/cowrie/cowrie-git/src/cowrie/output/traprabbit.py:ro
       - /var/log/cowrie:/cowrie/cowrie-git/var/log/cowrie
       - cowrie-var:/cowrie/cowrie-git/var/lib/cowrie
 
