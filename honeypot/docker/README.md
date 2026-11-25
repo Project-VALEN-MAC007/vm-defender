@@ -96,3 +96,27 @@ systemctl disable --now trap-honeypot-watchdog.timer
 docker compose -p trap-honeypot -f compose.yaml down
 systemctl enable --now cowrie trap-rabbit-hole
 ```
+
+
+## Rabbit Hole Jev plugin (Cowrie, SSH/Telnet)
+
+Fills decoy clues per attacker in Cowrie (see `docs/rabbit-hole.md`, Jev mode).
+
+1. `compose.yaml` already mounts `/opt/trap/honeypot/cowrie/traprabbit.py` as
+   `/cowrie/cowrie-git/src/cowrie/output/traprabbit.py` (read-only).
+2. Add to `/etc/trap/cowrie/cowrie.cfg` (see `cowrie.cfg.example`):
+   ```ini
+   [output_traprabbit]
+   enabled = true
+   ```
+3. Set `"strategy": "jev"` in `/var/lib/trap/rabbit-hole.json` and run `trap-cowrie-sync` once: it writes
+   `/var/lib/trap/cowrie-fs/trap-shell-pool.json` next to `fs.pickle` and restarts Cowrie.
+4. Make sure the trapsync user can write `/var/lib/trap/cowrie-fs/rabbit-hole-plan.json`
+   (pushed by `deploy/trap-sync.sh`).
+5. Check: `docker logs cowrie 2>&1 | grep traprabbit` must show `Rabbit Hole Jev hooks installed`.
+   Log in through the Defender redirect, `cat ~/notes.txt`, and confirm a line in
+   `/var/log/cowrie/trap-rabbit-shell.jsonl`.
+
+The plugin was written against Cowrie 2.5 / main (`HoneyPotFilesystem.file_contents`,
+`get_path`, `HoneyPotBaseProtocol.connectionMade`, `realClientIP`, `transportId`). Verify with the
+pinned `COWRIE_IMAGE`: if the hooks are not installed, Cowrie keeps serving the static decoys.

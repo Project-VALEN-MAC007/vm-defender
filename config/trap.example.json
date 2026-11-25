@@ -21,7 +21,8 @@
     ],
     "rabbit_hole_config": "/var/lib/trap/rabbit-hole.json",
     "rabbit_hole_logs": [
-      "/var/log/trap/honeypot/rabbit-hole-web.jsonl"
+      "/var/log/trap/honeypot/rabbit-hole-web.jsonl",
+      "/var/log/trap/honeypot/trap-rabbit-shell.jsonl"
     ],
     "honeypot_paths": [
       "/var/log/trap/honeypot/cowrie.json",

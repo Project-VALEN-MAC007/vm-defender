@@ -24,6 +24,9 @@ Nginx รับ HTTP/HTTPS ที่ outer IP เลือก backend จาก 
 - health path ของทุก backend
 - path ของ redirect map
 
+- profile ที่ใช้กับคำขอที่ติด prefilter (`__PREFILTER_PROFILE__`) ให้ตรงกับ
+  `web_profile` ของ Decision Engine เช่น `rabbithole` หรือ `snare`
+
 ห้ามเดาค่า endpoint และห้ามใช้ config ที่ยังมี `__TOKEN__`
 
 ต้นแบบต้องแทนค่า `__REAL_WEB_IP__`, `__REAL_WEB_PORT__`,
@@ -57,12 +60,47 @@ sudo systemctl reload nginx
 sudo systemctl --no-pager --full status nginx
 ```
 
+## ตรวจคำขอก่อนส่งต่อ (prefilter)
+
+เดิม Nginx เลือกปลายทางจาก source IP อย่างเดียว IP จะถูกเพิ่มลง map ก็ต่อเมื่อ
+Suricata แจ้งเตือนและ Decision Engine ตัดสินแล้ว คำขอแรกที่ทำให้เกิด alert จึงถึง
+เว็บจริงก่อนเสมอ เพราะ Suricata ทำงานแบบ IDS และไม่ได้ทำให้คำขอรอผล
+
+prefilter ให้ Nginx ดูเนื้อหาของคำขอเองก่อน proxy ถ้า URL หรือ User-Agent ตรงรูปแบบ
+ที่อันตรายในตัว คำขอนั้นจะไป `__PREFILTER_PROFILE__` ทันทีตั้งแต่ครั้งแรก
+
+ลำดับการตัดสินใจ:
+
+1. IP อยู่ใน map ของ Decision Engine → ใช้ profile นั้นเสมอ
+2. ไม่อยู่ใน map แต่คำขอตรง prefilter → ไป honeypot เฉพาะคำขอนั้น
+3. ไม่เข้าทั้งสองข้อ → `real`
+
+รูปแบบที่ใช้ลอกมาจากกฎ ET Open ที่ Decision Engine redirect ได้จาก alert เดียวอยู่แล้ว
+(คะแนนถึง 40) จึงไม่เพิ่ม false positive ใหม่นอกเหนือนโยบายเดิม:
+
+| รูปแบบ | ตรวจที่ | กฎต้นแบบ |
+|---|---|---|
+| `.htpasswd` | path (decode แล้ว) และ URI ดิบ | 2101071 |
+| `union ... select ... ;` | URI | 2006446 |
+| `(Nikto` | User-Agent | 2002677 (Suricata รอ 5 ครั้งใน 60 วินาที) |
+| ขึ้นต้นด้วย `sqlmap` | User-Agent | 2008538 |
+| `Nmap NSE` | User-Agent | 2009359 |
+
+ไม่ใส่ `.env`, `/etc/passwd` และ Masscan เพราะ Decision Engine ให้แค่ `monitor`
+เมื่อเจอครั้งเดียว Suricata ยังเห็นคำขอเดิมและแจ้งเตือนตามปกติ IP จึงถูกเพิ่มลง map
+สำหรับคำขอถัดไปทุกคำขอ ช่อง `prefilter` ใน access log บอกว่าคำขอนั้นติด prefilter (1)
+หรือไม่ (0)
+
+ข้อจำกัด: ตรวจได้เฉพาะ HTTP/HTTPS และเฉพาะรูปแบบที่เขียนไว้ ไม่เห็น request body
+(SQLi ใน body ยังพึ่ง Suricata) SSH/Telnet ยังใช้ nftables ตาม IP เหมือนเดิม
+
 ## ผลที่คาดหวัง
 
 | กรณี | ผล |
 |---|---|
 | HTTP | redirect ไป HTTPS |
 | source ไม่มี mapping | ใช้ profile `real` |
+| source ไม่มี mapping แต่คำขอตรง prefilter | ใช้ `__PREFILTER_PROFILE__` เฉพาะคำขอนั้น |
 | source มี mapping | ใช้ backend ตาม profile |
 | backend ใช้งานไม่ได้ | ตอบ managed `503` |
 | config ผิด | `nginx -t` ไม่ผ่านและห้าม reload |

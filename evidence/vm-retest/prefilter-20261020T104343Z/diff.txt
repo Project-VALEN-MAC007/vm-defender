@@ -1,0 +1,51 @@
+--- trap.conf before
++++ trap.conf after
+@@ -1,6 +1,29 @@
+ # Render only after person 2 confirms every __TOKEN__ value.
+-map $remote_addr $adaptive_profile {
++map $remote_addr $adaptive_ip_profile {
+     include /etc/nginx/maps/redirect_map.conf;
++}
++
++map "$uri $request_uri" $trap_uri_risk {
++    default                                  0;
++    "~*\.htpasswd"                           1;
++    "~*union.+select.+(;|%3b)"               1;
++}
++
++map $http_user_agent $trap_ua_risk {
++    default                                  0;
++    "~\(Nikto"                               1;
++    "~^sqlmap"                               1;
++    "~Nmap NSE"                              1;
++}
++
++map "$trap_uri_risk$trap_ua_risk" $trap_prefilter {
++    default 1;
++    "00"    0;
++}
++
++map "$trap_prefilter:$adaptive_ip_profile" $adaptive_profile {
++    default  $adaptive_ip_profile;
++    "1:real" rabbithole;
+ }
+ 
+ map $adaptive_profile $adaptive_backend {
+@@ -14,7 +37,7 @@
+ 
+ log_format adaptive_json escape=json '{"timestamp":"$time_iso8601",'
+   '"source_ip":"$remote_addr","forwarded_for":"$proxy_add_x_forwarded_for",'
+-  '"protocol":"$scheme","profile":"$adaptive_profile","status":$status,'
++  '"protocol":"$scheme","profile":"$adaptive_profile","prefilter":$trap_prefilter,"status":$status,'
+   '"request":"$request","upstream":"$upstream_addr"}';
+ 
+ # HTTP (port 80) is routed like HTTPS: low risk -> real web, risky -> honeypot.
+@@ -53,7 +76,7 @@
+ # alerts seen on the loopback hop.
+ log_format adaptive_json_tls escape=json '{"timestamp":"$time_iso8601",'
+   '"source_ip":"$remote_addr","forwarded_for":"$proxy_add_x_forwarded_for",'
+-  '"protocol":"https","profile":"$adaptive_profile","status":$status,'
++  '"protocol":"https","profile":"$adaptive_profile","prefilter":$trap_prefilter,"status":$status,'
+   '"request":"$request","upstream":"$upstream_addr"}';
+ 
+ server {

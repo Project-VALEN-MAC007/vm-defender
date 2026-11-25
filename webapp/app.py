@@ -12,6 +12,9 @@ from __future__ import annotations
 import argparse
 from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from pathlib import Path
+import json
+import mimetypes
 import os
 import re
 import secrets
@@ -23,6 +26,46 @@ from .backends import load as load_backend
 
 SESSION_COOKIE = "alsid"
 TOKEN_PATTERN = re.compile(r"^[0-9a-f]{32}$")
+SITE_DIR = Path(__file__).with_name("site")
+
+
+def snapshot_name(query_string: str) -> str | None:
+    """Resolve only the explicitly captured public query routes."""
+    routes_path = SITE_DIR / "routes.json"
+    if not routes_path.is_file():
+        return None
+    try:
+        routes = json.loads(routes_path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    values = parse_qs(query_string, keep_blank_values=True)
+    ordered = ("page", "id", "section", "lang")
+    key = "&".join(f"{name}={values[name][0]}" for name in ordered if name in values)
+    return routes.get(key)
+
+
+def site_file(path: str) -> tuple[bytes, str] | None:
+    """Read a file from the fixed snapshot without allowing path traversal."""
+    relative = path.lstrip("/")
+    candidate = (SITE_DIR / relative).resolve()
+    if SITE_DIR.resolve() not in candidate.parents or not candidate.is_file():
+        return None
+    try:
+        data = candidate.read_bytes()
+    except OSError:
+        return None
+    content_type = mimetypes.guess_type(candidate.name)[0] or "application/octet-stream"
+    if candidate.suffix.lower() == ".webp":
+        content_type = "image/webp"
+    elif candidate.suffix.lower() == ".woff2":
+        content_type = "font/woff2"
+    elif candidate.name == "fonts.css":
+        content_type = "text/css"
+    elif candidate.name == "tailwind.cdn.js":
+        content_type = "application/javascript"
+    if content_type.startswith("text/") or content_type in ("application/javascript",):
+        content_type += "; charset=utf-8"
+    return data, content_type
 
 
 class Sessions:
@@ -91,14 +134,37 @@ def handler_factory(backend, sessions: Sessions):
             self.do_GET()
 
         def do_GET(self):
-            path = urlsplit(self.path).path
+            parsed = urlsplit(self.path)
+            path = parsed.path
             if path == "/robots.txt":
                 self._send(200, content.ROBOTS_TXT, "text/plain; charset=utf-8")
                 return
             if path == "/static/site.css":
-                self._send(200, content.SITE_CSS, "text/css; charset=utf-8")
+                css = site_file("/offline.css")
+                self._send(200, css[0] if css else content.SITE_CSS,
+                           css[1] if css else "text/css; charset=utf-8")
                 return
-            if path == "/":
+            if path not in ("/login", "/logout", "/portal", "/healthz"):
+                filename = snapshot_name(parsed.query) if parsed.query else None
+                if path == "/" and not parsed.query:
+                    filename = "index.html"
+                elif not parsed.query:
+                    aliases = {"/about": "about-faculty.html", "/services": "programs.html",
+                               "/news": "news.html", "/contact": "contact.html"}
+                    filename = aliases.get(path)
+                if filename:
+                    snap = site_file("/" + filename)
+                    if snap:
+                        body = snap[0]
+                        if filename.endswith(".html"):
+                            body = body.replace(b"</head>", b'<link rel="stylesheet" href="/offline.css">\n</head>', 1)
+                        self._send(200, body, snap[1])
+                        return
+                asset = site_file(path)
+                if asset and path not in ("/routes.json",):
+                    self._send(200, asset[0], asset[1])
+                    return
+            if path == "/" and not parsed.query:
                 self._page(200, "Home", content.home(backend.company)); return
             if path == "/about":
                 self._page(200, "About", content.about(backend.company)); return

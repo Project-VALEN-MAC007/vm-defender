@@ -1,0 +1,27 @@
+{"timestamp":"2026-10-20T17:52:06+07:00","source_ip":"192.168.56.17","protocol":"http","profile":"real","prefilter":0,"status":200,"request":"GET / HTTP/1.1","upstream":"10.10.10.3:8080"}
+{"timestamp":"2026-10-20T17:52:06+07:00","source_ip":"192.168.56.18","protocol":"https","profile":"real","prefilter":0,"status":200,"request":"GET / HTTP/1.1","upstream":"10.10.10.3:8080"}
+{"timestamp":"2026-10-20T17:52:06+07:00","source_ip":"192.168.56.65","protocol":"http","profile":"rabbithole","prefilter":1,"status":404,"request":"GET /.htpasswd HTTP/1.1","upstream":"10.10.10.2:8084"}
+{"timestamp":"2026-10-20T17:52:06+07:00","source_ip":"192.168.56.65","protocol":"http","profile":"rabbithole","prefilter":0,"status":200,"request":"GET / HTTP/1.1","upstream":"10.10.10.2:8084"}
+{"timestamp":"2026-10-20T17:52:09+07:00","source_ip":"192.168.56.65","protocol":"http","profile":"rabbithole","prefilter":0,"status":200,"request":"GET / HTTP/1.1","upstream":"10.10.10.2:8084"}
+{"timestamp":"2026-10-20T17:52:09+07:00","source_ip":"192.168.56.73","protocol":"https","profile":"rabbithole","prefilter":1,"status":404,"request":"GET /.htpasswd HTTP/1.1","upstream":"10.10.10.2:8084"}
+{"timestamp":"2026-10-20T17:52:09+07:00","source_ip":"192.168.56.74","protocol":"http","profile":"rabbithole","prefilter":1,"status":404,"request":"GET /item?id=1+UNION+SELECT+1,2;-- HTTP/1.1","upstream":"10.10.10.2:8084"}
+{"timestamp":"2026-10-20T17:52:10+07:00","source_ip":"192.168.56.89","protocol":"http","profile":"rabbithole","prefilter":1,"status":200,"request":"GET / HTTP/1.1","upstream":"10.10.10.2:8084"}
+{"timestamp":"2026-10-20T17:52:10+07:00","source_ip":"192.168.56.120","protocol":"http","profile":"rabbithole","prefilter":1,"status":200,"request":"GET / HTTP/1.1","upstream":"10.10.10.2:8084"}
+{"timestamp":"2026-10-20T17:52:10+07:00","source_ip":"192.168.56.120","protocol":"http","profile":"rabbithole","prefilter":1,"status":200,"request":"GET / HTTP/1.1","upstream":"10.10.10.2:8084"}
+{"timestamp":"2026-10-20T17:52:10+07:00","source_ip":"192.168.56.122","protocol":"http","profile":"real","prefilter":0,"status":404,"request":"GET /docs/htpasswd-guide HTTP/1.1","upstream":"10.10.10.3:8080"}
+{"timestamp":"2026-10-20T17:52:11+07:00","source_ip":"192.168.56.157","protocol":"http","profile":"real","prefilter":0,"status":404,"request":"GET /.env HTTP/1.1","upstream":"10.10.10.3:8080"}
+{"timestamp":"2026-10-20T17:52:11+07:00","source_ip":"192.168.56.157","protocol":"http","profile":"real","prefilter":0,"status":200,"request":"GET /?f=/etc/passwd HTTP/1.1","upstream":"10.10.10.3:8080"}
+{"timestamp":"2026-10-20T17:52:11+07:00","source_ip":"192.168.56.65","protocol":"http","profile":"rabbithole","prefilter":0,"status":200,"request":"GET / HTTP/1.1","upstream":"10.10.10.2:8084"}
+{"timestamp":"2026-10-20T17:52:12+07:00","source_ip":"192.168.56.196","protocol":"https","profile":"real","prefilter":0,"status":200,"request":"GET / HTTP/1.1","upstream":"10.10.10.3:8080"}
+{"timestamp":"2026-10-20T17:54:01+07:00","source_ip":"192.168.56.19","protocol":"http","profile":"real","prefilter":0,"status":200,"request":"GET /?f=/etc/passwd HTTP/1.1","upstream":"10.10.10.3:8080"}
+{"timestamp":"2026-10-20T17:54:01+07:00","source_ip":"192.168.56.89","protocol":"http","profile":"rabbithole","prefilter":1,"status":200,"request":"GET / HTTP/1.1","upstream":"10.10.10.2:8084"}
+{"timestamp":"2026-10-20T17:54:02+07:00","source_ip":"192.168.56.89","protocol":"http","profile":"rabbithole","prefilter":1,"status":200,"request":"GET / HTTP/1.1","upstream":"10.10.10.2:8084"}
+{"timestamp":"2026-10-20T17:54:02+07:00","source_ip":"192.168.56.89","protocol":"http","profile":"rabbithole","prefilter":1,"status":200,"request":"GET / HTTP/1.1","upstream":"10.10.10.2:8084"}
+{"timestamp":"2026-10-20T17:54:02+07:00","source_ip":"192.168.56.89","protocol":"http","profile":"rabbithole","prefilter":1,"status":200,"request":"GET / HTTP/1.1","upstream":"10.10.10.2:8084"}
+{"timestamp":"2026-10-20T17:59:28+07:00","source_ip":"192.168.56.89","protocol":"http","profile":"rabbithole","prefilter":1,"status":200,"request":"GET / HTTP/1.1","upstream":"10.10.10.2:8084"}
+{"timestamp":"2026-10-20T17:59:42+07:00","source_ip":"192.168.56.89","protocol":"http","profile":"rabbithole","prefilter":1,"status":200,"request":"GET / HTTP/1.1","upstream":"10.10.10.2:8084"}
+{"timestamp":"2026-10-20T17:59:42+07:00","source_ip":"192.168.56.89","protocol":"http","profile":"rabbithole","prefilter":1,"status":200,"request":"GET / HTTP/1.1","upstream":"10.10.10.2:8084"}
+{"timestamp":"2026-10-20T17:59:43+07:00","source_ip":"192.168.56.89","protocol":"http","profile":"rabbithole","prefilter":1,"status":200,"request":"GET / HTTP/1.1","upstream":"10.10.10.2:8084"}
+{"timestamp":"2026-10-20T17:59:43+07:00","source_ip":"192.168.56.89","protocol":"http","profile":"rabbithole","prefilter":1,"status":200,"request":"GET / HTTP/1.1","upstream":"10.10.10.2:8084"}
+{"timestamp":"2026-10-20T18:03:54+07:00","source_ip":"192.168.56.24","protocol":"http","profile":"real","prefilter":0,"status":400,"request":"\u0016\u0003\u0000\u0000i\u0001\u0000\u0000e\u0003\u0003U\u001c\ufffd\ufffdrandom1random2random3random4\u0000\u0000\f\u0000/\u0000","upstream":""}
+{"timestamp":"2026-10-20T18:03:54+07:00","source_ip":"192.168.56.24","protocol":"http","profile":"real","prefilter":0,"status":200,"request":"GET / HTTP/1.1","upstream":"10.10.10.3:8080"}

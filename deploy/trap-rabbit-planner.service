@@ -1,0 +1,29 @@
+[Unit]
+Description=TRAP Rabbit Hole Jev planner (Defender: picks decoy clues per attacker)
+After=network-online.target adaptive-defender.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+# Same account as the Dashboard: it can read the Jev key the Dashboard saved.
+User=trap-dashboard
+Group=trap-dashboard
+SupplementaryGroups=suricata
+WorkingDirectory=/opt/trap
+ExecStart=/usr/bin/python3 -m defender.rabbit_hole plan --config /var/lib/trap/rabbit-hole.json \
+  --decisions /var/log/adaptive-defender/decisions.jsonl --eve /var/log/suricata/eve.json \
+  --web-log /var/log/trap/honeypot/rabbit-hole-web.jsonl --web-log /var/log/trap/honeypot/trap-rabbit-shell.jsonl \
+  --out /var/lib/trap/rabbit-hole-plan.json \
+  --plan-log /var/log/trap/rabbit-hole-plan.jsonl --push-command "/opt/trap/deploy/trap-sync.sh plan"
+Restart=on-failure
+RestartSec=5s
+UMask=0027
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadOnlyPaths=/opt/trap /etc/trap /var/log/suricata /var/log/adaptive-defender
+ReadWritePaths=/var/log/trap /var/lib/trap
+
+[Install]
+WantedBy=multi-user.target

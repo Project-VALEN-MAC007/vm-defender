@@ -26,6 +26,7 @@ from typing import Callable
 from urllib.parse import parse_qsl, unquote, urlsplit
 
 from .config import RabbitConfig, load
+from . import pool as pool_mod
 from .render import Faker, render
 
 MAX_BODY = 65536
@@ -54,6 +55,10 @@ class SessionState:
     revealed: dict = field(default_factory=dict)
     accessed: list = field(default_factory=list)
     limit_reached: bool = False
+    # Jev pool mode: frozen clue choices, depth of each revealed item, who chose it.
+    choices: dict = field(default_factory=dict)
+    depths: dict = field(default_factory=dict)
+    reveal_meta: dict = field(default_factory=dict)
 
 
 @dataclass
@@ -94,6 +99,19 @@ class WebEngine:
                         for c in config.web.get("trusted_proxies") or []]
         self.server_header = str(config.web.get("server_header") or "nginx")
         self.upstream = (config.web.get("upstream") or "").rstrip("/") or None
+        self.pool = None
+        self.pool_fillers = set()
+        self.plans = pool_mod.PlanStore(config.plan_path)
+        if config.strategy == "jev":
+            # A broken pool keeps the fixed scenarios serving instead of taking the decoy down.
+            try:
+                self.pool = config.pool()
+            except (pool_mod.PoolError, KeyError, ValueError):
+                self.pool = None
+            for item in (self.pool.items.values() if self.pool else []):
+                if item.kind == "listing":
+                    for name in item.filler:
+                        self.pool_fillers.add(item.path + render(name, self.deployment, {}))
         self._mtime = self._signature(config)
 
     def _signature(self, config: RabbitConfig) -> tuple:
@@ -271,6 +289,8 @@ class WebEngine:
             if self.upstream:
                 return self._forward(method, path, event.get("query") or "", headers, body, event, out)
             return self._page(NOT_FOUND, out, 404)
+        if self.pool is not None:
+            return self._route_pool(method, path, headers, body, state, faker, event, out)
         match = self.routes.get(path)
         item_id = None
         if match is None and path + "/" in self.routes and self.routes[path + "/"][1].kind == "listing":
@@ -341,6 +361,124 @@ class WebEngine:
             self._remember_key(faker.token("api"), state.id)
         out["Content-Type"] = node.content_type
         return node.status, content.encode("utf-8")
+
+    # -- Jev pool mode -------------------------------------------------
+    def _route_pool(self, method, path, headers, body, state, faker, event, out) -> tuple:
+        pool = self.pool
+        item, item_id = pool.by_path.get(path), None
+        if item is None and path + "/" in pool.by_path and pool.by_path[path + "/"].kind == "listing":
+            out["Location"] = path + "/"
+            return self._page(NOT_FOUND.replace("404 Not Found", "301 Moved Permanently"), out, 301)
+        if item is None:
+            for route, candidate in pool.by_path.items():
+                if candidate.kind == "people_api" and path.startswith(route + "/"):
+                    rest = path[len(route) + 1:].strip("/")
+                    if rest.isdigit():
+                        item, item_id = candidate, int(rest)
+                    break
+        if item is None:
+            if path in self.pool_fillers:
+                event["action"] = "read_file"
+                return self._page(FORBIDDEN, out, 403)
+            if self.upstream:
+                return self._forward(method, path, event.get("query") or "", headers, body, event, out)
+            return self._page(NOT_FOUND, out, 404)
+        limits = self.config.limits
+        # An item reached without a clue (guessed or an entry point) counts as depth 1.
+        depth = state.depths.get(item.id, 1)
+        resource = item.id if item_id is None else f"{item.id}/{item_id}"
+        if resource not in state.accessed and len(state.accessed) >= limits["max_resources_per_session"]:
+            state.limit_reached = True
+            event.update(limit_reached=True, scenario="jev-pool")
+            return self._page(NOT_FOUND, out, 404)
+        event.update(scenario="jev-pool", node_id=item.id, resource_id=resource, kind=item.kind,
+                     category=item.category, depth=depth, action=ACTIONS[item.kind])
+        if item.id in state.revealed:
+            event["clue_from"] = state.revealed[item.id]
+            event["followed_clue"] = True
+            meta = state.reveal_meta.get(item.id) or {}
+            event["clue_by"], event["clue_confidence"] = meta.get("by"), meta.get("confidence")
+        context = {"session": state.id}
+        for name, template in item.requires_header.items():
+            expected = render(template, faker, {}, context)
+            supplied = headers.get(name.lower(), "")
+            if supplied == expected:
+                continue
+            owner = self._api_key_owner(supplied)
+            if owner and owner != state.id:
+                event["linked_session"] = owner
+                event["link"] = "api_key"
+                continue
+            out["Content-Type"] = "application/json"
+            event["action"] = "call_api_denied"
+            return 401, json.dumps({"error": f"missing or invalid {name}"}).encode()
+        choices = self._choose(item, state, event.get("source_ip"), depth)
+        if choices:
+            event["clue_choices"] = [{"slot": name, **state.choices[pool_mod.slot_key(item.id, name)]}
+                                     for name in choices]
+        if item.kind == "form" and method == "POST":
+            event["action"] = "submit_form"
+            event["form_fields"] = sorted(k for k, _ in parse_qsl(body.decode("utf-8", "replace")))[:20]
+            target = next((c for chosen in choices.values() for c in chosen), None)
+            if target is not None:
+                self._reveal(state, item, depth, choices)
+                out["Location"] = target.path
+                self._accessed(state, resource)
+                return self._page(NOT_FOUND.replace("404 Not Found", "302 Found"), out, 302)
+        content = pool_mod.render_item(item, faker, choices, self.deployment, context, item_id)
+        if content is None:
+            out["Content-Type"] = "application/json"
+            return 404, b'{"error":"not found"}'
+        self._accessed(state, resource)
+        self._reveal(state, item, depth, choices)
+        if "{{secret:token:api}}" in item.body:
+            self._remember_key(faker.token("api"), state.id)
+        out["Content-Type"] = item.content_type
+        return item.status, content.encode("utf-8")
+
+    def _choose(self, item, state: SessionState, source_ip, depth: int) -> dict:
+        """Fill each clue slot once per session: Jev plan first, then the fallback.
+        Nothing is revealed past max_depth."""
+        if depth >= self.config.limits["max_depth"] or not item.slots:
+            return {}
+        plan = self.plans.for_ip(str(source_ip or ""))
+        result, used = {}, set()
+        for slot in item.slots.values():
+            key = pool_mod.slot_key(item.id, slot.name)
+            frozen = state.choices.get(key)
+            if frozen is not None:
+                chosen = [self.pool.items[i] for i in frozen["items"] if i in self.pool.items]
+            else:
+                candidates = [c for c in self.pool.candidates(item, slot) if c.id not in used]
+                fresh = [c for c in candidates if c.id not in state.revealed and c.id not in state.accessed]
+                if len(fresh) >= slot.count:
+                    candidates = fresh
+                chosen, by, confidence = [], "fallback", None
+                planned = plan.get(key) if isinstance(plan.get(key), dict) else {}
+                ids = {c.id: c for c in candidates}
+                for pick in planned.get("items") or []:
+                    if pick in ids and ids[pick] not in chosen and len(chosen) < slot.count:
+                        chosen.append(ids[pick])
+                if chosen:
+                    by = "jev"
+                    confidence = planned.get("confidence") if isinstance(planned.get("confidence"), (int, float)) else None
+                rest = [c for c in candidates if c not in chosen]
+                chosen += pool_mod.fallback_order(self.secret, state.id, key, rest)[:slot.count - len(chosen)]
+                state.choices[key] = {"items": [c.id for c in chosen], "by": by, "confidence": confidence}
+            used.update(c.id for c in chosen)
+            if chosen:
+                result[slot.name] = chosen
+        return result
+
+    @staticmethod
+    def _reveal(state: SessionState, item, depth: int, choices: dict) -> None:
+        for name, chosen in choices.items():
+            meta = state.choices.get(pool_mod.slot_key(item.id, name)) or {}
+            for child in chosen:
+                if child.id not in state.revealed:
+                    state.revealed[child.id] = item.id
+                    state.depths[child.id] = depth + 1
+                    state.reveal_meta[child.id] = {"by": meta.get("by"), "confidence": meta.get("confidence")}
 
     @staticmethod
     def _accessed(state: SessionState, resource: str) -> None:

@@ -1,0 +1,17 @@
+ssh_redirect
+table inet adaptive_defender {
+	set ssh_redirect {
+		type ipv4_addr
+		timeout 30m
+		elements = { 192.168.56.30 expires 18m2s14ms }
+	}
+}
+
+telnet_redirect
+table inet adaptive_defender {
+	set telnet_redirect {
+		type ipv4_addr
+		timeout 30m
+		elements = { 192.168.56.213 expires 25m4s746ms }
+	}
+}

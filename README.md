@@ -26,7 +26,8 @@ Nginx หรือ nftables ให้เฝ้าระวังและเป�
 | Validation Pipeline | ตรวจ rule 5 gates พร้อม backup/rollback | ชุดทดสอบผ่าน; live deploy ปิดไว้เป็นค่าเริ่มต้น |
 
 สถานะโดยละเอียดอยู่ที่ `docs/project-status.md`
-ผลตรวจระบบเทียบกับเอกสาร TRAP อยู่ที่ `docs/trap-doc-audit.md`
+ผลตรวจระบบเทียบกับเอกสาร TRAP อยู่ที่ `docs/trap-doc-audit-v1.0.2.md`
+(ฉบับเอกสาร V1.0.2) และ `docs/trap-doc-audit.md` เป็นประวัติการตรวจฉบับ V0.8.4
 วิธีใช้ Rabbit Hole อยู่ที่ `docs/rabbit-hole.md`
 
 กฎ Default ปัจจุบันใช้ ET Open 13 กฎใน

@@ -23,7 +23,7 @@ import shutil
 import subprocess
 import time
 
-from .shell import render_files
+from .shell import render_files, shell_pool_bundle
 
 # Field and type numbers of a Cowrie filesystem node (cowrie/shell/fs.py).
 A_NAME, A_TYPE, A_UID, A_GID, A_SIZE, A_MODE, A_CTIME, A_CONTENTS, A_TARGET, A_REALFILE = range(10)
@@ -78,7 +78,10 @@ def _remove(root: list, path: str) -> None:
 def install(config, fs_pickle: Path, honeyfs: Path, state_dir: Path, force: bool = False) -> dict:
     # Turning Rabbit Hole off in the Dashboard takes the decoys out of Cowrie too.
     files = render_files(config) if config.enabled else {}
-    signature = _signature(files)
+    # Jev mode: the trap-rabbit Cowrie plugin reads this next to fs.pickle (mounted read-only).
+    bundle = shell_pool_bundle(config) if config.enabled and config.strategy == "jev" else None
+    bundle_path = fs_pickle.parent / "trap-shell-pool.json"
+    signature = _signature({**files, "#bundle": json.dumps(bundle, sort_keys=True)})
     manifest_path = state_dir / "cowrie-manifest.json"
     try:
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
@@ -120,6 +123,14 @@ def install(config, fs_pickle: Path, honeyfs: Path, state_dir: Path, force: bool
         target.write_bytes(data)
         os.chmod(target, 0o644)
         installed.append(path)
+
+    if bundle is None:
+        bundle_path.unlink(missing_ok=True)
+    else:
+        staged = bundle_path.with_name("." + bundle_path.name + ".tmp")
+        staged.write_text(json.dumps(bundle, ensure_ascii=False), encoding="utf-8")
+        os.chmod(staged, 0o644)
+        os.replace(staged, bundle_path)
 
     temporary = fs_pickle.with_name("." + fs_pickle.name + ".tmp")
     with temporary.open("wb") as stream:

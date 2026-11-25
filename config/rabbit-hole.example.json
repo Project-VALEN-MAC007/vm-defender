@@ -1,6 +1,7 @@
 {
   "project_root": "..",
   "enabled": true,
+  "strategy": "jev",
   "organization": {
     "name": "Acme Logistics Co., Ltd.",
     "short_name": "acme",
@@ -11,7 +12,10 @@
     "internal_subnet": "10.20.0"
   },
   "scenarios": {
-    "web": ["web-backup-api", "web-env-admin"],
+    "web": [
+      "web-backup-api",
+      "web-env-admin"
+    ],
     "shell": "linux-server"
   },
   "limits": {
@@ -26,8 +30,24 @@
     "host": "127.0.0.1",
     "port": 8084,
     "log_path": "evidence/rabbit-hole/web.jsonl",
-    "trusted_proxies": ["127.0.0.1/32"],
-    "server_header": "nginx/1.24.0"
+    "trusted_proxies": [
+      "127.0.0.1/32"
+    ],
+    "server_header": "nginx/1.24.0",
+    "plan_path": "evidence/rabbit-hole/plan.json"
+  },
+  "ai": {
+    "enabled": false,
+    "provider": "jev",
+    "api_url": "https://api.typesafe.ai/v1/systemone",
+    "model": "jev-latest",
+    "api_key_env": "TYPESAFE_API_KEY",
+    "timeout_seconds": 5,
+    "min_confidence": 0.5,
+    "cache_size": 500,
+    "plan_interval_seconds": 5,
+    "plan_window_minutes": 30,
+    "plan_max_calls_per_ip_hour": 30
   },
   "secret_path": "config/rabbit-hole.secret",
   "extra_scenario_dirs": []
